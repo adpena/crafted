@@ -14,11 +14,21 @@ type Section = { label: string; slug: string; entries: Entry[] };
 
 const sections: Section[] = [];
 
+// Manual ordering overrides (slug → sort priority, lower = first)
+const ORDER: Record<string, number> = {
+	"molt": 1,
+	"crafted-action-pages": 2,
+	"reproq": 3,
+};
+
 for (const def of collectionDefs) {
 	try {
 		const result = await getEmDashCollection(def.slug);
 		if (result.entries?.length > 0) {
 			const sorted = [...result.entries].sort((a, b) => {
+				const oa = ORDER[a.id] ?? 100;
+				const ob = ORDER[b.id] ?? 100;
+				if (oa !== ob) return oa - ob;
 				const ya = parseInt(a.data.year ?? "0", 10);
 				const yb = parseInt(b.data.year ?? "0", 10);
 				return yb - ya;
@@ -31,41 +41,38 @@ for (const def of collectionDefs) {
 	} catch {}
 }
 
-// Highlighted projects — curated, not algorithmic
 const highlights = [
-	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev_projects/molt", tag: "New" },
-	{ title: "Lost Decade", desc: "Salary analysis → 11% raise", href: "/work/policy_work/the-lost-decade-and-a-half", tag: "Impact" },
-	{ title: "Action Pages", desc: "Campaign tech plugin", href: "/action/demo-donate", tag: "Demo" },
-	{ title: "Respect Campaign", desc: "Interactive district map", href: "/work/design_work/respect-campaign-map", tag: "Visual" },
-	{ title: "teadata", desc: "TX education data suite", href: "/work/dev_projects/texas-education-data-mcp-server", tag: "OSS" },
+	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev_projects/molt", tag: "Featured" },
+	{ title: "Lost Decade", desc: "Analysis → 11% raise for educators", href: "/work/policy_work/the-lost-decade-and-a-half", tag: "Impact" },
+	{ title: "Action Pages", desc: "Live campaign page engine", href: "/action/demo-donate", tag: "Demo" },
+	{ title: "Respect Campaign", desc: "District-level interactive map", href: "/work/design_work/respect-campaign-map", tag: "Featured" },
+	{ title: "teadata", desc: "TX education data suite (3 repos)", href: "/work/dev_projects/texas-education-data-mcp-server", tag: "Tool" },
 ];
 ---
 
 <Base title="Work">
 	<main id="main-content" class="work-layout">
 		<div class="work-main">
-			{sections.length > 0 ? (
-				sections.map((section) => (
-					<section class="work-section">
-						<h2 class="section-label">{section.label}</h2>
-						<ul class="item-list" role="list">
-							{section.entries.map((entry) => (
-								<li>
-									<a href={`/work/${section.slug}/${entry.id}`} class="item-link">
-										<span class="item-title">{entry.data.title}</span>
-										{entry.data.summary && <span class="item-desc">{entry.data.summary}</span>}
-										{entry.data.stack && <span class="item-meta">{entry.data.stack}</span>}
-										{entry.data.publication && <span class="item-meta">{entry.data.publication}</span>}
-										{entry.data.medium && <span class="item-meta">{entry.data.medium}</span>}
-									</a>
-								</li>
-							))}
-						</ul>
-					</section>
-				))
-			) : (
-				<p class="empty">No work yet.</p>
-			)}
+			{sections.map((section) => (
+				<section class="work-section">
+					<h2 class="section-label">{section.label}</h2>
+					<ul class="compact-list" role="list">
+						{section.entries.map((entry) => (
+							<li>
+								<a href={`/work/${section.slug}/${entry.id}`} class="compact-item">
+									<span class="compact-title">{entry.data.title}</span>
+									<span class="compact-year">{entry.data.year}</span>
+								</a>
+								<div class="compact-reveal">
+									{entry.data.summary && <p>{entry.data.summary}</p>}
+									{entry.data.stack && <span class="compact-meta">{entry.data.stack}</span>}
+									{entry.data.publication && <span class="compact-meta">{entry.data.publication}</span>}
+								</div>
+							</li>
+						))}
+					</ul>
+				</section>
+			))}
 		</div>
 
 		<aside class="work-sidebar" aria-label="Highlighted projects">
@@ -95,9 +102,71 @@ const highlights = [
 	}
 
 	.work-section {
-		margin-bottom: var(--spacing-xl);
+		margin-bottom: var(--spacing-lg);
 	}
 
+	/* Compact list: title + year on one line, summary reveals on hover */
+	.compact-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.compact-list li {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.compact-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 0.45rem 0;
+		text-decoration: none;
+		color: inherit;
+		gap: var(--spacing-md);
+	}
+
+	.compact-title {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+	}
+
+	.compact-year {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		flex-shrink: 0;
+	}
+
+	.compact-reveal {
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 200ms ease, padding 200ms ease;
+		padding: 0;
+	}
+
+	.compact-list li:hover .compact-reveal,
+	.compact-list li:focus-within .compact-reveal {
+		max-height: 6rem;
+		padding: 0 0 0.5rem;
+	}
+
+	.compact-reveal p {
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		line-height: 1.4;
+		margin: 0;
+	}
+
+	.compact-meta {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		margin-top: 0.15rem;
+	}
+
+	/* Sidebar */
 	.work-sidebar {
 		position: sticky;
 		top: var(--spacing-lg);
@@ -177,6 +246,12 @@ const highlights = [
 
 		.highlight:hover {
 			border-top-color: var(--color-text);
+		}
+
+		/* On mobile, always show summaries */
+		.compact-reveal {
+			max-height: none;
+			padding: 0 0 0.5rem;
 		}
 	}
 </style>
