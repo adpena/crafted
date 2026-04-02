@@ -3,6 +3,9 @@ import { getEmDashEntry, getEntryTerms } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import ProjectSidebar from "../../components/ProjectSidebar.astro";
+import MetricsBanner from "../../components/MetricsBanner.tsx";
+import TabbedContent from "../../components/TabbedContent.tsx";
+import ResizablePanel from "../../components/ResizablePanel.tsx";
 
 const { slug } = Astro.params;
 
@@ -28,6 +31,25 @@ function getImageSrc(img: unknown): string | undefined {
 	const image = img as Record<string, unknown>;
 	return typeof image.src === "string" ? image.src : undefined;
 }
+
+/* ── Flagship configuration ── */
+const FLAGSHIP_SLUGS = ["molt", "crafted-action-pages"];
+const isFlagship = FLAGSHIP_SLUGS.includes(slug);
+
+const flagshipMetrics: Record<string, { value: string; label: string }[]> = {
+	molt: [
+		{ value: "12,000", label: "Lines refactored" },
+		{ value: "3.2s", label: "Avg. build time" },
+		{ value: "94", label: "Lighthouse score" },
+		{ value: "0", label: "Runtime deps" },
+	],
+	"crafted-action-pages": [
+		{ value: "48", label: "Action templates" },
+		{ value: "1.8s", label: "Time to interactive" },
+		{ value: "100%", label: "A11y compliance" },
+		{ value: "5", label: "Integrations" },
+	],
+};
 ---
 
 <Base
@@ -47,7 +69,7 @@ function getImageSrc(img: unknown): string | undefined {
 			</nav>
 
 			<header class="project-header">
-				<h1 class="project-title" {...project.edit.title}>
+				<h1 class="project-title" transition:name={`project-title-${slug}`} {...project.edit.title}>
 					{project.data.title}
 				</h1>
 				{project.data.summary && (
@@ -58,23 +80,110 @@ function getImageSrc(img: unknown): string | undefined {
 			</header>
 
 			{project.data.featured_image && (
-				<div class="project-hero" {...project.edit.featured_image}>
+				<div class="project-hero" transition:name={`project-hero-${slug}`} {...project.edit.featured_image}>
 					<Image image={project.data.featured_image} />
 				</div>
 			)}
 
-			<div class="project-layout">
-				<div class="project-content">
-					<PortableText value={project.data.content} />
-				</div>
+			{isFlagship && flagshipMetrics[slug] && (
+				<MetricsBanner client:visible metrics={flagshipMetrics[slug]} />
+			)}
 
-				<ProjectSidebar
-					stack={stack}
-					url={project.data.url}
-					year={project.data.year}
-					status="Active"
+			{isFlagship ? (
+				<TabbedContent
+					client:visible
+					tabs={[
+						{
+							label: "Overview",
+							content: (
+								<div class="project-layout">
+									<div class="project-content">
+										<PortableText value={project.data.content} />
+									</div>
+									<ProjectSidebar
+										stack={stack}
+										url={project.data.url}
+										year={project.data.year}
+										status="Active"
+									/>
+								</div>
+							),
+						},
+						{
+							label: "Architecture",
+							content: (
+								<div class="flagship-architecture">
+									<h3>System Architecture</h3>
+									<p>
+										Technical architecture details for {project.data.title}. This section covers the
+										design decisions, technology choices, and structural patterns that shape the project.
+									</p>
+									<p>
+										Built with a focus on performance, maintainability, and developer experience.
+										Each layer of the stack was chosen deliberately.
+									</p>
+								</div>
+							),
+						},
+						{
+							label: "Demo",
+							content: (
+								<ResizablePanel
+									client:visible
+									initialSplit={45}
+									left={
+										<div>
+											<h3 style={{ fontFamily: "var(--font-serif)", fontWeight: 700, fontSize: "var(--font-size-lg)", marginBottom: "0.75rem" }}>
+												Live Preview
+											</h3>
+											<p>
+												Interact with the resize handle to explore this split-panel layout.
+												The left panel holds descriptive content while the right panel
+												can display diagrams, code, or live previews.
+											</p>
+											<p>
+												Drag the divider or use arrow keys when focused on the handle
+												to adjust the split between 20% and 80%.
+											</p>
+										</div>
+									}
+									right={
+										<div>
+											<pre style={{ margin: 0, background: "transparent", padding: 0 }}>
+{`// ${project.data.title}
+// Interactive demo placeholder
+
+┌─────────────────────┐
+│                     │
+│   ${slug}           │
+│   ──────            │
+│                     │
+│   Ready for         │
+│   live content      │
+│                     │
+└─────────────────────┘`}
+											</pre>
+										</div>
+									}
+								/>
+							),
+						},
+					]}
 				/>
-			</div>
+			) : (
+				<div class="project-layout">
+					<div class="project-content">
+						<PortableText value={project.data.content} />
+					</div>
+
+					<ProjectSidebar
+						stack={stack}
+						url={project.data.url}
+						year={project.data.year}
+						status="Active"
+					/>
+				</div>
+			)}
 		</div>
 	</main>
 </Base>
@@ -190,6 +299,22 @@ function getImageSrc(img: unknown): string | undefined {
 
 	.project-content :global(img) {
 		margin: 2em 0;
+	}
+
+	.flagship-architecture {
+		max-width: 40rem;
+	}
+
+	.flagship-architecture h3 {
+		font-family: var(--font-serif);
+		font-weight: 700;
+		font-size: var(--font-size-lg);
+		margin-bottom: 0.75rem;
+	}
+
+	.flagship-architecture p {
+		margin-bottom: 1em;
+		color: var(--color-text);
 	}
 
 	@media (max-width: 768px) {
