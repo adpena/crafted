@@ -18,6 +18,9 @@
  *   WHATSAPP_PHONE_ID     WhatsApp Business phone number ID
  *   WHATSAPP_TO           Recipient phone number with country code
  *   WHATSAPP_API_URL      WhatsApp API base URL (default: Meta Graph API v21.0)
+ *   CF_EMAIL_FROM         Cloudflare Email sender (e.g. contact@yourdomain.com)
+ *   CF_EMAIL_TO           Cloudflare Email recipient
+ *   SEND_EMAIL            Cloudflare Email Workers binding (runtime-injected, not a secret)
  *   DRY_RUN               Log payloads without calling external APIs
  */
 
@@ -54,7 +57,19 @@ export interface NotifyEnv {
   WHATSAPP_API_TOKEN?: string;
   WHATSAPP_PHONE_ID?: string;
   WHATSAPP_TO?: string;
+  CF_EMAIL_FROM?: string;
+  CF_EMAIL_TO?: string;
+  /** Cloudflare Email Workers send binding (injected by runtime, not a secret) */
+  SEND_EMAIL?: { send: (msg: EmailMessage) => Promise<void> };
   DRY_RUN?: string;
+}
+
+interface EmailMessage {
+  from: string;
+  to: string;
+  subject: string;
+  replyTo?: string;
+  text: string;
 }
 
 export interface NotifyResult {
@@ -81,9 +96,9 @@ function isValidEmail(value: string): boolean {
 
 function sanitizeText(text: string): string {
   if (typeof text !== "string") return "";
-  // Strip only characters that render as formatting in Discord/Slack.
-  // Preserve > (quoting), \ (escape in emails), () (parenthetical).
-  return text.replace(/[*_~`|]/g, "");
+  // Strip only characters that render as bold/italic/strikethrough/code
+  // in Discord and Slack. Preserve everything else.
+  return text.replace(/[*_~`]/g, "");
 }
 
 function escapeHtml(text: string): string {
@@ -304,11 +319,43 @@ const whatsapp: Adapter = {
   },
 };
 
+const cloudflareEmail: Adapter = {
+  name: "CloudflareEmail",
+  isConfigured: (env) =>
+    env.SEND_EMAIL != null &&
+    typeof env.SEND_EMAIL.send === "function" &&
+    isNonEmpty(env.CF_EMAIL_FROM) &&
+    isNonEmpty(env.CF_EMAIL_TO),
+  async send(env, sub, _signal) {
+    const name = sanitizeText(sub.name);
+    const email = coerce(sub.email);
+
+    if (!isValidEmail(email)) {
+      throw new Error("invalid reply_to email");
+    }
+
+    const body = truncate(`Name: ${name}\nEmail: ${email}\n\n${sanitizeText(sub.message)}`);
+
+    if (env.DRY_RUN) {
+      console.info("[DRY_RUN] CloudflareEmail:", { from: env.CF_EMAIL_FROM, to: env.CF_EMAIL_TO, body });
+      return;
+    }
+
+    await env.SEND_EMAIL!.send({
+      from: env.CF_EMAIL_FROM!,
+      to: env.CF_EMAIL_TO!,
+      subject: `Contact from ${name}`,
+      replyTo: email,
+      text: body,
+    });
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
 
-const adapters: Adapter[] = [resend, discord, slack, telegram, whatsapp];
+const adapters: Adapter[] = [cloudflareEmail, resend, discord, slack, telegram, whatsapp];
 
 // ---------------------------------------------------------------------------
 // Public API
