@@ -5,15 +5,34 @@ import { assignVariant } from "../modules/ab-assign.ts";
 import { resolveDisclaimer } from "../modules/disclaimers.ts";
 import type { Disclaimer } from "../modules/disclaimers.ts";
 
+const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
+
 export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
   const url = new URL(routeCtx.request.url);
-  const slug = (routeCtx.input as { slug?: string })?.slug ?? url.searchParams.get("slug");
+  const input = routeCtx.input as { slug?: string; campaign?: string } | undefined;
+  const slug = input?.slug ?? url.searchParams.get("slug");
+  const campaignSlug = input?.campaign ?? url.searchParams.get("campaign");
 
-  if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
-    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid slug parameter" } } };
+  if (!slug || !SLUG_RE.test(slug)) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid slug" } } };
   }
 
-  const result = await ctx.storage.action_pages.query({ where: { slug } });
+  // Build query — optionally scoped by campaign
+  const where: Record<string, string> = { slug };
+  if (campaignSlug) {
+    if (!SLUG_RE.test(campaignSlug)) {
+      return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid campaign" } } };
+    }
+    // Resolve campaign ID from slug
+    const campaignResult = await ctx.storage.campaigns.query({ where: { slug: campaignSlug } });
+    const campaign = campaignResult.items[0];
+    if (!campaign) {
+      return { status: 404, body: { error: { code: "NOT_FOUND", message: "Campaign not found" } } };
+    }
+    where.campaign_id = campaign.id;
+  }
+
+  const result = await ctx.storage.action_pages.query({ where });
   const page = result.items[0]?.data as Record<string, unknown> | undefined;
   if (!page) {
     return { status: 404, body: { error: { code: "NOT_FOUND", message: "Page not found" } } };
@@ -60,6 +79,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
         variant,
         disclaimer,
         jurisdiction,
+        campaign: campaignSlug ?? null,
       },
     },
   };

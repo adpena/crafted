@@ -8,8 +8,9 @@ export function actionPages(): PluginDescriptor {
     entrypoint: "@crafted/action-pages/sandbox",
     capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
     storage: {
-      action_pages: { indexes: ["slug", "status"] },
-      submissions: { indexes: ["page_id", "created_at"] },
+      campaigns: { indexes: ["slug"] },
+      action_pages: { indexes: ["slug", "status", "campaign_id"] },
+      submissions: { indexes: ["page_id", "campaign_id", "created_at"] },
       ab_variants: { indexes: ["page_id"] },
     },
     adminPages: [

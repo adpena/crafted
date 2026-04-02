@@ -1,38 +1,46 @@
 import type { RouteContext, PluginContext } from "emdash";
 
+const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
+
 export async function handleEmbed(routeCtx: RouteContext, _ctx: PluginContext) {
-  const input = routeCtx.input as { slug?: string; base_url?: string } | undefined;
+  const input = routeCtx.input as { slug?: string; campaign?: string; base_url?: string } | undefined;
   const url = new URL(routeCtx.request.url);
   const slug = input?.slug ?? url.searchParams.get("slug");
-  if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
-    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid slug parameter" } } };
+  const campaign = input?.campaign ?? url.searchParams.get("campaign");
+
+  if (!slug || !SLUG_RE.test(slug)) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid slug" } } };
   }
 
-  // Validate baseUrl to prevent open redirect -- must be same origin only
+  if (campaign && !SLUG_RE.test(campaign)) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid campaign" } } };
+  }
+
   const rawBaseUrl = input?.base_url ?? url.origin;
   let baseUrl: string;
   try {
     const parsed = new URL(rawBaseUrl);
-    if (parsed.origin !== url.origin) {
-      baseUrl = url.origin;
-    } else {
-      baseUrl = parsed.origin;
-    }
+    baseUrl = parsed.origin !== url.origin ? url.origin : parsed.origin;
   } catch {
     baseUrl = url.origin;
   }
 
   const safeBase = JSON.stringify(baseUrl);
   const safeSlug = JSON.stringify(slug);
+  const safeCampaign = campaign ? JSON.stringify(campaign) : "null";
+
+  // Build the action page URL with optional campaign scope
   const script = `
 (function() {
   var base = ${safeBase};
   var slug = ${safeSlug};
+  var campaign = ${safeCampaign};
+  var path = campaign ? '/action/' + campaign + '/' + slug : '/action/' + slug;
   var container = document.createElement('div');
   container.id = 'crafted-action-page-' + slug;
   var shadow = container.attachShadow({ mode: 'open' });
   var iframe = document.createElement('iframe');
-  iframe.src = base + '/action/' + slug;
+  iframe.src = base + path;
   iframe.style.width = '100%';
   iframe.style.border = 'none';
   iframe.style.minHeight = '400px';

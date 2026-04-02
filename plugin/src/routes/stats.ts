@@ -1,8 +1,10 @@
 import type { RouteContext, PluginContext } from "emdash";
 
 export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
-  const input = routeCtx.input as { page_id?: string } | undefined;
-  const pageId = input?.page_id ?? new URL(routeCtx.request.url).searchParams.get("page_id");
+  const input = routeCtx.input as { page_id?: string; campaign?: string } | undefined;
+  const url = new URL(routeCtx.request.url);
+  const pageId = input?.page_id ?? url.searchParams.get("page_id");
+  const campaign = input?.campaign ?? url.searchParams.get("campaign");
   if (!pageId || !/^[a-z0-9][a-z0-9-]*$/.test(pageId)) {
     return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid page_id parameter" } } };
   }
@@ -23,5 +25,5 @@ export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
     };
   });
 
-  return { status: 200, body: { data: { page_id: pageId, variants: stats } } };
+  return { status: 200, body: { data: { page_id: pageId, campaign: campaign ?? null, variants: stats } } };
 }

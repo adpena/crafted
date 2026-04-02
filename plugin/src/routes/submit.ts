@@ -49,6 +49,7 @@ async function verifyTurnstile(token: string, secret: string, ip: string): Promi
 export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
   const body = routeCtx.input as {
     page_id: string;
+    campaign_id?: string;
     type: SubmissionInput["type"];
     data: Record<string, unknown>;
     visitor_id?: string;
@@ -107,6 +108,7 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
 
   await ctx.storage.submissions.put(id, {
     page_id: body.page_id,
+    campaign_id: body.campaign_id ?? null,
     type: body.type,
     data: result.sanitized,
     visitor_id: body.visitor_id ?? null,
