@@ -43,4 +43,12 @@ try { Astro.cache.set(cacheHint); } catch {}
 	.about-cta .btn {
 		margin-top: var(--spacing-sm);
 	}
+
+	@media (max-width: 480px) {
+		.about-cta .btn {
+			min-height: 44px;
+			display: inline-flex;
+			align-items: center;
+		}
+	}
 </style>

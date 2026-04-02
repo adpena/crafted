@@ -107,14 +107,34 @@ function isActive(href: string): boolean {
 		text-decoration-color: var(--color-text);
 	}
 
+	@media (max-width: 768px) {
+		.masthead-nav-link {
+			min-height: 44px;
+			display: inline-flex;
+			align-items: center;
+		}
+	}
+
 	@media (max-width: 640px) {
 		.masthead-title {
 			font-size: var(--font-size-2xl);
+			letter-spacing: 0.12em;
 		}
 
 		.masthead-nav {
 			flex-wrap: wrap;
 			gap: var(--spacing-md);
+		}
+	}
+
+	@media (max-width: 375px) {
+		.masthead-title {
+			font-size: 1.375rem;
+			letter-spacing: 0.08em;
+		}
+
+		.masthead-nav {
+			gap: var(--spacing-sm);
 		}
 	}
 </style>

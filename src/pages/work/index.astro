@@ -257,13 +257,15 @@ const highlights = [
 			overflow-x: auto;
 			gap: var(--spacing-md);
 			padding-bottom: var(--spacing-sm);
+			-webkit-overflow-scrolling: touch;
 		}
 
 		.highlight {
 			min-width: 10rem;
 			border-left: none;
 			border-top: 2px solid var(--color-border);
-			padding: var(--spacing-sm) 0 0;
+			padding: var(--spacing-sm) var(--spacing-xs) 0;
+			min-height: 44px;
 		}
 
 		.highlight:hover {
@@ -271,13 +273,41 @@ const highlights = [
 			transform: none;
 		}
 
-		/* On mobile, always show summaries */
+		/* On mobile, always show summaries (no hover on touch) */
 		.compact-reveal {
 			grid-template-rows: 1fr;
 		}
 
 		.compact-list li {
 			border-left-color: transparent;
+		}
+
+		/* Touch-friendly compact items */
+		.compact-item {
+			padding: var(--spacing-sm) 0;
+			min-height: 44px;
+		}
+
+		.highlight-tag {
+			font-size: var(--font-size-xs);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.work-layout {
+			padding-top: var(--spacing-md);
+		}
+
+		.highlights {
+			gap: var(--spacing-sm);
+		}
+
+		.highlight {
+			min-width: 8.5rem;
+		}
+
+		.compact-title {
+			font-size: var(--font-size-base);
 		}
 	}
 </style>

@@ -61,38 +61,47 @@ const committeeName = pageData.committee_name ?? "";
       margin: 0 auto;
     }
     h1 { font-size: 1.5rem; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 1rem; }
-    .body-text { margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .body-text { margin-bottom: 1.5rem; font-size: 1rem; }
     .amounts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
     .amount {
       padding: 0.5rem 1rem;
       font-family: "Courier New", monospace;
-      font-size: 0.875rem;
+      font-size: 1rem;
       background: transparent;
       border: 1px solid #1a1a1a;
       cursor: pointer;
       transition: background 150ms, color 150ms;
+      min-height: 44px;
+      min-width: 44px;
     }
     .amount:hover, .amount.selected { background: #1a1a1a; color: #f5f5f0; }
     .cta {
       display: inline-block;
-      padding: 0.6rem 2rem;
+      padding: 0.75rem 2rem;
       font-family: "Courier New", monospace;
-      font-size: 0.875rem;
+      font-size: 1rem;
       color: #f5f5f0;
       background: #1a1a1a;
       border: none;
       text-decoration: none;
       cursor: pointer;
       margin-bottom: 1.5rem;
+      min-height: 44px;
     }
     .cta:hover { opacity: 0.85; }
     .disclaimer {
       font-family: "Courier New", monospace;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: #707070;
       border-top: 1px solid #d4d4cc;
       padding-top: 0.75rem;
       margin-top: 1rem;
+    }
+    @media (max-width: 480px) {
+      body { padding: 1.5rem 1rem; }
+      h1 { font-size: 1.25rem; }
+      .amounts { gap: 0.5rem; }
+      .amount { flex: 1 1 auto; text-align: center; }
     }
   </style>
 </head>

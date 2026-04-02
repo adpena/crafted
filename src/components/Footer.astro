@@ -61,4 +61,24 @@ const socialLinks = [
 	.social-link:hover {
 		color: var(--color-text);
 	}
+
+	@media (max-width: 768px) {
+		.social-nav {
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.social-link {
+			min-height: 44px;
+			display: inline-flex;
+			align-items: center;
+		}
+	}
+
+	@media (max-width: 375px) {
+		.colophon {
+			font-size: var(--font-size-xs);
+			line-height: 1.5;
+		}
+	}
 </style>
