@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "MD",
+    "type": "digital",
+    "required_text": "Authority: {treasurer_name}, Treasurer for {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Md. Election Law § 13-401",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2018-05-26",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/maryland/2020/election-law/title-13/subtitle-4/part-i/section-13-401/"
+  },
+  {
+    "jurisdiction": "MD",
+    "type": "print",
+    "required_text": "Authority: {treasurer_name}, Treasurer for {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Md. Election Law § 13-401",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2018-05-26",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/maryland/2020/election-law/title-13/subtitle-4/part-i/section-13-401/"
+  },
+  {
+    "jurisdiction": "MD",
+    "type": "broadcast",
+    "required_text": "Authority: {treasurer_name}, Treasurer for {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Md. Election Law § 13-401",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2018-05-26",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/maryland/2020/election-law/title-13/subtitle-4/part-i/section-13-401/"
+  }
+]

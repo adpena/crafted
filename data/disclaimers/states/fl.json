@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "FL",
+    "type": "digital",
+    "required_text": "Political advertisement paid for and approved by {candidate_name}, {party_affiliation}, for {office}",
+    "adapted_text": null,
+    "statute_citation": "Fla. Stat. § 106.143",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "Created in whole or in part with the use of generative artificial intelligence (AI).",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0100-0199/0106/Sections/0106.143.html"
+  },
+  {
+    "jurisdiction": "FL",
+    "type": "print",
+    "required_text": "Political advertisement paid for and approved by {candidate_name}, {party_affiliation}, for {office}",
+    "adapted_text": null,
+    "statute_citation": "Fla. Stat. § 106.143",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "Created in whole or in part with the use of generative artificial intelligence (AI).",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0100-0199/0106/Sections/0106.143.html"
+  },
+  {
+    "jurisdiction": "FL",
+    "type": "broadcast",
+    "required_text": "Political advertisement paid for and approved by {candidate_name}, {party_affiliation}, for {office}",
+    "adapted_text": null,
+    "statute_citation": "Fla. Stat. § 106.143",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "Created in whole or in part with the use of generative artificial intelligence (AI).",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0100-0199/0106/Sections/0106.143.html"
+  }
+]

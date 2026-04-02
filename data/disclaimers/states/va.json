@@ -1,0 +1,50 @@
+[
+  {
+    "jurisdiction": "VA",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Va. Code § 24.2-956",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2020-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.lis.virginia.gov/vacode/title24.2/chapter9.5/section24.2-956/"
+  },
+  {
+    "jurisdiction": "VA",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}. Authorized by {candidate_name}, candidate for {office}",
+    "adapted_text": null,
+    "statute_citation": "Va. Code § 24.2-956.1",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2020-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.lis.virginia.gov/vacode/title24.2/chapter9.5/section24.2-956.1/"
+  },
+  {
+    "jurisdiction": "VA",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Va. Code § 24.2-956",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2020-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.lis.virginia.gov/vacode/title24.2/chapter9.5/section24.2-956/"
+  },
+  {
+    "jurisdiction": "VA",
+    "type": "broadcast",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Va. Code § 24.2-957.1",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2020-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.lis.virginia.gov/vacode/title24.2/chapter9.5/section24.2-957.1/"
+  }
+]

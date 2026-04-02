@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "CO",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "C.R.S. § 1-45-108.3",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+  },
+  {
+    "jurisdiction": "CO",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "C.R.S. § 1-45-108.3",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+  },
+  {
+    "jurisdiction": "CO",
+    "type": "broadcast",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "C.R.S. § 1-45-108.3",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "effective_date": "2024-07-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+  }
+]

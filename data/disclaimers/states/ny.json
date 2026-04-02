@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "NY",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "N.Y. Elec. Law § 14-107",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2019-11-14",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.nysenate.gov/legislation/laws/ELN/14-107"
+  },
+  {
+    "jurisdiction": "NY",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "N.Y. Elec. Law § 14-106",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2019-11-14",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.nysenate.gov/legislation/laws/ELN/14-106"
+  },
+  {
+    "jurisdiction": "NY",
+    "type": "broadcast",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "N.Y. Elec. Law § 14-106",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2019-11-14",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.nysenate.gov/legislation/laws/ELN/14-106"
+  }
+]

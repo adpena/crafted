@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "GA",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/georgia/title-21/chapter-5/article-2/section-21-5-34/"
+  },
+  {
+    "jurisdiction": "GA",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/georgia/title-21/chapter-5/article-2/section-21-5-34/"
+  },
+  {
+    "jurisdiction": "GA",
+    "type": "broadcast",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/georgia/title-21/chapter-5/article-2/section-21-5-34/"
+  }
+]

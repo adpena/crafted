@@ -1,0 +1,38 @@
+[
+  {
+    "jurisdiction": "PA",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "1980-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://codes.findlaw.com/pa/title-25-ps-elections-electoral-districts/pa-st-sect-25-3258.html"
+  },
+  {
+    "jurisdiction": "PA",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "1980-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://codes.findlaw.com/pa/title-25-ps-elections-electoral-districts/pa-st-sect-25-3258.html"
+  },
+  {
+    "jurisdiction": "PA",
+    "type": "broadcast",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "1980-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://codes.findlaw.com/pa/title-25-ps-elections-electoral-districts/pa-st-sect-25-3258.html"
+  }
+]
