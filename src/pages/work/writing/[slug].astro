@@ -1,0 +1,56 @@
+---
+import { getEmDashEntry } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../../../layouts/Base.astro";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const { entry, cacheHint } = await getEmDashEntry("writing", slug);
+if (!entry) return Astro.redirect("/404");
+try { Astro.cache.set(cacheHint); } catch {}
+
+const d = entry.data;
+const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : null;
+---
+
+<Base title={d.title}>
+	<main id="main-content" class="detail">
+		<nav class="crumb mono" aria-label="Breadcrumb">
+			<a href="/work">Work</a> <span aria-hidden="true">/</span> Writing <span aria-hidden="true">/</span> {d.title}
+		</nav>
+
+		<h1>{d.title}</h1>
+		{d.summary && <p class="summary">{d.summary}</p>}
+
+		<dl class="meta mono">
+			{d.publication && <><dt>Publication</dt><dd>{d.publication}</dd></>}
+			{dateStr && <><dt>Date</dt><dd>{dateStr}</dd></>}
+			{d.topic && <><dt>Topic</dt><dd>{d.topic}</dd></>}
+			{d.link && <><dt>Link</dt><dd><a href={d.link} target="_blank" rel="noopener noreferrer">Read</a></dd></>}
+		</dl>
+
+		{d.excerpt && (
+			<blockquote class="excerpt">{d.excerpt}</blockquote>
+		)}
+
+		<div class="body">
+			<PortableText value={d.content} />
+		</div>
+	</main>
+</Base>
+
+<style>
+	.detail { max-width: 42rem; margin: 0 auto; padding: var(--spacing-lg) 0 var(--spacing-2xl); }
+	.crumb { font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); }
+	.crumb a { color: var(--color-secondary); }
+	h1 { font-family: var(--font-serif); font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--spacing-xs); }
+	.summary { color: var(--color-secondary); font-size: var(--font-size-base); margin-bottom: var(--spacing-lg); }
+	.meta { display: grid; grid-template-columns: 7rem 1fr; gap: 0.25rem 1rem; font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: var(--spacing-sm) 0; }
+	.meta dt { font-weight: 600; }
+	.meta dd { margin: 0; }
+	.meta a { color: var(--color-text); }
+	.excerpt { font-family: var(--font-serif); font-style: italic; color: var(--color-secondary); border-left: 2px solid var(--color-border); padding-left: var(--spacing-md); margin: 0 0 var(--spacing-lg); }
+	.body { font-family: var(--font-serif); line-height: 1.8; }
+	.body :global(p) { margin-bottom: 1.25em; }
+</style>

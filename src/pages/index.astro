@@ -6,12 +6,22 @@ import FeaturedProject from "../components/FeaturedProject.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 
 
-const { entries: projects, cacheHint } =
-	await getEmDashCollection("projects");
+// Gather latest from all collections
+const collections = ["dev_projects", "design_work", "policy_work", "writing"];
+const allEntries = [];
 
-try { Astro.cache.set(cacheHint); } catch {}
+for (const col of collections) {
+	try {
+		const { entries, cacheHint } = await getEmDashCollection(col);
+		try { Astro.cache.set(cacheHint); } catch {}
+		const urlPrefix = `/work/${col}`;
+		for (const e of entries) {
+			allEntries.push({ ...e, _href: `${urlPrefix}/${e.id}`, _collection: col });
+		}
+	} catch {}
+}
 
-const sorted = projects.toSorted((a, b) => {
+const sorted = allEntries.toSorted((a, b) => {
 	const dateA = a.data.publishedAt?.getTime() ?? 0;
 	const dateB = b.data.publishedAt?.getTime() ?? 0;
 	return dateB - dateA;
@@ -30,7 +40,7 @@ const latest = sorted.slice(1);
 						<FeaturedProject
 							title={featured.data.title ?? "Untitled"}
 							summary={featured.data.summary}
-							href={`/work/${featured.id}`}
+							href={featured._href}
 						/>
 					</section>
 
@@ -43,7 +53,7 @@ const latest = sorted.slice(1);
 								<ProjectCard
 									title={project.data.title ?? "Untitled"}
 									summary={project.data.summary}
-									href={`/work/${project.id}`}
+									href={project._href}
 								/>
 							))}
 						</div>

@@ -2,68 +2,83 @@
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "Portfolio Starter",
-		"description": "A portfolio for showcasing creative work",
-		"author": "EmDash"
+		"name": "Crafted Portfolio",
+		"description": "Personal portfolio with domain-specific collections",
+		"author": "Alejandro Peña"
 	},
 
 	"settings": {
 		"title": "Crafted",
-		"tagline": "Systems, compilers, and campaign tech"
+		"tagline": "Development, design, policy, and politics"
 	},
 
 	"collections": [
 		{
-			"slug": "projects",
-			"label": "Projects",
+			"slug": "dev_projects",
+			"label": "Development",
 			"labelSingular": "Project",
 			"supports": ["drafts", "revisions", "search", "seo"],
 			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "featured_image",
-					"label": "Featured Image",
-					"type": "image",
-					"required": true
-				},
-				{
-					"slug": "client",
-					"label": "Client",
-					"type": "string"
-				},
-				{
-					"slug": "year",
-					"label": "Year",
-					"type": "string"
-				},
-				{
-					"slug": "summary",
-					"label": "Summary",
-					"type": "text",
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				},
-				{
-					"slug": "gallery",
-					"label": "Gallery",
-					"type": "json"
-				},
-				{
-					"slug": "url",
-					"label": "Project URL",
-					"type": "string"
-				}
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
+				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
+				{ "slug": "featured_image", "label": "Featured Image", "type": "image" },
+				{ "slug": "repo_url", "label": "Repository URL", "type": "string" },
+				{ "slug": "live_url", "label": "Live Demo URL", "type": "string" },
+				{ "slug": "stack", "label": "Tech Stack", "type": "string" },
+				{ "slug": "language", "label": "Primary Language", "type": "string" },
+				{ "slug": "year", "label": "Year", "type": "string" },
+				{ "slug": "project_status", "label": "Project Status", "type": "string" }
+			]
+		},
+		{
+			"slug": "design_work",
+			"label": "Design",
+			"labelSingular": "Design Project",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
+				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
+				{ "slug": "featured_image", "label": "Featured Image", "type": "image" },
+				{ "slug": "gallery", "label": "Gallery", "type": "json" },
+				{ "slug": "client", "label": "Client", "type": "string" },
+				{ "slug": "medium", "label": "Medium", "type": "string" },
+				{ "slug": "year", "label": "Year", "type": "string" },
+				{ "slug": "live_url", "label": "Live URL", "type": "string" }
+			]
+		},
+		{
+			"slug": "policy_work",
+			"label": "Policy",
+			"labelSingular": "Policy Work",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
+				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
+				{ "slug": "publication", "label": "Publication / Organization", "type": "string" },
+				{ "slug": "date", "label": "Date", "type": "datetime" },
+				{ "slug": "topic", "label": "Topic", "type": "string" },
+				{ "slug": "link", "label": "External Link", "type": "string" },
+				{ "slug": "pdf_url", "label": "PDF URL", "type": "string" },
+				{ "slug": "coauthors", "label": "Co-authors", "type": "string" }
+			]
+		},
+		{
+			"slug": "writing",
+			"label": "Writing",
+			"labelSingular": "Article",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
+				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
+				{ "slug": "publication", "label": "Publication", "type": "string" },
+				{ "slug": "date", "label": "Date", "type": "datetime" },
+				{ "slug": "topic", "label": "Topic", "type": "string" },
+				{ "slug": "link", "label": "External Link", "type": "string" },
+				{ "slug": "excerpt", "label": "Excerpt", "type": "text" }
 			]
 		},
 		{
@@ -72,52 +87,8 @@
 			"labelSingular": "Page",
 			"supports": ["drafts", "revisions", "search"],
 			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				}
-			]
-		}
-	],
-
-	"taxonomies": [
-		{
-			"name": "category",
-			"label": "Categories",
-			"labelSingular": "Category",
-			"hierarchical": false,
-			"collections": ["projects"],
-			"terms": [
-				{ "slug": "compilers", "label": "Compilers" },
-				{ "slug": "campaign-tech", "label": "Campaign Tech" },
-				{ "slug": "open-source", "label": "Open Source" },
-				{ "slug": "infrastructure", "label": "Infrastructure" }
-			]
-		},
-		{
-			"name": "tag",
-			"label": "Tags",
-			"labelSingular": "Tag",
-			"hierarchical": false,
-			"collections": ["projects"],
-			"terms": [
-				{ "slug": "python", "label": "Python" },
-				{ "slug": "rust", "label": "Rust" },
-				{ "slug": "wasm", "label": "Wasm" },
-				{ "slug": "cloudflare", "label": "Cloudflare" },
-				{ "slug": "astro", "label": "Astro" },
-				{ "slug": "typescript", "label": "TypeScript" },
-				{ "slug": "django", "label": "Django" },
-				{ "slug": "wordpress", "label": "WordPress" }
+				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true }
 			]
 		}
 	],
@@ -157,7 +128,7 @@
 				}
 			}
 		],
-		"projects": [
+		"dev_projects": [
 			{
 				"id": "molt",
 				"slug": "molt",
@@ -166,49 +137,22 @@
 					"title": "Molt",
 					"year": "2026",
 					"summary": "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.",
-					"featured_image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=900&fit=crop",
-					"url": "https://github.com/adpena/molt",
+					"repo_url": "https://github.com/adpena/molt",
+					"stack": "Rust, Python, Wasm",
+					"language": "Rust",
+					"project_status": "Active",
 					"content": [
 						{
 							"_type": "block",
 							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Molt is an ahead-of-time compiler that takes Python source and emits WebAssembly. The goal is not to run arbitrary Python in the browser -- CPython already sort of does that via Pyodide, and it is enormous. Molt targets a narrower problem: take the Python you actually wrote, strip everything you did not use, and produce a small, fast Wasm module that can run on Cloudflare Workers or any other edge runtime."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "How it works" }]
+							"children": [{ "_type": "span", "text": "Molt is an ahead-of-time compiler that takes Python source and emits WebAssembly. The goal is not to run arbitrary Python in the browser -- Molt targets a narrower problem: take the Python you actually wrote, strip everything you did not use, and produce a small, fast Wasm module that can run on Cloudflare Workers or any other edge runtime." }]
 						},
 						{
 							"_type": "block",
 							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The compiler is written in Rust. It parses Python into an AST, runs type inference, then applies aggressive tree shaking and deforestation to eliminate dead code and intermediate data structures. The output is Wasm bytecode linked against libmolt, a small C ABI runtime that handles the parts of Python semantics you cannot reasonably compile away (exception handling, some dynamic dispatch). The result is a binary measured in kilobytes, not megabytes."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Molt is designed to pair with Monty, a Python sandbox interpreter. The intended workflow is: develop and test your code in Monty during development, where you get fast iteration and a familiar REPL, then AOT-compile with Molt for production. Same source, two runtimes -- one optimized for developer experience, the other for artifact size and execution speed."
-								}
-							]
+							"children": [{ "_type": "span", "text": "The compiler parses Python into an AST, runs type inference, then applies aggressive tree shaking and deforestation to eliminate dead code and intermediate data structures. The output is Wasm bytecode linked against libmolt, a small C ABI runtime. The result is a binary measured in kilobytes, not megabytes." }]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["compilers", "open-source", "infrastructure"],
-					"tag": ["python", "rust", "wasm", "cloudflare"]
 				}
 			},
 			{
@@ -219,49 +163,22 @@
 					"title": "Crafted Action Pages",
 					"year": "2026",
 					"summary": "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.",
-					"featured_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=900&fit=crop",
-					"url": "https://github.com/adpena/crafted",
+					"repo_url": "https://github.com/adpena/crafted",
+					"stack": "TypeScript, Astro, Cloudflare Workers, D1",
+					"language": "TypeScript",
+					"project_status": "Active",
 					"content": [
 						{
 							"_type": "block",
 							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Progressive campaigns need action pages -- donation forms, petition signatures, volunteer sign-ups -- and they need them fast. Most agencies in this space run WordPress or Django shops, and building compliant action pages from scratch every cycle is slow and error-prone. Crafted Action Pages is an emdash plugin that solves the deployment side: define a page in the CMS, and it renders at the edge on Cloudflare with the correct FEC and state-level disclaimer for the visitor's jurisdiction."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Compliance and personalization" }]
+							"children": [{ "_type": "span", "text": "Progressive campaigns need action pages -- donation forms, petition signatures, volunteer sign-ups -- and they need them fast. Crafted Action Pages is an emdash plugin that renders action pages at the edge on Cloudflare with the correct FEC and state-level disclaimer for the visitor's jurisdiction." }]
 						},
 						{
 							"_type": "block",
 							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The plugin ships with an open-source compliance dataset covering federal rules and 10 state-specific disclaimer requirements. The dataset is community-contributable -- if your state is missing, you can open a PR. On the fundraising side, donation asks are geo-personalized based on the visitor's location, and pages support Cloudflare-powered A/B testing out of the box. Spam protection uses Cloudflare Turnstile, and donation flows deep-link into ActBlue so campaigns keep their existing payment infrastructure."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The whole thing is built to fit into the world that agencies like Blueprint Interactive already operate in -- WordPress and Django backends, tight timelines, compliance requirements that vary by state. Action pages can be embedded as widgets on existing sites or deployed as standalone pages. The technical stack is TypeScript on Astro, running on Cloudflare's edge network."
-								}
-							]
+							"children": [{ "_type": "span", "text": "The plugin ships with an open-source compliance dataset covering federal rules and 10 state-specific disclaimer requirements. Donation asks are geo-personalized, pages support edge A/B testing, spam protection uses Cloudflare Turnstile, and donation flows deep-link into ActBlue." }]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["campaign-tech", "open-source"],
-					"tag": ["typescript", "cloudflare", "astro", "wordpress", "django"]
 				}
 			}
 		]

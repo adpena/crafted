@@ -1,64 +1,56 @@
 ---
 export const prerender = false;
 
-import { getEmDashCollection, getEntryTerms } from "emdash";
+import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 
-const { entries: projects, cacheHint } = await getEmDashCollection("projects");
+const sections = [
+	{ slug: "dev_projects", label: "Development" },
+	{ slug: "design_work", label: "Design" },
+	{ slug: "policy_work", label: "Policy" },
+	{ slug: "writing", label: "Writing" },
+];
 
-try { Astro.cache.set(cacheHint); } catch {}
-
-const projectsWithTags = await Promise.all(
-	projects.map(async (project) => {
-		const tags = await getEntryTerms("projects", project.data.id, "tag");
-		return { project, tags };
+const loaded = await Promise.all(
+	sections.map(async (section) => {
+		try {
+			const { entries, cacheHint } = await getEmDashCollection(section.slug);
+			return { ...section, entries, cacheHint };
+		} catch {
+			return { ...section, entries: [], cacheHint: null };
+		}
 	})
 );
 
-// Section definitions — order matters
-const sections = [
-	{ label: "Development", match: ["typescript", "python", "rust", "django", "wordpress", "astro", "wasm", "cloudflare"] },
-	{ label: "Design", match: ["design", "ui-ux", "identity", "art-direction"] },
-	{ label: "Policy", match: ["policy", "compliance", "campaign-tech"] },
-	{ label: "Writing", match: ["writing", "editorial"] },
-];
+const nonEmpty = loaded.filter((s) => s.entries.length > 0);
 
-type SectionedProject = { project: typeof projects[0]; tags: Awaited<ReturnType<typeof getEntryTerms>> };
-
-const placed = new Set<string>();
-const sectionedProjects: { label: string; items: SectionedProject[] }[] = [];
-
-for (const section of sections) {
-	const items = projectsWithTags.filter(({ project, tags }) => {
-		if (placed.has(project.data.id)) return false;
-		return tags.some((t) => section.match.includes(t.slug));
-	});
-	if (items.length > 0) {
-		items.forEach(({ project }) => placed.add(project.data.id));
-		sectionedProjects.push({ label: section.label, items });
-	}
-}
-
-// Catch any unplaced projects
-const unplaced = projectsWithTags.filter(({ project }) => !placed.has(project.data.id));
-if (unplaced.length > 0) {
-	sectionedProjects.push({ label: "Other", items: unplaced });
+for (const s of loaded) {
+	if (s.cacheHint) try { Astro.cache.set(s.cacheHint); } catch {}
 }
 ---
 
 <Base title="Work">
 	<main id="main-content" class="work-page">
-		{sectionedProjects.length > 0 ? (
-			sectionedProjects.map((section) => (
+		{nonEmpty.length > 0 ? (
+			nonEmpty.map((section) => (
 				<section class="work-section">
 					<h2 class="section-heading">{section.label}</h2>
 					<ul class="project-list" role="list">
-						{section.items.map(({ project, tags }) => (
+						{section.entries.map((entry) => (
 							<li>
-								<a href={`/work/${project.id}`} class="project-link">
-									<span class="project-name">{project.data.title}</span>
-									{project.data.summary && (
-										<span class="project-summary">{project.data.summary}</span>
+								<a href={`/work/${section.slug}/${entry.id}`} class="project-link">
+									<span class="project-name">{entry.data.title}</span>
+									{entry.data.summary && (
+										<span class="project-summary">{entry.data.summary}</span>
+									)}
+									{entry.data.stack && (
+										<span class="project-meta mono">{entry.data.stack}</span>
+									)}
+									{entry.data.publication && (
+										<span class="project-meta mono">{entry.data.publication}</span>
+									)}
+									{entry.data.medium && (
+										<span class="project-meta mono">{entry.data.medium}</span>
 									)}
 								</a>
 							</li>
@@ -67,7 +59,7 @@ if (unplaced.length > 0) {
 				</section>
 			))
 		) : (
-			<p class="empty">No projects yet.</p>
+			<p class="empty">No work yet.</p>
 		)}
 	</main>
 </Base>
@@ -126,6 +118,13 @@ if (unplaced.length > 0) {
 		color: var(--color-secondary);
 		line-height: 1.5;
 		margin-top: 0.15rem;
+	}
+
+	.project-meta {
+		display: block;
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		margin-top: 0.25rem;
 	}
 
 	.empty {

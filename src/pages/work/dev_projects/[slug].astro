@@ -1,0 +1,64 @@
+---
+import { getEmDashEntry } from "emdash";
+import { PortableText, Image } from "emdash/ui";
+import Base from "../../../layouts/Base.astro";
+import MetricsBanner from "../../../components/MetricsBanner.tsx";
+import ResizablePanel from "../../../components/ResizablePanel.tsx";
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
+
+const { entry, cacheHint } = await getEmDashEntry("dev_projects", slug);
+if (!entry) return Astro.redirect("/404");
+try { Astro.cache.set(cacheHint); } catch {}
+
+const d = entry.data;
+const FLAGSHIP = ["molt", "crafted-action-pages"];
+const isFlagship = FLAGSHIP.includes(slug);
+---
+
+<Base title={d.title}>
+	<main id="main-content" class="detail">
+		<nav class="crumb mono" aria-label="Breadcrumb">
+			<a href="/work">Work</a> <span aria-hidden="true">/</span> Development <span aria-hidden="true">/</span> {d.title}
+		</nav>
+
+		<h1>{d.title}</h1>
+		{d.summary && <p class="summary">{d.summary}</p>}
+
+		<dl class="meta mono">
+			{d.stack && <><dt>Stack</dt><dd>{d.stack}</dd></>}
+			{d.year && <><dt>Year</dt><dd>{d.year}</dd></>}
+			{d.status && <><dt>Status</dt><dd>{d.status}</dd></>}
+			{d.repo_url && <><dt>Repo</dt><dd><a href={d.repo_url} target="_blank" rel="noopener noreferrer">{d.repo_url.replace("https://github.com/", "")}</a></dd></>}
+			{d.live_url && <><dt>Demo</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">Live</a></dd></>}
+		</dl>
+
+		{d.featured_image && (
+			<div class="hero">
+				<Image image={d.featured_image} />
+			</div>
+		)}
+
+		<div class="body">
+			<PortableText value={d.content} />
+		</div>
+	</main>
+</Base>
+
+<style>
+	.detail { max-width: 42rem; margin: 0 auto; padding: var(--spacing-lg) 0 var(--spacing-2xl); }
+	.crumb { font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); }
+	.crumb a { color: var(--color-secondary); }
+	h1 { font-family: var(--font-serif); font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--spacing-xs); }
+	.summary { color: var(--color-secondary); font-size: var(--font-size-base); margin-bottom: var(--spacing-lg); }
+	.meta { display: grid; grid-template-columns: 6rem 1fr; gap: 0.25rem 1rem; font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: var(--spacing-sm) 0; }
+	.meta dt { font-weight: 600; color: var(--color-secondary); }
+	.meta dd { margin: 0; }
+	.meta a { color: var(--color-text); }
+	.hero { margin-bottom: var(--spacing-lg); }
+	.hero :global(img) { width: 100%; height: auto; }
+	.body { font-family: var(--font-serif); line-height: 1.8; }
+	.body :global(p) { margin-bottom: 1.25em; }
+	.body :global(h2) { font-size: var(--font-size-xl); font-weight: 700; margin-top: 2em; margin-bottom: 0.5em; }
+</style>
