@@ -68,7 +68,7 @@ const highlights = [
 								<a href={`/work/${section.slug}/${entry.id}`} class="compact-item">
 									<span class="compact-title">{entry.data.title}</span>
 									<span class="compact-tags">{tags}</span>
-									<span class="compact-year">{entry.data.year}</span>
+									<span class="compact-year">{entry.data.year ?? (entry.data.date ? new Date(entry.data.date).getFullYear() : "")}</span>
 								</a>
 								<div class="compact-reveal">
 									<div>
