@@ -1,15 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Disclaimer",
+  "schema_version": "0.2.0",
   "type": "object",
   "required": [
     "jurisdiction",
     "type",
+    "context",
     "required_text",
     "adapted_text",
     "statute_citation",
     "ai_disclosure_required",
     "ai_disclosure_text",
+    "ai_disclosure_statute",
+    "ai_disclosure_scope",
     "effective_date",
     "last_verified",
     "source_url"
@@ -24,9 +28,14 @@
       "type": "string",
       "enum": ["digital", "print", "broadcast", "sms", "email"]
     },
+    "context": {
+      "type": "string",
+      "enum": ["general", "candidate_authorized", "independent_expenditure", "pac"],
+      "description": "Disambiguates when a jurisdiction has different rules for different entity types"
+    },
     "required_text": {
       "type": "string",
-      "description": "Template with placeholders like {committee_name}, {treasurer_name}"
+      "description": "Template with placeholders: {committee_name}, {treasurer_name}, {address}, {candidate_name}, {office}, {party_affiliation}, {media_type}"
     },
     "adapted_text": {
       "type": ["string", "null"]
@@ -39,6 +48,14 @@
     },
     "ai_disclosure_text": {
       "type": ["string", "null"]
+    },
+    "ai_disclosure_statute": {
+      "type": ["string", "null"],
+      "description": "Separate citation for the AI disclosure statute when it differs from the main disclaimer statute"
+    },
+    "ai_disclosure_scope": {
+      "type": ["string", "null"],
+      "description": "Free text describing conditional triggers for the AI disclosure requirement"
     },
     "effective_date": {
       "type": "string",
