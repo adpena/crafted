@@ -43,8 +43,41 @@ export const POST: APIRoute = async ({ request }) => {
 
   switch (body.tool) {
     case "get_code": {
-      const res = await fetch(new URL("/molt-demo/mandelbrot.py", request.url));
-      const code = await res.text();
+      // Return the default Mandelbrot source inline (can't self-fetch on Workers)
+      const code = `# Mandelbrot set renderer — compiled by Molt to WebAssembly
+WIDTH: int = 640
+HEIGHT: int = 400
+MAX_ITER: int = 100
+CENTER_X: float = -0.7453
+CENTER_Y: float = 0.1127
+ZOOM: float = 1.0
+
+def render() -> None:
+    scale: float = 3.0 / (ZOOM * WIDTH)
+    y: int = 0
+    while y < HEIGHT:
+        x: int = 0
+        while x < WIDTH:
+            cr: float = CENTER_X + (x - WIDTH / 2) * scale
+            ci: float = CENTER_Y + (y - HEIGHT / 2) * scale
+            zr: float = 0.0
+            zi: float = 0.0
+            i: int = 0
+            while i < MAX_ITER:
+                tr: float = zr * zr - zi * zi + cr
+                zi = 2.0 * zr * zi + ci
+                zr = tr
+                if zr * zr + zi * zi > 4.0:
+                    break
+                i = i + 1
+            print(i)
+            x = x + 1
+        y = y + 1
+
+def main() -> None:
+    render()
+
+main()`;
       return new Response(JSON.stringify({ data: { code } }), {
         headers: { "Content-Type": "application/json" },
       });
