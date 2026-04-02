@@ -43,10 +43,15 @@ const { title, summary, href } = Astro.props;
 	.featured-title a {
 		text-decoration: none;
 		color: var(--color-text);
+		text-decoration-line: underline;
+		text-decoration-color: transparent;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+		transition: text-decoration-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.featured-title a:hover {
-		text-decoration: underline;
+		text-decoration-color: var(--color-text);
 	}
 
 	.featured-summary {
@@ -62,7 +67,7 @@ const { title, summary, href } = Astro.props;
 		font-size: var(--font-size-sm);
 		color: var(--color-secondary);
 		text-decoration: none;
-		transition: color 150ms ease;
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.featured-link:hover {

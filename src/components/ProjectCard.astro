@@ -32,10 +32,15 @@ const { title, summary, href } = Astro.props;
 	.card-title a {
 		text-decoration: none;
 		color: var(--color-text);
+		text-decoration-line: underline;
+		text-decoration-color: transparent;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
+		transition: text-decoration-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.card-title a:hover {
-		text-decoration: underline;
+		text-decoration-color: var(--color-text);
 	}
 
 	.card-summary {

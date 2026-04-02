@@ -61,6 +61,11 @@ function isActive(href: string): boolean {
 		text-decoration: none;
 		color: var(--color-text);
 		line-height: 1.1;
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.masthead-title:hover {
+		color: var(--color-secondary);
 	}
 
 	.masthead-tagline {
@@ -85,19 +90,21 @@ function isActive(href: string): boolean {
 		font-size: var(--font-size-sm);
 		text-decoration: none;
 		color: var(--color-secondary);
-		transition: color 150ms ease;
-	}
-
-	.masthead-nav-link:hover,
-	.masthead-nav-link.active {
-		color: var(--color-text);
-	}
-
-	.masthead-nav-link.active {
-		color: var(--color-text);
-		text-decoration: underline;
+		text-decoration-line: underline;
+		text-decoration-color: transparent;
 		text-decoration-thickness: 2px;
 		text-underline-offset: 4px;
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.masthead-nav-link:hover {
+		color: var(--color-text);
+		text-decoration-color: var(--color-border);
+	}
+
+	.masthead-nav-link.active {
+		color: var(--color-text);
+		text-decoration-color: var(--color-text);
 	}
 
 	@media (max-width: 640px) {

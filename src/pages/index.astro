@@ -27,8 +27,9 @@ const sorted = allEntries.toSorted((a, b) => {
 	return dateB - dateA;
 });
 
-const featured = sorted[0];
-const latest = sorted.slice(1);
+const moltEntry = sorted.find((e) => e.id === "molt");
+const featured = moltEntry ?? sorted[0];
+const latest = sorted.filter((e) => e !== featured);
 ---
 
 <Base>
@@ -123,6 +124,11 @@ const latest = sorted.slice(1);
 		font-family: var(--font-mono);
 		font-size: var(--font-size-sm);
 		color: var(--color-secondary);
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.empty-link:hover {
+		color: var(--color-text);
 	}
 
 	@media (max-width: 768px) {

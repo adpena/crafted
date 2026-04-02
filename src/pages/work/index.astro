@@ -64,9 +64,11 @@ const highlights = [
 									<span class="compact-year">{entry.data.year}</span>
 								</a>
 								<div class="compact-reveal">
-									{entry.data.summary && <p>{entry.data.summary}</p>}
-									{entry.data.stack && <span class="compact-meta">{entry.data.stack}</span>}
-									{entry.data.publication && <span class="compact-meta">{entry.data.publication}</span>}
+									<div>
+										{entry.data.summary && <p>{entry.data.summary}</p>}
+										{entry.data.stack && <span class="compact-meta">{entry.data.stack}</span>}
+										{entry.data.publication && <span class="compact-meta">{entry.data.publication}</span>}
+									</div>
 								</div>
 							</li>
 						))}
@@ -102,7 +104,7 @@ const highlights = [
 	}
 
 	.work-section {
-		margin-bottom: var(--spacing-lg);
+		margin-bottom: var(--spacing-2xl);
 	}
 
 	/* Compact list: title + year on one line, summary reveals on hover */
@@ -116,6 +118,17 @@ const highlights = [
 		border-bottom: 1px solid var(--color-border);
 	}
 
+	.compact-list li {
+		border-left: 2px solid transparent;
+		padding-left: var(--spacing-sm);
+		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.compact-list li:hover,
+	.compact-list li:focus-within {
+		border-left-color: var(--color-text);
+	}
+
 	.compact-item {
 		display: flex;
 		justify-content: space-between;
@@ -124,6 +137,11 @@ const highlights = [
 		text-decoration: none;
 		color: inherit;
 		gap: var(--spacing-md);
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.compact-item:hover {
+		color: var(--color-text);
 	}
 
 	.compact-title {
@@ -139,16 +157,19 @@ const highlights = [
 	}
 
 	.compact-reveal {
-		max-height: 0;
-		overflow: hidden;
-		transition: max-height 200ms ease, padding 200ms ease;
-		padding: 0;
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 250ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.compact-list li:hover .compact-reveal,
 	.compact-list li:focus-within .compact-reveal {
-		max-height: 6rem;
-		padding: 0 0 0.5rem;
+		grid-template-rows: 1fr;
+		transition-delay: 80ms;
+	}
+
+	.compact-reveal > * {
+		overflow: hidden;
 	}
 
 	.compact-reveal p {
@@ -156,6 +177,7 @@ const highlights = [
 		color: var(--color-secondary);
 		line-height: 1.4;
 		margin: 0;
+		padding-bottom: 0.5rem;
 	}
 
 	.compact-meta {
@@ -184,12 +206,12 @@ const highlights = [
 		text-decoration: none;
 		color: inherit;
 		border-left: 2px solid var(--color-border);
-		transition: border-color 150ms ease;
+		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.highlight:hover {
 		border-left-color: var(--color-text);
-		opacity: 1;
+		transform: translateX(2px);
 	}
 
 	.highlight-tag {
@@ -246,12 +268,16 @@ const highlights = [
 
 		.highlight:hover {
 			border-top-color: var(--color-text);
+			transform: none;
 		}
 
 		/* On mobile, always show summaries */
 		.compact-reveal {
-			max-height: none;
-			padding: 0 0 0.5rem;
+			grid-template-rows: 1fr;
+		}
+
+		.compact-list li {
+			border-left-color: transparent;
 		}
 	}
 </style>
