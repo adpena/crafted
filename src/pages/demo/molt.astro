@@ -169,15 +169,15 @@
       line-height: 1.6;
     }
 
-    /* Embed mode: canvas only, fills the entire iframe */
+    /* Embed mode: canvas dominant, collapsed code below */
     .embed header,
     .embed .status,
-    .embed .pane-left {
+    .embed .pane-header {
       display: none !important;
     }
 
     .embed .demo-layout {
-      grid-template-columns: 1fr !important;
+      grid-template-rows: 3fr 1fr !important;
     }
 
     .embed .canvas-wrap {
@@ -190,8 +190,20 @@
       object-fit: cover;
     }
 
-    .embed body {
+    .embed .code-wrap {
       overflow: hidden;
+    }
+
+    .embed textarea {
+      font-size: 0.6rem;
+      line-height: 1.4;
+      padding: 0.5rem;
+    }
+
+    .embed .line-numbers {
+      font-size: 0.6rem;
+      line-height: 1.4;
+      padding: 0.5rem 0.3rem;
     }
 
     @media (max-width: 768px) {
@@ -274,11 +286,11 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // Size canvas to match its actual display size — no scaling artifacts
-    const container = document.getElementById('canvas-wrap');
-    const rect = container.getBoundingClientRect();
-    const W = Math.round(rect.width) || 640;
-    const H = Math.round(rect.height) || 400;
+    // Render at fixed resolution for consistent 60fps.
+    // Browser CSS scales to fill — bilinear filtering keeps it smooth.
+    // 480×320 = 153K pixels — fast enough for fluid animation.
+    const W = 480;
+    const H = 320;
     canvas.width = W;
     canvas.height = H;
 
