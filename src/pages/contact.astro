@@ -1,7 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
 
-// Handle form submission
 let formStatus: "idle" | "success" | "error" = "idle";
 let formMessage = "";
 
@@ -12,7 +11,6 @@ if (Astro.request.method === "POST") {
 		const email = formData.get("email")?.toString() || "";
 		const message = formData.get("message")?.toString() || "";
 
-		// Basic validation
 		if (!name || !email || !message) {
 			formStatus = "error";
 			formMessage = "Please fill in all fields.";
@@ -20,12 +18,9 @@ if (Astro.request.method === "POST") {
 			formStatus = "error";
 			formMessage = "Please enter a valid email address.";
 		} else {
-			// In a real implementation, you would send this to an email service,
-			// save to database, or forward to a webhook.
-			// For this template, we just show a success message.
 			console.log("Contact form submission:", { name, email, message });
 			formStatus = "success";
-			formMessage = "Thanks for reaching out! We'll get back to you soon.";
+			formMessage = "Message sent. I'll be in touch.";
 		}
 	} catch {
 		formStatus = "error";
@@ -34,137 +29,47 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Base title="Contact" description="Get in touch with us about your next project.">
+<Base title="Contact">
 	<main id="main-content" class="contact-page">
-		<header class="contact-header">
-			<h1 class="contact-title">Get in Touch</h1>
-			<p class="contact-intro">
-				Have a project in mind? We'd love to hear about it. Fill out the form below
-				and we'll get back to you within 24 hours.
-			</p>
-		</header>
-
-		<div class="contact-grid">
-			<div class="contact-form-wrapper">
-				{formStatus === "success" ? (
-					<div class="form-success" role="status">
-						<h2>Message Sent</h2>
-						<p>{formMessage}</p>
-						<a href="/contact" class="form-reset">Send another message</a>
-					</div>
-				) : (
-					<form method="POST" class="contact-form" novalidate>
-						{formStatus === "error" && (
-							<div class="form-error" role="alert" id="form-error-message">
-								<p>{formMessage}</p>
-							</div>
-						)}
-
-						<div class="form-field">
-							<label for="name">Name <span aria-hidden="true">*</span></label>
-							<input
-								type="text"
-								id="name"
-								name="name"
-								required
-								aria-required="true"
-								placeholder="Your name"
-								autocomplete="name"
-								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
-							/>
-						</div>
-
-						<div class="form-field">
-							<label for="email">Email <span aria-hidden="true">*</span></label>
-							<input
-								type="email"
-								id="email"
-								name="email"
-								required
-								aria-required="true"
-								placeholder="you@example.com"
-								autocomplete="email"
-								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
-							/>
-						</div>
-
-						<div class="form-field">
-							<label for="message">Message <span aria-hidden="true">*</span></label>
-							<textarea
-								id="message"
-								name="message"
-								required
-								aria-required="true"
-								rows="6"
-								placeholder="Tell us about your project..."
-								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
-							></textarea>
-						</div>
-
-						<button type="submit" class="form-submit">
-							Send Message
-						</button>
-					</form>
-				)}
+		{formStatus === "success" ? (
+			<div class="success" role="status">
+				<p>{formMessage}</p>
+				<a href="/contact">Send another</a>
 			</div>
+		) : (
+			<form method="POST" class="contact-form" novalidate>
+				{formStatus === "error" && (
+					<div class="form-error" role="alert">
+						<p>{formMessage}</p>
+					</div>
+				)}
 
-			<aside class="contact-info" aria-label="Contact information">
-				<div class="info-section">
-					<h2>Email</h2>
-					<p>
-						<a href="mailto:hello@studio.example">hello@studio.example</a>
-					</p>
+				<div class="field">
+					<label for="name">Name</label>
+					<input type="text" id="name" name="name" required aria-required="true" autocomplete="name" />
 				</div>
 
-				<div class="info-section">
-					<h2>Location</h2>
-					<p>San Francisco, CA</p>
+				<div class="field">
+					<label for="email">Email</label>
+					<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" />
 				</div>
 
-				<div class="info-section">
-					<h2>Social</h2>
-					<ul class="social-links">
-						<li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a></li>
-						<li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-						<li><a href="https://dribbble.com" target="_blank" rel="noopener noreferrer">Dribbble</a></li>
-						<li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-					</ul>
+				<div class="field">
+					<label for="message">Message</label>
+					<textarea id="message" name="message" required aria-required="true" rows="5"></textarea>
 				</div>
-			</aside>
-		</div>
+
+				<button type="submit">Send</button>
+			</form>
+		)}
 	</main>
 </Base>
 
 <style>
 	.contact-page {
-		max-width: var(--wide-width);
+		max-width: 32rem;
 		margin: 0 auto;
-		padding: var(--spacing-2xl) var(--spacing-lg) var(--spacing-4xl);
-	}
-
-	.contact-header {
-		max-width: var(--max-width);
-		margin-bottom: var(--spacing-3xl);
-	}
-
-	.contact-title {
-		font-family: var(--font-serif);
-		font-size: var(--font-size-4xl);
-		font-weight: 500;
-		line-height: 1.1;
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.contact-intro {
-		font-size: var(--font-size-lg);
-		color: var(--color-muted);
-		line-height: 1.6;
-	}
-
-	.contact-grid {
-		display: grid;
-		grid-template-columns: 2fr 1fr;
-		gap: var(--spacing-4xl);
+		padding: var(--spacing-xl) 0 var(--spacing-3xl);
 	}
 
 	.contact-form {
@@ -173,191 +78,81 @@ if (Astro.request.method === "POST") {
 		gap: var(--spacing-lg);
 	}
 
-	.form-field {
+	.field {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-sm);
+		gap: var(--spacing-xs);
 	}
 
-	.form-field label {
-		font-size: var(--font-size-sm);
-		font-weight: 500;
+	.field label {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
 	}
 
-	.form-field input,
-	.form-field textarea {
-		padding: var(--spacing-md);
-		font-family: inherit;
+	.field input,
+	.field textarea {
+		padding: var(--spacing-sm) var(--spacing-md);
+		font-family: var(--font-serif);
 		font-size: var(--font-size-base);
 		color: var(--color-text);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		transition:
-			border-color var(--transition-fast),
-			box-shadow var(--transition-fast);
-	}
-
-	.form-field input:focus-visible,
-	.form-field textarea:focus-visible {
-		outline: 2px solid var(--color-text);
-		outline-offset: 2px;
-		border-color: var(--color-text);
-	}
-
-	.form-field input::placeholder,
-	.form-field textarea::placeholder {
-		color: var(--color-muted);
-	}
-
-	.form-field textarea {
-		resize: vertical;
-		min-height: 150px;
-	}
-
-	.form-submit {
-		align-self: flex-start;
-		padding: var(--spacing-md) var(--spacing-xl);
-		font-family: inherit;
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		color: var(--color-bg);
-		background: var(--color-text);
+		background: transparent;
 		border: none;
-		border-radius: var(--radius);
+		border-bottom: 1px solid var(--color-border);
+		transition: border-color 150ms ease;
+	}
+
+	.field input:focus,
+	.field textarea:focus {
+		outline: none;
+		border-bottom-color: var(--color-text);
+	}
+
+	.field textarea {
+		resize: vertical;
+		min-height: 8rem;
+	}
+
+	button[type="submit"] {
+		align-self: flex-start;
+		padding: var(--spacing-sm) var(--spacing-xl);
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		color: var(--color-text);
+		background: transparent;
+		border: 1px solid var(--color-text);
 		cursor: pointer;
-		transition:
-			background var(--transition-fast),
-			transform var(--transition-fast);
+		transition: background 150ms ease, color 150ms ease;
 	}
 
-	.form-submit:hover {
-		background: var(--color-accent);
-		color: white;
-		transform: translateY(-1px);
-	}
-
-	.form-submit:active {
-		transform: translateY(0);
+	button[type="submit"]:hover {
+		background: var(--color-text);
+		color: var(--color-bg);
 	}
 
 	.form-error {
-		padding: var(--spacing-md);
-		background: #fef2f2;
-		border: 1px solid #fecaca;
-		border-radius: var(--radius);
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-left: 2px solid #dc2626;
 		color: #dc2626;
 		font-size: var(--font-size-sm);
 	}
 
-	@media (prefers-color-scheme: dark) {
-		.form-error {
-			background: rgba(239, 68, 68, 0.1);
-			border-color: rgba(239, 68, 68, 0.3);
-			color: #f87171;
-		}
-	}
-
-	.form-success {
-		padding: var(--spacing-2xl);
-		background: var(--color-surface);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
+	.success {
 		text-align: center;
+		padding: var(--spacing-3xl) 0;
 	}
 
-	.form-success h2 {
-		font-family: var(--font-serif);
-		font-size: var(--font-size-xl);
-		font-weight: 500;
-		margin-bottom: var(--spacing-sm);
-	}
-
-	.form-success p {
-		color: var(--color-muted);
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.form-reset {
-		font-size: var(--font-size-sm);
-		color: var(--color-accent);
-		text-decoration: none;
-	}
-
-	.form-reset:hover {
-		text-decoration: underline;
-	}
-
-	.contact-info {
-		position: sticky;
-		top: var(--spacing-xl);
-		align-self: start;
-	}
-
-	.info-section {
-		margin-bottom: var(--spacing-2xl);
-	}
-
-	.info-section h2 {
+	.success p {
 		font-family: var(--font-serif);
 		font-size: var(--font-size-lg);
-		font-weight: 500;
-		margin-bottom: var(--spacing-sm);
+		margin-bottom: var(--spacing-md);
 	}
 
-	.info-section p,
-	.info-section a {
+	.success a {
+		font-family: var(--font-mono);
 		font-size: var(--font-size-sm);
-		color: var(--color-muted);
-	}
-
-	.info-section a {
-		text-decoration: none;
-		transition: color var(--transition-fast);
-	}
-
-	.info-section a:hover {
-		color: var(--color-text);
-	}
-
-	.social-links {
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-sm);
-	}
-
-	.social-links a {
-		color: var(--color-muted);
-	}
-
-	@media (max-width: 768px) {
-		.contact-grid {
-			grid-template-columns: 1fr;
-			gap: var(--spacing-2xl);
-		}
-
-		.contact-title {
-			font-size: var(--font-size-3xl);
-		}
-
-		.contact-info {
-			position: static;
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: var(--spacing-xl);
-			padding-top: var(--spacing-xl);
-			border-top: 1px solid var(--color-border);
-		}
-
-		.info-section {
-			margin-bottom: 0;
-		}
-	}
-
-	@media (max-width: 480px) {
-		.contact-info {
-			grid-template-columns: 1fr;
-		}
+		color: var(--color-secondary);
 	}
 </style>
