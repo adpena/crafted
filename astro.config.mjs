@@ -1,13 +1,22 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
-import { d1, r2, sandbox } from "@emdash-cms/cloudflare";
+import { d1, r2 } from "@emdash-cms/cloudflare";
 import { defineConfig } from "astro/config";
+import { fileURLToPath } from "node:url";
 import emdash from "emdash/astro";
 import { actionPages } from "./plugin/src/index.ts";
 
 export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
+	vite: {
+		resolve: {
+			alias: {
+				"@crafted/action-pages/sandbox": fileURLToPath(new URL("./plugin/src/sandbox-entry.ts", import.meta.url)),
+				"@crafted/action-pages": fileURLToPath(new URL("./plugin/src/index.ts", import.meta.url)),
+			},
+		},
+	},
 	image: {
 		layout: "constrained",
 		responsiveStyles: true,
@@ -17,7 +26,7 @@ export default defineConfig({
 		emdash({
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),
-			sandboxRunner: sandbox(),
+			// Switch to sandboxed: [actionPages()] for Worker isolate sandboxing (requires Workers Paid)
 			plugins: [actionPages()],
 		}),
 	],

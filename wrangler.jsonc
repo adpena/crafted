@@ -31,9 +31,6 @@
 	"observability": {
 		"enabled": true,
 	},
-	"worker_loaders": [
-		{
-			"binding": "LOADER",
-		},
-	],
+	// Uncomment for sandboxed plugin execution (requires Workers Paid $5/mo):
+	// "worker_loaders": [{ "binding": "LOADER" }],
 }
