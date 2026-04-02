@@ -36,37 +36,54 @@ if (Astro.request.method === "POST") {
 
 <Base title="Contact">
 	<main id="main-content" class="contact-page">
-		{formStatus === "success" ? (
-			<div class="contact-success">
-				<p>{formMessage}</p>
-				<a href="/contact" class="btn">Send another</a>
-			</div>
-		) : (
-			<form method="POST" novalidate class="contact-form">
-				{formStatus === "error" && (
-					<div role="alert" class="form-error">
-						{formMessage}
+		<div class="contact-layout">
+			<div class="contact-main">
+				{formStatus === "success" ? (
+					<div class="contact-success">
+						<p>{formMessage}</p>
+						<a href="/contact" class="btn">Send another</a>
 					</div>
+				) : (
+					<form method="POST" novalidate class="contact-form">
+						{formStatus === "error" && (
+							<div role="alert" class="form-error">
+								{formMessage}
+							</div>
+						)}
+
+						<div class="form-field">
+							<label for="name">Name</label>
+							<input type="text" id="name" name="name" required aria-required="true" autocomplete="name" />
+						</div>
+
+						<div class="form-field">
+							<label for="email">Email</label>
+							<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" />
+						</div>
+
+						<div class="form-field">
+							<label for="message">Message</label>
+							<textarea id="message" name="message" required aria-required="true" rows="8"></textarea>
+						</div>
+
+						<button type="submit" class="btn">Send</button>
+					</form>
 				)}
+			</div>
 
-				<div class="form-field">
-					<label for="name">Name</label>
-					<input type="text" id="name" name="name" required aria-required="true" autocomplete="name" />
+			<aside class="contact-aside">
+				<div class="aside-section">
+					<h2 class="section-label">Direct</h2>
+					<a href="mailto:adpena@gmail.com" class="aside-link">adpena@gmail.com</a>
 				</div>
-
-				<div class="form-field">
-					<label for="email">Email</label>
-					<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" />
+				<div class="aside-section">
+					<h2 class="section-label">Elsewhere</h2>
+					<a href="https://github.com/adpena" class="aside-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+					<a href="https://twitter.com/adpenatx" class="aside-link" target="_blank" rel="noopener noreferrer">Twitter</a>
+					<a href="https://linkedin.com/in/adpena" class="aside-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
 				</div>
-
-				<div class="form-field">
-					<label for="message">Message</label>
-					<textarea id="message" name="message" required aria-required="true" rows="5"></textarea>
-				</div>
-
-				<button type="submit" class="btn">Send</button>
-			</form>
-		)}
+			</aside>
+		</div>
 	</main>
 </Base>
 
@@ -77,11 +94,17 @@ if (Astro.request.method === "POST") {
 		padding: var(--spacing-xl) var(--content-padding) var(--spacing-2xl);
 	}
 
+	.contact-layout {
+		display: grid;
+		grid-template-columns: 1fr 14rem;
+		gap: var(--spacing-2xl);
+		align-items: start;
+	}
+
 	.contact-form {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: var(--spacing-md) var(--spacing-lg);
-		margin-top: var(--spacing-lg);
 	}
 
 	.contact-form .form-field:last-of-type {
@@ -102,17 +125,48 @@ if (Astro.request.method === "POST") {
 		font-size: var(--font-size-sm);
 	}
 
-	.contact-success {
-		margin-top: var(--spacing-lg);
+	.contact-aside {
+		position: sticky;
+		top: var(--spacing-lg);
+	}
+
+	.aside-section {
+		margin-bottom: var(--spacing-lg);
+	}
+
+	.aside-link {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		text-decoration: none;
+		line-height: 1.8;
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.aside-link:hover {
+		color: var(--color-text);
 	}
 
 	.contact-success .btn {
 		margin-top: var(--spacing-md);
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 768px) {
+		.contact-layout {
+			grid-template-columns: 1fr;
+		}
+
 		.contact-form {
 			grid-template-columns: 1fr;
+		}
+
+		.contact-aside {
+			position: static;
+			display: flex;
+			gap: var(--spacing-xl);
+			padding-top: var(--spacing-lg);
+			border-top: 1px solid var(--color-border);
 		}
 	}
 </style>
