@@ -76,7 +76,7 @@ function isPlausibleSecret(value: string | undefined): value is string {
 }
 
 function isValidEmail(value: string): boolean {
-  return EMAIL_RE.test(value) && value.length <= 254 && !value.includes("\n");
+  return EMAIL_RE.test(value) && value.length <= 254 && !/[\r\n]/.test(value);
 }
 
 function sanitizeText(text: string): string {
@@ -102,6 +102,27 @@ function coerce(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
+async function readErrorBody(res: Response): Promise<string> {
+  try {
+    const text = await res.text();
+    return text.slice(0, 200);
+  } catch {
+    return "(unreadable)";
+  }
+}
+
+function validateUrl(url: string, label: string): void {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") {
+      throw new Error(`${label} must use HTTPS`);
+    }
+  } catch (e) {
+    if (e instanceof Error && e.message.includes("HTTPS")) throw e;
+    throw new Error(`${label} is not a valid URL`);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Adapter interface
 // ---------------------------------------------------------------------------
@@ -109,7 +130,7 @@ function coerce(value: unknown): string {
 interface Adapter {
   name: string;
   isConfigured: (env: NotifyEnv) => boolean;
-  send: (env: NotifyEnv, sub: Submission) => Promise<void>;
+  send: (env: NotifyEnv, sub: Submission, signal: AbortSignal) => Promise<void>;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,16 +143,15 @@ const resend: Adapter = {
     isPlausibleSecret(env.RESEND_API_KEY) &&
     isNonEmpty(env.RESEND_FROM_EMAIL) &&
     isNonEmpty(env.RESEND_TO_EMAIL),
-  async send(env, sub) {
+  async send(env, sub, signal) {
     const name = sanitizeText(sub.name);
     const email = coerce(sub.email);
-    const message = sanitizeText(sub.message);
 
     if (!isValidEmail(email)) {
       throw new Error("invalid reply_to email");
     }
 
-    const body = truncate(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    const body = truncate(`Name: ${name}\nEmail: ${email}\n\n${sanitizeText(sub.message)}`);
 
     if (env.DRY_RUN) {
       console.info("[DRY_RUN] Resend:", { to: env.RESEND_TO_EMAIL, body });
@@ -140,6 +160,7 @@ const resend: Adapter = {
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${env.RESEND_API_KEY}`,
         "Content-Type": "application/json",
@@ -154,7 +175,7 @@ const resend: Adapter = {
     });
 
     if (!res.ok) {
-      throw new Error(`${res.status}: ${await res.text()}`);
+      throw new Error(`${res.status}: ${await readErrorBody(res)}`);
     }
   },
 };
@@ -162,7 +183,7 @@ const resend: Adapter = {
 const discord: Adapter = {
   name: "Discord",
   isConfigured: (env) => isPlausibleSecret(env.DISCORD_WEBHOOK_URL),
-  async send(env, sub) {
+  async send(env, sub, signal) {
     const content = truncate(
       `New contact\nFrom: ${sanitizeText(sub.name)} (${sanitizeText(sub.email)})\n\n${sanitizeText(sub.message)}`,
     );
@@ -174,12 +195,13 @@ const discord: Adapter = {
 
     const res = await fetch(env.DISCORD_WEBHOOK_URL!, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
     });
 
     if (!res.ok) {
-      throw new Error(`${res.status}: ${await res.text()}`);
+      throw new Error(`${res.status}: ${await readErrorBody(res)}`);
     }
   },
 };
@@ -187,7 +209,7 @@ const discord: Adapter = {
 const slack: Adapter = {
   name: "Slack",
   isConfigured: (env) => isPlausibleSecret(env.SLACK_WEBHOOK_URL),
-  async send(env, sub) {
+  async send(env, sub, signal) {
     const text = truncate(
       `New contact\nFrom: ${sanitizeText(sub.name)} (${sanitizeText(sub.email)})\n\n${sanitizeText(sub.message)}`,
     );
@@ -199,12 +221,13 @@ const slack: Adapter = {
 
     const res = await fetch(env.SLACK_WEBHOOK_URL!, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     });
 
     if (!res.ok) {
-      throw new Error(`${res.status}: ${await res.text()}`);
+      throw new Error(`${res.status}: ${await readErrorBody(res)}`);
     }
   },
 };
@@ -213,7 +236,7 @@ const telegram: Adapter = {
   name: "Telegram",
   isConfigured: (env) =>
     isPlausibleSecret(env.TELEGRAM_BOT_TOKEN) && isNonEmpty(env.TELEGRAM_CHAT_ID),
-  async send(env, sub) {
+  async send(env, sub, signal) {
     const text = truncate(
       `New contact\n\nFrom: ${escapeHtml(sub.name)} (${escapeHtml(sub.email)})\n\n${escapeHtml(sub.message)}`,
     );
@@ -227,13 +250,14 @@ const telegram: Adapter = {
       `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
         method: "POST",
+        signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text, parse_mode: "HTML" }),
       },
     );
 
     if (!res.ok) {
-      throw new Error(`${res.status}: ${await res.text()}`);
+      throw new Error(`${res.status}: ${await readErrorBody(res)}`);
     }
   },
 };
@@ -244,8 +268,10 @@ const whatsapp: Adapter = {
     isPlausibleSecret(env.WHATSAPP_API_TOKEN) &&
     isNonEmpty(env.WHATSAPP_PHONE_ID) &&
     isNonEmpty(env.WHATSAPP_TO),
-  async send(env, sub) {
+  async send(env, sub, signal) {
     const apiUrl = env.WHATSAPP_API_URL || DEFAULT_WHATSAPP_API_URL;
+    validateUrl(apiUrl, "WHATSAPP_API_URL");
+
     const body = truncate(
       `New contact: ${sanitizeText(sub.name)} (${sanitizeText(sub.email)})\n\n${sanitizeText(sub.message)}`,
     );
@@ -257,6 +283,7 @@ const whatsapp: Adapter = {
 
     const res = await fetch(`${apiUrl}/${env.WHATSAPP_PHONE_ID}/messages`, {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${env.WHATSAPP_API_TOKEN}`,
         "Content-Type": "application/json",
@@ -270,7 +297,7 @@ const whatsapp: Adapter = {
     });
 
     if (!res.ok) {
-      throw new Error(`${res.status}: ${await res.text()}`);
+      throw new Error(`${res.status}: ${await readErrorBody(res)}`);
     }
   },
 };
@@ -302,6 +329,7 @@ export async function notifyAll(env: NotifyEnv, sub: Submission): Promise<Notify
   };
 
   if (!safeSub.name || !safeSub.email || !safeSub.message) {
+    console.warn("[notify] skipped: empty name, email, or message");
     return result;
   }
 
@@ -312,18 +340,18 @@ export async function notifyAll(env: NotifyEnv, sub: Submission): Promise<Notify
         return;
       }
 
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ADAPTER_TIMEOUT_MS);
+
       try {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), ADAPTER_TIMEOUT_MS);
-        try {
-          await adapter.send(env, safeSub);
-          result.sent.push(adapter.name);
-        } finally {
-          clearTimeout(timer);
-        }
+        await adapter.send(env, safeSub, controller.signal);
+        result.sent.push(adapter.name);
       } catch (err) {
         result.failed.push(adapter.name);
-        console.error(`[notify] ${adapter.name} failed:`, err instanceof Error ? err.message : err);
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(`[notify] ${adapter.name} failed: ${msg}`);
+      } finally {
+        clearTimeout(timer);
       }
     }),
   );
