@@ -1,65 +1,52 @@
-# EmDash Portfolio Template (Cloudflare)
+# Crafted
 
-A visual portfolio for showcasing creative work, built with [EmDash](https://github.com/emdash-cms/emdash) and deployed on Cloudflare Workers with D1 and R2. Project pages with tag filtering, case study layouts, and an RSS feed for new work.
+> Early alpha. Expect rough edges.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/emdash-cms/templates/tree/main/portfolio-cloudflare)
+A personal portfolio and campaign action page engine, built on [emdash](https://github.com/emdash-cms/emdash) CMS and deployed to Cloudflare.
 
-![Portfolio template work page](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/portfolio/latest/work-light-desktop.jpg)
+## What this is
 
-## What's Included
+**The portfolio** is a newspaper-style editorial site running on Astro 6 + Cloudflare Workers. Content is managed through emdash's admin UI and MCP server.
 
-- Project grid with hover effects
-- Tag-based filtering on the work page
-- Individual project pages with galleries
-- About and contact pages
-- RSS feed for new projects
-- SEO metadata and JSON-LD
-- Dark/light mode
+**The plugin** is an emdash plugin that creates rapid-deploy campaign action pages. It handles FEC and state disclaimer auto-generation, geo-personalized donation asks, ActBlue deep-linking, A/B testing at the edge, and Turnstile bot protection. Action pages are embeddable anywhere via a single `<script>` tag.
 
-## Pages
+**The compliance dataset** is an open-source collection of political advertising disclaimer rules for FEC federal regulations and 10 US states. JSON format, versioned, community-contributable.
 
-| Page | Route |
-|---|---|
-| Homepage | `/` |
-| Work listing | `/work` |
-| Single project | `/work/:slug` |
-| About | `/about` |
-| Contact | `/contact` |
-| RSS | `/rss.xml` |
-| 404 | fallback |
+## Quick start
 
-## Screenshots
-
-| | Desktop | Mobile |
-|---|---|---|
-| Light | ![work light desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/portfolio/latest/work-light-desktop.jpg) | ![work light mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/portfolio/latest/work-light-mobile.jpg) |
-| Dark | ![work dark desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/portfolio/latest/work-dark-desktop.jpg) | ![work dark mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/portfolio/latest/work-dark-mobile.jpg) |
-
-## Infrastructure
-
-- **Runtime:** Cloudflare Workers
-- **Database:** D1
-- **Storage:** R2
-- **Framework:** Astro with `@astrojs/cloudflare`
-
-## Local Development
-
-```bash
-pnpm install
-pnpm bootstrap
-pnpm dev
+```
+git clone https://github.com/adpena/crafted.git
+cd crafted
+npm install
+npm run bootstrap
+npm run dev
 ```
 
-## Deploying
+Visit `http://localhost:4321` for the site, `http://localhost:4321/_emdash/admin` for the CMS.
 
-```bash
-pnpm deploy
+## Embed an action page
+
+```html
+<script src="https://your-site.com/plugin/embed.js"
+        data-page="donate-now"
+        data-theme="light">
+</script>
 ```
 
-Or click the deploy button above to set up the project in your Cloudflare account.
+Works in WordPress, Django templates, Laravel Blade, or any HTML page.
 
-## See Also
+## Structure
 
-- [Node.js variant](../portfolio) -- same template using SQLite and local file storage
-- [All templates](../)
-- [EmDash documentation](https://github.com/emdash-cms/emdash/tree/main/docs)
+```
+site (src/)        Astro portfolio — pages, components, layouts
+plugin (plugin/)   emdash plugin — action pages, forms, disclaimers
+data (data/)       compliance dataset — FEC + state disclaimer rules
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT
