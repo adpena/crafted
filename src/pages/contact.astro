@@ -86,7 +86,7 @@ if (Astro.request.method === "POST") {
 							<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" />
 						</div>
 
-						<div class="form-field">
+						<div class="form-field form-field-wide">
 							<label for="message">Message</label>
 							<textarea id="message" name="message" required aria-required="true" rows="8"></textarea>
 						</div>
@@ -137,7 +137,7 @@ if (Astro.request.method === "POST") {
 		gap: var(--spacing-md) var(--spacing-lg);
 	}
 
-	.contact-form .form-field:last-of-type {
+	.form-field-wide {
 		grid-column: 1 / -1;
 	}
 
