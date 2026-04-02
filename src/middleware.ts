@@ -22,9 +22,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set(key, value);
   }
 
-  // Action pages are embedded in iframes on third-party sites.
-  // Remove X-Frame-Options (which doesn't support wildcard) and use
-  // CSP frame-ancestors instead, which is the modern standard.
+  // Design decision: action pages are public embeddable widgets.
+  // frame-ancestors * allows any site to embed them via iframe.
+  // This is intentional — action pages are read-only, contain no
+  // auth state, and perform no state-changing actions. If interactive
+  // or authenticated features are ever added to action pages, this
+  // must be tightened to a domain allowlist.
   if (context.url.pathname.startsWith("/action/")) {
     response.headers.delete("X-Frame-Options");
     response.headers.set(

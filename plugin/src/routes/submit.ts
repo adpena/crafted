@@ -62,7 +62,7 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
   }
 
   // Validate visitor_id if provided
-  if (body.visitor_id && !/^[0-9a-f-]{36}$/.test(body.visitor_id)) {
+  if (body.visitor_id && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(body.visitor_id)) {
     return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid visitor_id" } } };
   }
 
