@@ -55,7 +55,8 @@
     .demo-layout {
       flex: 1;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
       min-height: 0;
     }
 
@@ -79,7 +80,7 @@
       align-items: center;
     }
 
-    .pane-left { border-right: 1px solid var(--border); }
+    .pane-left { border-bottom: 1px solid var(--border); }
 
     .code-wrap {
       flex: 1;
@@ -212,6 +213,12 @@
   </header>
 
   <div class="demo-layout">
+    <div class="pane">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+
     <div class="pane pane-left">
       <div class="pane-header">
         <span>mandelbrot.py</span>
@@ -222,15 +229,6 @@
       <div class="code-wrap">
         <div class="line-numbers" id="line-numbers"></div>
         <textarea id="code" spellcheck="false"></textarea>
-      </div>
-    </div>
-
-    <div class="pane">
-      <div class="pane-header">
-        <span>Output</span>
-      </div>
-      <div class="canvas-wrap" id="canvas-wrap">
-        <canvas id="canvas" width="400" height="300"></canvas>
       </div>
     </div>
   </div>
