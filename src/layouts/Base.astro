@@ -53,7 +53,7 @@ const pageCtx = createPublicPageContext({
 	</head>
 	<body>
 		<a href="#main-content" class="skip-to-content">Skip to content</a>
-		<Masthead currentPath={Astro.url.pathname} />
+		<Masthead currentPath={Astro.url.pathname} siteTitle={siteTitle} tagline={siteDescription} />
 		<slot />
 		<Footer />
 	</body>

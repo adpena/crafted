@@ -6,20 +6,20 @@ import FeaturedProject from "../components/FeaturedProject.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 
 
-// Gather latest from all collections
+// Gather latest from all collections — parallel queries
 const collections = ["dev_projects", "design_work", "policy_work", "writing"];
-const allEntries = [];
 
-for (const col of collections) {
-	try {
-		const { entries, cacheHint } = await getEmDashCollection(col);
-		try { Astro.cache.set(cacheHint); } catch {}
-		const urlPrefix = `/work/${col}`;
-		for (const e of entries) {
-			allEntries.push({ ...e, _href: `${urlPrefix}/${e.id}`, _collection: col });
-		}
-	} catch {}
-}
+const results = await Promise.all(
+	collections.map(async (col) => {
+		try {
+			const { entries, cacheHint } = await getEmDashCollection(col);
+			try { Astro.cache.set(cacheHint); } catch {}
+			return entries.map((e) => ({ ...e, _href: `/work/${col}/${e.id}`, _collection: col }));
+		} catch { return []; }
+	})
+);
+
+const allEntries = results.flat();
 
 const sorted = allEntries.toSorted((a, b) => {
 	const dateA = a.data.publishedAt?.getTime() ?? 0;

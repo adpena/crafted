@@ -1,14 +1,11 @@
 ---
-import { getSiteSettings } from "emdash";
-
 interface Props {
 	currentPath?: string;
+	siteTitle?: string;
+	tagline?: string;
 }
 
-const { currentPath = "" } = Astro.props;
-const settings = await getSiteSettings();
-const siteTitle = settings?.title || "Studio";
-const tagline = settings?.tagline || "Design & Development";
+const { currentPath = "", siteTitle = "Studio", tagline = "Design & Development" } = Astro.props;
 
 const navLinks = [
 	{ label: "Work", href: "/work" },

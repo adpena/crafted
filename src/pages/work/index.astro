@@ -12,8 +12,6 @@ const collectionDefs = [
 type Entry = { id: string; data: Record<string, any> };
 type Section = { label: string; slug: string; entries: Entry[] };
 
-const sections: Section[] = [];
-
 // Manual ordering overrides (slug → sort priority, lower = first)
 const ORDER: Record<string, number> = {
 	"molt": 1,
@@ -21,25 +19,31 @@ const ORDER: Record<string, number> = {
 	"reproq": 3,
 };
 
-for (const def of collectionDefs) {
-	try {
-		const result = await getEmDashCollection(def.slug);
-		if (result.entries?.length > 0) {
-			const sorted = [...result.entries].sort((a, b) => {
-				const oa = ORDER[a.id] ?? 100;
-				const ob = ORDER[b.id] ?? 100;
-				if (oa !== ob) return oa - ob;
-				const ya = parseInt(a.data.year ?? "0", 10);
-				const yb = parseInt(b.data.year ?? "0", 10);
-				return yb - ya;
-			});
-			sections.push({ ...def, entries: sorted });
-		}
-		if (result.cacheHint) {
-			try { Astro.cache.set(result.cacheHint); } catch {}
-		}
-	} catch {}
-}
+// Parallel queries — all collections at once
+const results = await Promise.all(
+	collectionDefs.map(async (def) => {
+		try {
+			const result = await getEmDashCollection(def.slug);
+			if (result.cacheHint) {
+				try { Astro.cache.set(result.cacheHint); } catch {}
+			}
+			if (result.entries?.length > 0) {
+				const sorted = [...result.entries].sort((a, b) => {
+					const oa = ORDER[a.id] ?? 100;
+					const ob = ORDER[b.id] ?? 100;
+					if (oa !== ob) return oa - ob;
+					const ya = parseInt(a.data.year ?? "0", 10);
+					const yb = parseInt(b.data.year ?? "0", 10);
+					return yb - ya;
+				});
+				return { ...def, entries: sorted };
+			}
+		} catch {}
+		return null;
+	})
+);
+
+const sections: Section[] = results.filter((s): s is Section => s !== null);
 
 const highlights = [
 	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev_projects/molt", tag: "Featured" },
