@@ -2,37 +2,46 @@
   {
     "jurisdiction": "CO",
     "type": "digital",
+    "context": "general",
     "required_text": "Paid for by {committee_name}",
     "adapted_text": null,
     "statute_citation": "C.R.S. § 1-45-108.3",
     "ai_disclosure_required": true,
     "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "ai_disclosure_statute": "C.R.S. 1-46-103 (HB24-1147)",
+    "ai_disclosure_scope": "Only applies to communications depicting a candidate within 60 days of a primary or 90 days of a general election, where the person knows or has reckless disregard that the depicted conduct is false.",
     "effective_date": "2024-07-01",
     "last_verified": "2026-04-01",
-    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+    "source_url": "https://leg.colorado.gov/sites/default/files/2024a_1147_signed.pdf"
   },
   {
     "jurisdiction": "CO",
     "type": "print",
+    "context": "general",
     "required_text": "Paid for by {committee_name}",
     "adapted_text": null,
     "statute_citation": "C.R.S. § 1-45-108.3",
     "ai_disclosure_required": true,
     "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "ai_disclosure_statute": "C.R.S. 1-46-103 (HB24-1147)",
+    "ai_disclosure_scope": "Only applies to communications depicting a candidate within 60 days of a primary or 90 days of a general election, where the person knows or has reckless disregard that the depicted conduct is false.",
     "effective_date": "2024-07-01",
     "last_verified": "2026-04-01",
-    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+    "source_url": "https://leg.colorado.gov/sites/default/files/2024a_1147_signed.pdf"
   },
   {
     "jurisdiction": "CO",
     "type": "broadcast",
+    "context": "general",
     "required_text": "Paid for by {committee_name}",
     "adapted_text": null,
     "statute_citation": "C.R.S. § 1-45-108.3",
     "ai_disclosure_required": true,
     "ai_disclosure_text": "This {media_type} has been edited and depicts speech or conduct that falsely appears to be authentic or truthful.",
+    "ai_disclosure_statute": "C.R.S. 1-46-103 (HB24-1147)",
+    "ai_disclosure_scope": "Only applies to communications depicting a candidate within 60 days of a primary or 90 days of a general election, where the person knows or has reckless disregard that the depicted conduct is false.",
     "effective_date": "2024-07-01",
     "last_verified": "2026-04-01",
-    "source_url": "https://law.justia.com/codes/colorado/title-1/election-campaign-regulations/article-45/section-1-45-108-3/"
+    "source_url": "https://leg.colorado.gov/sites/default/files/2024a_1147_signed.pdf"
   }
 ]
