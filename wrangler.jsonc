@@ -12,20 +12,20 @@
 	"kv_namespaces": [
 		{
 			"binding": "CACHE",
-			"id": "<KV_NAMESPACE_ID>",
+			"id": "791309f66ab445e8a0327a34206f7005",
 		},
 	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "crafted",
-			// Run `wrangler d1 create crafted` and paste the ID here
+			"database_id": "54c69d85-aa2f-403d-93ba-40fb36b05c37"
 		},
 	],
 	"r2_buckets": [
 		{
 			"binding": "MEDIA",
-			"bucket_name": "my-portfolio-media",
+			"bucket_name": "crafted-media",
 		},
 	],
 	"observability": {
