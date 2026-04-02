@@ -1,0 +1,26 @@
+[
+  {
+    "jurisdiction": "FED",
+    "type": "digital",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "11 CFR 110.11",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2002-01-01",
+    "last_verified": "2026-03-15",
+    "source_url": "https://www.ecfr.gov/current/title-11/chapter-I/subchapter-A/part-110/section-110.11"
+  },
+  {
+    "jurisdiction": "FED",
+    "type": "print",
+    "required_text": "Paid for by {committee_name}, {treasurer_name}, Treasurer",
+    "adapted_text": null,
+    "statute_citation": "11 CFR 110.11",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "effective_date": "2002-01-01",
+    "last_verified": "2026-03-15",
+    "source_url": "https://www.ecfr.gov/current/title-11/chapter-I/subchapter-A/part-110/section-110.11"
+  }
+]

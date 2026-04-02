@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Disclaimer",
+  "type": "object",
+  "required": [
+    "jurisdiction",
+    "type",
+    "required_text",
+    "adapted_text",
+    "statute_citation",
+    "ai_disclosure_required",
+    "ai_disclosure_text",
+    "effective_date",
+    "last_verified",
+    "source_url"
+  ],
+  "properties": {
+    "jurisdiction": {
+      "type": "string",
+      "description": "FED for federal, or 2-letter state code",
+      "pattern": "^(FED|[A-Z]{2})$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["digital", "print", "broadcast", "sms", "email"]
+    },
+    "required_text": {
+      "type": "string",
+      "description": "Template with placeholders like {committee_name}, {treasurer_name}"
+    },
+    "adapted_text": {
+      "type": ["string", "null"]
+    },
+    "statute_citation": {
+      "type": "string"
+    },
+    "ai_disclosure_required": {
+      "type": "boolean"
+    },
+    "ai_disclosure_text": {
+      "type": ["string", "null"]
+    },
+    "effective_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "additionalProperties": false
+}
