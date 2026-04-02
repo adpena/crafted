@@ -1,16 +1,25 @@
 ---
 import { getSiteSettings } from "emdash";
 
+interface Props {
+	currentPath?: string;
+}
+
+const { currentPath = "" } = Astro.props;
 const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Studio";
 const tagline = settings?.tagline || "Design & Development";
 
 const navLinks = [
-	{ label: "Home", href: "/" },
 	{ label: "Work", href: "/work" },
 	{ label: "About", href: "/about" },
 	{ label: "Contact", href: "/contact" },
 ];
+
+function isActive(href: string): boolean {
+	if (href === "/") return currentPath === "/";
+	return currentPath.startsWith(href);
+}
 ---
 
 <header role="banner" class="masthead">
@@ -19,7 +28,11 @@ const navLinks = [
 		<p class="masthead-tagline">{tagline}</p>
 		<nav aria-label="Main navigation" class="masthead-nav">
 			{navLinks.map((link) => (
-				<a href={link.href} class="masthead-nav-link">{link.label}</a>
+				<a
+					href={link.href}
+					class:list={["masthead-nav-link", { active: isActive(link.href) }]}
+					aria-current={isActive(link.href) ? "page" : undefined}
+				>{link.label}</a>
 			))}
 		</nav>
 	</div>
@@ -75,8 +88,14 @@ const navLinks = [
 		transition: color 150ms ease;
 	}
 
-	.masthead-nav-link:hover {
+	.masthead-nav-link:hover,
+	.masthead-nav-link.active {
 		color: var(--color-text);
+	}
+
+	.masthead-nav-link.active {
+		border-bottom: 1px solid var(--color-text);
+		padding-bottom: 2px;
 	}
 
 	@media (max-width: 640px) {

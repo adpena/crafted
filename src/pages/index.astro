@@ -1,7 +1,7 @@
 ---
 import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
-import Masthead from "../components/Masthead.astro";
+
 import FeaturedProject from "../components/FeaturedProject.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import StatusBar from "../components/StatusBar.astro";
@@ -22,8 +22,6 @@ const latest = sorted.slice(1);
 ---
 
 <Base>
-	<Masthead />
-
 	<main id="main-content" class="homepage">
 		<div class="container">
 			{featured ? (

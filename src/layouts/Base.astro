@@ -2,6 +2,7 @@
 import { getSiteSettings } from "emdash";
 import { EmDashHead } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
+import Masthead from "../components/Masthead.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -49,6 +50,7 @@ const pageCtx = createPublicPageContext({
 	</head>
 	<body>
 		<a href="#main-content" class="skip-to-content">Skip to content</a>
+		<Masthead currentPath={Astro.url.pathname} />
 		<slot />
 	</body>
 </html>
