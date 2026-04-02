@@ -284,7 +284,8 @@ code {
 	margin-bottom: 0.5em;
 }
 
-.prose blockquote {
+.prose blockquote,
+.excerpt {
 	font-style: italic;
 	color: var(--color-secondary);
 	border-left: 2px solid var(--color-border);

@@ -105,7 +105,7 @@ const committeeName = pageData.committee_name ?? "";
   </style>
 </head>
 <body>
-  <main>
+  <main id="main-content">
     <h1>{title}</h1>
     {body && <p class="body-text">{body}</p>}
 
@@ -128,8 +128,12 @@ const committeeName = pageData.committee_name ?? "";
   <script>
     document.querySelectorAll('.amount').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.amount').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.amount').forEach(b => {
+          b.classList.remove('selected');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('selected');
+        btn.setAttribute('aria-pressed', 'true');
         const link = document.getElementById('donate-link');
         if (link) link.href = link.href.replace(/amount=.*/, 'amount=' + btn.dataset.amount);
       });
