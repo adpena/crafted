@@ -382,6 +382,106 @@
       updateLineNumbers();
       requestRender();
     });
+
+    // -----------------------------------------------------------------------
+    // WebMCP interface — allows AI agents to control the demo programmatically
+    // via postMessage (iframe) or via the /api/mcp/demo endpoint (HTTP).
+    //
+    // Tools:
+    //   get_code        → { code: string }
+    //   set_code        → accepts { code: string }, returns { ok: true }
+    //   set_parameters  → accepts { center_x?, center_y?, zoom?, max_iter? }
+    //   get_state       → { zoom, frame, animating, width, height }
+    //   pause           → pauses animation
+    //   resume          → resumes animation
+    //   reset           → resets zoom to 1.0
+    //   snapshot        → returns canvas as base64 PNG
+    // -----------------------------------------------------------------------
+
+    window.addEventListener('message', (e) => {
+      if (!e.data || typeof e.data.tool !== 'string') return;
+
+      const { tool, params } = e.data;
+      let result;
+
+      switch (tool) {
+        case 'get_code':
+          result = { code: codeEl.value };
+          break;
+
+        case 'set_code':
+          if (typeof params?.code === 'string') {
+            codeEl.value = params.code;
+            updateLineNumbers();
+            animating = false;
+            requestRender();
+            result = { ok: true };
+          } else {
+            result = { error: 'missing params.code' };
+          }
+          break;
+
+        case 'set_parameters': {
+          const src = codeEl.value;
+          let updated = src;
+          if (params?.center_x != null) updated = updated.replace(/CENTER_X[^=]*=\s*[\-0-9.]+/, `CENTER_X: float = ${params.center_x}`);
+          if (params?.center_y != null) updated = updated.replace(/CENTER_Y[^=]*=\s*[\-0-9.]+/, `CENTER_Y: float = ${params.center_y}`);
+          if (params?.max_iter != null) updated = updated.replace(/MAX_ITER[^=]*=\s*\d+/, `MAX_ITER: int = ${params.max_iter}`);
+          if (params?.zoom != null) zoom = Number(params.zoom);
+          codeEl.value = updated;
+          updateLineNumbers();
+          requestRender();
+          result = { ok: true, zoom };
+          break;
+        }
+
+        case 'get_state':
+          result = { zoom, frame, animating, width: W, height: H };
+          break;
+
+        case 'pause':
+          animating = false;
+          result = { ok: true };
+          break;
+
+        case 'resume':
+          animating = true;
+          requestAnimationFrame(animate);
+          result = { ok: true };
+          break;
+
+        case 'reset':
+          zoom = 1.0;
+          frame = 0;
+          requestRender();
+          result = { ok: true };
+          break;
+
+        case 'snapshot':
+          result = { image: canvas.toDataURL('image/png') };
+          break;
+
+        default:
+          result = { error: `unknown tool: ${tool}` };
+      }
+
+      // Reply to the caller
+      if (e.source && e.source !== window) {
+        e.source.postMessage({ id: e.data.id, result }, { targetOrigin: '*' });
+      }
+    });
+
+    // Expose tools list for discovery
+    window.__molt_mcp_tools = [
+      { name: 'get_code', description: 'Get the current Python source code' },
+      { name: 'set_code', description: 'Replace the Python source code', params: { code: 'string' } },
+      { name: 'set_parameters', description: 'Update render parameters', params: { center_x: 'number?', center_y: 'number?', zoom: 'number?', max_iter: 'number?' } },
+      { name: 'get_state', description: 'Get current animation state (zoom, frame, animating)' },
+      { name: 'pause', description: 'Pause the animation' },
+      { name: 'resume', description: 'Resume the animation' },
+      { name: 'reset', description: 'Reset zoom to 1.0' },
+      { name: 'snapshot', description: 'Capture the canvas as a base64 PNG image' },
+    ];
   </script>
 </body>
 </html>
