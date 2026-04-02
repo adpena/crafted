@@ -15,15 +15,15 @@ const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "n
 ---
 
 <Base title={d.title}>
-	<main id="main-content" class="detail">
-		<nav class="crumb mono" aria-label="Breadcrumb">
-			<a href="/work">Work</a> <span aria-hidden="true">/</span> Policy <span aria-hidden="true">/</span> {d.title}
+	<main id="main-content" class="page">
+		<nav class="breadcrumb" aria-label="Breadcrumb">
+			<a href="/work">Work</a> / Policy / {d.title}
 		</nav>
 
-		<h1>{d.title}</h1>
-		{d.summary && <p class="summary">{d.summary}</p>}
+		<h1 class="page-title">{d.title}</h1>
+		{d.summary && <p class="page-summary">{d.summary}</p>}
 
-		<dl class="meta mono">
+		<dl class="meta-grid">
 			{d.publication && <><dt>Published in</dt><dd>{d.publication}</dd></>}
 			{dateStr && <><dt>Date</dt><dd>{dateStr}</dd></>}
 			{d.topic && <><dt>Topic</dt><dd>{d.topic}</dd></>}
@@ -32,22 +32,6 @@ const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "n
 			{d.pdf_url && <><dt>PDF</dt><dd><a href={d.pdf_url} target="_blank" rel="noopener noreferrer">Download</a></dd></>}
 		</dl>
 
-		<div class="body">
-			<PortableText value={d.content} />
-		</div>
+		<div class="prose"><PortableText value={d.content} /></div>
 	</main>
 </Base>
-
-<style>
-	.detail { max-width: 42rem; margin: 0 auto; padding: var(--spacing-lg) 0 var(--spacing-2xl); }
-	.crumb { font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); }
-	.crumb a { color: var(--color-secondary); }
-	h1 { font-family: var(--font-serif); font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--spacing-xs); }
-	.summary { color: var(--color-secondary); font-size: var(--font-size-base); margin-bottom: var(--spacing-lg); }
-	.meta { display: grid; grid-template-columns: 7rem 1fr; gap: 0.25rem 1rem; font-size: var(--font-size-xs); color: var(--color-secondary); margin-bottom: var(--spacing-lg); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); padding: var(--spacing-sm) 0; }
-	.meta dt { font-weight: 600; }
-	.meta dd { margin: 0; }
-	.meta a { color: var(--color-text); }
-	.body { font-family: var(--font-serif); line-height: 1.8; }
-	.body :global(p) { margin-bottom: 1.25em; }
-</style>
