@@ -3,6 +3,8 @@ import Base from "../layouts/Base.astro";
 import { env } from "cloudflare:workers";
 import { notifyAll } from "../lib/notify.ts";
 
+const TURNSTILE_SITE_KEY = "0x4AAAAAACzs7nZ1lZWuydob";
+
 let formStatus: "idle" | "success" | "error" = "idle";
 let formMessage = "";
 
@@ -12,20 +14,43 @@ if (Astro.request.method === "POST") {
 		const name = formData.get("name")?.toString().trim() || "";
 		const email = formData.get("email")?.toString().trim() || "";
 		const message = formData.get("message")?.toString().trim() || "";
+		const turnstileToken = formData.get("cf-turnstile-response")?.toString() || "";
 
-		if (!name || !email || !message) {
-			formStatus = "error";
-			formMessage = "Please fill in all fields.";
-		} else if (!email.includes("@") || email.length > 254) {
-			formStatus = "error";
-			formMessage = "Please enter a valid email address.";
-		} else if (name.length > 200 || message.length > 5000) {
-			formStatus = "error";
-			formMessage = "Input too long.";
-		} else {
-			await notifyAll(env as any, { name, email, message });
-			formStatus = "success";
-			formMessage = "Message sent. I'll be in touch.";
+		// Verify Turnstile token
+		const turnstileSecret = (env as any).TURNSTILE_SECRET as string | undefined;
+		if (turnstileSecret) {
+			const ip = Astro.request.headers.get("cf-connecting-ip") || "";
+			const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+				method: "POST",
+				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: new URLSearchParams({
+					secret: turnstileSecret,
+					response: turnstileToken,
+					remoteip: ip,
+				}),
+			});
+			const verifyData = await verifyRes.json() as { success: boolean };
+			if (!verifyData.success) {
+				formStatus = "error";
+				formMessage = "Verification failed. Please try again.";
+			}
+		}
+
+		if (formStatus !== "error") {
+			if (!name || !email || !message) {
+				formStatus = "error";
+				formMessage = "Please fill in all fields.";
+			} else if (!email.includes("@") || email.length > 254) {
+				formStatus = "error";
+				formMessage = "Please enter a valid email address.";
+			} else if (name.length > 200 || message.length > 5000) {
+				formStatus = "error";
+				formMessage = "Input too long.";
+			} else {
+				await notifyAll(env as any, { name, email, message });
+				formStatus = "success";
+				formMessage = "Message sent. I'll be in touch.";
+			}
 		}
 	} catch {
 		formStatus = "error";
@@ -66,7 +91,10 @@ if (Astro.request.method === "POST") {
 							<textarea id="message" name="message" required aria-required="true" rows="8"></textarea>
 						</div>
 
-						<button type="submit" class="btn">Send</button>
+						<div class="turnstile-row">
+							<div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="light"></div>
+							<button type="submit" class="btn">Send</button>
+						</div>
 					</form>
 				)}
 			</div>
@@ -85,6 +113,8 @@ if (Astro.request.method === "POST") {
 			</aside>
 		</div>
 	</main>
+
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </Base>
 
 <style>
@@ -111,10 +141,16 @@ if (Astro.request.method === "POST") {
 		grid-column: 1 / -1;
 	}
 
-	.contact-form .btn {
-		grid-column: 1;
-		justify-self: start;
+	.turnstile-row {
+		grid-column: 1 / -1;
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-lg);
 		margin-top: var(--spacing-sm);
+	}
+
+	.contact-form .btn {
+		justify-self: start;
 	}
 
 	.form-error {
@@ -161,6 +197,11 @@ if (Astro.request.method === "POST") {
 			grid-template-columns: 1fr;
 		}
 
+		.turnstile-row {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
 		.contact-aside {
 			position: static;
 			display: flex;
@@ -169,7 +210,6 @@ if (Astro.request.method === "POST") {
 			border-top: 1px solid var(--color-border);
 		}
 
-		/* Touch-friendly aside links */
 		.aside-link {
 			min-height: 44px;
 			display: flex;
@@ -182,13 +222,11 @@ if (Astro.request.method === "POST") {
 			padding-top: var(--spacing-md);
 		}
 
-		/* Stack aside sections vertically on small screens */
 		.contact-aside {
 			flex-direction: column;
 			gap: var(--spacing-md);
 		}
 
-		/* Ensure form inputs are 16px to prevent iOS zoom */
 		.contact-form input,
 		.contact-form textarea {
 			font-size: 1rem;
