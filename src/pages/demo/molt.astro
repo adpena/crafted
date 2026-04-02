@@ -81,9 +81,28 @@
 
     .pane-left { border-right: 1px solid var(--border); }
 
+    .code-wrap {
+      flex: 1;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      overflow: auto;
+    }
+
+    .line-numbers {
+      padding: 1rem 0.5rem 1rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      line-height: 1.7;
+      color: var(--border);
+      text-align: right;
+      user-select: none;
+      white-space: pre;
+      border-right: 1px solid var(--border);
+    }
+
     textarea {
       flex: 1;
-      padding: 1rem;
+      padding: 1rem 1rem 1rem 0.75rem;
       font-family: var(--mono);
       font-size: 0.75rem;
       line-height: 1.7;
@@ -93,6 +112,8 @@
       resize: none;
       outline: none;
       tab-size: 4;
+      white-space: pre;
+      overflow-wrap: normal;
     }
 
     .canvas-wrap {
@@ -201,7 +222,10 @@
           <button class="btn primary" id="compile-btn" disabled>Compile & Run</button>
         </div>
       </div>
-      <textarea id="code" spellcheck="false"></textarea>
+      <div class="code-wrap">
+        <div class="line-numbers" id="line-numbers"></div>
+        <textarea id="code" spellcheck="false"></textarea>
+      </div>
     </div>
 
     <div class="pane">
@@ -227,22 +251,32 @@
     }
 
     const codeEl = document.getElementById('code');
+    const lineNumEl = document.getElementById('line-numbers');
+
+    function updateLineNumbers() {
+      const lines = (codeEl.value || '').split('\n').length;
+      lineNumEl.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
+    }
+
+    // Sync scroll between textarea and line numbers
+    codeEl.addEventListener('scroll', () => {
+      lineNumEl.style.transform = `translateY(-${codeEl.scrollTop}px)`;
+    });
+
+    codeEl.addEventListener('input', updateLineNumbers);
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const compileBtn = document.getElementById('compile-btn');
     const statusText = document.getElementById('status-text');
     const statusMeta = document.getElementById('status-meta');
 
-    // Load the Mandelbrot source
+    // Load the Mandelbrot source, init line numbers, start animation
     fetch('/molt-demo/mandelbrot.py')
       .then(r => r.text())
       .then(src => {
         codeEl.value = src;
-        statusText.textContent = 'Ready — Molt compilation endpoint coming soon';
-
-        // Render a JS-side Mandelbrot as a preview
-        // (this proves the canvas works; will be replaced by Wasm output)
-        renderPreview();
+        updateLineNumbers();
+        if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
     // Animated Mandelbrot zoom
