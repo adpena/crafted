@@ -319,12 +319,12 @@
       rendering = true;
       const { maxIter, cx, cy } = parseParams();
       const dynamicIter = Math.min(800, Math.max(maxIter, 50 + Math.floor(Math.log(zoom + 1) * 40)));
-      worker.postMessage({ W, H, cx, cy, zoom, maxIter: dynamicIter, colorShift: frame * 0.3 });
+      worker.postMessage({ W, H, cx, cy, zoom, maxIter: dynamicIter, colorShift: frame * 0.08 });
     }
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.004;
+      zoom *= 1.0015;
       if (zoom > 1e12) zoom = 1.0;
       frame++;
 
