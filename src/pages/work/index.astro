@@ -78,15 +78,11 @@ Astro.cache.set(cacheHint);
 		sortedProjects.length > 0 ? (
 			<section class="projects">
 				<div class="projects-grid">
-					{sortedProjects.map(({ project, projectTags }) => (
+					{sortedProjects.map(({ project }) => (
 						<ProjectCard
 							title={project.data.title ?? "Untitled"}
 							summary={project.data.summary}
-							featuredImage={project.data.featured_image ?? ""}
 							href={`/work/${project.id}`}
-							client={project.data.client}
-							year={project.data.year}
-							tags={projectTags.map((t) => t.label)}
 						/>
 					))}
 				</div>
