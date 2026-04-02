@@ -1,38 +1,85 @@
-This is an EmDash site -- a CMS built on Astro with a full admin UI.
+# Crafted — Claude Context
 
-## Commands
+Personal portfolio for Alejandro Peña. Built on emdash CMS + Astro 6 + Cloudflare Workers.
+Live at https://crafted.adpena.workers.dev
 
+## Architecture
+
+- **Site**: Astro 6, emdash CMS integration, Cloudflare D1/R2/KV
+- **Plugin**: `plugin/` — Campaign Action Page engine (emdash standard-format plugin)
+- **Data**: `data/disclaimers/` — FEC + 10 states political ad disclaimer dataset
+- **Styles**: `src/styles/global.css` — single source of truth for all shared CSS
+
+## Collections (four domains)
+
+| Collection | Slug | Key fields |
+|-----------|------|-----------|
+| Development | `dev_projects` | title, summary, content, repo_url, live_url, stack, language, year, project_status |
+| Design | `design_work` | title, summary, content, featured_image, gallery, client, medium, year, live_url |
+| Policy | `policy_work` | title, summary, content, publication, date, topic, link, pdf_url, coauthors |
+| Writing | `writing` | title, summary, content, publication, date, topic, link, excerpt |
+| Pages | `pages` | title, content |
+
+## Adding content
+
+### Via seed file
+Edit `seed/seed.json`, run `npm run bootstrap` locally, export and push to remote D1.
+
+### Via remote D1
 ```bash
-npx emdash dev        # Start dev server (runs migrations, seeds, generates types)
-npx emdash types      # Regenerate TypeScript types from schema
-npx emdash seed seed/seed.json --validate  # Validate seed file
+wrangler d1 execute crafted --remote --command "INSERT INTO ec_dev_projects ..."
 ```
 
-The admin UI is at `http://localhost:4321/_emdash/admin`.
+### Via emdash admin
+Visit https://crafted.adpena.workers.dev/_emdash/admin
 
-## Key Files
+## Shared CSS classes (global.css)
 
-| File                     | Purpose                                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, database, and storage                  |
-| `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                         |
-| `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
-| `emdash-env.d.ts`      | Generated types for collections (auto-regenerated on dev server start)             |
-| `src/layouts/Base.astro` | Base layout with EmDash wiring (menus, search, page contributions)               |
-| `src/pages/`             | Astro pages -- all server-rendered                                                 |
+Use these instead of writing new styles:
+- `.page` — standard content wrapper (42rem centered)
+- `.breadcrumb` — mono navigation path
+- `.page-title` — restrained h1
+- `.page-summary` — secondary text
+- `.meta-grid` — key-value metadata (dl)
+- `.prose` — long-form body text
+- `.hero-image` — responsive image
+- `.section-label` — small mono uppercase heading
+- `.item-list` / `.item-link` / `.item-title` / `.item-desc` / `.item-meta` — list items
+- `.form-field` — label + input
+- `.btn` — bordered button
+- `.empty` — centered empty state
 
-## Skills
+## Design principles
 
-Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
+- Editorial Hybrid: Georgia serif, Courier New mono, warm paper (#f5f5f0)
+- Masthead: wide-tracked uppercase Georgia, font-weight: 400
+- Headings: font-weight: 400, letter-spacing — restraint, not boldness
+- No card grids, no drop shadows, no gradients, no component library defaults
+- Zero external CSS dependencies
+- Every element should feel intentionally designed
 
-- **building-emdash-site** -- Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
-- **creating-plugins** -- Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
-- **emdash-cli** -- CLI commands for content management, seeding, type generation, and visual editing flow.
+## Deploy
 
-## Rules
+```bash
+npm run build && wrangler deploy
+```
 
-- All content pages must be server-rendered (`output: "server"`). No `getStaticPaths()` for CMS content.
-- Image fields are objects (`{ src, alt }`), not strings. Use `<Image image={...} />` from `"emdash/ui"`.
-- `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
-- Always call `Astro.cache.set(cacheHint)` on pages that query content.
-- Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+## Plugin (plugin/)
+
+Pure modules in `plugin/src/modules/` — future Molt replacement targets:
+- `disclaimers.ts` — FEC/state disclaimer resolution
+- `geo-ask.ts` — geo-personalized donation amounts
+- `ab-assign.ts` — deterministic A/B variant assignment
+- `validate.ts` — form validation and sanitization
+
+27 unit tests: `cd plugin && npm test`
+
+## Compliance data (data/disclaimers/)
+
+- Schema: `schema.json` (v0.2.0 with context, ai_disclosure_scope)
+- Federal: `federal.json`
+- States: `states/*.json` (DC, VA, MD, NY, CA, TX, FL, PA, GA, CO)
+- Provenance: `VERIFICATION.md`, `scripts/verify-disclaimers.ts`
+- Legal notes: `LEGAL_NOTES.md`
+
+Run verification: `npm run verify`
