@@ -81,7 +81,9 @@ function isValidEmail(value: string): boolean {
 
 function sanitizeText(text: string): string {
   if (typeof text !== "string") return "";
-  return text.replace(/[*_~`|>\[\]()\\]/g, "");
+  // Strip only characters that render as formatting in Discord/Slack.
+  // Preserve > (quoting), \ (escape in emails), () (parenthetical).
+  return text.replace(/[*_~`|]/g, "");
 }
 
 function escapeHtml(text: string): string {
