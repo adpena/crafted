@@ -1,4 +1,4 @@
-// Mandelbrot render worker — smooth coloring, off main thread
+// Mandelbrot render worker — smooth coloring, warm editorial palette
 self.onmessage = function(e) {
   const { W, H, cx, cy, zoom, maxIter, colorShift } = e.data;
   const scale = 3.0 / (zoom * W);
@@ -20,16 +20,18 @@ self.onmessage = function(e) {
       }
       const idx = (y * W + x) * 4;
       if (i === maxIter) {
-        buf[idx] = buf[idx + 1] = buf[idx + 2] = 0;
+        buf[idx] = 26; buf[idx + 1] = 26; buf[idx + 2] = 26; // near-black (#1a1a1a)
       } else {
-        // Smooth iteration count avoids color banding
         const mag = Math.sqrt(zr * zr + zi * zi);
         const mu = i + 1 - Math.log(Math.log(mag)) / ln2;
-        const t = (mu + shift) * 0.025;
-        // Sine-based palette — cycles smoothly, never repeats exactly
-        buf[idx]     = (Math.sin(t * 3.0) * 127 + 128) | 0;
-        buf[idx + 1] = (Math.sin(t * 3.0 + 2.1) * 127 + 128) | 0;
-        buf[idx + 2] = (Math.sin(t * 3.0 + 4.2) * 127 + 128) | 0;
+        const t = (mu + shift) * 0.015;
+        // Warm editorial palette: cream, amber, terracotta, deep blue
+        const r = 0.5 + 0.5 * Math.cos(6.28 * (t + 0.0));
+        const g = 0.5 + 0.5 * Math.cos(6.28 * (t + 0.15));
+        const b = 0.5 + 0.5 * Math.cos(6.28 * (t + 0.35));
+        buf[idx]     = (r * 235 + 20) | 0;
+        buf[idx + 1] = (g * 210 + 20) | 0;
+        buf[idx + 2] = (b * 200 + 30) | 0;
       }
       buf[idx + 3] = 255;
     }

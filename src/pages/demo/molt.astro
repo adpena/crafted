@@ -168,16 +168,15 @@
       line-height: 1.6;
     }
 
-    /* Embed mode: force side-by-side, hide chrome */
+    /* Embed mode: canvas only, fills the entire iframe */
     .embed header,
     .embed .status,
-    .embed .pane-header {
-      display: none;
+    .embed .pane-left {
+      display: none !important;
     }
 
     .embed .demo-layout {
-      grid-template-columns: 1fr 1fr !important;
-      grid-template-rows: 1fr !important;
+      grid-template-columns: 1fr !important;
     }
 
     .embed .canvas-wrap {
@@ -190,10 +189,8 @@
       object-fit: cover;
     }
 
-    .embed textarea {
-      font-size: 0.7rem;
-      line-height: 1.5;
-      padding: 0.75rem;
+    .embed body {
+      overflow: hidden;
     }
 
     @media (max-width: 768px) {
@@ -279,8 +276,11 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    const W = 640;
-    const H = 400;
+    // Size canvas to match its actual display size — no scaling artifacts
+    const container = document.getElementById('canvas-wrap');
+    const rect = container.getBoundingClientRect();
+    const W = Math.round(rect.width) || 640;
+    const H = Math.round(rect.height) || 400;
     canvas.width = W;
     canvas.height = H;
 
