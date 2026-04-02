@@ -4,8 +4,8 @@
 WIDTH: int = 400
 HEIGHT: int = 300
 MAX_ITER: int = 100
-CENTER_X: float = -0.7463
-CENTER_Y: float = 0.1102
+CENTER_X: float = 0.2501
+CENTER_Y: float = 0.00001
 ZOOM: float = 1.0
 
 def render() -> None:

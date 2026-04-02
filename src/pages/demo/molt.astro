@@ -126,7 +126,6 @@
     }
 
     canvas {
-      image-rendering: pixelated;
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -279,15 +278,17 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // Animated Mandelbrot zoom
-    const W = 400, H = 300;
+    // Animated Mandelbrot — high-res render
+    const dpr = window.devicePixelRatio || 1;
+    const W = Math.round(800 * dpr);
+    const H = Math.round(600 * dpr);
     canvas.width = W;
     canvas.height = H;
     const img = ctx.createImageData(W, H);
 
-    // Zoom target: Seahorse Valley — a beautiful region of the set
-    const TARGET_X = -0.7463;
-    const TARGET_Y = 0.1102;
+    // Zoom target: spiral arm in the Elephant Valley — fractal arms that go forever
+    const TARGET_X = 0.2501;
+    const TARGET_Y = 0.00001;
     let zoom = 1.0;
     let frame = 0;
     let animating = true;
@@ -339,7 +340,7 @@
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.008; // Slow continuous zoom
+      zoom *= 1.005; // Gentle continuous zoom
       frame++;
 
       // Increase iterations as we zoom deeper
