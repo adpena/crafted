@@ -1,35 +1,55 @@
 ---
+import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 
-const sections = [
-	{
-		label: "Development",
-		slug: "dev_projects",
-		items: [
-			{ slug: "molt", title: "Molt", summary: "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.", meta: "Rust, Python, Wasm" },
-			{ slug: "crafted-action-pages", title: "Crafted Action Pages", summary: "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.", meta: "TypeScript, Astro, Cloudflare Workers, D1" },
-		],
-	},
+const collectionDefs = [
+	{ slug: "dev_projects", label: "Development" },
+	{ slug: "design_work", label: "Design" },
+	{ slug: "policy_work", label: "Policy" },
+	{ slug: "writing", label: "Writing" },
 ];
+
+type Entry = { id: string; data: Record<string, any> };
+type Section = { label: string; slug: string; entries: Entry[] };
+
+const sections: Section[] = [];
+
+for (const def of collectionDefs) {
+	try {
+		const result = await getEmDashCollection(def.slug);
+		if (result.entries?.length > 0) {
+			sections.push({ ...def, entries: result.entries });
+		}
+		if (result.cacheHint) {
+			try { Astro.cache.set(result.cacheHint); } catch {}
+		}
+	} catch {}
+}
 ---
 
 <Base title="Work">
 	<main id="main-content" class="page">
-		{sections.map((section) => (
-			<section style="margin-bottom: var(--spacing-xl)">
-				<h2 class="section-label">{section.label}</h2>
-				<ul class="item-list" role="list">
-					{section.items.map((item) => (
-						<li>
-							<a href={`/work/${section.slug}/${item.slug}`} class="item-link">
-								<span class="item-title">{item.title}</span>
-								<span class="item-desc">{item.summary}</span>
-								<span class="item-meta">{item.meta}</span>
-							</a>
-						</li>
-					))}
-				</ul>
-			</section>
-		))}
+		{sections.length > 0 ? (
+			sections.map((section) => (
+				<section style="margin-bottom: var(--spacing-xl)">
+					<h2 class="section-label">{section.label}</h2>
+					<ul class="item-list" role="list">
+						{section.entries.map((entry) => (
+							<li>
+								<a href={`/work/${section.slug}/${entry.id}`} class="item-link">
+									<span class="item-title">{entry.data.title}</span>
+									{entry.data.summary && <span class="item-desc">{entry.data.summary}</span>}
+									{entry.data.stack && <span class="item-meta">{entry.data.stack}</span>}
+									{entry.data.publication && <span class="item-meta">{entry.data.publication}</span>}
+									{entry.data.medium && <span class="item-meta">{entry.data.medium}</span>}
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			))
+		) : (
+			<p class="empty">No work yet. Content is managed in the <a href="/_emdash/admin">admin panel</a>.</p>
+		)}
 	</main>
 </Base>
