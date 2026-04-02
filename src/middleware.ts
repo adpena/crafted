@@ -3,8 +3,9 @@ import { defineMiddleware } from "astro:middleware";
 // Note: 'unsafe-inline' in script-src is required because Astro inlines scripts
 // at build time. The long-term goal is nonce-based CSP, but that requires Astro
 // nonce support or a post-build injection step. This is a known Astro limitation.
+// wasm-unsafe-eval allows WebAssembly.compile without full unsafe-eval
 const BASE_CSP =
-  "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'";
+  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'";
 
 const SECURITY_HEADERS: Record<string, string> = {
   "Content-Security-Policy": BASE_CSP,
