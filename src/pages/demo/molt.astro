@@ -192,10 +192,16 @@
   </div>
 
   <script>
-    // When embedded in iframe, hide the header to save vertical space
+    // When embedded in iframe, strip chrome and force side-by-side layout
     const isEmbed = window.self !== window.top;
     if (isEmbed) {
       document.querySelector('header')?.remove();
+      document.querySelector('.status')?.remove();
+      const layout = document.querySelector('.demo-layout');
+      if (layout) {
+        layout.style.gridTemplateColumns = '1fr 1fr';
+        layout.style.gridTemplateRows = '1fr';
+      }
     }
 
     const codeEl = document.getElementById('code');
