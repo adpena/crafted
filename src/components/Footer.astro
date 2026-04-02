@@ -1,0 +1,58 @@
+---
+import { getSiteSettings } from "emdash";
+
+const settings = await getSiteSettings();
+
+// Social links from site options — add via admin panel under Settings
+// Expected format in options: JSON object with platform keys and URL values
+let socialLinks: { label: string; url: string }[] = [];
+
+try {
+	const raw = settings?.options?.social_links;
+	if (raw && typeof raw === "object") {
+		socialLinks = Object.entries(raw as Record<string, string>)
+			.filter(([, url]) => url && typeof url === "string")
+			.map(([key, url]) => ({ label: key, url }));
+	}
+} catch {}
+---
+
+{socialLinks.length > 0 && (
+	<footer class="site-footer" role="contentinfo">
+		<nav aria-label="Social links" class="social-nav">
+			{socialLinks.map((link) => (
+				<a href={link.url} class="social-link" target="_blank" rel="noopener noreferrer">
+					{link.label}
+				</a>
+			))}
+		</nav>
+	</footer>
+)}
+
+<style>
+	.site-footer {
+		max-width: 42rem;
+		margin: 0 auto;
+		padding: var(--spacing-lg) 0 var(--spacing-xl);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.social-nav {
+		display: flex;
+		justify-content: center;
+		gap: var(--spacing-lg);
+	}
+
+	.social-link {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		text-decoration: none;
+		text-transform: capitalize;
+		transition: color 150ms ease;
+	}
+
+	.social-link:hover {
+		color: var(--color-text);
+	}
+</style>
