@@ -128,8 +128,9 @@
     canvas {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       cursor: pointer;
+      image-rendering: auto;
     }
 
     .btn {
@@ -278,10 +279,11 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // Animated Mandelbrot — high-res render
-    const dpr = window.devicePixelRatio || 1;
-    const W = Math.round(800 * dpr);
-    const H = Math.round(600 * dpr);
+    // Render at fixed resolution, CSS scales to fill.
+    // 400×300 = 120K pixels — fast enough for 60fps JS rendering.
+    // When Molt Wasm replaces this, we can go to full native res.
+    const W = 400;
+    const H = 300;
     canvas.width = W;
     canvas.height = H;
     const img = ctx.createImageData(W, H);
@@ -340,7 +342,7 @@
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.005;
+      zoom *= 1.012;
       // Reset before floating-point precision death — smooth fade to new view
       if (zoom > 1e12) zoom = 1.0;
       frame++;
