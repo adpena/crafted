@@ -67,34 +67,31 @@ if (Astro.request.method === "POST") {
 
 <style>
 	.contact-page {
-		max-width: 32rem;
+		max-width: 28rem;
 		margin: 0 auto;
-		padding: var(--spacing-xl) 0 var(--spacing-3xl);
+		padding: var(--spacing-md) 0 var(--spacing-xl);
 	}
 
 	.contact-form {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-lg);
-	}
-
-	.field {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-xs);
+		gap: var(--spacing-md);
 	}
 
 	.field label {
+		display: block;
 		font-family: var(--font-mono);
 		font-size: var(--font-size-xs);
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--color-secondary);
+		margin-bottom: 0.25rem;
 	}
 
 	.field input,
 	.field textarea {
-		padding: var(--spacing-sm) var(--spacing-md);
+		width: 100%;
+		padding: 0.4rem 0;
 		font-family: var(--font-serif);
 		font-size: var(--font-size-base);
 		color: var(--color-text);
@@ -112,14 +109,15 @@ if (Astro.request.method === "POST") {
 
 	.field textarea {
 		resize: vertical;
-		min-height: 8rem;
+		min-height: 6rem;
 	}
 
 	button[type="submit"] {
 		align-self: flex-start;
-		padding: var(--spacing-sm) var(--spacing-xl);
+		margin-top: var(--spacing-sm);
+		padding: 0.4rem var(--spacing-lg);
 		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
+		font-size: var(--font-size-xs);
 		color: var(--color-text);
 		background: transparent;
 		border: 1px solid var(--color-text);
@@ -133,26 +131,26 @@ if (Astro.request.method === "POST") {
 	}
 
 	.form-error {
-		padding: var(--spacing-sm) var(--spacing-md);
+		padding: var(--spacing-sm) 0;
 		border-left: 2px solid #dc2626;
+		padding-left: var(--spacing-md);
 		color: #dc2626;
 		font-size: var(--font-size-sm);
 	}
 
 	.success {
-		text-align: center;
-		padding: var(--spacing-3xl) 0;
+		padding: var(--spacing-xl) 0;
 	}
 
 	.success p {
 		font-family: var(--font-serif);
-		font-size: var(--font-size-lg);
-		margin-bottom: var(--spacing-md);
+		font-size: var(--font-size-base);
+		margin-bottom: var(--spacing-sm);
 	}
 
 	.success a {
 		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
+		font-size: var(--font-size-xs);
 		color: var(--color-secondary);
 	}
 </style>
