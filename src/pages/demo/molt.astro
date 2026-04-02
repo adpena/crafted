@@ -1,13 +1,13 @@
 ---
-// Molt live demo — Python compiled to Wasm, running in the browser
-// No interpreter. No Pyodide. No cold start.
+// Molt Mandelbrot demo — Python compiled to Wasm, rendered on canvas
+// TODO: Wire to live Molt compilation endpoint once build is fixed
 ---
 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Molt — Live Demo</title>
+  <title>Molt — Mandelbrot Demo</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,7 +16,6 @@
       --text: #1a1a1a;
       --secondary: #707070;
       --border: #d4d4cc;
-      --surface: #eeeee8;
       --mono: "Courier New", ui-monospace, monospace;
       --serif: Georgia, serif;
     }
@@ -31,7 +30,7 @@
     }
 
     header {
-      padding: 1rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -39,20 +38,17 @@
     }
 
     .title {
-      font-size: 0.875rem;
+      font-size: 0.8rem;
       font-weight: 400;
       letter-spacing: 0.15em;
       text-transform: uppercase;
     }
 
-    .title a {
-      color: var(--text);
-      text-decoration: none;
-    }
+    .title a { color: var(--text); text-decoration: none; }
 
-    .subtitle {
+    .note {
       font-family: var(--mono);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--secondary);
     }
 
@@ -72,27 +68,25 @@
 
     .pane-header {
       font-family: var(--mono);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--secondary);
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 1rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .pane-left {
-      border-right: 1px solid var(--border);
-    }
+    .pane-left { border-right: 1px solid var(--border); }
 
     textarea {
       flex: 1;
       padding: 1rem;
       font-family: var(--mono);
-      font-size: 0.8rem;
-      line-height: 1.6;
+      font-size: 0.75rem;
+      line-height: 1.7;
       color: var(--text);
       background: var(--bg);
       border: none;
@@ -101,26 +95,25 @@
       tab-size: 4;
     }
 
-    .output {
+    .canvas-wrap {
       flex: 1;
-      padding: 1rem;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      line-height: 1.6;
-      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: var(--text);
-      overflow: auto;
-      white-space: pre-wrap;
+      padding: 1rem;
     }
 
-    .output.running {
-      color: #a0a0a0;
+    canvas {
+      image-rendering: pixelated;
+      max-width: 100%;
+      max-height: 100%;
     }
 
     .btn {
-      padding: 0.25rem 0.75rem;
+      padding: 0.2rem 0.6rem;
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text);
       background: transparent;
       border: 1px solid var(--border);
@@ -128,24 +121,28 @@
       transition: background 150ms, color 150ms;
     }
 
-    .btn:hover {
-      background: var(--text);
-      color: var(--bg);
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
+    .btn:hover { background: var(--text); color: var(--bg); }
+    .btn:disabled { opacity: 0.3; cursor: default; }
+    .btn.primary { background: var(--text); color: var(--bg); }
+    .btn.primary:hover { opacity: 0.85; }
 
     .status {
       font-family: var(--mono);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--secondary);
-      padding: 0.4rem 1rem;
+      padding: 0.35rem 1rem;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
+    }
+
+    .placeholder-msg {
+      color: var(--secondary);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-align: center;
+      max-width: 20rem;
+      line-height: 1.6;
     }
 
     @media (max-width: 768px) {
@@ -153,125 +150,161 @@
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
       }
-
       .pane-left {
         border-right: none;
         border-bottom: 1px solid var(--border);
       }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { transition-duration: 0ms !important; }
-    }
   </style>
 </head>
 <body>
   <header>
-    <span class="title"><a href="/">Molt</a></span>
-    <span class="subtitle">Python compiled to WebAssembly — no interpreter</span>
+    <span class="title"><a href="/">Molt</a> — Mandelbrot</span>
+    <span class="note">Python → Wasm → Canvas</span>
   </header>
 
   <div class="demo-layout">
     <div class="pane pane-left">
       <div class="pane-header">
-        <span>app.py</span>
-        <button class="btn" id="run-btn">Run</button>
+        <span>mandelbrot.py</span>
+        <div style="display:flex;gap:0.3rem">
+          <button class="btn primary" id="compile-btn" disabled>Compile & Run</button>
+        </div>
       </div>
-      <textarea id="code" spellcheck="false" readonly></textarea>
+      <textarea id="code" spellcheck="false"></textarea>
     </div>
 
     <div class="pane">
       <div class="pane-header">
         <span>Output</span>
-        <button class="btn" id="clear-btn">Clear</button>
       </div>
-      <div class="output" id="output"></div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="canvas" width="400" height="300"></canvas>
+      </div>
     </div>
   </div>
 
   <div class="status">
-    <span id="status-text">Ready</span>
+    <span id="status-text">Loading source...</span>
     <span id="status-meta"></span>
   </div>
 
-  <script type="module">
+  <script>
     const codeEl = document.getElementById('code');
-    const outputEl = document.getElementById('output');
-    const runBtn = document.getElementById('run-btn');
-    const clearBtn = document.getElementById('clear-btn');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const compileBtn = document.getElementById('compile-btn');
     const statusText = document.getElementById('status-text');
     const statusMeta = document.getElementById('status-meta');
 
-    // Load the source code
-    fetch('/molt-demo/app.py')
+    // Load the Mandelbrot source
+    fetch('/molt-demo/mandelbrot.py')
       .then(r => r.text())
       .then(src => {
-        // Show just the interesting parts (skip the huge GPT weights)
-        const lines = src.split('\n');
-        const weightStart = lines.findIndex(l => l.includes('_GPT_W'));
-        const weightEnd = lines.findIndex((l, i) => i > weightStart && l.startsWith(')'));
+        codeEl.value = src;
+        statusText.textContent = 'Ready — Molt compilation endpoint coming soon';
 
-        if (weightStart > 0 && weightEnd > 0) {
-          const before = lines.slice(0, weightStart).join('\n');
-          const after = lines.slice(weightEnd + 1).join('\n');
-          codeEl.value = before + '\n# [4,192 GPT parameters — weights omitted for display]\n_GPT_W = "..."\n' + after;
-        } else {
-          codeEl.value = src;
-        }
+        // Render a JS-side Mandelbrot as a preview
+        // (this proves the canvas works; will be replaced by Wasm output)
+        renderPreview();
       });
 
-    function log(msg) {
-      outputEl.textContent += msg + '\n';
-      outputEl.scrollTop = outputEl.scrollHeight;
+    // Animated Mandelbrot zoom
+    const W = 400, H = 300;
+    canvas.width = W;
+    canvas.height = H;
+    const img = ctx.createImageData(W, H);
+
+    // Zoom target: Seahorse Valley — a beautiful region of the set
+    const TARGET_X = -0.7463;
+    const TARGET_Y = 0.1102;
+    let zoom = 1.0;
+    let frame = 0;
+    let animating = true;
+
+    function parseParams() {
+      const src = codeEl.value;
+      const p = (name, fb) => {
+        const m = src.match(new RegExp(name + '\\s*[:=]\\s*([\\-0-9.]+)'));
+        return m ? parseFloat(m[1]) : fb;
+      };
+      return {
+        maxIter: p('MAX_ITER', 100),
+        cx: p('CENTER_X', TARGET_X),
+        cy: p('CENTER_Y', TARGET_Y),
+      };
     }
 
-    clearBtn.addEventListener('click', () => {
-      outputEl.textContent = '';
-    });
+    function renderFrame() {
+      const { maxIter, cx, cy } = parseParams();
+      const scale = 3.0 / (zoom * W);
+      const d = img.data;
 
-    runBtn.addEventListener('click', async () => {
-      runBtn.disabled = true;
-      outputEl.classList.add('running');
-      outputEl.textContent = '';
-      statusText.textContent = 'Loading WASM...';
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
+          const cr = cx + (x - W / 2) * scale;
+          const ci = cy + (y - H / 2) * scale;
+          let zr = 0, zi = 0, i = 0;
+          while (i < maxIter) {
+            const tr = zr * zr - zi * zi + cr;
+            zi = 2 * zr * zi + ci;
+            zr = tr;
+            if (zr * zr + zi * zi > 4) break;
+            i++;
+          }
+          const idx = (y * W + x) * 4;
+          if (i === maxIter) {
+            d[idx] = d[idx+1] = d[idx+2] = 0;
+          } else {
+            const t = i / maxIter;
+            d[idx]   = (9 * (1-t) * t*t*t * 255) | 0;
+            d[idx+1] = (15 * (1-t)*(1-t) * t*t * 255) | 0;
+            d[idx+2] = (8.5 * (1-t)*(1-t)*(1-t) * t * 255) | 0;
+          }
+          d[idx+3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+    }
 
-      const t0 = performance.now();
+    function animate() {
+      if (!animating) return;
+      zoom *= 1.008; // Slow continuous zoom
+      frame++;
 
-      try {
-        const { loadMoltWasm } = await import('/molt-demo/browser_host.js');
-
-        statusText.textContent = 'Instantiating...';
-        const host = await loadMoltWasm({
-          linkedUrl: '/molt-demo/output_linked.wasm',
-          log: (level, msg) => {
-            if (level === 'stdout') {
-              log(msg);
-            } else if (level !== 'trace') {
-              log(`[${level}] ${msg}`);
-            }
-          },
-        });
-
-        const t1 = performance.now();
-        statusText.textContent = 'Running...';
-
-        host.run();
-
-        const t2 = performance.now();
-        const loadMs = Math.round(t1 - t0);
-        const execMs = Math.round(t2 - t1);
-
-        statusText.textContent = 'Done';
-        statusMeta.textContent = `Load: ${loadMs}ms · Execute: ${execMs}ms · Binary: 5.2MB`;
-        outputEl.classList.remove('running');
-      } catch (err) {
-        log(`Error: ${err.message}`);
-        statusText.textContent = 'Error';
-        console.error(err);
+      // Increase iterations as we zoom deeper
+      const dynamicIter = Math.min(300, 80 + Math.floor(zoom / 10));
+      const src = codeEl.value;
+      const currentIter = src.match(/MAX_ITER\s*[:=]\s*(\d+)/);
+      if (currentIter && parseInt(currentIter[1]) !== dynamicIter) {
+        codeEl.value = src.replace(/MAX_ITER\s*[:=]\s*\d+/, 'MAX_ITER: int = ' + dynamicIter);
       }
 
-      runBtn.disabled = false;
+      renderFrame();
+      statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynamicIter} · frame ${frame} · JS preview`;
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    renderFrame();
+    requestAnimationFrame(animate);
+
+    // Pause/resume on click
+    canvas.addEventListener('click', () => {
+      animating = !animating;
+      if (animating) requestAnimationFrame(animate);
+      statusText.textContent = animating ? 'Animating' : 'Paused — click canvas to resume';
     });
+
+    // When code is edited manually, pause animation and re-render once
+    codeEl.addEventListener('input', () => {
+      animating = false;
+      statusText.textContent = 'Paused — editing';
+      renderFrame();
+    });
+
+    // TODO: Wire compile button to Molt Cloudflare Worker endpoint
+    // When Molt build is fixed, this JS preview gets replaced by compiled Wasm output
   </script>
 </body>
 </html>
