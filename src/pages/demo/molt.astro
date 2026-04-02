@@ -168,7 +168,7 @@
       line-height: 1.6;
     }
 
-    /* Embed mode: canvas fills the entire iframe */
+    /* Embed canvas-only: just the fractal */
     .embed header,
     .embed .status,
     .embed .pane-left {
@@ -186,6 +186,15 @@
     .embed canvas {
       width: 100%;
       height: 100%;
+    }
+
+    /* Embed stacked: full replit UI, no outer header */
+    .embed-stacked header {
+      display: none !important;
+    }
+
+    .embed-stacked .demo-layout {
+      grid-template-rows: 1.2fr 1fr !important;
     }
 
     @media (max-width: 768px) {
@@ -233,10 +242,11 @@
   </div>
 
   <script>
-    // When embedded in iframe, strip chrome and force side-by-side
-    const isEmbed = new URLSearchParams(window.location.search).has('embed') || window.self !== window.top;
-    if (isEmbed) {
+    const embedParam = new URLSearchParams(window.location.search).get('embed');
+    if (embedParam === '1') {
       document.documentElement.classList.add('embed');
+    } else if (embedParam === 'stacked') {
+      document.documentElement.classList.add('embed-stacked');
     }
 
     const codeEl = document.getElementById('code');

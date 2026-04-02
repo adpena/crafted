@@ -32,27 +32,13 @@ const hasMoltDemo = slug === "molt";
 		</dl>
 
 		{hasMoltDemo && (
-			<Fragment>
-				<section class="demo-embed" aria-label="Live demo">
-					<iframe
-						src="/demo/molt?embed=1"
-						title="Molt Mandelbrot demo — Python compiled to WebAssembly"
-						loading="lazy"
-					></iframe>
-				</section>
-				<details class="demo-source" open>
-					<summary class="section-label" style="cursor:pointer; margin-bottom: var(--spacing-sm)">mandelbrot.py</summary>
-					<pre class="demo-code" id="molt-source"><code>Loading...</code></pre>
-				</details>
-				<script>
-					fetch('/molt-demo/mandelbrot.py')
-						.then(r => r.text())
-						.then(src => {
-							const el = document.getElementById('molt-source');
-							if (el) el.innerHTML = '<code>' + src.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</code>';
-						});
-				</script>
-			</Fragment>
+			<section class="demo-embed" aria-label="Live demo">
+				<iframe
+					src="/demo/molt?embed=stacked"
+					title="Molt Mandelbrot demo — Python compiled to WebAssembly"
+					loading="lazy"
+				></iframe>
+			</section>
 		)}
 
 		{d.featured_image && (
@@ -91,9 +77,9 @@ const hasMoltDemo = slug === "molt";
 
 	.demo-embed iframe {
 		width: 100%;
-		aspect-ratio: 16 / 9;
-		border: none;
-		background: var(--color-text);
+		height: 48rem;
+		border: 1px solid var(--color-border);
+		background: var(--color-bg);
 	}
 
 	@media (max-width: 1100px) {
@@ -101,27 +87,6 @@ const hasMoltDemo = slug === "molt";
 			margin-left: 0;
 			margin-right: 0;
 		}
-	}
-
-	.demo-source {
-		margin-bottom: var(--spacing-xl);
-	}
-
-	.demo-code {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		line-height: 1.6;
-		background: var(--color-surface);
-		color: var(--color-text);
-		padding: var(--spacing-md) var(--spacing-lg);
-		overflow-x: auto;
-		border: 1px solid var(--color-border);
-	}
-
-	.demo-code code {
-		background: none;
-		padding: 0;
-		font-size: inherit;
 	}
 
 	@media (max-width: 768px) {
