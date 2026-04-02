@@ -1,5 +1,5 @@
 import type { RouteContext, PluginContext } from "emdash";
-import { personalize, DEFAULT_AMOUNTS } from "../modules/geo-ask.ts";
+import { resolveJurisdiction, DEFAULT_AMOUNTS } from "../modules/geo-ask.ts";
 import type { GeoContext } from "../modules/geo-ask.ts";
 import { assignVariant } from "../modules/ab-assign.ts";
 import { resolveDisclaimer } from "../modules/disclaimers.ts";
@@ -25,7 +25,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
     city: (routeCtx.requestMeta?.geo?.city as string) ?? undefined,
   };
 
-  const { jurisdiction, context_line } = personalize(geo);
+  const jurisdiction = resolveJurisdiction(geo);
 
   const visitorId = routeCtx.request.headers.get("x-visitor-id") ?? crypto.randomUUID();
   const variants = (page.variants as string[]) ?? ["control"];
@@ -50,8 +50,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
       amounts: DEFAULT_AMOUNTS,
       variant,
       disclaimer,
-      geo,
-      context_line,
+      jurisdiction,
     },
   };
 }
