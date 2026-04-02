@@ -1,6 +1,9 @@
+export type DisclaimerContext = "general" | "candidate_authorized" | "independent_expenditure" | "pac";
+
 export interface Disclaimer {
   jurisdiction: string;
   type: "digital" | "print" | "broadcast" | "sms" | "email";
+  context: DisclaimerContext;
   required_text: string;
   adapted_text: string | null;
   statute_citation: string;
@@ -14,6 +17,7 @@ export interface Disclaimer {
 export interface DisclaimerQuery {
   jurisdiction: string;
   type: Disclaimer["type"];
+  context?: DisclaimerContext;
   vars: Record<string, string>;
 }
 
@@ -48,10 +52,11 @@ export function loadDisclaimers(federal: Disclaimer[], ...states: Disclaimer[][]
 }
 
 export function resolveDisclaimer(data: Disclaimer[], query: DisclaimerQuery): DisclaimerResult {
-  const fedMatch = data.find((d) => d.jurisdiction === "FED" && d.type === query.type) ?? null;
+  const ctx = query.context ?? "general";
+  const fedMatch = data.find((d) => d.jurisdiction === "FED" && d.type === query.type && d.context === ctx) ?? null;
   const stateMatch =
     query.jurisdiction !== "FED"
-      ? data.find((d) => d.jurisdiction === query.jurisdiction && d.type === query.type) ?? null
+      ? data.find((d) => d.jurisdiction === query.jurisdiction && d.type === query.type && d.context === ctx) ?? null
       : null;
 
   const federal = fedMatch ? toEntry(fedMatch, query.vars) : null;
