@@ -29,7 +29,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // auth state, and perform no state-changing actions. If interactive
   // or authenticated features are ever added to action pages, this
   // must be tightened to a domain allowlist.
-  if (context.url.pathname.startsWith("/action/")) {
+  if (context.url.pathname.startsWith("/action/") || context.url.pathname.startsWith("/demo/")) {
     response.headers.delete("X-Frame-Options");
     response.headers.set(
       "Content-Security-Policy",
