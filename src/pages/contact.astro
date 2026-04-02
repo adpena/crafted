@@ -35,7 +35,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <Base title="Contact">
-	<main id="main-content" class="page">
+	<main id="main-content" class="contact-page">
 		{formStatus === "success" ? (
 			<div class="contact-success">
 				<p>{formMessage}</p>
@@ -71,6 +71,12 @@ if (Astro.request.method === "POST") {
 </Base>
 
 <style>
+	.contact-page {
+		max-width: 56rem;
+		margin: 0 auto;
+		padding: var(--spacing-xl) var(--content-padding) var(--spacing-2xl);
+	}
+
 	.contact-form {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
