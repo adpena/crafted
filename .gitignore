@@ -1,0 +1,31 @@
+# build output
+dist/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# cloudflare
+.wrangler/
+.mf/
+worker-configuration.d.ts
+
+# local data
+data.db
+*.db-journal
+uploads/
+
+# logs
+npm-debug.log*
+
+# environment variables
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# project internal
+.superpowers/
