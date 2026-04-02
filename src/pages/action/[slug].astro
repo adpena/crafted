@@ -1,0 +1,120 @@
+---
+const { slug } = Astro.params;
+if (!slug) return new Response("Not found", { status: 404 });
+
+const embed = Astro.url.searchParams.get("embed") === "1";
+
+// Access the plugin storage directly via D1
+import { env } from "cloudflare:workers";
+const db = env.DB;
+
+let pageData: Record<string, any> | null = null;
+try {
+  const row = await db.prepare(
+    "SELECT data FROM _plugin_storage WHERE plugin_id = 'crafted-action-pages' AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
+  ).bind(slug).first();
+  if (row?.data) {
+    pageData = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+  }
+} catch (e) {
+  console.error("Action page query failed:", e);
+}
+
+if (!pageData) {
+  return new Response("Action page not found", { status: 404 });
+}
+
+const title = pageData.title ?? "Action Page";
+const type = pageData.type ?? "fundraise";
+const body = pageData.body ?? "";
+const actblue_url = pageData.actblue_url ?? "";
+const refcode = pageData.refcode ?? "";
+const amounts = pageData.amount_config?.base ?? [10, 25, 50, 100, 250];
+const committeeName = pageData.committee_name ?? "";
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #f5f5f0;
+      padding: 3rem 1.5rem;
+      max-width: 32rem;
+      margin: 0 auto;
+    }
+    h1 { font-size: 1.5rem; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 1rem; }
+    .body-text { margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .amounts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .amount {
+      padding: 0.5rem 1rem;
+      font-family: "Courier New", monospace;
+      font-size: 0.875rem;
+      background: transparent;
+      border: 1px solid #1a1a1a;
+      cursor: pointer;
+      transition: background 150ms, color 150ms;
+    }
+    .amount:hover, .amount.selected { background: #1a1a1a; color: #f5f5f0; }
+    .cta {
+      display: inline-block;
+      padding: 0.6rem 2rem;
+      font-family: "Courier New", monospace;
+      font-size: 0.875rem;
+      color: #f5f5f0;
+      background: #1a1a1a;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+    .cta:hover { opacity: 0.85; }
+    .disclaimer {
+      font-family: "Courier New", monospace;
+      font-size: 0.7rem;
+      color: #707070;
+      border-top: 1px solid #d4d4cc;
+      padding-top: 0.75rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>{title}</h1>
+    {body && <p class="body-text">{body}</p>}
+
+    {type === "fundraise" && (
+      <Fragment>
+        <div class="amounts">
+          {amounts.map((a: number) => (
+            <button class="amount" data-amount={a}>${a}</button>
+          ))}
+        </div>
+        <a id="donate-link" href={`${actblue_url}?refcode=${refcode}&amount=`} class="cta" target="_blank" rel="noopener noreferrer">
+          Donate
+        </a>
+      </Fragment>
+    )}
+
+    {committeeName && <p class="disclaimer">Paid for by {committeeName}</p>}
+  </main>
+
+  <script>
+    document.querySelectorAll('.amount').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.amount').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const link = document.getElementById('donate-link');
+        if (link) link.href = link.href.replace(/amount=.*/, 'amount=' + btn.dataset.amount);
+      });
+    });
+  </script>
+</body>
+</html>
