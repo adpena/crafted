@@ -286,9 +286,9 @@
     canvas.height = H;
     const img = ctx.createImageData(W, H);
 
-    // Zoom target: spiral arm in the Elephant Valley — fractal arms that go forever
-    const TARGET_X = 0.2501;
-    const TARGET_Y = 0.00001;
+    // Zoom target: Seahorse Valley spiral — infinite detail on the fractal boundary
+    const TARGET_X = -0.7453;
+    const TARGET_Y = 0.1127;
     let zoom = 1.0;
     let frame = 0;
     let animating = true;
@@ -340,7 +340,9 @@
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.005; // Gentle continuous zoom
+      zoom *= 1.005;
+      // Reset before floating-point precision death — smooth fade to new view
+      if (zoom > 1e12) zoom = 1.0;
       frame++;
 
       // Increase iterations as we zoom deeper
