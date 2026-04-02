@@ -46,6 +46,7 @@ Astro.cache.set(cacheHint);
 		? `${tags.find((t) => t.slug === activeTag)?.label || activeTag} — Work`
 		: "Work"}
 >
+	<main id="main-content">
 	<section class="work-header">
 		<h1>Work</h1>
 		<p class="work-intro">
@@ -107,6 +108,7 @@ Astro.cache.set(cacheHint);
 			</section>
 		)
 	}
+	</main>
 </Base>
 
 <style>

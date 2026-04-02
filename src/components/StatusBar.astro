@@ -17,7 +17,7 @@ const { items } = Astro.props;
 			<>
 				{i > 0 && <span class="status-divider" aria-hidden="true">/</span>}
 				<span class="status-item">
-					{item.active && <span class="status-dot" aria-label="Active" />}
+					{item.active && <span class="status-dot" aria-hidden="true" />}
 					{item.label}
 				</span>
 			</>

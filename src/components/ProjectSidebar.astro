@@ -42,7 +42,7 @@ const isActive = status === "Active" || status === "active";
 		<div class="sidebar-section">
 			<h3 class="sidebar-label">Status</h3>
 			<span class="sidebar-status">
-				{isActive && <span class="status-dot" aria-label="Active" />}
+				{isActive && <span class="status-dot" aria-hidden="true" />}
 				{status}
 			</span>
 		</div>

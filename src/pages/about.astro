@@ -11,7 +11,7 @@ try {
 ---
 
 <Base title="About" description="Learn more about who we are and what we do.">
-	<div class="about-page">
+	<main id="main-content" class="about-page">
 		<header class="about-header">
 			<h1 class="about-title" {...page?.edit?.title}>
 				{page?.data?.title || "About"}
@@ -28,9 +28,9 @@ try {
 			}
 		</div>
 
-		<aside class="about-sidebar">
+		<aside class="about-sidebar" aria-label="Additional information">
 			<div class="sidebar-section">
-				<h3>Services</h3>
+				<h2>Services</h2>
 				<ul>
 					<li>Brand Identity</li>
 					<li>Web Design & Development</li>
@@ -40,7 +40,7 @@ try {
 			</div>
 
 			<div class="sidebar-section">
-				<h3>Contact</h3>
+				<h2>Contact</h2>
 				<p>
 					<a href="mailto:hello@studio.example">hello@studio.example</a>
 				</p>
@@ -49,7 +49,7 @@ try {
 				</p>
 			</div>
 		</aside>
-	</div>
+	</main>
 </Base>
 
 <style>
@@ -109,7 +109,7 @@ try {
 		margin-bottom: var(--spacing-2xl);
 	}
 
-	.sidebar-section h3 {
+	.sidebar-section h2 {
 		font-family: var(--font-serif);
 		font-size: var(--font-size-lg);
 		font-weight: 500;

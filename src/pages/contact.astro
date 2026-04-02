@@ -35,7 +35,7 @@ if (Astro.request.method === "POST") {
 ---
 
 <Base title="Contact" description="Get in touch with us about your next project.">
-	<div class="contact-page">
+	<main id="main-content" class="contact-page">
 		<header class="contact-header">
 			<h1 class="contact-title">Get in Touch</h1>
 			<p class="contact-intro">
@@ -47,51 +47,57 @@ if (Astro.request.method === "POST") {
 		<div class="contact-grid">
 			<div class="contact-form-wrapper">
 				{formStatus === "success" ? (
-					<div class="form-success">
+					<div class="form-success" role="status">
 						<h2>Message Sent</h2>
 						<p>{formMessage}</p>
 						<a href="/contact" class="form-reset">Send another message</a>
 					</div>
 				) : (
-					<form method="POST" class="contact-form">
+					<form method="POST" class="contact-form" novalidate>
 						{formStatus === "error" && (
-							<div class="form-error">
+							<div class="form-error" role="alert" id="form-error-message">
 								<p>{formMessage}</p>
 							</div>
 						)}
 
 						<div class="form-field">
-							<label for="name">Name</label>
+							<label for="name">Name <span aria-hidden="true">*</span></label>
 							<input
 								type="text"
 								id="name"
 								name="name"
 								required
+								aria-required="true"
 								placeholder="Your name"
 								autocomplete="name"
+								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
 							/>
 						</div>
 
 						<div class="form-field">
-							<label for="email">Email</label>
+							<label for="email">Email <span aria-hidden="true">*</span></label>
 							<input
 								type="email"
 								id="email"
 								name="email"
 								required
+								aria-required="true"
 								placeholder="you@example.com"
 								autocomplete="email"
+								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
 							/>
 						</div>
 
 						<div class="form-field">
-							<label for="message">Message</label>
+							<label for="message">Message <span aria-hidden="true">*</span></label>
 							<textarea
 								id="message"
 								name="message"
 								required
+								aria-required="true"
 								rows="6"
 								placeholder="Tell us about your project..."
+								aria-describedby={formStatus === "error" ? "form-error-message" : undefined}
 							></textarea>
 						</div>
 
@@ -102,21 +108,21 @@ if (Astro.request.method === "POST") {
 				)}
 			</div>
 
-			<aside class="contact-info">
+			<aside class="contact-info" aria-label="Contact information">
 				<div class="info-section">
-					<h3>Email</h3>
+					<h2>Email</h2>
 					<p>
 						<a href="mailto:hello@studio.example">hello@studio.example</a>
 					</p>
 				</div>
 
 				<div class="info-section">
-					<h3>Location</h3>
+					<h2>Location</h2>
 					<p>San Francisco, CA</p>
 				</div>
 
 				<div class="info-section">
-					<h3>Social</h3>
+					<h2>Social</h2>
 					<ul class="social-links">
 						<li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a></li>
 						<li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
@@ -126,7 +132,7 @@ if (Astro.request.method === "POST") {
 				</div>
 			</aside>
 		</div>
-	</div>
+	</main>
 </Base>
 
 <style>
@@ -192,11 +198,11 @@ if (Astro.request.method === "POST") {
 			box-shadow var(--transition-fast);
 	}
 
-	.form-field input:focus,
-	.form-field textarea:focus {
-		outline: none;
-		border-color: var(--color-accent);
-		box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+	.form-field input:focus-visible,
+	.form-field textarea:focus-visible {
+		outline: 2px solid var(--color-text);
+		outline-offset: 2px;
+		border-color: var(--color-text);
 	}
 
 	.form-field input::placeholder,
@@ -292,7 +298,7 @@ if (Astro.request.method === "POST") {
 		margin-bottom: var(--spacing-2xl);
 	}
 
-	.info-section h3 {
+	.info-section h2 {
 		font-family: var(--font-serif);
 		font-size: var(--font-size-lg);
 		font-weight: 500;
