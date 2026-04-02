@@ -18,7 +18,12 @@ for (const def of collectionDefs) {
 	try {
 		const result = await getEmDashCollection(def.slug);
 		if (result.entries?.length > 0) {
-			sections.push({ ...def, entries: result.entries });
+			const sorted = [...result.entries].sort((a, b) => {
+				const ya = parseInt(a.data.year ?? "0", 10);
+				const yb = parseInt(b.data.year ?? "0", 10);
+				return yb - ya; // newest first
+			});
+			sections.push({ ...def, entries: sorted });
 		}
 		if (result.cacheHint) {
 			try { Astro.cache.set(result.cacheHint); } catch {}
