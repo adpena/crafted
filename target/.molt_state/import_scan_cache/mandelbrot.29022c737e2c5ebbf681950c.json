@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "module_name": "mandelbrot",
+  "is_package": false,
+  "include_nested": true,
+  "size": 1647,
+  "mtime_ns": 1775155056679496358,
+  "imports": []
+}

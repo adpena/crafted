@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "module_name": "mandelbrot",
+  "is_package": false,
+  "size": 1647,
+  "mtime_ns": 1775155056679496358,
+  "func_defaults": {
+    "color": {
+      "params": 2,
+      "defaults": []
+    },
+    "render": {
+      "params": 0,
+      "defaults": []
+    },
+    "main": {
+      "params": 0,
+      "defaults": []
+    }
+  },
+  "imports": []
+}

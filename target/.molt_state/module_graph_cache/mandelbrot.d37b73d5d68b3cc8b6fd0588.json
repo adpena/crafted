@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "modules": [
+    {
+      "module": "mandelbrot",
+      "path": "/Users/adpena/Projects/crafted/demo/mandelbrot.py",
+      "size": 1647,
+      "mtime_ns": 1775155056679496358
+    }
+  ],
+  "explicit_imports": []
+}
