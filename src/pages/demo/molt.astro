@@ -279,11 +279,10 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // Render at fixed resolution, CSS scales to fill.
-    // 400×300 = 120K pixels — fast enough for 60fps JS rendering.
-    // When Molt Wasm replaces this, we can go to full native res.
-    const W = 400;
-    const H = 300;
+    // 800×600 = 480K pixels — crisp on most displays, smooth in JS.
+    // When Molt Wasm replaces this, we can push higher.
+    const W = 800;
+    const H = 600;
     canvas.width = W;
     canvas.height = H;
     const img = ctx.createImageData(W, H);
@@ -342,7 +341,7 @@
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.012;
+      zoom *= 1.008;
       // Reset before floating-point precision death — smooth fade to new view
       if (zoom > 1e12) zoom = 1.0;
       frame++;
