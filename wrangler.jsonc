@@ -9,6 +9,10 @@
 	"assets": {
 		"directory": "./dist",
 	},
+	"routes": [
+		{ "pattern": "adpena.com/*", "zone_name": "adpena.com" },
+		{ "pattern": "www.adpena.com/*", "zone_name": "adpena.com" }
+	],
 	// Note: The IDs below are resource identifiers, not secrets. Access is
 	// protected by the CLOUDFLARE_API_TOKEN which must never be committed.
 	"kv_namespaces": [
