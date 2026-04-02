@@ -94,8 +94,10 @@ function isActive(href: string): boolean {
 	}
 
 	.masthead-nav-link.active {
-		border-bottom: 1px solid var(--color-text);
-		padding-bottom: 2px;
+		color: var(--color-text);
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 4px;
 	}
 
 	@media (max-width: 640px) {

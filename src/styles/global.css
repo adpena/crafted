@@ -16,6 +16,7 @@
 	--color-accent: #22c55e;
 	--color-border: #d4d4cc;
 	--color-surface: #eeeee8;
+	--color-error: #dc2626;
 
 	/* Typography */
 	--font-serif: Georgia, "Times New Roman", serif;

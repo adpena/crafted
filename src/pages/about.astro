@@ -9,31 +9,40 @@ try { Astro.cache.set(cacheHint); } catch {}
 
 <Base title="About">
 	<main id="main-content" class="page">
+		<h1 class="page-title">About</h1>
+
 		<div class="prose">
 			{page?.data?.content ? (
 				<PortableText value={page.data.content} />
 			) : (
 				<Fragment>
 					<p>
-						Systems engineer and compiler author. I build infrastructure
-						that makes other things work better.
+						I build tools for progressive campaigns, public education advocates,
+						and labor organizations.
 					</p>
 					<p>
-						Currently focused on Python-to-Wasm compilation and campaign
-						technology for progressive causes. Previously: Django, WordPress,
-						frontend web development.
-					</p>
-					<p>
-						Looking for my next role at the intersection of development,
-						design, policy, and politics.
+						Before writing code full-time, I spent six years in the Texas
+						Legislature. That background shapes how I build software.
 					</p>
 				</Fragment>
 			)}
 		</div>
 
-		<aside style="margin-top: var(--spacing-2xl); padding-top: var(--spacing-lg); border-top: 1px solid var(--color-border)">
+		<aside class="about-cta">
 			<h2 class="section-label">Get in touch</h2>
-			<a href="/contact">Send a message</a>
+			<a href="/contact" class="btn">Send a message</a>
 		</aside>
 	</main>
 </Base>
+
+<style>
+	.about-cta {
+		margin-top: var(--spacing-2xl);
+		padding-top: var(--spacing-lg);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.about-cta .btn {
+		margin-top: var(--spacing-sm);
+	}
+</style>
