@@ -1,35 +1,14 @@
 ---
-import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
-
 import FeaturedProject from "../components/FeaturedProject.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 
+// Static snapshot — no D1 queries at runtime.
+// Refresh: EMDASH_TOKEN=... node --experimental-strip-types scripts/refresh-homepage.ts
+// Then: npm run deploy
+import homepageData from "../data/homepage.json";
 
-// Gather latest from all collections — parallel queries
-const collections = ["dev_projects", "design_work", "policy_work", "writing"];
-
-const results = await Promise.all(
-	collections.map(async (col) => {
-		try {
-			const { entries, cacheHint } = await getEmDashCollection(col);
-			try { Astro.cache.set(cacheHint); } catch {}
-			return entries.map((e) => ({ ...e, _href: `/work/${col}/${e.id}`, _collection: col }));
-		} catch { return []; }
-	})
-);
-
-const allEntries = results.flat();
-
-const sorted = allEntries.toSorted((a, b) => {
-	const dateA = a.data.publishedAt?.getTime() ?? 0;
-	const dateB = b.data.publishedAt?.getTime() ?? 0;
-	return dateB - dateA;
-});
-
-const moltEntry = sorted.find((e) => e.id === "molt");
-const featured = moltEntry ?? sorted[0];
-const latest = sorted.filter((e) => e !== featured);
+const { featured, latest } = homepageData;
 ---
 
 <Base>
@@ -39,9 +18,9 @@ const latest = sorted.filter((e) => e !== featured);
 				<div class="columns">
 					<section aria-label="Featured project" class="col-featured">
 						<FeaturedProject
-							title={featured.data.title ?? "Untitled"}
-							summary={featured.data.summary}
-							href={featured._href}
+							title={featured.title}
+							summary={featured.summary}
+							href={featured.href}
 						/>
 					</section>
 
@@ -50,28 +29,21 @@ const latest = sorted.filter((e) => e !== featured);
 					<section aria-label="Latest projects" class="col-latest">
 						<span class="section-label">Latest</span>
 						<div class="latest-list">
-							{latest.map((project) => (
+							{latest.map((item) => (
 								<ProjectCard
-									title={project.data.title ?? "Untitled"}
-									summary={project.data.summary}
-									href={project._href}
+									title={item.title}
+									summary={item.summary}
+									href={item.href}
 								/>
 							))}
 						</div>
 					</section>
 				</div>
 			) : (
-				<section class="empty-state">
-					<h2>No projects yet</h2>
-					<p>Add your first project in the admin panel.</p>
-					<a href="/_emdash/admin/content/projects/new" class="empty-link">
-						Add a project
-					</a>
-				</section>
+				<p class="empty">No projects yet.</p>
 			)}
 		</div>
 	</main>
-
 </Base>
 
 <style>
@@ -94,7 +66,7 @@ const latest = sorted.filter((e) => e !== featured);
 		font-family: var(--font-mono);
 		font-size: var(--font-size-xs);
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.15em;
 		color: var(--color-secondary);
 		margin-bottom: var(--spacing-md);
 	}
@@ -103,32 +75,6 @@ const latest = sorted.filter((e) => e !== featured);
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-md);
-	}
-
-	.empty-state {
-		text-align: center;
-		padding: var(--spacing-4xl) 0;
-	}
-
-	.empty-state h2 {
-		font-size: var(--font-size-xl);
-		margin-bottom: var(--spacing-sm);
-	}
-
-	.empty-state p {
-		color: var(--color-secondary);
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.empty-link {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
-		color: var(--color-secondary);
-		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.empty-link:hover {
-		color: var(--color-text);
 	}
 
 	@media (max-width: 768px) {

@@ -1,0 +1,86 @@
+{
+  "generated": "2026-04-02T17:31:15.482Z",
+  "source": "https://crafted.adpena.workers.dev",
+  "featured": {
+    "slug": "molt",
+    "title": "Molt",
+    "summary": "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.",
+    "stack": "Rust, Python, Wasm",
+    "year": "2026",
+    "collection": "dev_projects",
+    "href": "/work/dev_projects/molt"
+  },
+  "latest": [
+    {
+      "slug": "crafted-action-pages",
+      "title": "Crafted Action Pages",
+      "summary": "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.",
+      "stack": "TypeScript, Astro, Cloudflare Workers, D1",
+      "year": "2026",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/crafted-action-pages"
+    },
+    {
+      "slug": "reproq",
+      "title": "Reproq",
+      "summary": "Django 6.0 task queue with Postgres-native queueing and a high-performance Go execution engine.",
+      "stack": "Django, Python, Go, PostgreSQL",
+      "year": "2025",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/reproq"
+    },
+    {
+      "slug": "data-for-public-education",
+      "title": "Data for Public Education",
+      "summary": "Texas public school data platform: teadata (Python library on PyPI), teadata-app (Django web application), and teadata-mcp (MCP server with React UI). Three repos, one mission.",
+      "stack": "Django, Python, React, TypeScript, MCP, PostgreSQL",
+      "year": "2025",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/data-for-public-education"
+    },
+    {
+      "slug": "texas-inflation-calculator",
+      "title": "Texas Inflation Calculator",
+      "summary": "Static Vue.js calculator comparing Texas buying power over time using Comptroller CPI data.",
+      "stack": "Vue.js, Chart.js, HTML",
+      "year": "2023",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/texas-inflation-calculator"
+    },
+    {
+      "slug": "respect-campaign-map",
+      "title": "Respect Campaign Map",
+      "summary": "Interactive JavaScript map visualizing district-level campaign data for Texas AFT's statewide education advocacy campaign.",
+      "medium": "Interactive web, JavaScript, data visualization",
+      "year": "2022",
+      "collection": "design_work",
+      "href": "/work/design_work/respect-campaign-map"
+    },
+    {
+      "slug": "travis-county-voter-data-api",
+      "title": "Travis County Voter Data",
+      "summary": "Python voter data API with heatmap generation, jurisdictional analysis, and a web interface for Travis County election data.",
+      "stack": "Python, Jupyter, JavaScript, Go",
+      "year": "2019",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/travis-county-voter-data-api"
+    },
+    {
+      "slug": "tcdp-donor-identification",
+      "title": "TCDP Donor Identification",
+      "summary": "Flask application for matching campaign donors to the voter file by phone number for the Travis County Democratic Party.",
+      "stack": "Flask, Python, SQLite",
+      "year": "2018",
+      "collection": "dev_projects",
+      "href": "/work/dev_projects/tcdp-donor-identification"
+    },
+    {
+      "slug": "fiscal-impact-of-charter-school-expansion",
+      "title": "Fiscal Impact of Charter School Expansion",
+      "summary": "Analysis of $3.6 billion in revenue losses across 325+ Texas public school districts due to charter school expansion, with district-level breakdowns.",
+      "publication": "Texas AFT",
+      "collection": "policy_work",
+      "href": "/work/policy_work/fiscal-impact-of-charter-school-expansion"
+    }
+  ]
+}
