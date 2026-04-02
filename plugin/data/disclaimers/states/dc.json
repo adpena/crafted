@@ -1,0 +1,47 @@
+[
+  {
+    "jurisdiction": "DC",
+    "type": "digital",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}, {treasurer_name}, Treasurer",
+    "adapted_text": null,
+    "statute_citation": "DC Code 1-1163.15",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2019-03-13",
+    "last_verified": "2026-04-01",
+    "source_url": "https://code.dccouncil.gov/us/dc/council/code/sections/1-1163.15"
+  },
+  {
+    "jurisdiction": "DC",
+    "type": "print",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}, {treasurer_name}, Treasurer",
+    "adapted_text": null,
+    "statute_citation": "DC Code 1-1163.15",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2019-03-13",
+    "last_verified": "2026-04-01",
+    "source_url": "https://code.dccouncil.gov/us/dc/council/code/sections/1-1163.15"
+  },
+  {
+    "jurisdiction": "DC",
+    "type": "broadcast",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}, {treasurer_name}, Treasurer",
+    "adapted_text": null,
+    "statute_citation": "DC Code 1-1163.15",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2019-03-13",
+    "last_verified": "2026-04-01",
+    "source_url": "https://code.dccouncil.gov/us/dc/council/code/sections/1-1163.15"
+  }
+]

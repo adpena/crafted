@@ -1,0 +1,62 @@
+[
+  {
+    "jurisdiction": "GA",
+    "type": "digital",
+    "context": "independent_expenditure",
+    "required_text": "Financed by {committee_name}",
+    "adapted_text": "Clearly state that it has been financed by such independent committee",
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.ga.gov/api/legislation/document/20252026/218combinedsub"
+  },
+  {
+    "jurisdiction": "GA",
+    "type": "print",
+    "context": "independent_expenditure",
+    "required_text": "Financed by {committee_name}",
+    "adapted_text": "Clearly state that it has been financed by such independent committee",
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.ga.gov/api/legislation/document/20252026/218combinedsub"
+  },
+  {
+    "jurisdiction": "GA",
+    "type": "broadcast",
+    "context": "independent_expenditure",
+    "required_text": "Financed by {committee_name}",
+    "adapted_text": "Clearly state that it has been financed by such independent committee",
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.ga.gov/api/legislation/document/20252026/218combinedsub"
+  },
+  {
+    "jurisdiction": "GA",
+    "type": "digital",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": "Georgia's general disclaimer requirement is weaker than other states; O.C.G.A. § 21-5-34 primarily addresses independent expenditure communications",
+    "statute_citation": "O.C.G.A. § 21-5-34",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "2010-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.ga.gov/api/legislation/document/20252026/218combinedsub"
+  }
+]

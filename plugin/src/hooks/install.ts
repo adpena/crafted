@@ -1,5 +1,5 @@
 import type { PluginContext } from "emdash";
-import federalData from "../../../data/disclaimers/federal.json" with { type: "json" };
+import federalData from "../../data/disclaimers/federal.json" with { type: "json" };
 
 export async function handleInstall(_event: unknown, ctx: PluginContext): Promise<void> {
   // Load federal disclaimer data into KV for fast access from routes

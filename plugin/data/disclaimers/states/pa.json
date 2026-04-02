@@ -1,0 +1,47 @@
+[
+  {
+    "jurisdiction": "PA",
+    "type": "digital",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1937-06-03",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.state.pa.us/cfdocs/legis/LI/uconsCheck.cfm?yr=1937&sessInd=0&smthLwInd=0&act=320&chpt=0&sctn=8&subsctn=0"
+  },
+  {
+    "jurisdiction": "PA",
+    "type": "print",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1937-06-03",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.state.pa.us/cfdocs/legis/LI/uconsCheck.cfm?yr=1937&sessInd=0&smthLwInd=0&act=320&chpt=0&sctn=8&subsctn=0"
+  },
+  {
+    "jurisdiction": "PA",
+    "type": "broadcast",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "25 P.S. § 3258",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1937-06-03",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.legis.state.pa.us/cfdocs/legis/LI/uconsCheck.cfm?yr=1937&sessInd=0&smthLwInd=0&act=320&chpt=0&sctn=8&subsctn=0"
+  }
+]

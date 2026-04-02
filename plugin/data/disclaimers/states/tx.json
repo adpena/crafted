@@ -1,0 +1,47 @@
+[
+  {
+    "jurisdiction": "TX",
+    "type": "digital",
+    "context": "general",
+    "required_text": "Political advertising paid for by {committee_name}",
+    "adapted_text": "Pol. adv. paid for by {committee_name}",
+    "statute_citation": "Tex. Elec. Code § 255.001",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1987-09-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://statutes.capitol.texas.gov/Docs/EL/htm/EL.255.htm"
+  },
+  {
+    "jurisdiction": "TX",
+    "type": "print",
+    "context": "general",
+    "required_text": "Political advertising paid for by {committee_name}",
+    "adapted_text": "Pol. adv. {committee_name}",
+    "statute_citation": "Tex. Elec. Code § 255.001",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1987-09-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://statutes.capitol.texas.gov/Docs/EL/htm/EL.255.htm"
+  },
+  {
+    "jurisdiction": "TX",
+    "type": "broadcast",
+    "context": "general",
+    "required_text": "Political advertising paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Tex. Elec. Code § 255.001",
+    "ai_disclosure_required": false,
+    "ai_disclosure_text": null,
+    "ai_disclosure_statute": null,
+    "ai_disclosure_scope": null,
+    "effective_date": "1987-09-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://statutes.capitol.texas.gov/Docs/EL/htm/EL.255.htm"
+  }
+]

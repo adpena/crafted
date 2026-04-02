@@ -1,0 +1,62 @@
+[
+  {
+    "jurisdiction": "CA",
+    "type": "digital",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": "Who funded this ad? {committee_name}",
+    "statute_citation": "Cal. Gov. Code § 84504.3",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This ad was generated or substantially altered using artificial intelligence.",
+    "ai_disclosure_statute": "Cal. Gov. Code 84511 (AB 2355)",
+    "ai_disclosure_scope": "Required for ads generated or substantially altered using AI. Separate platform obligations under AB 2655 not captured here.",
+    "effective_date": "2018-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/california/2021/code-gov/title-9/chapter-4/article-5/section-84504-3/"
+  },
+  {
+    "jurisdiction": "CA",
+    "type": "print",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Cal. Gov. Code § 84504.2",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This ad was generated or substantially altered using artificial intelligence.",
+    "ai_disclosure_statute": "Cal. Gov. Code 84511 (AB 2355)",
+    "ai_disclosure_scope": "Required for ads generated or substantially altered using AI. Separate platform obligations under AB 2655 not captured here.",
+    "effective_date": "2018-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/california/code-gov/title-9/chapter-4/article-5/section-84504-2/"
+  },
+  {
+    "jurisdiction": "CA",
+    "type": "broadcast",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Cal. Gov. Code § 84504.1",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This ad was generated or substantially altered using artificial intelligence.",
+    "ai_disclosure_statute": "Cal. Gov. Code 84511 (AB 2355)",
+    "ai_disclosure_scope": "Required for ads generated or substantially altered using AI. Separate platform obligations under AB 2655 not captured here.",
+    "effective_date": "2018-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://www.fppc.ca.gov/learn/campaign-rules/campaign-advertising-requirements-and-restrictions/"
+  },
+  {
+    "jurisdiction": "CA",
+    "type": "email",
+    "context": "general",
+    "required_text": "Paid for by {committee_name}",
+    "adapted_text": null,
+    "statute_citation": "Cal. Gov. Code § 84504.3",
+    "ai_disclosure_required": true,
+    "ai_disclosure_text": "This ad was generated or substantially altered using artificial intelligence.",
+    "ai_disclosure_statute": "Cal. Gov. Code 84511 (AB 2355)",
+    "ai_disclosure_scope": "Required for ads generated or substantially altered using AI. Separate platform obligations under AB 2655 not captured here.",
+    "effective_date": "2018-01-01",
+    "last_verified": "2026-04-01",
+    "source_url": "https://law.justia.com/codes/california/2021/code-gov/title-9/chapter-4/article-5/section-84504-3/"
+  }
+]

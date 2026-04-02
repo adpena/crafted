@@ -1,17 +1,49 @@
 {
   "name": "@crafted/action-pages",
   "version": "0.1.0",
+  "description": "Campaign action page engine for emdash CMS with FEC/state disclaimer compliance, geo-personalization, A/B testing, and embeddable widgets.",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adpena/crafted.git",
+    "directory": "plugin"
+  },
+  "homepage": "https://github.com/adpena/crafted/tree/main/plugin#readme",
+  "bugs": {
+    "url": "https://github.com/adpena/crafted/issues"
+  },
   "exports": {
     ".": "./src/index.ts",
-    "./sandbox": "./src/sandbox-entry.ts",
-    "./admin": "./src/admin/index.ts"
+    "./sandbox": "./src/sandbox-entry.ts"
+  },
+  "files": [
+    "src",
+    "data",
+    "README.md"
+  ],
+  "keywords": [
+    "emdash",
+    "cms",
+    "plugin",
+    "action-pages",
+    "fundraising",
+    "campaign",
+    "fec-compliance",
+    "disclaimer",
+    "ab-testing",
+    "political",
+    "embed",
+    "widget"
+  ],
+  "peerDependencies": {
+    "emdash": ">=0.1.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0"
   },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest"
-  },
-  "devDependencies": {
-    "vitest": "^3.0.0"
   }
 }
