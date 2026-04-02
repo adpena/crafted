@@ -15,7 +15,8 @@
 		"typecheck": "astro check",
 		"bootstrap": "emdash init && emdash seed",
 		"test": "vitest run",
-		"lint": "astro check"
+		"lint": "astro check",
+		"verify": "npx tsx scripts/verify-disclaimers.ts"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "13.1.3",
