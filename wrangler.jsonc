@@ -9,6 +9,8 @@
 	"assets": {
 		"directory": "./dist",
 	},
+	// Note: The IDs below are resource identifiers, not secrets. Access is
+	// protected by the CLOUDFLARE_API_TOKEN which must never be committed.
 	"kv_namespaces": [
 		{
 			"binding": "CACHE",

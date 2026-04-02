@@ -4,14 +4,32 @@ import Base from "../layouts/Base.astro";
 let formStatus: "idle" | "success" | "error" = "idle";
 let formMessage = "";
 
+// Generate CSRF token for GET requests, validate on POST
+function generateToken(): string {
+	const bytes = new Uint8Array(32);
+	crypto.getRandomValues(bytes);
+	return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+let csrfToken = generateToken();
+
 if (Astro.request.method === "POST") {
 	try {
 		const formData = await Astro.request.formData();
 		const name = formData.get("name")?.toString() || "";
 		const email = formData.get("email")?.toString() || "";
 		const message = formData.get("message")?.toString() || "";
+		const formCsrf = formData.get("_csrf")?.toString() || "";
 
-		if (!name || !email || !message) {
+		// CSRF double-submit cookie check
+		const cookieHeader = Astro.request.headers.get("cookie") ?? "";
+		const csrfCookie = cookieHeader.split(";").map(c => c.trim()).find(c => c.startsWith("_csrf="));
+		const cookieCsrf = csrfCookie?.split("=")[1] ?? "";
+
+		if (!formCsrf || !cookieCsrf || formCsrf !== cookieCsrf) {
+			formStatus = "error";
+			formMessage = "Invalid form submission. Please try again.";
+		} else if (!name || !email || !message) {
 			formStatus = "error";
 			formMessage = "Please fill in all fields.";
 		} else if (!email.includes("@")) {
@@ -27,6 +45,15 @@ if (Astro.request.method === "POST") {
 		formMessage = "Something went wrong. Please try again.";
 	}
 }
+
+// Set CSRF cookie on every response (new token each load)
+Astro.cookies.set("_csrf", csrfToken, {
+	httpOnly: false,
+	sameSite: "strict",
+	secure: true,
+	path: "/contact",
+	maxAge: 3600,
+});
 ---
 
 <Base title="Contact">
@@ -38,6 +65,8 @@ if (Astro.request.method === "POST") {
 			</div>
 		) : (
 			<form method="POST" novalidate style="display:flex;flex-direction:column;gap:var(--spacing-md)">
+				<input type="hidden" name="_csrf" value={csrfToken} />
+
 				{formStatus === "error" && (
 					<div role="alert" style="border-left:2px solid #dc2626;padding-left:var(--spacing-md);color:#dc2626;font-size:var(--font-size-sm)">
 						{formMessage}

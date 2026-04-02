@@ -4,11 +4,23 @@ export async function handleEmbed(routeCtx: RouteContext, _ctx: PluginContext) {
   const input = routeCtx.input as { slug?: string; base_url?: string } | undefined;
   const url = new URL(routeCtx.request.url);
   const slug = input?.slug ?? url.searchParams.get("slug");
-  if (!slug) {
-    return { status: 400, body: { error: "Missing slug parameter" } };
+  if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
+    return { status: 400, body: { error: "Missing or invalid slug parameter" } };
   }
 
-  const baseUrl = input?.base_url ?? url.origin;
+  // Validate baseUrl to prevent open redirect -- must be same origin or a valid https URL
+  const rawBaseUrl = input?.base_url ?? url.origin;
+  let baseUrl: string;
+  try {
+    const parsed = new URL(rawBaseUrl);
+    if (parsed.origin === url.origin || parsed.protocol === "https:") {
+      baseUrl = parsed.origin;
+    } else {
+      baseUrl = url.origin;
+    }
+  } catch {
+    baseUrl = url.origin;
+  }
 
   const script = `
 (function() {

@@ -1,6 +1,8 @@
 ---
 const { slug } = Astro.params;
-if (!slug) return new Response("Not found", { status: 404 });
+if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
+  return new Response("Not found", { status: 404 });
+}
 
 const embed = Astro.url.searchParams.get("embed") === "1";
 
@@ -27,7 +29,16 @@ if (!pageData) {
 const title = pageData.title ?? "Action Page";
 const type = pageData.type ?? "fundraise";
 const body = pageData.body ?? "";
-const actblue_url = pageData.actblue_url ?? "";
+const rawActblueUrl = pageData.actblue_url ?? "";
+let actblue_url = "";
+try {
+  if (rawActblueUrl) {
+    const parsed = new URL(rawActblueUrl);
+    if (parsed.protocol === "https:" && parsed.hostname.endsWith("actblue.com")) {
+      actblue_url = parsed.href;
+    }
+  }
+} catch { /* invalid URL, leave empty */ }
 const refcode = pageData.refcode ?? "";
 const amounts = pageData.amount_config?.base ?? [10, 25, 50, 100, 250];
 const committeeName = pageData.committee_name ?? "";

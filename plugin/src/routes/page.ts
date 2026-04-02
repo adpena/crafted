@@ -9,8 +9,8 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
   const url = new URL(routeCtx.request.url);
   const slug = (routeCtx.input as { slug?: string })?.slug ?? url.searchParams.get("slug");
 
-  if (!slug) {
-    return { status: 400, body: { error: "Missing slug parameter" } };
+  if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
+    return { status: 400, body: { error: "Missing or invalid slug parameter" } };
   }
 
   const result = await ctx.storage.action_pages.query({ where: { slug } });

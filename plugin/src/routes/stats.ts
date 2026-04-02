@@ -3,8 +3,8 @@ import type { RouteContext, PluginContext } from "emdash";
 export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
   const input = routeCtx.input as { page_id?: string } | undefined;
   const pageId = input?.page_id ?? new URL(routeCtx.request.url).searchParams.get("page_id");
-  if (!pageId) {
-    return { status: 400, body: { error: "Missing page_id parameter" } };
+  if (!pageId || !/^[a-z0-9][a-z0-9-]*$/.test(pageId)) {
+    return { status: 400, body: { error: "Missing or invalid page_id parameter" } };
   }
 
   const result = await ctx.storage.ab_variants.query({ where: { page_id: pageId } });
