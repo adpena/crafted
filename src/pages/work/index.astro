@@ -1,57 +1,35 @@
 ---
-export const prerender = false;
-
-import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 
 const sections = [
-	{ slug: "dev_projects", label: "Development" },
-	{ slug: "design_work", label: "Design" },
-	{ slug: "policy_work", label: "Policy" },
-	{ slug: "writing", label: "Writing" },
+	{
+		label: "Development",
+		slug: "dev_projects",
+		items: [
+			{ slug: "molt", title: "Molt", summary: "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.", meta: "Rust, Python, Wasm" },
+			{ slug: "crafted-action-pages", title: "Crafted Action Pages", summary: "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.", meta: "TypeScript, Astro, Cloudflare Workers, D1" },
+		],
+	},
 ];
-
-const loaded = await Promise.all(
-	sections.map(async (section) => {
-		try {
-			const { entries, cacheHint } = await getEmDashCollection(section.slug);
-			return { ...section, entries, cacheHint };
-		} catch {
-			return { ...section, entries: [], cacheHint: null };
-		}
-	})
-);
-
-const nonEmpty = loaded.filter((s) => s.entries.length > 0);
-
-for (const s of loaded) {
-	if (s.cacheHint) try { Astro.cache.set(s.cacheHint); } catch {}
-}
 ---
 
 <Base title="Work">
 	<main id="main-content" class="page">
-		{nonEmpty.length > 0 ? (
-			nonEmpty.map((section) => (
-				<section style="margin-bottom: var(--spacing-xl)">
-					<h2 class="section-label">{section.label}</h2>
-					<ul class="item-list" role="list">
-						{section.entries.map((entry) => (
-							<li>
-								<a href={`/work/${section.slug}/${entry.id}`} class="item-link">
-									<span class="item-title">{entry.data.title}</span>
-									{entry.data.summary && <span class="item-desc">{entry.data.summary}</span>}
-									{entry.data.stack && <span class="item-meta">{entry.data.stack}</span>}
-									{entry.data.publication && <span class="item-meta">{entry.data.publication}</span>}
-									{entry.data.medium && <span class="item-meta">{entry.data.medium}</span>}
-								</a>
-							</li>
-						))}
-					</ul>
-				</section>
-			))
-		) : (
-			<p class="empty">No work yet.</p>
-		)}
+		{sections.map((section) => (
+			<section style="margin-bottom: var(--spacing-xl)">
+				<h2 class="section-label">{section.label}</h2>
+				<ul class="item-list" role="list">
+					{section.items.map((item) => (
+						<li>
+							<a href={`/work/${section.slug}/${item.slug}`} class="item-link">
+								<span class="item-title">{item.title}</span>
+								<span class="item-desc">{item.summary}</span>
+								<span class="item-meta">{item.meta}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		))}
 	</main>
 </Base>
