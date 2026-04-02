@@ -74,18 +74,24 @@ if (Astro.request.method === "POST") {
 
 <style>
 	.contact-form {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-md);
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--spacing-md) var(--spacing-lg);
 		margin-top: var(--spacing-lg);
 	}
 
+	.contact-form .form-field:last-of-type {
+		grid-column: 1 / -1;
+	}
+
 	.contact-form .btn {
-		align-self: flex-start;
+		grid-column: 1;
+		justify-self: start;
 		margin-top: var(--spacing-sm);
 	}
 
 	.form-error {
+		grid-column: 1 / -1;
 		border-left: 2px solid var(--color-error);
 		padding-left: var(--spacing-md);
 		color: var(--color-error);
@@ -98,5 +104,11 @@ if (Astro.request.method === "POST") {
 
 	.contact-success .btn {
 		margin-top: var(--spacing-md);
+	}
+
+	@media (max-width: 640px) {
+		.contact-form {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
