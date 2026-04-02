@@ -1,8 +1,10 @@
-// Mandelbrot render worker — runs off the main thread
+// Mandelbrot render worker — smooth coloring, off main thread
 self.onmessage = function(e) {
-  const { W, H, cx, cy, zoom, maxIter } = e.data;
+  const { W, H, cx, cy, zoom, maxIter, colorShift } = e.data;
   const scale = 3.0 / (zoom * W);
   const buf = new Uint8ClampedArray(W * H * 4);
+  const ln2 = Math.log(2);
+  const shift = colorShift || 0;
 
   for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
@@ -13,19 +15,23 @@ self.onmessage = function(e) {
         const tr = zr * zr - zi * zi + cr;
         zi = 2 * zr * zi + ci;
         zr = tr;
-        if (zr * zr + zi * zi > 4) break;
+        if (zr * zr + zi * zi > 256) break;
         i++;
       }
       const idx = (y * W + x) * 4;
       if (i === maxIter) {
-        buf[idx] = buf[idx+1] = buf[idx+2] = 0;
+        buf[idx] = buf[idx + 1] = buf[idx + 2] = 0;
       } else {
-        const t = i / maxIter;
-        buf[idx]   = (9 * (1-t) * t*t*t * 255) | 0;
-        buf[idx+1] = (15 * (1-t)*(1-t) * t*t * 255) | 0;
-        buf[idx+2] = (8.5 * (1-t)*(1-t)*(1-t) * t * 255) | 0;
+        // Smooth iteration count avoids color banding
+        const mag = Math.sqrt(zr * zr + zi * zi);
+        const mu = i + 1 - Math.log(Math.log(mag)) / ln2;
+        const t = (mu + shift) * 0.025;
+        // Sine-based palette — cycles smoothly, never repeats exactly
+        buf[idx]     = (Math.sin(t * 3.0) * 127 + 128) | 0;
+        buf[idx + 1] = (Math.sin(t * 3.0 + 2.1) * 127 + 128) | 0;
+        buf[idx + 2] = (Math.sin(t * 3.0 + 4.2) * 127 + 128) | 0;
       }
-      buf[idx+3] = 255;
+      buf[idx + 3] = 255;
     }
   }
 

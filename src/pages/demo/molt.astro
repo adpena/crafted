@@ -280,7 +280,7 @@
       });
 
     const W = 640;
-    const H = 480;
+    const H = 400;
     canvas.width = W;
     canvas.height = H;
 
@@ -315,24 +315,24 @@
     }
 
     function requestRender() {
-      if (rendering) return; // Skip if previous frame still computing
+      if (rendering) return;
       rendering = true;
       const { maxIter, cx, cy } = parseParams();
-      worker.postMessage({ W, H, cx, cy, zoom, maxIter });
+      const dynamicIter = Math.min(800, Math.max(maxIter, 50 + Math.floor(Math.log(zoom + 1) * 40)));
+      worker.postMessage({ W, H, cx, cy, zoom, maxIter: dynamicIter, colorShift: frame * 0.3 });
     }
 
     function animate() {
       if (!animating) return;
-      zoom *= 1.008;
+      zoom *= 1.004;
       if (zoom > 1e12) zoom = 1.0;
       frame++;
-
-      const dynamicIter = Math.min(500, 80 + Math.floor(Math.log(zoom) * 15));
 
       requestRender();
 
       if (statusMeta) {
-        statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynamicIter} · frame ${frame}`;
+        const dynIter = Math.min(800, 50 + Math.floor(Math.log(zoom + 1) * 40));
+        statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynIter} · frame ${frame}`;
       }
       requestAnimationFrame(animate);
     }
