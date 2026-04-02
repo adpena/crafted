@@ -8,8 +8,8 @@
 	},
 
 	"settings": {
-		"title": "Studio",
-		"tagline": "Design & Development"
+		"title": "Crafted",
+		"tagline": "Systems, compilers, and campaign tech"
 	},
 
 	"collections": [
@@ -97,10 +97,10 @@
 			"hierarchical": false,
 			"collections": ["projects"],
 			"terms": [
-				{ "slug": "branding", "label": "Branding" },
-				{ "slug": "web", "label": "Web Design" },
-				{ "slug": "print", "label": "Print" },
-				{ "slug": "photography", "label": "Photography" }
+				{ "slug": "compilers", "label": "Compilers" },
+				{ "slug": "campaign-tech", "label": "Campaign Tech" },
+				{ "slug": "open-source", "label": "Open Source" },
+				{ "slug": "infrastructure", "label": "Infrastructure" }
 			]
 		},
 		{
@@ -110,13 +110,14 @@
 			"hierarchical": false,
 			"collections": ["projects"],
 			"terms": [
-				{ "slug": "identity", "label": "Identity" },
-				{ "slug": "ui-ux", "label": "UI/UX" },
-				{ "slug": "development", "label": "Development" },
-				{ "slug": "art-direction", "label": "Art Direction" },
-				{ "slug": "packaging", "label": "Packaging" },
-				{ "slug": "ecommerce", "label": "E-commerce" },
-				{ "slug": "editorial", "label": "Editorial" }
+				{ "slug": "python", "label": "Python" },
+				{ "slug": "rust", "label": "Rust" },
+				{ "slug": "wasm", "label": "Wasm" },
+				{ "slug": "cloudflare", "label": "Cloudflare" },
+				{ "slug": "astro", "label": "Astro" },
+				{ "slug": "typescript", "label": "TypeScript" },
+				{ "slug": "django", "label": "Django" },
+				{ "slug": "wordpress", "label": "WordPress" }
 			]
 		}
 	],
@@ -127,6 +128,7 @@
 			"label": "Primary Navigation",
 			"items": [
 				{ "type": "custom", "label": "Work", "url": "/work" },
+				{ "type": "custom", "label": "About", "url": "/about" },
 				{ "type": "custom", "label": "Contact", "url": "/contact" }
 			]
 		}
@@ -147,32 +149,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "We are a small design studio focused on creating meaningful work for thoughtful clients. Founded in 2020, we've had the privilege of working with brands across technology, culture, and the arts."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Our approach is simple: listen carefully, think deeply, and craft with intention. We believe that good design is invisible — it gets out of the way and lets the work speak for itself."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "What we do" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "We specialize in brand identity, web design, and art direction. Whether you need a complete visual identity or a single website, we bring the same level of care and attention to every project."
+									"text": "Systems engineer and compiler author. I build infrastructure that makes other things work better. Currently focused on Python-to-Wasm compilation and campaign technology for progressive causes. Previously: Django, WordPress, frontend web development."
 								}
 							]
 						}
@@ -182,15 +159,15 @@
 		],
 		"projects": [
 			{
-				"id": "meridian-brand",
-				"slug": "meridian-brand",
+				"id": "molt",
+				"slug": "molt",
 				"status": "published",
 				"data": {
-					"title": "Meridian",
-					"client": "Meridian Collective",
-					"year": "2024",
-					"summary": "A complete brand identity for a creative collective bringing together artists and technologists.",
-					"featured_image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=900&fit=crop",
+					"title": "Molt",
+					"year": "2026",
+					"summary": "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.",
+					"featured_image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=900&fit=crop",
+					"url": "https://github.com/adpena/molt",
 					"content": [
 						{
 							"_type": "block",
@@ -198,14 +175,14 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Meridian Collective needed a visual identity that could bridge the gap between traditional art and emerging technology. The challenge was to create something that felt timeless yet forward-looking."
+									"text": "Molt is an ahead-of-time compiler that takes Python source and emits WebAssembly. The goal is not to run arbitrary Python in the browser -- CPython already sort of does that via Pyodide, and it is enormous. Molt targets a narrower problem: take the Python you actually wrote, strip everything you did not use, and produce a small, fast Wasm module that can run on Cloudflare Workers or any other edge runtime."
 								}
 							]
 						},
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "The approach" }]
+							"children": [{ "_type": "span", "text": "How it works" }]
 						},
 						{
 							"_type": "block",
@@ -213,14 +190,9 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "We developed a wordmark that combines classical typography with subtle geometric forms. The color palette draws from both digital interfaces and natural materials, creating a bridge between worlds."
+									"text": "The compiler is written in Rust. It parses Python into an AST, runs type inference, then applies aggressive tree shaking and deforestation to eliminate dead code and intermediate data structures. The output is Wasm bytecode linked against libmolt, a small C ABI runtime that handles the parts of Python semantics you cannot reasonably compile away (exception handling, some dynamic dispatch). The result is a binary measured in kilobytes, not megabytes."
 								}
 							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The result" }]
 						},
 						{
 							"_type": "block",
@@ -228,28 +200,27 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "The new identity has been applied across print and digital touchpoints, from business cards to a fully responsive website. Meridian has received positive feedback from both artists and technologists alike."
+									"text": "Molt is designed to pair with Monty, a Python sandbox interpreter. The intended workflow is: develop and test your code in Monty during development, where you get fast iteration and a familiar REPL, then AOT-compile with Molt for production. Same source, two runtimes -- one optimized for developer experience, the other for artifact size and execution speed."
 								}
 							]
 						}
 					]
 				},
 				"taxonomies": {
-					"category": ["branding"],
-					"tag": ["identity", "art-direction"]
+					"category": ["compilers", "open-source", "infrastructure"],
+					"tag": ["python", "rust", "wasm", "cloudflare"]
 				}
 			},
 			{
-				"id": "volta-web",
-				"slug": "volta-web",
+				"id": "crafted-action-pages",
+				"slug": "crafted-action-pages",
 				"status": "published",
 				"data": {
-					"title": "Volta",
-					"client": "Volta Energy",
-					"year": "2024",
-					"summary": "Website design for a renewable energy startup making clean power accessible to everyone.",
-					"featured_image": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=900&fit=crop",
-					"url": "https://volta.example.com",
+					"title": "Crafted Action Pages",
+					"year": "2026",
+					"summary": "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.",
+					"featured_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=900&fit=crop",
+					"url": "https://github.com/adpena/crafted",
 					"content": [
 						{
 							"_type": "block",
@@ -257,14 +228,14 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Volta is on a mission to make renewable energy accessible to everyone. They needed a website that could explain complex technology simply while inspiring trust in potential customers."
+									"text": "Progressive campaigns need action pages -- donation forms, petition signatures, volunteer sign-ups -- and they need them fast. Most agencies in this space run WordPress or Django shops, and building compliant action pages from scratch every cycle is slow and error-prone. Crafted Action Pages is an emdash plugin that solves the deployment side: define a page in the CMS, and it renders at the edge on Cloudflare with the correct FEC and state-level disclaimer for the visitor's jurisdiction."
 								}
 							]
 						},
 						{
 							"_type": "block",
 							"style": "h2",
-							"children": [{ "_type": "span", "text": "Design principles" }]
+							"children": [{ "_type": "span", "text": "Compliance and personalization" }]
 						},
 						{
 							"_type": "block",
@@ -272,101 +243,25 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "We focused on clarity and warmth. The design uses generous whitespace and a vibrant green accent that evokes growth and sustainability without feeling clichéd."
+									"text": "The plugin ships with an open-source compliance dataset covering federal rules and 10 state-specific disclaimer requirements. The dataset is community-contributable -- if your state is missing, you can open a PR. On the fundraising side, donation asks are geo-personalized based on the visitor's location, and pages support Cloudflare-powered A/B testing out of the box. Spam protection uses Cloudflare Turnstile, and donation flows deep-link into ActBlue so campaigns keep their existing payment infrastructure."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "The whole thing is built to fit into the world that agencies like Blueprint Interactive already operate in -- WordPress and Django backends, tight timelines, compliance requirements that vary by state. Action pages can be embedded as widgets on existing sites or deployed as standalone pages. The technical stack is TypeScript on Astro, running on Cloudflare's edge network."
 								}
 							]
 						}
 					]
 				},
 				"taxonomies": {
-					"category": ["web"],
-					"tag": ["ui-ux", "development"]
-				}
-			},
-			{
-				"id": "archive-print",
-				"slug": "archive-print",
-				"status": "published",
-				"data": {
-					"title": "The Archive",
-					"client": "City Museum",
-					"year": "2023",
-					"summary": "Exhibition catalog and print materials for a retrospective on modernist architecture.",
-					"featured_image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=900&fit=crop",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The Archive was a major exhibition at the City Museum, showcasing 50 years of modernist architecture through photographs, drawings, and models. We designed the complete print identity."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The catalog" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The 240-page catalog uses a strict grid system inspired by the work being exhibited. Full-bleed photography alternates with dense text spreads, creating a rhythm that echoes the exhibition layout."
-								}
-							]
-						}
-					]
-				},
-				"taxonomies": {
-					"category": ["print"],
-					"tag": ["editorial", "art-direction"]
-				}
-			},
-			{
-				"id": "coastal-photo",
-				"slug": "coastal-photo",
-				"status": "published",
-				"data": {
-					"title": "Coastal",
-					"client": "Personal Project",
-					"year": "2023",
-					"summary": "A photographic study of the Pacific coastline, exploring the intersection of land, sea, and sky.",
-					"featured_image": "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1200&h=900&fit=crop",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Coastal began as a weekend project and grew into a year-long exploration of the Pacific shoreline. Shot entirely on medium format film, the series captures the quiet drama of the coast."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Process" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Each image was made at dawn or dusk, when the light is softest and the beaches are empty. The slow process of shooting film encourages patience and intentionality — qualities that show in the final work."
-								}
-							]
-						}
-					]
-				},
-				"taxonomies": {
-					"category": ["photography"],
-					"tag": ["art-direction", "editorial"]
+					"category": ["campaign-tech", "open-source"],
+					"tag": ["typescript", "cloudflare", "astro", "wordpress", "django"]
 				}
 			}
 		]
