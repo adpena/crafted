@@ -1,0 +1,27 @@
+import type { RouteContext, PluginContext } from "emdash";
+
+export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
+  const input = routeCtx.input as { page_id?: string } | undefined;
+  const pageId = input?.page_id ?? new URL(routeCtx.request.url).searchParams.get("page_id");
+  if (!pageId) {
+    return { status: 400, body: { error: "Missing page_id parameter" } };
+  }
+
+  const result = await ctx.storage.ab_variants.query({ where: { page_id: pageId } });
+
+  const stats = result.items.map((item) => {
+    const v = item.data as Record<string, unknown>;
+    const impressions = (v.impressions as number) || 0;
+    const conversions = (v.conversions as number) || 0;
+    const rate = impressions > 0 ? conversions / impressions : 0;
+
+    return {
+      variant: v.variant as string,
+      impressions,
+      conversions,
+      conversion_rate: Math.round(rate * 10000) / 10000,
+    };
+  });
+
+  return { status: 200, body: { page_id: pageId, variants: stats } };
+}
