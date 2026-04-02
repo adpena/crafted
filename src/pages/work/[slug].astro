@@ -4,7 +4,6 @@ import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import ProjectSidebar from "../../components/ProjectSidebar.astro";
 import MetricsBanner from "../../components/MetricsBanner.tsx";
-import TabbedContent from "../../components/TabbedContent.tsx";
 import ResizablePanel from "../../components/ResizablePanel.tsx";
 
 const { slug } = Astro.params;
@@ -89,100 +88,29 @@ const flagshipMetrics: Record<string, { value: string; label: string }[]> = {
 				<MetricsBanner client:visible metrics={flagshipMetrics[slug]} />
 			)}
 
-			{isFlagship ? (
-				<TabbedContent
-					client:visible
-					tabs={[
-						{
-							label: "Overview",
-							content: (
-								<div class="project-layout">
-									<div class="project-content">
-										<PortableText value={project.data.content} />
-									</div>
-									<ProjectSidebar
-										stack={stack}
-										url={project.data.url}
-										year={project.data.year}
-										status="Active"
-									/>
-								</div>
-							),
-						},
-						{
-							label: "Architecture",
-							content: (
-								<div class="flagship-architecture">
-									<h3>System Architecture</h3>
-									<p>
-										Technical architecture details for {project.data.title}. This section covers the
-										design decisions, technology choices, and structural patterns that shape the project.
-									</p>
-									<p>
-										Built with a focus on performance, maintainability, and developer experience.
-										Each layer of the stack was chosen deliberately.
-									</p>
-								</div>
-							),
-						},
-						{
-							label: "Demo",
-							content: (
-								<ResizablePanel
-									client:visible
-									initialSplit={45}
-									left={
-										<div>
-											<h3 style={{ fontFamily: "var(--font-serif)", fontWeight: 700, fontSize: "var(--font-size-lg)", marginBottom: "0.75rem" }}>
-												Live Preview
-											</h3>
-											<p>
-												Interact with the resize handle to explore this split-panel layout.
-												The left panel holds descriptive content while the right panel
-												can display diagrams, code, or live previews.
-											</p>
-											<p>
-												Drag the divider or use arrow keys when focused on the handle
-												to adjust the split between 20% and 80%.
-											</p>
-										</div>
-									}
-									right={
-										<div>
-											<pre style={{ margin: 0, background: "transparent", padding: 0 }}>
-{`// ${project.data.title}
-// Interactive demo placeholder
-
-┌─────────────────────┐
-│                     │
-│   ${slug}           │
-│   ──────            │
-│                     │
-│   Ready for         │
-│   live content      │
-│                     │
-└─────────────────────┘`}
-											</pre>
-										</div>
-									}
-								/>
-							),
-						},
-					]}
-				/>
-			) : (
-				<div class="project-layout">
-					<div class="project-content">
-						<PortableText value={project.data.content} />
-					</div>
-
-					<ProjectSidebar
-						stack={stack}
-						url={project.data.url}
-						year={project.data.year}
-						status="Active"
-					/>
+			<div class="project-layout">
+				<div class="project-content">
+					<PortableText value={project.data.content} />
 				</div>
+
+				<ProjectSidebar
+					stack={stack}
+					url={project.data.url}
+					year={project.data.year}
+					status="Active"
+				/>
+			</div>
+
+			{isFlagship && (
+				<section class="flagship-demo" aria-label="Interactive demo">
+					<h2>Demo</h2>
+					<ResizablePanel
+						client:visible
+						initialSplit={45}
+						left="Interact with the resize handle to explore this split-panel layout. Drag the divider or use arrow keys when focused on the handle to adjust the split between 20% and 80%."
+						right={`// ${project.data.title}\n// Interactive demo placeholder\n\nReady for live content.`}
+					/>
+				</section>
 			)}
 		</div>
 	</main>
