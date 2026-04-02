@@ -1,11 +1,11 @@
 {
-  "generated": "2026-04-02T17:31:15.482Z",
+  "generated": "2026-04-02T18:19:19.592Z",
   "source": "https://crafted.adpena.workers.dev",
   "featured": {
     "slug": "molt",
     "title": "Molt",
-    "summary": "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.",
-    "stack": "Rust, Python, Wasm",
+    "summary": "AOT compiler for a practical subset of Python. Produces small, fast native and WebAssembly binaries with broad stdlib and C extension compatibility.",
+    "stack": "Rust, Python, Wasm, LLVM",
     "year": "2026",
     "collection": "dev_projects",
     "href": "/work/dev_projects/molt"
