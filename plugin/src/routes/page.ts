@@ -42,7 +42,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
   let actblue_url = "";
   try {
     const p = new URL((page.actblue_url as string) ?? "");
-    if (p.protocol === "https:" && p.hostname.endsWith("actblue.com")) {
+    if (p.protocol === "https:" && (p.hostname === "secure.actblue.com" || p.hostname === "actblue.com")) {
       actblue_url = p.href;
     }
   } catch {}

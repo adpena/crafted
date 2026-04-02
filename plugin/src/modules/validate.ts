@@ -72,7 +72,12 @@ export function validateSubmission(input: SubmissionInput): ValidationResult {
 
   const sanitized: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(input.data)) {
-    sanitized[key] = typeof value === "string" ? sanitizeString(value) : value;
+    if (typeof value === "string") {
+      sanitized[key] = sanitizeString(value);
+    } else if (typeof value === "number" || typeof value === "boolean") {
+      sanitized[key] = value;
+    }
+    // Objects, arrays, functions, symbols are silently dropped
   }
 
   return { valid: true, errors: [], sanitized };

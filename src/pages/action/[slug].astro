@@ -34,7 +34,7 @@ let actblue_url = "";
 try {
   if (rawActblueUrl) {
     const parsed = new URL(rawActblueUrl);
-    if (parsed.protocol === "https:" && parsed.hostname.endsWith("actblue.com")) {
+    if (parsed.protocol === "https:" && (parsed.hostname === "secure.actblue.com" || parsed.hostname === "actblue.com")) {
       actblue_url = parsed.href;
     }
   }
