@@ -147,12 +147,40 @@
       line-height: 1.6;
     }
 
+    /* Embed mode: force side-by-side, hide chrome */
+    .embed header,
+    .embed .status,
+    .embed .pane-header {
+      display: none;
+    }
+
+    .embed .demo-layout {
+      grid-template-columns: 1fr 1fr !important;
+      grid-template-rows: 1fr !important;
+    }
+
+    .embed .canvas-wrap {
+      padding: 0;
+    }
+
+    .embed canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .embed textarea {
+      font-size: 0.7rem;
+      line-height: 1.5;
+      padding: 0.75rem;
+    }
+
     @media (max-width: 768px) {
-      .demo-layout {
+      :not(.embed) .demo-layout {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 1fr;
       }
-      .pane-left {
+      :not(.embed) .pane-left {
         border-right: none;
         border-bottom: 1px solid var(--border);
       }
@@ -192,16 +220,10 @@
   </div>
 
   <script>
-    // When embedded in iframe, strip chrome and force side-by-side layout
-    const isEmbed = window.self !== window.top;
+    // When embedded in iframe, strip chrome and force side-by-side
+    const isEmbed = new URLSearchParams(window.location.search).has('embed') || window.self !== window.top;
     if (isEmbed) {
-      document.querySelector('header')?.remove();
-      document.querySelector('.status')?.remove();
-      const layout = document.querySelector('.demo-layout');
-      if (layout) {
-        layout.style.gridTemplateColumns = '1fr 1fr';
-        layout.style.gridTemplateRows = '1fr';
-      }
+      document.documentElement.classList.add('embed');
     }
 
     const codeEl = document.getElementById('code');
