@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 
 import FeaturedProject from "../components/FeaturedProject.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import StatusBar from "../components/StatusBar.astro";
+
 
 const { entries: projects, cacheHint } =
 	await getEmDashCollection("projects");
@@ -61,12 +61,6 @@ const latest = sorted.slice(1);
 		</div>
 	</main>
 
-	<StatusBar
-		items={[
-			{ label: "built with emdash (WordPress at the edge) + astro + cloudflare workers + d1 + r2" },
-			{ label: "open to work" },
-		]}
-	/>
 </Base>
 
 <style>

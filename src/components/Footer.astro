@@ -1,6 +1,4 @@
 ---
-// To customize social links, edit this array.
-// Remove any you don't use — the footer hides itself when empty.
 const socialLinks = [
 	{ label: "GitHub", url: "https://github.com/adpena" },
 	{ label: "Twitter", url: "https://twitter.com/adpenatx" },
@@ -8,8 +6,9 @@ const socialLinks = [
 ].filter((link) => link.url);
 ---
 
-{socialLinks.length > 0 && (
-	<footer class="site-footer" role="contentinfo">
+<footer class="site-footer" role="contentinfo">
+	<p class="colophon">built with emdash (WordPress at the edge) + astro + cloudflare</p>
+	{socialLinks.length > 0 && (
 		<nav aria-label="Social links" class="social-nav">
 			{socialLinks.map((link, i) => (
 				<Fragment>
@@ -20,15 +19,23 @@ const socialLinks = [
 				</Fragment>
 			))}
 		</nav>
-	</footer>
-)}
+	)}
+</footer>
 
 <style>
 	.site-footer {
 		max-width: 42rem;
 		margin: 0 auto;
-		padding: var(--spacing-xl) 0;
+		padding: var(--spacing-md) 0 var(--spacing-lg);
 		border-top: 1px solid var(--color-border);
+		text-align: center;
+	}
+
+	.colophon {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-sm);
 	}
 
 	.social-nav {

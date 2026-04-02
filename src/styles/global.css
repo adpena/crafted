@@ -56,7 +56,14 @@ body {
 	color: var(--color-text);
 	background: var(--color-bg);
 	-webkit-font-smoothing: antialiased;
-	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+}
+
+body > main,
+body > .container {
+	flex: 1;
 }
 
 a {
