@@ -1,0 +1,92 @@
+---
+import { getSiteSettings } from "emdash";
+
+const settings = await getSiteSettings();
+const siteTitle = settings?.title || "Studio";
+const tagline = settings?.tagline || "Design & Development";
+
+const navLinks = [
+	{ label: "Home", href: "/" },
+	{ label: "Work", href: "/work" },
+	{ label: "About", href: "/about" },
+	{ label: "Contact", href: "/contact" },
+];
+---
+
+<header role="banner" class="masthead">
+	<div class="masthead-inner">
+		<a href="/" class="masthead-title">{siteTitle}</a>
+		<p class="masthead-tagline">{tagline}</p>
+		<nav aria-label="Main navigation" class="masthead-nav">
+			{navLinks.map((link) => (
+				<a href={link.href} class="masthead-nav-link">{link.label}</a>
+			))}
+		</nav>
+	</div>
+</header>
+
+<style>
+	.masthead {
+		border-bottom: 2px solid var(--color-text);
+		padding: var(--spacing-xl) 0 var(--spacing-lg);
+	}
+
+	.masthead-inner {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 0 var(--content-padding);
+		text-align: center;
+	}
+
+	.masthead-title {
+		display: block;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-3xl);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		text-decoration: none;
+		color: var(--color-text);
+		line-height: 1.1;
+	}
+
+	.masthead-tagline {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		margin-top: var(--spacing-xs);
+		letter-spacing: 0.04em;
+	}
+
+	.masthead-nav {
+		display: flex;
+		justify-content: center;
+		gap: var(--spacing-xl);
+		margin-top: var(--spacing-md);
+		padding-top: var(--spacing-md);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.masthead-nav-link {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		text-decoration: none;
+		color: var(--color-secondary);
+		transition: color 150ms ease;
+	}
+
+	.masthead-nav-link:hover {
+		color: var(--color-text);
+	}
+
+	@media (max-width: 640px) {
+		.masthead-title {
+			font-size: var(--font-size-2xl);
+		}
+
+		.masthead-nav {
+			flex-wrap: wrap;
+			gap: var(--spacing-md);
+		}
+	}
+</style>

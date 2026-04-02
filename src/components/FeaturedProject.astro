@@ -1,0 +1,71 @@
+---
+interface Props {
+	title: string;
+	summary?: string;
+	href: string;
+}
+
+const { title, summary, href } = Astro.props;
+---
+
+<article class="featured-project">
+	<span class="featured-label">Featured</span>
+	<h2 class="featured-title">
+		<a href={href}>{title}</a>
+	</h2>
+	{summary && <p class="featured-summary">{summary}</p>}
+	<a href={href} class="featured-link">Read more &rarr;</a>
+</article>
+
+<style>
+	.featured-project {
+		padding-bottom: var(--spacing-xl);
+	}
+
+	.featured-label {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.featured-title {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-2xl);
+		font-weight: 700;
+		line-height: 1.2;
+		margin-bottom: var(--spacing-md);
+	}
+
+	.featured-title a {
+		text-decoration: none;
+		color: var(--color-text);
+	}
+
+	.featured-title a:hover {
+		text-decoration: underline;
+	}
+
+	.featured-summary {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		line-height: 1.65;
+		color: var(--color-text);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.featured-link {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		text-decoration: none;
+		transition: color 150ms ease;
+	}
+
+	.featured-link:hover {
+		color: var(--color-text);
+	}
+</style>
