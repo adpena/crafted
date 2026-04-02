@@ -1,13 +1,23 @@
-export type GeoContext = { country: string; region: string };
-export type RegionConfig = { multiplier: number };
-export type AmountConfig = {
-  base: number[];
-  regions: Record<string, RegionConfig>;
-  fallback_multiplier: number;
-};
-
-export function suggestAmounts(config: AmountConfig, geo: GeoContext): number[] {
-  const key = `${geo.country}-${geo.region}`;
-  const multiplier = config.regions[key]?.multiplier ?? config.fallback_multiplier;
-  return config.base.map((amount) => Math.round(amount * multiplier));
+export interface GeoContext {
+  country: string;
+  region: string;
+  city?: string;
 }
+
+export interface GeoPersonalization {
+  jurisdiction: string;
+  locale_hint: string;
+  context_line: string | null;
+}
+
+export function personalize(geo: GeoContext): GeoPersonalization {
+  const jurisdiction = geo.region || "FED";
+  const locale_hint = geo.country === "US" && geo.region ? "en-US" : "en";
+  const context_line = geo.city && geo.region
+    ? `Showing information for ${geo.city}, ${geo.region}`
+    : null;
+
+  return { jurisdiction, locale_hint, context_line };
+}
+
+export const DEFAULT_AMOUNTS = [10, 25, 50, 100, 250];
