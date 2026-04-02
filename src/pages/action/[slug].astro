@@ -4,7 +4,6 @@ if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
   return new Response("Not found", { status: 404 });
 }
 
-const embed = Astro.url.searchParams.get("embed") === "1";
 
 // Access the plugin storage directly via D1
 import { env } from "cloudflare:workers";
