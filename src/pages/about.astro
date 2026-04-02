@@ -26,29 +26,12 @@ try { Astro.cache.set(cacheHint); } catch {}
 			)}
 		</div>
 
-		<aside class="about-cta">
-			<h2 class="section-label">Get in touch</h2>
-			<a href="/contact" class="btn">Send a message</a>
-		</aside>
+		<a href="/contact" class="btn">Get in touch</a>
 	</main>
 </Base>
 
 <style>
-	.about-cta {
-		margin-top: var(--spacing-2xl);
-		padding-top: var(--spacing-lg);
-		border-top: 1px solid var(--color-border);
-	}
-
-	.about-cta .btn {
-		margin-top: var(--spacing-sm);
-	}
-
-	@media (max-width: 480px) {
-		.about-cta .btn {
-			min-height: 44px;
-			display: inline-flex;
-			align-items: center;
-		}
+	.page .btn {
+		margin-top: var(--spacing-xl);
 	}
 </style>
