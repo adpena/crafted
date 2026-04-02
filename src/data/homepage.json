@@ -7,8 +7,8 @@
     "summary": "AOT compiler for a practical subset of Python. Produces small, fast native and WebAssembly binaries with broad stdlib and C extension compatibility.",
     "stack": "Rust, Python, Wasm, LLVM",
     "year": "2026",
-    "collection": "dev_projects",
-    "href": "/work/dev_projects/molt"
+    "collection": "dev",
+    "href": "/work/dev/molt"
   },
   "latest": [
     {
@@ -17,8 +17,8 @@
       "summary": "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.",
       "stack": "TypeScript, Astro, Cloudflare Workers, D1",
       "year": "2026",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/crafted-action-pages"
+      "collection": "dev",
+      "href": "/work/dev/crafted-action-pages"
     },
     {
       "slug": "reproq",
@@ -26,8 +26,8 @@
       "summary": "Django 6.0 task queue with Postgres-native queueing and a high-performance Go execution engine.",
       "stack": "Django, Python, Go, PostgreSQL",
       "year": "2025",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/reproq"
+      "collection": "dev",
+      "href": "/work/dev/reproq"
     },
     {
       "slug": "data-for-public-education",
@@ -35,8 +35,8 @@
       "summary": "Texas public school data platform: teadata (Python library on PyPI), teadata-app (Django web application), and teadata-mcp (MCP server with React UI). Three repos, one mission.",
       "stack": "Django, Python, React, TypeScript, MCP, PostgreSQL",
       "year": "2025",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/data-for-public-education"
+      "collection": "dev",
+      "href": "/work/dev/data-for-public-education"
     },
     {
       "slug": "texas-inflation-calculator",
@@ -44,8 +44,8 @@
       "summary": "Static Vue.js calculator comparing Texas buying power over time using Comptroller CPI data.",
       "stack": "Vue.js, Chart.js, HTML",
       "year": "2023",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/texas-inflation-calculator"
+      "collection": "dev",
+      "href": "/work/dev/texas-inflation-calculator"
     },
     {
       "slug": "respect-campaign-map",
@@ -53,8 +53,8 @@
       "summary": "Interactive JavaScript map visualizing district-level campaign data for Texas AFT's statewide education advocacy campaign.",
       "medium": "Interactive web, JavaScript, data visualization",
       "year": "2022",
-      "collection": "design_work",
-      "href": "/work/design_work/respect-campaign-map"
+      "collection": "design",
+      "href": "/work/design/respect-campaign-map"
     },
     {
       "slug": "travis-county-voter-data-api",
@@ -62,8 +62,8 @@
       "summary": "Python voter data API with heatmap generation, jurisdictional analysis, and a web interface for Travis County election data.",
       "stack": "Python, Jupyter, JavaScript, Go",
       "year": "2019",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/travis-county-voter-data-api"
+      "collection": "dev",
+      "href": "/work/dev/travis-county-voter-data-api"
     },
     {
       "slug": "tcdp-donor-identification",
@@ -71,16 +71,16 @@
       "summary": "Flask application for matching campaign donors to the voter file by phone number for the Travis County Democratic Party.",
       "stack": "Flask, Python, SQLite",
       "year": "2018",
-      "collection": "dev_projects",
-      "href": "/work/dev_projects/tcdp-donor-identification"
+      "collection": "dev",
+      "href": "/work/dev/tcdp-donor-identification"
     },
     {
       "slug": "fiscal-impact-of-charter-school-expansion",
       "title": "Fiscal Impact of Charter School Expansion",
       "summary": "Analysis of $3.6 billion in revenue losses across 325+ Texas public school districts due to charter school expansion, with district-level breakdowns.",
       "publication": "Texas AFT",
-      "collection": "policy_work",
-      "href": "/work/policy_work/fiscal-impact-of-charter-school-expansion"
+      "collection": "policy",
+      "href": "/work/policy/fiscal-impact-of-charter-school-expansion"
     }
   ]
 }

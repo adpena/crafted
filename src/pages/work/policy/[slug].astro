@@ -6,7 +6,7 @@ import Base from "../../../layouts/Base.astro";
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
 
-const { entry, cacheHint } = await getEmDashEntry("policy_work", slug);
+const { entry, cacheHint } = await getEmDashEntry("policy", slug);
 if (!entry) return Astro.redirect("/404");
 try { Astro.cache.set(cacheHint); } catch {}
 

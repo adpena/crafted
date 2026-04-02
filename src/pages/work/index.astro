@@ -3,9 +3,9 @@ import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 
 const collectionDefs = [
-	{ slug: "dev_projects", label: "Development" },
-	{ slug: "design_work", label: "Design" },
-	{ slug: "policy_work", label: "Policy" },
+	{ slug: "dev", label: "Development" },
+	{ slug: "design", label: "Design" },
+	{ slug: "policy", label: "Policy" },
 	{ slug: "writing", label: "Writing" },
 ];
 
@@ -46,11 +46,11 @@ const results = await Promise.all(
 const sections: Section[] = results.filter((s): s is Section => s !== null);
 
 const highlights = [
-	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev_projects/molt", tag: "Featured" },
-	{ title: "Lost Decade", desc: "Analysis → 11% raise for educators", href: "/work/policy_work/the-lost-decade-and-a-half", tag: "Impact" },
+	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev/molt", tag: "Featured" },
+	{ title: "Lost Decade", desc: "Analysis → 11% raise for educators", href: "/work/policy/the-lost-decade-and-a-half", tag: "Impact" },
 	{ title: "Action Pages", desc: "Live campaign page engine", href: "/action/demo-donate", tag: "Demo" },
-	{ title: "Respect Campaign", desc: "District-level interactive map", href: "/work/design_work/respect-campaign-map", tag: "Featured" },
-	{ title: "teadata", desc: "TX education data suite (3 repos)", href: "/work/dev_projects/data-for-public-education", tag: "OSS" },
+	{ title: "Respect Campaign", desc: "District-level interactive map", href: "/work/design/respect-campaign-map", tag: "Featured" },
+	{ title: "teadata", desc: "TX education data suite (3 repos)", href: "/work/dev/data-for-public-education", tag: "OSS" },
 ];
 ---
 

@@ -13,7 +13,7 @@
 const EMDASH_URL = process.env.EMDASH_URL ?? "https://crafted.adpena.workers.dev";
 const TOKEN = process.env.EMDASH_TOKEN ?? "";
 
-const collections = ["dev_projects", "design_work", "policy_work", "writing"];
+const collections = ["dev", "design", "policy", "writing"];
 
 interface Item {
   slug: string;
