@@ -4,7 +4,7 @@ export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
   const input = routeCtx.input as { page_id?: string } | undefined;
   const pageId = input?.page_id ?? new URL(routeCtx.request.url).searchParams.get("page_id");
   if (!pageId || !/^[a-z0-9][a-z0-9-]*$/.test(pageId)) {
-    return { status: 400, body: { error: "Missing or invalid page_id parameter" } };
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid page_id parameter" } } };
   }
 
   const result = await ctx.storage.ab_variants.query({ where: { page_id: pageId } });
@@ -23,5 +23,5 @@ export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
     };
   });
 
-  return { status: 200, body: { page_id: pageId, variants: stats } };
+  return { status: 200, body: { data: { page_id: pageId, variants: stats } } };
 }

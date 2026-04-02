@@ -20,8 +20,15 @@ const schemas: Record<string, FieldSchema> = {
   gotv_pledge: { required: ["first_name", "zip"], emailFields: [] },
 };
 
+const MAX_LENGTHS: Record<string, number> = {
+  first_name: 100,
+  last_name: 100,
+  email: 254,
+  zip: 10,
+};
+
 function sanitizeString(value: string): string {
-  return value.replace(/[<>]/g, "").trim();
+  return value.replace(/[<>\x00]/g, "").trim();
 }
 
 function isEmail(value: string): boolean {
@@ -46,6 +53,16 @@ export function validateSubmission(input: SubmissionInput): ValidationResult {
     const value = input.data[field];
     if (typeof value === "string" && !isEmail(value)) {
       errors.push(`Invalid email: ${field}`);
+    }
+  }
+
+  // Enforce max lengths on all string fields
+  for (const [key, value] of Object.entries(input.data)) {
+    if (typeof value === "string") {
+      const max = MAX_LENGTHS[key] ?? 1000;
+      if (value.length > max) {
+        errors.push(`${key}: too long (max ${max})`);
+      }
     }
   }
 

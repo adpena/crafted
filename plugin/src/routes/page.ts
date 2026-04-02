@@ -10,13 +10,13 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
   const slug = (routeCtx.input as { slug?: string })?.slug ?? url.searchParams.get("slug");
 
   if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
-    return { status: 400, body: { error: "Missing or invalid slug parameter" } };
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid slug parameter" } } };
   }
 
   const result = await ctx.storage.action_pages.query({ where: { slug } });
   const page = result.items[0]?.data as Record<string, unknown> | undefined;
   if (!page) {
-    return { status: 404, body: { error: "Page not found" } };
+    return { status: 404, body: { error: { code: "NOT_FOUND", message: "Page not found" } } };
   }
 
   const geo: GeoContext = {
@@ -39,18 +39,28 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
     vars: { committee_name: committeeName },
   });
 
+  let actblue_url = "";
+  try {
+    const p = new URL((page.actblue_url as string) ?? "");
+    if (p.protocol === "https:" && p.hostname.endsWith("actblue.com")) {
+      actblue_url = p.href;
+    }
+  } catch {}
+
   return {
     status: 200,
     body: {
-      title: (page.title as string) ?? "Action Page",
-      type: (page.type as string) ?? "fundraise",
-      body: (page.body as string) ?? "",
-      actblue_url: (page.actblue_url as string) ?? "",
-      refcode: (page.refcode as string) ?? "",
-      amounts: DEFAULT_AMOUNTS,
-      variant,
-      disclaimer,
-      jurisdiction,
+      data: {
+        title: (page.title as string) ?? "Action Page",
+        type: (page.type as string) ?? "fundraise",
+        body: (page.body as string) ?? "",
+        actblue_url,
+        refcode: (page.refcode as string) ?? "",
+        amounts: DEFAULT_AMOUNTS,
+        variant,
+        disclaimer,
+        jurisdiction,
+      },
     },
   };
 }

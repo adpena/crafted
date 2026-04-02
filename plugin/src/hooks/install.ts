@@ -6,9 +6,10 @@ export async function handleInstall(_event: unknown, ctx: PluginContext): Promis
   await ctx.kv.set("disclaimers", federalData);
   ctx.log.info("Loaded federal disclaimer data into KV");
 
-  // Seed a demo action page if none exist
+  // Seed a demo action page if none exist and not in production
+  const demoMode = await ctx.kv.get<boolean>("demo_mode");
   const existing = await ctx.storage.action_pages.query({});
-  if (existing.items.length === 0) {
+  if (demoMode !== false && existing.items.length === 0) {
     const id = crypto.randomUUID();
     await ctx.storage.action_pages.put(id, {
       slug: "demo-donate",

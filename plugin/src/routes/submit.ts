@@ -22,7 +22,7 @@ async function checkRateLimit(ctx: PluginContext, ip: string): Promise<boolean> 
   const current = await ctx.kv.get<number>(key);
   const count = (current ?? 0) + 1;
 
-  if (count > RATE_LIMIT) {
+  if (count >= RATE_LIMIT) {
     return false;
   }
 
@@ -56,34 +56,50 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
     turnstile_token?: string;
   };
 
+  // Validate page_id
+  if (!body.page_id || !/^[a-z0-9][a-z0-9-]*$/.test(body.page_id)) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid page_id" } } };
+  }
+
+  // Validate visitor_id if provided
+  if (body.visitor_id && !/^[0-9a-f-]{36}$/.test(body.visitor_id)) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid visitor_id" } } };
+  }
+
+  // Validate variant if provided
+  if (body.variant && body.variant.length > 100) {
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid variant" } } };
+  }
+
   // Validate type is one of the allowed values
   if (!body.type || !ALLOWED_TYPES.has(body.type)) {
-    return { status: 400, body: { errors: ["Invalid submission type"] } };
+    return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid submission type" } } };
   }
 
   // Rate limiting
   const clientIp = routeCtx.request.headers.get("cf-connecting-ip") ?? "unknown";
   const allowed = await checkRateLimit(ctx, clientIp);
   if (!allowed) {
-    return { status: 429, body: { error: "Too many requests. Please try again later." } };
+    return { status: 429, body: { error: { code: "RATE_LIMITED", message: "Too many requests. Please try again later." } } };
   }
 
   // Turnstile validation (optional -- skipped if no secret configured)
+  // TODO: Move to wrangler secret binding once Turnstile is configured
   const turnstileSecret = await ctx.kv.get<string>("turnstile_secret");
   if (turnstileSecret) {
     const token = body.turnstile_token;
     if (!token) {
-      return { status: 400, body: { errors: ["Missing turnstile_token"] } };
+      return { status: 400, body: { error: { code: "MISSING_TOKEN", message: "Missing turnstile_token" } } };
     }
     const valid = await verifyTurnstile(token, turnstileSecret, clientIp);
     if (!valid) {
-      return { status: 403, body: { errors: ["Turnstile verification failed"] } };
+      return { status: 403, body: { error: { code: "TURNSTILE_FAILED", message: "Turnstile verification failed" } } };
     }
   }
 
   const result = validateSubmission({ type: body.type, data: body.data });
   if (!result.valid) {
-    return { status: 400, body: { errors: result.errors } };
+    return { status: 400, body: { error: { code: "VALIDATION_FAILED", message: result.errors.join("; ") } } };
   }
 
   const geo = routeCtx.requestMeta.geo;
@@ -100,5 +116,5 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
     created_at: new Date().toISOString(),
   });
 
-  return { status: 200, body: { ok: true } };
+  return { status: 200, body: { data: { ok: true } } };
 }

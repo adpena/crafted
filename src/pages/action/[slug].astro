@@ -108,7 +108,7 @@ const committeeName = pageData.committee_name ?? "";
             <button class="amount" data-amount={a}>${a}</button>
           ))}
         </div>
-        <a id="donate-link" href={`${actblue_url}?refcode=${refcode}&amount=`} class="cta" target="_blank" rel="noopener noreferrer">
+        <a id="donate-link" href={`${actblue_url}?refcode=${encodeURIComponent(refcode)}&amount=`} class="cta" target="_blank" rel="noopener noreferrer">
           Donate
         </a>
       </Fragment>
