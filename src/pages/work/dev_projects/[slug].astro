@@ -11,10 +11,11 @@ if (!entry) return Astro.redirect("/404");
 try { Astro.cache.set(cacheHint); } catch {}
 
 const d = entry.data;
+const hasMoltDemo = slug === "molt";
 ---
 
 <Base title={d.title}>
-	<main id="main-content" class="page">
+	<main id="main-content" class={hasMoltDemo ? "page page-wide" : "page"}>
 		<nav class="breadcrumb" aria-label="Breadcrumb">
 			<a href="/work">Work</a> / Development / {d.title}
 		</nav>
@@ -30,6 +31,16 @@ const d = entry.data;
 			{d.live_url && <><dt>Demo</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">Live</a></dd></>}
 		</dl>
 
+		{hasMoltDemo && (
+			<section class="demo-embed" aria-label="Live demo">
+				<iframe
+					src="/demo/molt"
+					title="Molt Mandelbrot demo — Python compiled to WebAssembly"
+					loading="lazy"
+				></iframe>
+			</section>
+		)}
+
 		{d.featured_image && (
 			<div class="hero-image"><Image image={d.featured_image} /></div>
 		)}
@@ -37,3 +48,26 @@ const d = entry.data;
 		<div class="prose"><PortableText value={d.content} /></div>
 	</main>
 </Base>
+
+<style>
+	.page-wide {
+		max-width: 64rem;
+	}
+
+	.demo-embed {
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.demo-embed iframe {
+		width: 100%;
+		height: 28rem;
+		border: 1px solid var(--color-border);
+		background: var(--color-bg);
+	}
+
+	@media (max-width: 768px) {
+		.demo-embed iframe {
+			height: 20rem;
+		}
+	}
+</style>
