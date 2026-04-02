@@ -279,20 +279,27 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // 800×600 = 480K pixels — crisp on most displays, smooth in JS.
-    // When Molt Wasm replaces this, we can push higher.
-    const W = 800;
-    const H = 600;
+    const W = 640;
+    const H = 480;
     canvas.width = W;
     canvas.height = H;
-    const img = ctx.createImageData(W, H);
 
-    // Zoom target: Seahorse Valley spiral — infinite detail on the fractal boundary
     const TARGET_X = -0.7453;
     const TARGET_Y = 0.1127;
     let zoom = 1.0;
     let frame = 0;
     let animating = true;
+    let rendering = false;
+
+    // Off-thread rendering via Web Worker
+    const worker = new Worker('/molt-demo/mandelbrot-worker.js');
+
+    worker.onmessage = (e) => {
+      const { buf, W: w, H: h } = e.data;
+      const img = new ImageData(new Uint8ClampedArray(buf), w, h);
+      ctx.putImageData(img, 0, 0);
+      rendering = false;
+    };
 
     function parseParams() {
       const src = codeEl.value;
@@ -307,78 +314,45 @@
       };
     }
 
-    function renderFrame() {
+    function requestRender() {
+      if (rendering) return; // Skip if previous frame still computing
+      rendering = true;
       const { maxIter, cx, cy } = parseParams();
-      const scale = 3.0 / (zoom * W);
-      const d = img.data;
-
-      for (let y = 0; y < H; y++) {
-        for (let x = 0; x < W; x++) {
-          const cr = cx + (x - W / 2) * scale;
-          const ci = cy + (y - H / 2) * scale;
-          let zr = 0, zi = 0, i = 0;
-          while (i < maxIter) {
-            const tr = zr * zr - zi * zi + cr;
-            zi = 2 * zr * zi + ci;
-            zr = tr;
-            if (zr * zr + zi * zi > 4) break;
-            i++;
-          }
-          const idx = (y * W + x) * 4;
-          if (i === maxIter) {
-            d[idx] = d[idx+1] = d[idx+2] = 0;
-          } else {
-            const t = i / maxIter;
-            d[idx]   = (9 * (1-t) * t*t*t * 255) | 0;
-            d[idx+1] = (15 * (1-t)*(1-t) * t*t * 255) | 0;
-            d[idx+2] = (8.5 * (1-t)*(1-t)*(1-t) * t * 255) | 0;
-          }
-          d[idx+3] = 255;
-        }
-      }
-      ctx.putImageData(img, 0, 0);
+      worker.postMessage({ W, H, cx, cy, zoom, maxIter });
     }
 
     function animate() {
       if (!animating) return;
       zoom *= 1.008;
-      // Reset before floating-point precision death — smooth fade to new view
       if (zoom > 1e12) zoom = 1.0;
       frame++;
 
-      // Increase iterations as we zoom deeper
-      const dynamicIter = Math.min(300, 80 + Math.floor(zoom / 10));
-      const src = codeEl.value;
-      const currentIter = src.match(/MAX_ITER\s*[:=]\s*(\d+)/);
-      if (currentIter && parseInt(currentIter[1]) !== dynamicIter) {
-        codeEl.value = src.replace(/MAX_ITER\s*[:=]\s*\d+/, 'MAX_ITER: int = ' + dynamicIter);
-      }
+      const dynamicIter = Math.min(500, 80 + Math.floor(Math.log(zoom) * 15));
 
-      renderFrame();
-      statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynamicIter} · frame ${frame} · JS preview`;
+      requestRender();
+
+      if (statusMeta) {
+        statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynamicIter} · frame ${frame}`;
+      }
       requestAnimationFrame(animate);
     }
 
-    // Start animation
-    renderFrame();
+    // Start immediately
+    requestRender();
     requestAnimationFrame(animate);
 
-    // Pause/resume on click
     canvas.addEventListener('click', () => {
       animating = !animating;
       if (animating) requestAnimationFrame(animate);
-      statusText.textContent = animating ? 'Animating' : 'Paused — click canvas to resume';
+      if (statusText) statusText.textContent = animating ? 'Animating' : 'Paused — click to resume';
     });
 
-    // When code is edited manually, pause animation and re-render once
     codeEl.addEventListener('input', () => {
       animating = false;
-      statusText.textContent = 'Paused — editing';
-      renderFrame();
+      if (statusText) statusText.textContent = 'Paused — editing';
+      updateLineNumbers();
+      requestRender();
     });
-
-    // TODO: Wire compile button to Molt Cloudflare Worker endpoint
-    // When Molt build is fixed, this JS preview gets replaced by compiled Wasm output
   </script>
 </body>
 </html>
