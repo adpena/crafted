@@ -129,9 +129,8 @@
     canvas {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       cursor: pointer;
-      image-rendering: auto;
     }
 
     .btn {
@@ -169,15 +168,15 @@
       line-height: 1.6;
     }
 
-    /* Embed mode: canvas dominant, collapsed code below */
+    /* Embed mode: canvas fills the entire iframe */
     .embed header,
     .embed .status,
-    .embed .pane-header {
+    .embed .pane-left {
       display: none !important;
     }
 
     .embed .demo-layout {
-      grid-template-rows: 3fr 1fr !important;
+      grid-template-rows: 1fr !important;
     }
 
     .embed .canvas-wrap {
@@ -187,23 +186,6 @@
     .embed canvas {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-    }
-
-    .embed .code-wrap {
-      overflow: hidden;
-    }
-
-    .embed textarea {
-      font-size: 0.6rem;
-      line-height: 1.4;
-      padding: 0.5rem;
-    }
-
-    .embed .line-numbers {
-      font-size: 0.6rem;
-      line-height: 1.4;
-      padding: 0.5rem 0.3rem;
     }
 
     @media (max-width: 768px) {
@@ -286,11 +268,14 @@
         if (statusText) statusText.textContent = 'Animating — click canvas to pause';
       });
 
-    // Render at fixed resolution for consistent 60fps.
-    // Browser CSS scales to fill — bilinear filtering keeps it smooth.
-    // 480×320 = 153K pixels — fast enough for fluid animation.
-    const W = 480;
-    const H = 320;
+    // Match canvas resolution to displayed size for crisp rendering.
+    // Cap at 600px wide to keep 60fps — the worker renders every pixel.
+    const container = document.getElementById('canvas-wrap');
+    const rect = container.getBoundingClientRect();
+    const maxW = 600;
+    const aspect = rect.width / rect.height;
+    const W = Math.min(maxW, Math.round(rect.width));
+    const H = Math.round(W / aspect);
     canvas.width = W;
     canvas.height = H;
 
