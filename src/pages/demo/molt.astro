@@ -192,6 +192,12 @@
   </div>
 
   <script>
+    // When embedded in iframe, hide the header to save vertical space
+    const isEmbed = window.self !== window.top;
+    if (isEmbed) {
+      document.querySelector('header')?.remove();
+    }
+
     const codeEl = document.getElementById('code');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
