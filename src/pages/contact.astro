@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import { env } from "cloudflare:workers";
+import { notifyAll } from "../lib/notify.ts";
 
 let formStatus: "idle" | "success" | "error" = "idle";
 let formMessage = "";
@@ -22,47 +23,7 @@ if (Astro.request.method === "POST") {
 			formStatus = "error";
 			formMessage = "Input too long.";
 		} else {
-			const resendKey = (env as any).RESEND_API_KEY as string | undefined;
-			const discordUrl = (env as any).DISCORD_WEBHOOK_URL as string | undefined;
-
-			// Send email via Resend
-			if (resendKey) {
-				try {
-					await fetch("https://api.resend.com/emails", {
-						method: "POST",
-						headers: {
-							"Authorization": `Bearer ${resendKey}`,
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							from: "Contact Form <contact@crafted.adpena.workers.dev>",
-							to: "adpena@gmail.com",
-							subject: `Portfolio contact from ${name}`,
-							reply_to: email,
-							text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
-						}),
-					});
-				} catch (e) {
-					console.error("Resend failed:", e);
-				}
-			}
-
-			// Notify via Discord webhook
-			if (discordUrl) {
-				try {
-					await fetch(discordUrl, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							content: `**New contact form submission**\n**From:** ${name} (${email})\n**Message:**\n${message.slice(0, 1800)}`,
-						}),
-					});
-				} catch (e) {
-					console.error("Discord webhook failed:", e);
-				}
-			}
-
-			// Always show success — delivery failures are silent to the user
+			await notifyAll(env as any, { name, email, message });
 			formStatus = "success";
 			formMessage = "Message sent. I'll be in touch.";
 		}
