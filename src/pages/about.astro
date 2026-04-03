@@ -3,104 +3,62 @@ import Base from "../layouts/Base.astro";
 ---
 
 <Base title="About">
-	<main id="main-content" class="page about-placeholder">
-		<pre class="terminal" id="terminal" aria-label="About">$ whoami
-<span class="cursor">_</span></pre>
-		<a href="/contact" class="btn">Get in touch</a>
+	<main id="main-content" class="page about-page">
+		<div class="terminal">
+			<div class="line">$ whoami</div>
+			<div class="line hidden" data-line="0">alejandro peña</div>
+			<div class="line hidden" data-line="1">austin, tx</div>
+			<div class="line hidden" data-line="2">&nbsp;</div>
+			<div class="line hidden" data-line="3">building tools for people who build things.</div>
+		</div>
+		<a href="/contact" class="btn about-btn hidden" data-line="4">Get in touch</a>
 	</main>
 </Base>
 
 <style>
-	.about-placeholder {
+	.about-page {
+		min-height: 50vh;
 		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
 		justify-content: center;
-		min-height: 50vh;
-		max-width: 32rem;
 	}
 
 	.terminal {
 		font-family: var(--font-mono);
 		font-size: var(--font-size-base);
-		color: var(--color-text);
-		background: none;
-		padding: 0;
-		margin-bottom: var(--spacing-xl);
 		line-height: 1.8;
-		white-space: pre-wrap;
+		margin-bottom: var(--spacing-xl);
 	}
 
-	.cursor {
-		animation: blink 1s step-end infinite;
+	.line {
+		white-space: pre;
 	}
 
-	@keyframes blink {
-		50% { opacity: 0; }
+	.hidden {
+		visibility: hidden;
 	}
 
-	.about-placeholder .btn {
-		opacity: 0;
-		animation: enter 600ms ease forwards;
-		animation-delay: 3s;
+	.revealed {
+		visibility: visible;
+	}
+
+	.about-btn {
+		align-self: flex-start;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.cursor { animation: none; }
-		.about-placeholder .btn { opacity: 1; animation: none; }
+		.hidden { visibility: visible; }
 	}
 </style>
 
 <script>
-	const el = document.getElementById('terminal');
-	if (el) {
-		const lines = [
-			'alejandro peña',
-			'austin, tx',
-			'',
-			'building tools for people who build things.',
-		];
+	const lines = document.querySelectorAll('[data-line]');
+	const delays = [800, 1200, 1500, 1800, 2400];
 
-		let i = 0;
-		let charIndex = 0;
-		const delay = 40;
-		const lineDelay = 300;
-
-		const cursor = '<span class="cursor">_</span>';
-		let output = '$ whoami\n';
-
-		function removeCursor() {
-			el.innerHTML = el.innerHTML.replace(cursor, '');
-		}
-
-		function setCursor() {
-			removeCursor();
-			el.innerHTML = el.innerHTML + cursor;
-		}
-
-		function type() {
-			if (i >= lines.length) {
-				removeCursor();
-				return;
-			}
-
-			const line = lines[i];
-
-			if (charIndex < line.length) {
-				removeCursor();
-				output += line[charIndex];
-				el.textContent = output;
-				setCursor();
-				charIndex++;
-				setTimeout(type, delay);
-			} else {
-				output += '\n';
-				charIndex = 0;
-				i++;
-				setTimeout(type, lineDelay);
-			}
-		}
-
-		setTimeout(type, 800);
-	}
+	lines.forEach((el, i) => {
+		setTimeout(() => {
+			el.classList.remove('hidden');
+			el.classList.add('revealed');
+		}, delays[i] ?? 800 + i * 400);
+	});
 </script>
