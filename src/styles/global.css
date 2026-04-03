@@ -592,9 +592,13 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 }
 
 /* Skip entrance animations during view-transition navigations —
-   the cross-fade already provides a smooth page entry. */
+   the cross-fade already provides a smooth page entry.
+   Also skip on return visits within the same session to avoid
+   the fade-in feeling like a loading spinner on repeat views. */
 .vt main > *,
-.vt main > .container > * {
+.vt main > .container > *,
+.visited main > *,
+.visited main > .container > * {
 	animation: none;
 }
 
@@ -612,314 +616,314 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 
 /* Work/home page layout — in global.css because Astro scoped CSS
    with @ in the filename is silently dropped by Workers asset upload. */
+.work-layout {
+	width: 100%;
+	max-width: 56rem;
+	margin-left: auto;
+	margin-right: auto;
+	padding: var(--spacing-lg) var(--content-padding) var(--spacing-2xl);
+	display: grid;
+	grid-template-columns: 1fr 14rem;
+	gap: var(--spacing-2xl);
+	align-items: start;
+}
+
+.work-section {
+	margin-bottom: var(--spacing-2xl);
+}
+
+/* Compact list: title + year on one line, summary reveals on hover */
+.compact-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.compact-list li {
+	border-bottom: 1px solid var(--color-border);
+	border-left: 2px solid transparent;
+	padding-left: var(--spacing-md);
+	transition: border-color 200ms var(--ease);
+}
+
+.compact-list li:hover,
+.compact-list li:focus-within {
+	border-left-color: var(--color-text);
+}
+
+.compact-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 0.45rem 0;
+	text-decoration: none;
+	color: inherit;
+	gap: var(--spacing-md);
+	transition: color 200ms var(--ease);
+}
+
+.compact-item:hover {
+	color: var(--color-text);
+}
+
+.compact-title {
+	font-family: var(--font-serif);
+	font-size: var(--font-size-base);
+}
+
+.compact-tags {
+	font-family: var(--font-mono);
+	font-size: var(--font-size-xs);
+	color: var(--color-secondary);
+	flex: 1;
+	text-align: right;
+	opacity: 1;
+	transition: opacity 200ms var(--ease);
+}
+
+.compact-list li:hover .compact-tags,
+.compact-list li:focus-within .compact-tags {
+	opacity: 0;
+}
+
+.compact-year {
+	font-family: var(--font-mono);
+	font-size: var(--font-size-xs);
+	color: var(--color-secondary);
+	flex-shrink: 0;
+}
+
+.compact-reveal {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 250ms var(--ease);
+}
+
+.compact-list li:hover .compact-reveal,
+.compact-list li:focus-within .compact-reveal {
+	grid-template-rows: 1fr;
+	transition-delay: 80ms;
+}
+
+.compact-reveal > * {
+	overflow: hidden;
+}
+
+.compact-reveal p {
+	font-size: var(--font-size-sm);
+	color: var(--color-secondary);
+	line-height: 1.4;
+	margin: 0;
+	padding-bottom: 0.25rem;
+}
+
+.compact-tags-reveal {
+	display: block;
+	font-family: var(--font-mono);
+	font-size: var(--font-size-xs);
+	color: var(--color-secondary);
+	padding-bottom: 0.5rem;
+}
+
+/* Sidebar */
+.work-sidebar {
+	position: sticky;
+	top: var(--spacing-lg);
+}
+
+.highlights {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.highlight {
+	display: block;
+	padding: var(--spacing-sm) var(--spacing-md);
+	text-decoration: none;
+	color: inherit;
+	border-left: 2px solid var(--color-border);
+	transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.highlight:hover {
+	border-left-color: var(--color-text);
+	transform: translateX(2px);
+}
+
+.highlight-tag {
+	display: inline-block;
+	font-family: var(--font-mono);
+	font-size: 0.6rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--color-secondary);
+	margin-bottom: 0.15rem;
+}
+
+.highlight-title {
+	display: block;
+	font-family: var(--font-serif);
+	font-size: var(--font-size-sm);
+	font-weight: 400;
+}
+
+.highlight-desc {
+	display: block;
+	font-family: var(--font-serif);
+	font-size: var(--font-size-xs);
+	color: var(--color-secondary);
+	line-height: 1.4;
+}
+
+@media (max-width: 768px) {
 	.work-layout {
-		width: 100%;
-		max-width: 56rem;
-		margin-left: auto;
-		margin-right: auto;
-		padding: var(--spacing-lg) var(--content-padding) var(--spacing-2xl);
-		display: grid;
-		grid-template-columns: 1fr 14rem;
-		gap: var(--spacing-2xl);
-		align-items: start;
+		grid-template-columns: 1fr;
 	}
 
-	.work-section {
-		margin-bottom: var(--spacing-2xl);
+	/* Grid children must opt out of min-width:auto to prevent
+	   content from expanding the track beyond the viewport. */
+	.work-main,
+	.work-sidebar {
+		min-width: 0;
+		overflow: hidden;
 	}
 
-	/* Compact list: title + year on one line, summary reveals on hover */
-	.compact-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.compact-list li {
+	.work-sidebar {
+		position: relative;
+		order: -1;
+		padding-bottom: var(--spacing-lg);
 		border-bottom: 1px solid var(--color-border);
-		border-left: 2px solid transparent;
-		padding-left: var(--spacing-md);
-		transition: border-color 200ms var(--ease);
+		margin-bottom: var(--spacing-lg);
 	}
 
-	.compact-list li:hover,
-	.compact-list li:focus-within {
-		border-left-color: var(--color-text);
+	/* Edge fades: signal horizontal scroll direction */
+	.work-sidebar::before,
+	.work-sidebar::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		bottom: var(--spacing-lg);
+		width: 3rem;
+		pointer-events: none;
+		z-index: 1;
+		transition: opacity 200ms ease;
 	}
 
-	.compact-item {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		padding: 0.45rem 0;
-		text-decoration: none;
-		color: inherit;
-		gap: var(--spacing-md);
-		transition: color 200ms var(--ease);
-	}
-
-	.compact-item:hover {
-		color: var(--color-text);
-	}
-
-	.compact-title {
-		font-family: var(--font-serif);
-		font-size: var(--font-size-base);
-	}
-
-	.compact-tags {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-xs);
-		color: var(--color-secondary);
-		flex: 1;
-		text-align: right;
-		opacity: 1;
-		transition: opacity 200ms var(--ease);
-	}
-
-	.compact-list li:hover .compact-tags,
-	.compact-list li:focus-within .compact-tags {
+	.work-sidebar::before {
+		left: 0;
+		background: linear-gradient(to left, transparent, var(--color-bg));
 		opacity: 0;
 	}
 
-	.compact-year {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-xs);
-		color: var(--color-secondary);
-		flex-shrink: 0;
+	.work-sidebar::after {
+		right: 0;
+		background: linear-gradient(to right, transparent, var(--color-bg));
 	}
 
+	/* JS toggles these classes based on scroll position */
+	.work-sidebar.scrolled-start::before {
+		opacity: 1;
+	}
+
+	.work-sidebar.scrolled-end::after {
+		opacity: 0;
+	}
+
+	.highlights {
+		flex-direction: row;
+		overflow-x: auto;
+		gap: var(--spacing-md);
+		padding-bottom: var(--spacing-sm);
+		padding-right: var(--spacing-xl);
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.highlight {
+		min-width: 10rem;
+		border-left: none;
+		border-top: 2px solid var(--color-border);
+		padding: var(--spacing-sm) var(--spacing-xs) 0;
+		min-height: 44px;
+	}
+
+	.highlight:hover {
+		border-top-color: var(--color-text);
+		transform: none;
+	}
+
+	/* Always show summaries on touch (no hover) */
 	.compact-reveal {
-		display: grid;
-		grid-template-rows: 0fr;
-		transition: grid-template-rows 250ms var(--ease);
-	}
-
-	.compact-list li:hover .compact-reveal,
-	.compact-list li:focus-within .compact-reveal {
 		grid-template-rows: 1fr;
-		transition-delay: 80ms;
 	}
 
 	.compact-reveal > * {
 		overflow: hidden;
+		min-width: 0;
+	}
+
+	.compact-list li {
+		border-left-color: transparent;
+	}
+
+	/* Grid layout on mobile — avoids Safari flex-wrap sizing bugs
+	   and eliminates the fragile float hack for year alignment. */
+	.compact-item {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0 var(--spacing-sm);
+		padding: var(--spacing-xs) 0;
+		min-height: 44px;
+	}
+
+	.compact-title {
+		font-size: var(--font-size-sm);
+	}
+
+	/* Hide inline tags on mobile — reveal tags shown below summary instead */
+	.compact-tags {
+		display: none;
+	}
+
+	.compact-year {
+		grid-area: year;
+		font-size: 0.6875rem;
 	}
 
 	.compact-reveal p {
-		font-size: var(--font-size-sm);
-		color: var(--color-secondary);
-		line-height: 1.4;
-		margin: 0;
+		font-size: var(--font-size-xs);
+		line-height: 1.3;
 		padding-bottom: 0.25rem;
 	}
 
-	.compact-tags-reveal {
-		display: block;
-		font-family: var(--font-mono);
+	.highlight-tag {
 		font-size: var(--font-size-xs);
-		color: var(--color-secondary);
-		padding-bottom: 0.5rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.work-layout {
+		padding-top: var(--spacing-sm);
 	}
 
-	/* Sidebar */
-	.work-sidebar {
-		position: sticky;
-		top: var(--spacing-lg);
-	}
-
-	.highlights {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-sm);
+	.work-section {
+		margin-bottom: var(--spacing-md);
 	}
 
 	.highlight {
-		display: block;
-		padding: var(--spacing-sm) var(--spacing-md);
-		text-decoration: none;
-		color: inherit;
-		border-left: 2px solid var(--color-border);
-		transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+		min-width: 8rem;
 	}
 
-	.highlight:hover {
-		border-left-color: var(--color-text);
-		transform: translateX(2px);
+	.compact-title {
+		font-size: 0.8125rem;
 	}
 
-	.highlight-tag {
-		display: inline-block;
-		font-family: var(--font-mono);
-		font-size: 0.6rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-secondary);
-		margin-bottom: 0.15rem;
+	.compact-reveal p {
+		font-size: 0.6875rem;
+		line-height: 1.3;
+		padding-bottom: 0.2rem;
 	}
-
-	.highlight-title {
-		display: block;
-		font-family: var(--font-serif);
-		font-size: var(--font-size-sm);
-		font-weight: 400;
-	}
-
-	.highlight-desc {
-		display: block;
-		font-family: var(--font-serif);
-		font-size: var(--font-size-xs);
-		color: var(--color-secondary);
-		line-height: 1.4;
-	}
-
-	@media (max-width: 768px) {
-		.work-layout {
-			grid-template-columns: 1fr;
-		}
-
-		/* Grid children must opt out of min-width:auto to prevent
-		   content from expanding the track beyond the viewport. */
-		.work-main,
-		.work-sidebar {
-			min-width: 0;
-			overflow: hidden;
-		}
-
-		.work-sidebar {
-			position: relative;
-			order: -1;
-			padding-bottom: var(--spacing-lg);
-			border-bottom: 1px solid var(--color-border);
-			margin-bottom: var(--spacing-lg);
-		}
-
-		/* Edge fades: signal horizontal scroll direction */
-		.work-sidebar::before,
-		.work-sidebar::after {
-			content: "";
-			position: absolute;
-			top: 0;
-			bottom: var(--spacing-lg);
-			width: 3rem;
-			pointer-events: none;
-			z-index: 1;
-			transition: opacity 200ms ease;
-		}
-
-		.work-sidebar::before {
-			left: 0;
-			background: linear-gradient(to left, transparent, var(--color-bg));
-			opacity: 0;
-		}
-
-		.work-sidebar::after {
-			right: 0;
-			background: linear-gradient(to right, transparent, var(--color-bg));
-		}
-
-		/* JS toggles these classes based on scroll position */
-		.work-sidebar.scrolled-start::before {
-			opacity: 1;
-		}
-
-		.work-sidebar.scrolled-end::after {
-			opacity: 0;
-		}
-
-		.highlights {
-			flex-direction: row;
-			overflow-x: auto;
-			gap: var(--spacing-md);
-			padding-bottom: var(--spacing-sm);
-			padding-right: var(--spacing-xl);
-			-webkit-overflow-scrolling: touch;
-		}
-
-		.highlight {
-			min-width: 10rem;
-			border-left: none;
-			border-top: 2px solid var(--color-border);
-			padding: var(--spacing-sm) var(--spacing-xs) 0;
-			min-height: 44px;
-		}
-
-		.highlight:hover {
-			border-top-color: var(--color-text);
-			transform: none;
-		}
-
-		/* Always show summaries on touch (no hover) */
-		.compact-reveal {
-			grid-template-rows: 1fr;
-		}
-
-		.compact-reveal > * {
-			overflow: hidden;
-			min-width: 0;
-		}
-
-		.compact-list li {
-			border-left-color: transparent;
-		}
-
-		/* Grid layout on mobile — avoids Safari flex-wrap sizing bugs
-		   and eliminates the fragile float hack for year alignment. */
-		.compact-item {
-			display: grid;
-			grid-template-columns: 1fr auto;
-			gap: 0 var(--spacing-sm);
-			padding: var(--spacing-xs) 0;
-			min-height: 44px;
-		}
-
-		.compact-title {
-			font-size: var(--font-size-sm);
-		}
-
-		/* Hide inline tags on mobile — reveal tags shown below summary instead */
-		.compact-tags {
-			display: none;
-		}
-
-		.compact-year {
-			grid-area: year;
-			font-size: 0.6875rem;
-		}
-
-		.compact-reveal p {
-			font-size: var(--font-size-xs);
-			line-height: 1.3;
-			padding-bottom: 0.25rem;
-		}
-
-		.highlight-tag {
-			font-size: var(--font-size-xs);
-		}
-	}
-
-	@media (max-width: 480px) {
-		.work-layout {
-			padding-top: var(--spacing-sm);
-		}
-
-		.work-section {
-			margin-bottom: var(--spacing-md);
-		}
-
-		.highlight {
-			min-width: 8rem;
-		}
-
-		.compact-title {
-			font-size: 0.8125rem;
-		}
-
-		.compact-reveal p {
-			font-size: 0.6875rem;
-			line-height: 1.3;
-			padding-bottom: 0.2rem;
-		}
-	}
+}
 
 /* Contact page — in global.css to avoid Workers @ filename bug
    ═══════════════════════════════════════════ */

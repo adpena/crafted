@@ -12,13 +12,28 @@ const collectionDefs = [
 type Entry = { id: string; data: Record<string, any> };
 type Section = { label: string; slug: string; entries: Entry[] };
 
-// Sort newest first — uses date field if available, falls back to year
+// Pinned entries float to top; everything else sorts newest-first.
+// To pin a project, add its slug here with a lower number = higher position.
+const PIN: Record<string, number> = {
+	"molt": 1,
+	"crafted-action-pages": 2,
+};
+
 function entryTime(e: Entry): number {
 	if (e.data.date) return new Date(e.data.date).getTime();
 	return parseInt(e.data.year ?? "0", 10) * 1e10;
 }
 
-// Parallel queries — all collections at once, sorted chronologically
+function sortEntries(entries: Entry[]): Entry[] {
+	return [...entries].sort((a, b) => {
+		const pa = PIN[a.id] ?? Infinity;
+		const pb = PIN[b.id] ?? Infinity;
+		if (pa !== pb) return pa - pb;
+		return entryTime(b) - entryTime(a);
+	});
+}
+
+// Parallel queries — all collections at once
 const results = await Promise.all(
 	collectionDefs.map(async (def) => {
 		try {
@@ -27,8 +42,7 @@ const results = await Promise.all(
 				try { Astro.cache.set(result.cacheHint); } catch {}
 			}
 			if (result.entries?.length > 0) {
-				const sorted = [...result.entries].sort((a, b) => entryTime(b) - entryTime(a));
-				return { ...def, entries: sorted };
+				return { ...def, entries: sortEntries(result.entries) };
 			}
 		} catch {}
 		return null;

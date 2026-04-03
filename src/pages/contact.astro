@@ -83,7 +83,7 @@ if (Astro.request.method === "POST") {
 						<a href="/contact" class="btn">Send another</a>
 					</div>
 				) : (
-					<form method="POST" novalidate class="contact-form">
+					<form method="POST" class="contact-form">
 						{formStatus === "error" && (
 							<div role="alert" class="form-error">
 								{formMessage}
