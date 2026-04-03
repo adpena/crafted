@@ -1,6 +1,26 @@
 ---
 // Molt Mandelbrot demo — Python compiled to Wasm, rendered on canvas
-// TODO: Wire to live Molt compilation endpoint once build is fixed
+// TODO(molt-compile): Wire "Compile & Run" button to Molt compilation endpoint.
+//   When the Molt Rust build is fixed:
+//   1. Compile Molt itself to Wasm and deploy as a Cloudflare Worker
+//   2. Button POSTs Python source to the compile Worker
+//   3. Worker returns compiled .wasm binary
+//   4. Browser loads the binary via loadMoltWasm() from browser_host.js
+//   5. Replace the JS Mandelbrot preview with actual compiled Wasm output
+//   6. Status bar shows "Wasm" instead of "JS preview"
+//
+// TODO(monty-interpreter): As an intermediate step before Molt compiles,
+//   load Monty (Pydantic's Python sandbox) as a Wasm module in the browser.
+//   Monty can interpret arbitrary Python live. This enables the MCP agent
+//   workflow (write Python → interpret → see result) without needing Molt.
+//   Monty's Wasm bundle: check pydantic/monty releases for monty-wasm.
+//
+// TODO(molt-mcp-compile): Add a compile_and_run MCP tool that:
+//   1. Accepts arbitrary Python source
+//   2. Sends to the Molt compile Worker (or interprets via Monty)
+//   3. Runs the result
+//   4. Returns stdout + canvas snapshot
+//   This enables fully autonomous AI visual art creation loops.
 ---
 
 <html lang="en">
@@ -250,6 +270,7 @@
       <div class="pane-header">
         <span>mandelbrot.py</span>
         <div style="display:flex;gap:0.3rem">
+          <!-- TODO(molt-compile): Enable when compilation endpoint is live -->
           <button class="btn primary" id="compile-btn" disabled>Compile & Run</button>
         </div>
       </div>

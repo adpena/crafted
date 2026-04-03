@@ -22,6 +22,16 @@
  *   CF_EMAIL_TO           Cloudflare Email recipient
  *   SEND_EMAIL            Cloudflare Email Workers binding (runtime-injected, not a secret)
  *   DRY_RUN               Log payloads without calling external APIs
+ *
+ * TODO(plugin-extract): Extract this module into a standalone emdash plugin
+ *   (@crafted/notify or @emdash-cms/plugin-notify) with:
+ *   - emdash hook integration (form:afterSubmit)
+ *   - Admin UI for configuring adapters
+ *   - Test mode per-adapter
+ *   - Delivery history in plugin storage
+ *
+ * TODO(cf-email-send): Wire the Cloudflare Email Workers send binding
+ *   when CF Email Send goes GA. Currently uses Resend as the email adapter.
  */
 
 // ---------------------------------------------------------------------------
