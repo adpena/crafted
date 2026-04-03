@@ -1,37 +1,93 @@
 ---
-import { getEmDashEntry } from "emdash";
-import { PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-
-const { entry: page, cacheHint } = await getEmDashEntry("pages", "about");
-try { Astro.cache.set(cacheHint); } catch {}
 ---
 
 <Base title="About">
-	<main id="main-content" class="page">
-		<div class="prose">
-			{page?.data?.content ? (
-				<PortableText value={page.data.content} />
-			) : (
-				<Fragment>
-					<p>
-						I build tools for progressive campaigns, public education advocates,
-						and labor organizations.
-					</p>
-					<p>
-						Before writing code full-time, I spent six years in the Texas
-						Legislature. That background shapes how I build software.
-					</p>
-				</Fragment>
-			)}
-		</div>
-
+	<main id="main-content" class="page about-placeholder">
+		<pre class="terminal" id="terminal" aria-label="About">$ whoami<span class="cursor">_</span></pre>
 		<a href="/contact" class="btn">Get in touch</a>
 	</main>
 </Base>
 
 <style>
-	.page .btn {
-		margin-top: var(--spacing-xl);
+	.about-placeholder {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		justify-content: center;
+		min-height: 50vh;
+	}
+
+	.terminal {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-base);
+		color: var(--color-text);
+		background: none;
+		padding: 0;
+		margin-bottom: var(--spacing-xl);
+		line-height: 1.8;
+		white-space: pre-wrap;
+	}
+
+	.cursor {
+		animation: blink 1s step-end infinite;
+	}
+
+	@keyframes blink {
+		50% { opacity: 0; }
+	}
+
+	.about-placeholder .btn {
+		opacity: 0;
+		animation: enter 600ms ease forwards;
+		animation-delay: 3s;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.cursor { animation: none; }
+		.about-placeholder .btn { opacity: 1; animation: none; }
 	}
 </style>
+
+<script>
+	const el = document.getElementById('terminal');
+	if (el) {
+		const lines = [
+			'alejandro peña',
+			'austin, tx',
+			'',
+			'building tools for people who build things.',
+		];
+
+		let i = 0;
+		let charIndex = 0;
+		const delay = 40;
+		const lineDelay = 300;
+
+		function type() {
+			if (i >= lines.length) {
+				el.innerHTML = el.innerHTML.replace('<span class="cursor">_</span>', '');
+				return;
+			}
+
+			const line = lines[i];
+
+			if (charIndex === 0 && i > 0) {
+				el.innerHTML = el.innerHTML.replace('<span class="cursor">_</span>', '') + '\n';
+			}
+
+			if (charIndex < line.length) {
+				const before = el.innerHTML.replace('<span class="cursor">_</span>', '');
+				el.innerHTML = before + line[charIndex] + '<span class="cursor">_</span>';
+				charIndex++;
+				setTimeout(type, delay);
+			} else {
+				charIndex = 0;
+				i++;
+				setTimeout(type, lineDelay);
+			}
+		}
+
+		setTimeout(type, 800);
+	}
+</script>
