@@ -580,36 +580,263 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 	}
 }
 
-/* Work page mobile — in global.css because Astro scoped CSS files
-   with @ in the filename are silently dropped by Workers asset upload. */
-@media (max-width: 480px) {
-	:where(.compact-item) {
-		flex-wrap: wrap !important;
+/* Work/home page layout — in global.css because Astro scoped CSS
+   with @ in the filename is silently dropped by Workers asset upload. */
+	.work-layout {
+		max-width: 56rem;
+		margin-left: auto;
+		margin-right: auto;
+		padding: var(--spacing-lg) var(--content-padding) var(--spacing-2xl);
+		display: grid;
+		grid-template-columns: 1fr 14rem;
+		gap: var(--spacing-2xl);
+		align-items: start;
 	}
 
-	:where(.compact-title) {
-		font-size: 0.9rem !important;
+	.work-section {
+		margin-bottom: var(--spacing-2xl);
+	}
+
+	/* Compact list: title + year on one line, summary reveals on hover */
+	.compact-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.compact-list li {
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.compact-list li {
+		border-left: 2px solid transparent;
+		padding-left: var(--spacing-md);
+		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.compact-list li:hover,
+	.compact-list li:focus-within {
+		border-left-color: var(--color-text);
+	}
+
+	.compact-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		padding: 0.45rem 0;
+		text-decoration: none;
+		color: inherit;
+		gap: var(--spacing-md);
+		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.compact-item:hover {
+		color: var(--color-text);
+	}
+
+	.compact-title {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+	}
+
+	.compact-tags {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
 		flex: 1;
-		min-width: 0;
+		text-align: right;
+		opacity: 1;
+		transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 20rem;
 	}
 
-	:where(.compact-tags) {
-		flex-basis: 100% !important;
-		max-width: 100% !important;
-		white-space: normal !important;
-		text-align: left !important;
-		font-size: 0.65rem !important;
-		text-overflow: clip !important;
-		overflow: visible !important;
-		opacity: 0.6;
-		order: 3;
+	.compact-list li:hover .compact-tags,
+	.compact-list li:focus-within .compact-tags {
+		opacity: 0;
 	}
 
-	:where(.compact-year) {
-		font-size: 0.65rem !important;
+	.compact-year {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		flex-shrink: 0;
 	}
 
-	:where(.compact-reveal) p {
-		font-size: 0.8rem !important;
+	.compact-reveal {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 250ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
-}
+
+	.compact-list li:hover .compact-reveal,
+	.compact-list li:focus-within .compact-reveal {
+		grid-template-rows: 1fr;
+		transition-delay: 80ms;
+	}
+
+	.compact-reveal > * {
+		overflow: hidden;
+	}
+
+	.compact-reveal p {
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		line-height: 1.4;
+		margin: 0;
+		padding-bottom: 0.5rem;
+	}
+
+
+	/* Sidebar */
+	.work-sidebar {
+		position: sticky;
+		top: var(--spacing-lg);
+	}
+
+	.highlights {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-sm);
+	}
+
+	.highlight {
+		display: block;
+		padding: var(--spacing-sm) var(--spacing-md);
+		text-decoration: none;
+		color: inherit;
+		border-left: 2px solid var(--color-border);
+		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.highlight:hover {
+		border-left-color: var(--color-text);
+		transform: translateX(2px);
+	}
+
+	.highlight-tag {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
+		margin-bottom: 0.15rem;
+	}
+
+	.highlight-title {
+		display: block;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+	}
+
+	.highlight-desc {
+		display: block;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		line-height: 1.4;
+	}
+
+	@media (max-width: 768px) {
+		.work-layout {
+			grid-template-columns: 1fr;
+		}
+
+		.work-sidebar {
+			position: static;
+			order: -1;
+			padding-bottom: var(--spacing-lg);
+			border-bottom: 1px solid var(--color-border);
+			margin-bottom: var(--spacing-lg);
+		}
+
+		.highlights {
+			flex-direction: row;
+			overflow-x: auto;
+			gap: var(--spacing-md);
+			padding-bottom: var(--spacing-sm);
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.highlight {
+			min-width: 10rem;
+			border-left: none;
+			border-top: 2px solid var(--color-border);
+			padding: var(--spacing-sm) var(--spacing-xs) 0;
+			min-height: 44px;
+		}
+
+		.highlight:hover {
+			border-top-color: var(--color-text);
+			transform: none;
+		}
+
+		/* On mobile, always show summaries (no hover on touch) */
+		.compact-reveal {
+			grid-template-rows: 1fr;
+		}
+
+		.compact-list li {
+			border-left-color: transparent;
+		}
+
+		/* Touch-friendly compact items */
+		.compact-item {
+			padding: var(--spacing-sm) 0;
+			min-height: 44px;
+		}
+
+		.highlight-tag {
+			font-size: var(--font-size-xs);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.work-layout {
+			padding-top: var(--spacing-sm);
+		}
+
+		.work-section {
+			margin-bottom: var(--spacing-lg);
+		}
+
+		.highlight {
+			min-width: 8rem;
+		}
+
+		/* Stack: title+year on first row, tags on second row */
+		.compact-item {
+			flex-wrap: wrap;
+		}
+
+		.compact-title {
+			font-size: 0.9rem;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.compact-tags {
+			flex-basis: 100%;
+			max-width: 100%;
+			white-space: normal;
+			text-align: left;
+			font-size: 0.65rem;
+			text-overflow: clip;
+			overflow: visible;
+			opacity: 0.6;
+			order: 3;
+		}
+
+		.compact-year {
+			font-size: 0.65rem;
+		}
+
+		.compact-reveal p {
+			font-size: 0.8rem;
+		}
+	}
+
