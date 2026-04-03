@@ -71,12 +71,15 @@ import Base from "../layouts/Base.astro";
 		let ci = 0;
 
 		el.textContent = '';
+		el.classList.add('cursor');
+
 		function typeChar() {
 			if (ci < text.length) {
 				el.textContent = text.slice(0, ci + 1);
 				ci++;
 				setTimeout(typeChar, charDelay);
 			} else {
+				el.classList.remove('cursor');
 				lineIndex++;
 				setTimeout(typeLine, lineGap);
 			}
