@@ -63,6 +63,9 @@ const highlights = [
 <Base>
 	<main id="main-content" class="work-layout">
 		<div class="work-main">
+			{sections.length === 0 && (
+				<p class="page-summary" style="text-align:center;padding:var(--spacing-3xl) 0">Work unavailable — check back shortly.</p>
+			)}
 			{sections.map((section) => (
 				<section class="work-section">
 					<h2 class="section-label">{section.label}</h2>

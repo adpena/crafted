@@ -4,12 +4,13 @@ import Base from "../layouts/Base.astro";
 
 <Base title="About">
 	<main id="main-content" class="page about-page">
-		<div class="terminal">
+		<div class="terminal" aria-hidden="true">
 			<div class="line">$ whoami</div>
 			<div class="line" data-type="alejandro peña">&nbsp;</div>
 			<div class="line" data-type="austin, tx">&nbsp;</div>
 		</div>
-		<a href="/contact" class="btn about-btn" id="about-cta" style="opacity:0;transition:opacity 600ms ease;animation:none">Get in touch</a>
+		<p class="visually-hidden">alejandro peña — austin, tx</p>
+		<a href="/contact" class="btn about-btn" id="about-cta" style="opacity:0;visibility:hidden;transition:opacity 600ms ease,visibility 0s linear 0s;animation:none">Get in touch</a>
 	</main>
 </Base>
 
@@ -73,37 +74,47 @@ import Base from "../layouts/Base.astro";
 <script>
 	const lines = Array.from(document.querySelectorAll('[data-type]'));
 	const cta = document.getElementById('about-cta');
-	const charDelay = 35;
-	const lineGap = 250;
-	let lineIndex = 0;
 
-	function typeLine() {
-		if (lineIndex >= lines.length) {
-			if (cta) cta.style.opacity = '1';
-			return;
-		}
-
-		const el = lines[lineIndex];
-		const text = el.getAttribute('data-type') || '';
-		let ci = 0;
-
-		el.textContent = '';
-		el.classList.add('cursor');
-
-		function typeChar() {
-			if (ci < text.length) {
-				el.textContent = text.slice(0, ci + 1);
-				ci++;
-				setTimeout(typeChar, charDelay);
-			} else {
-				el.classList.remove('cursor');
-				lineIndex++;
-				setTimeout(typeLine, lineGap);
-			}
-		}
-
-		typeChar();
+	function showCta() {
+		if (!cta) return;
+		cta.style.visibility = 'visible';
+		cta.style.opacity = '1';
 	}
 
-	setTimeout(typeLine, 600);
+	// Respect reduced motion — show content instantly
+	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		lines.forEach(el => { el.textContent = el.getAttribute('data-type') || ''; });
+		showCta();
+	} else {
+		const charDelay = 35;
+		const lineGap = 250;
+		let lineIndex = 0;
+
+		function typeLine() {
+			if (lineIndex >= lines.length) { showCta(); return; }
+
+			const el = lines[lineIndex];
+			const text = el.getAttribute('data-type') || '';
+			let ci = 0;
+
+			el.textContent = '';
+			el.classList.add('cursor');
+
+			function typeChar() {
+				if (ci < text.length) {
+					el.textContent = text.slice(0, ci + 1);
+					ci++;
+					setTimeout(typeChar, charDelay);
+				} else {
+					el.classList.remove('cursor');
+					lineIndex++;
+					setTimeout(typeLine, lineGap);
+				}
+			}
+
+			typeChar();
+		}
+
+		setTimeout(typeLine, 600);
+	}
 </script>
