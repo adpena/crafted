@@ -4,7 +4,8 @@ import Base from "../layouts/Base.astro";
 
 <Base title="About">
 	<main id="main-content" class="page about-placeholder">
-		<pre class="terminal" id="terminal" aria-label="About">$ whoami<span class="cursor">_</span></pre>
+		<pre class="terminal" id="terminal" aria-label="About">$ whoami
+<span class="cursor">_</span></pre>
 		<a href="/contact" class="btn">Get in touch</a>
 	</main>
 </Base>
@@ -64,24 +65,35 @@ import Base from "../layouts/Base.astro";
 		const delay = 40;
 		const lineDelay = 300;
 
+		const cursor = '<span class="cursor">_</span>';
+		let output = '$ whoami\n';
+
+		function removeCursor() {
+			el.innerHTML = el.innerHTML.replace(cursor, '');
+		}
+
+		function setCursor() {
+			removeCursor();
+			el.innerHTML = el.innerHTML + cursor;
+		}
+
 		function type() {
 			if (i >= lines.length) {
-				el.innerHTML = el.innerHTML.replace('<span class="cursor">_</span>', '');
+				removeCursor();
 				return;
 			}
 
 			const line = lines[i];
 
-			if (charIndex === 0 && i > 0) {
-				el.innerHTML = el.innerHTML.replace('<span class="cursor">_</span>', '') + '\n';
-			}
-
 			if (charIndex < line.length) {
-				const before = el.innerHTML.replace('<span class="cursor">_</span>', '');
-				el.innerHTML = before + line[charIndex] + '<span class="cursor">_</span>';
+				removeCursor();
+				output += line[charIndex];
+				el.textContent = output;
+				setCursor();
 				charIndex++;
 				setTimeout(type, delay);
 			} else {
+				output += '\n';
 				charIndex = 0;
 				i++;
 				setTimeout(type, lineDelay);
