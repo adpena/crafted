@@ -505,6 +505,11 @@ code {
 @media (max-width: 480px) {
 	:root {
 		--content-padding: var(--spacing-md);
+		--font-size-xs: 0.65rem;
+		--font-size-sm: 0.8rem;
+		--font-size-base: 0.95rem;
+		--font-size-lg: 1.1rem;
+		--font-size-xl: 1.25rem;
 		--font-size-2xl: 1.5rem;
 		--font-size-3xl: 1.875rem;
 	}
@@ -515,37 +520,45 @@ code {
 	}
 
 	.page-title {
-		font-size: 1.5rem;
+		font-size: 1.35rem;
 	}
 
-	/* Ensure form inputs are 16px+ to prevent iOS zoom */
-	.form-field input,
-	.form-field textarea,
-	input,
-	textarea,
-	select {
-		font-size: 1rem;
+	.page-summary {
+		font-size: var(--font-size-sm);
 	}
 
-	/* Prose max-width should not exceed viewport */
-	.prose p,
-	.body p,
-	.about-content p {
+	/* All text containers must not exceed viewport */
+	.prose p, .body p, .about-content p,
+	.item-desc, .item-meta, .page-summary {
 		max-width: 100%;
-	}
-
-	/* Pre blocks: wrap on mobile to prevent overflow */
-	pre {
-		white-space: pre-wrap;
+		overflow-wrap: break-word;
 		word-break: break-word;
 	}
 
+	/* Inputs: 16px+ prevents iOS zoom */
+	.form-field input,
+	.form-field textarea,
+	input, textarea, select {
+		font-size: 1rem;
+	}
+
+	/* Pre: wrap on mobile */
+	pre {
+		white-space: pre-wrap;
+		word-break: break-word;
+		font-size: var(--font-size-xs);
+	}
+
 	.breadcrumb {
-		font-size: var(--font-size-sm);
+		font-size: var(--font-size-xs);
 	}
 
 	.meta-grid {
-		font-size: var(--font-size-sm);
+		font-size: var(--font-size-xs);
+	}
+
+	.section-label {
+		font-size: 0.6rem;
 	}
 }
 

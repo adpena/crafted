@@ -313,7 +313,11 @@ const highlights = [
 
 	@media (max-width: 480px) {
 		.work-layout {
-			padding-top: var(--spacing-md);
+			padding-top: var(--spacing-sm);
+		}
+
+		.work-section {
+			margin-bottom: var(--spacing-lg);
 		}
 
 		.highlights {
@@ -321,31 +325,57 @@ const highlights = [
 		}
 
 		.highlight {
-			min-width: 8rem;
+			min-width: 7.5rem;
+			padding: var(--spacing-xs) var(--spacing-sm) 0;
+		}
+
+		.highlight-title {
+			font-size: var(--font-size-xs);
+		}
+
+		.highlight-desc {
+			font-size: 0.6rem;
+		}
+
+		.compact-item {
+			flex-wrap: wrap;
+			gap: 0;
+			padding: var(--spacing-xs) 0;
 		}
 
 		.compact-title {
 			font-size: var(--font-size-sm);
+			flex: 1;
+			min-width: 0;
+			overflow-wrap: break-word;
 		}
 
 		.compact-year {
-			font-size: 0.65rem;
+			font-size: 0.6rem;
+			flex-shrink: 0;
 		}
 
 		.compact-tags {
-			display: none;
+			max-width: 100%;
+			white-space: normal;
+			text-align: left;
+			flex-basis: 100%;
+			font-size: 0.6rem;
+			opacity: 0.7;
+			margin-top: 0.1rem;
 		}
 
-		.compact-item {
-			gap: var(--spacing-sm);
+		.compact-list li:hover .compact-tags,
+		.compact-list li:focus-within .compact-tags {
+			opacity: 0;
 		}
 
 		.compact-reveal p {
 			font-size: var(--font-size-xs);
 		}
 
-		.section-label {
-			font-size: 0.65rem;
+		.compact-list li {
+			padding-left: var(--spacing-sm);
 		}
 	}
 </style>
