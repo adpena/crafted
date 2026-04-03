@@ -137,7 +137,7 @@ const committeeName = pageData.committee_name ?? "";
         btn.classList.add('selected');
         btn.setAttribute('aria-pressed', 'true');
         const link = document.getElementById('donate-link');
-        if (link) link.href = link.href.replace(/amount=.*/, 'amount=' + btn.dataset.amount);
+        if (link) link.href = link.href.replace(/amount=[^&]*/, 'amount=' + btn.dataset.amount);
       });
     });
   </script>

@@ -13,7 +13,8 @@ interface Props {
 	type?: "website" | "article";
 }
 
-const { title, description, image, type = "website" } = Astro.props;
+const { title, description, image: imageProp, type = "website" } = Astro.props;
+const image = imageProp || new URL("/og.png", Astro.site || Astro.url.origin).href;
 const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Studio";
 const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
@@ -38,10 +39,20 @@ const pageCtx = createPublicPageContext({
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta name="view-transition" content="same-origin" />
+		<style is:inline>a,a:visited,a:active{color:inherit;text-decoration:none}*{-webkit-tap-highlight-color:transparent}</style>
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<title>{fullTitle}</title>
 		<meta name="description" content={siteDescription} />
 		<EmDashHead page={pageCtx} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={image} />
+		<meta property="og:image" content={image} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={fullTitle} />
+		<meta property="og:locale" content="en_US" />
 		<link
 			rel="alternate"
 			type="application/rss+xml"
@@ -55,5 +66,8 @@ const pageCtx = createPublicPageContext({
 		<Masthead currentPath={Astro.url.pathname} siteTitle={siteTitle} tagline={siteDescription} />
 		<slot />
 		<Footer />
+		<script is:inline>
+			addEventListener('pagereveal',function(e){if(e.viewTransition)document.documentElement.classList.add('vt')});
+		</script>
 	</body>
 </html>

@@ -44,12 +44,22 @@
 	/* Layout */
 	--max-width: 64rem;
 	--content-padding: var(--spacing-lg);
+
+	/* Motion */
+	--ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html {
 	scroll-behavior: smooth;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border) transparent;
+}
+
+/* Suppress Safari's blue tap highlight on all interactive elements */
+a, button, input, textarea, select {
+	-webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -72,10 +82,12 @@ body > .container {
 	flex: 1;
 }
 
-a {
+a,
+a:visited,
+a:active {
 	color: currentColor;
 	text-decoration-color: currentColor;
-	transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: color 200ms var(--ease);
 }
 
 img {
@@ -86,6 +98,10 @@ img {
 
 /* Headings: same restraint as the masthead —
    weight and spacing do the work, not size */
+h1, h2, h3 {
+	text-wrap: balance;
+}
+
 h1 {
 	font-family: var(--font-serif);
 	font-weight: 400;
@@ -102,14 +118,12 @@ h2 {
 
 h3, h4 {
 	font-family: var(--font-serif);
-	font-weight: 600;
+	font-weight: 400;
 	line-height: 1.25;
 }
 
 /* Body text rhythm — only in prose contexts */
-.prose p,
-.body p,
-.about-content p {
+.prose p {
 	max-width: 38em;
 }
 
@@ -196,6 +210,7 @@ code {
 
 /* Page: standard content page wrapper */
 .page {
+	width: 100%;
 	max-width: 42rem;
 	margin: 0 auto;
 	padding: var(--spacing-lg) var(--content-padding) var(--spacing-2xl);
@@ -212,7 +227,7 @@ code {
 .breadcrumb a {
 	color: var(--color-secondary);
 	text-decoration: none;
-	transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: color 200ms var(--ease);
 }
 
 .breadcrumb a:hover {
@@ -248,7 +263,8 @@ code {
 }
 
 .meta-grid dt {
-	font-weight: 600;
+	font-weight: 400;
+	color: var(--color-text);
 }
 
 .meta-grid dd {
@@ -258,7 +274,7 @@ code {
 .meta-grid a {
 	color: var(--color-text);
 	text-decoration: none;
-	transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: color 200ms var(--ease);
 }
 
 .meta-grid a:hover {
@@ -328,9 +344,9 @@ code {
 	text-transform: uppercase;
 	letter-spacing: 0.15em;
 	color: var(--color-secondary);
-	padding-bottom: var(--spacing-sm);
+	padding-bottom: var(--spacing-xs);
 	border-bottom: 1px solid var(--color-border);
-	margin-bottom: var(--spacing-md);
+	margin-bottom: 0;
 }
 
 /* Item list (for work page, etc.) */
@@ -349,7 +365,7 @@ code {
 	padding: var(--spacing-sm) 0;
 	text-decoration: none;
 	color: inherit;
-	transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: color 200ms var(--ease);
 }
 
 .item-link:hover {
@@ -360,7 +376,7 @@ code {
 	display: block;
 	font-family: var(--font-serif);
 	font-size: var(--font-size-lg);
-	font-weight: 600;
+	font-weight: 400;
 }
 
 .item-desc {
@@ -400,7 +416,7 @@ code {
 	background: transparent;
 	border: none;
 	border-bottom: 1px solid var(--color-border);
-	transition: border-color 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: border-color 300ms var(--ease), box-shadow 300ms var(--ease);
 }
 
 .form-field input:focus,
@@ -425,7 +441,7 @@ code {
 	border: 1px solid var(--color-text);
 	cursor: pointer;
 	text-decoration: none;
-	transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1), color 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: background 200ms var(--ease), color 200ms var(--ease), transform 100ms var(--ease);
 }
 
 .btn:hover {
@@ -438,11 +454,6 @@ code {
 }
 
 /* Empty state */
-.empty {
-	color: var(--color-secondary);
-	text-align: center;
-	padding: var(--spacing-3xl) 0;
-}
 
 /* ═══════════════════════════════════════════
    Responsive
@@ -526,7 +537,7 @@ code {
 	}
 
 	/* Prose: fit viewport */
-	.prose p, .body p, .about-content p {
+	.prose p {
 		max-width: 100%;
 	}
 
@@ -568,6 +579,25 @@ main > .container > *:nth-child(4) { animation-delay: 150ms; }
 main > *:nth-child(5),
 main > .container > *:nth-child(5) { animation-delay: 200ms; }
 
+/* View Transitions — cross-document navigation animation.
+   Uses the spec-standard CSS at-rule (meta tag is deprecated). */
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 150ms;
+	animation-timing-function: ease-out;
+}
+
+/* Skip entrance animations during view-transition navigations —
+   the cross-fade already provides a smooth page entry. */
+.vt main > *,
+.vt main > .container > * {
+	animation: none;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
 	*,
@@ -583,6 +613,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 /* Work/home page layout — in global.css because Astro scoped CSS
    with @ in the filename is silently dropped by Workers asset upload. */
 	.work-layout {
+		width: 100%;
 		max-width: 56rem;
 		margin-left: auto;
 		margin-right: auto;
@@ -606,12 +637,9 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 
 	.compact-list li {
 		border-bottom: 1px solid var(--color-border);
-	}
-
-	.compact-list li {
 		border-left: 2px solid transparent;
 		padding-left: var(--spacing-md);
-		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition: border-color 200ms var(--ease);
 	}
 
 	.compact-list li:hover,
@@ -627,7 +655,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		text-decoration: none;
 		color: inherit;
 		gap: var(--spacing-md);
-		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition: color 200ms var(--ease);
 	}
 
 	.compact-item:hover {
@@ -646,11 +674,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		flex: 1;
 		text-align: right;
 		opacity: 1;
-		transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-width: 20rem;
+		transition: opacity 200ms var(--ease);
 	}
 
 	.compact-list li:hover .compact-tags,
@@ -668,7 +692,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 	.compact-reveal {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: grid-template-rows 250ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition: grid-template-rows 250ms var(--ease);
 	}
 
 	.compact-list li:hover .compact-reveal,
@@ -686,9 +710,16 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		color: var(--color-secondary);
 		line-height: 1.4;
 		margin: 0;
-		padding-bottom: 0.5rem;
+		padding-bottom: 0.25rem;
 	}
 
+	.compact-tags-reveal {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		padding-bottom: 0.5rem;
+	}
 
 	/* Sidebar */
 	.work-sidebar {
@@ -708,7 +739,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		text-decoration: none;
 		color: inherit;
 		border-left: 2px solid var(--color-border);
-		transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition: border-color 200ms var(--ease), transform 200ms var(--ease);
 	}
 
 	.highlight:hover {
@@ -730,7 +761,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		display: block;
 		font-family: var(--font-serif);
 		font-size: var(--font-size-sm);
-		font-weight: 600;
+		font-weight: 400;
 	}
 
 	.highlight-desc {
@@ -746,12 +777,53 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 			grid-template-columns: 1fr;
 		}
 
+		/* Grid children must opt out of min-width:auto to prevent
+		   content from expanding the track beyond the viewport. */
+		.work-main,
 		.work-sidebar {
-			position: static;
+			min-width: 0;
+			overflow: hidden;
+		}
+
+		.work-sidebar {
+			position: relative;
 			order: -1;
 			padding-bottom: var(--spacing-lg);
 			border-bottom: 1px solid var(--color-border);
 			margin-bottom: var(--spacing-lg);
+		}
+
+		/* Edge fades: signal horizontal scroll direction */
+		.work-sidebar::before,
+		.work-sidebar::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			bottom: var(--spacing-lg);
+			width: 3rem;
+			pointer-events: none;
+			z-index: 1;
+			transition: opacity 200ms ease;
+		}
+
+		.work-sidebar::before {
+			left: 0;
+			background: linear-gradient(to left, transparent, var(--color-bg));
+			opacity: 0;
+		}
+
+		.work-sidebar::after {
+			right: 0;
+			background: linear-gradient(to right, transparent, var(--color-bg));
+		}
+
+		/* JS toggles these classes based on scroll position */
+		.work-sidebar.scrolled-start::before {
+			opacity: 1;
+		}
+
+		.work-sidebar.scrolled-end::after {
+			opacity: 0;
 		}
 
 		.highlights {
@@ -759,6 +831,7 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 			overflow-x: auto;
 			gap: var(--spacing-md);
 			padding-bottom: var(--spacing-sm);
+			padding-right: var(--spacing-xl);
 			-webkit-overflow-scrolling: touch;
 		}
 
@@ -775,19 +848,48 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 			transform: none;
 		}
 
-		/* On mobile, always show summaries (no hover on touch) */
+		/* Always show summaries on touch (no hover) */
 		.compact-reveal {
 			grid-template-rows: 1fr;
+		}
+
+		.compact-reveal > * {
+			overflow: hidden;
+			min-width: 0;
 		}
 
 		.compact-list li {
 			border-left-color: transparent;
 		}
 
-		/* Touch-friendly compact items */
+		/* Grid layout on mobile — avoids Safari flex-wrap sizing bugs
+		   and eliminates the fragile float hack for year alignment. */
 		.compact-item {
-			padding: var(--spacing-sm) 0;
+			display: grid;
+			grid-template-columns: 1fr auto;
+			gap: 0 var(--spacing-sm);
+			padding: var(--spacing-xs) 0;
 			min-height: 44px;
+		}
+
+		.compact-title {
+			font-size: var(--font-size-sm);
+		}
+
+		/* Hide inline tags on mobile — reveal tags shown below summary instead */
+		.compact-tags {
+			display: none;
+		}
+
+		.compact-year {
+			grid-area: year;
+			font-size: 0.6875rem;
+		}
+
+		.compact-reveal p {
+			font-size: var(--font-size-xs);
+			line-height: 1.3;
+			padding-bottom: 0.25rem;
 		}
 
 		.highlight-tag {
@@ -801,42 +903,169 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		}
 
 		.work-section {
-			margin-bottom: var(--spacing-lg);
+			margin-bottom: var(--spacing-md);
 		}
 
 		.highlight {
 			min-width: 8rem;
 		}
 
-		/* Stack: title+year on first row, tags on second row */
-		.compact-item {
-			flex-wrap: wrap;
-		}
-
 		.compact-title {
-			font-size: 0.9rem;
-			flex: 1;
-			min-width: 0;
-		}
-
-		.compact-tags {
-			flex-basis: 100%;
-			max-width: 100%;
-			white-space: normal;
-			text-align: left;
-			font-size: 0.65rem;
-			text-overflow: clip;
-			overflow: visible;
-			opacity: 0.6;
-			order: 3;
-		}
-
-		.compact-year {
-			font-size: 0.65rem;
+			font-size: 0.8125rem;
 		}
 
 		.compact-reveal p {
-			font-size: 0.8rem;
+			font-size: 0.6875rem;
+			line-height: 1.3;
+			padding-bottom: 0.2rem;
 		}
 	}
+
+/* Contact page — in global.css to avoid Workers @ filename bug
+   ═══════════════════════════════════════════ */
+
+.contact-page {
+	width: 100%;
+	max-width: 56rem;
+	margin: 0 auto;
+	padding: var(--spacing-lg) var(--content-padding) var(--spacing-2xl);
+}
+
+.contact-layout {
+	display: grid;
+	grid-template-columns: 1fr 14rem;
+	gap: var(--spacing-2xl);
+	align-items: start;
+}
+
+.contact-main {
+	min-width: 0;
+}
+
+.contact-form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--spacing-md) var(--spacing-lg);
+}
+
+.form-field-wide {
+	grid-column: 1 / -1;
+}
+
+.turnstile-row {
+	grid-column: 1 / -1;
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-lg);
+	margin-top: var(--spacing-sm);
+}
+
+.contact-form .btn {
+	justify-self: start;
+}
+
+.form-error {
+	grid-column: 1 / -1;
+	border-left: 2px solid var(--color-error);
+	padding-left: var(--spacing-md);
+	color: var(--color-error);
+	font-size: var(--font-size-sm);
+}
+
+.contact-aside {
+	position: sticky;
+	top: var(--spacing-lg);
+}
+
+.aside-section {
+	margin-bottom: var(--spacing-lg);
+}
+
+.aside-label {
+	display: block;
+	font-family: var(--font-mono);
+	font-size: var(--font-size-xs);
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--color-secondary);
+	margin-bottom: var(--spacing-xs);
+}
+
+.aside-link {
+	display: block;
+	font-family: var(--font-mono);
+	font-size: var(--font-size-sm);
+	color: var(--color-secondary);
+	text-decoration: none;
+	line-height: 1.8;
+	transition: color 200ms var(--ease);
+}
+
+.aside-link:hover {
+	color: var(--color-text);
+}
+
+.contact-success .btn {
+	margin-top: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+	.contact-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.contact-form {
+		grid-template-columns: 1fr;
+	}
+
+	.turnstile-row {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.contact-aside {
+		position: static;
+		display: flex;
+		gap: var(--spacing-xl);
+		padding-top: var(--spacing-lg);
+		border-top: 1px solid var(--color-border);
+	}
+
+	.aside-link {
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.contact-page {
+		padding-top: var(--spacing-md);
+	}
+
+	.contact-aside {
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.contact-form input,
+	.contact-form textarea {
+		font-size: 1rem;
+	}
+
+	.turnstile-row {
+		gap: var(--spacing-md);
+	}
+
+	.cf-turnstile {
+		max-width: 100%;
+		overflow: hidden;
+	}
+
+	.contact-form .btn {
+		min-height: 44px;
+		width: 100%;
+		text-align: center;
+	}
+}
 

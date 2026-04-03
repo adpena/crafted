@@ -1,35 +1,58 @@
 import type { APIRoute } from "astro";
 import { getEmDashCollection, getSiteSettings } from "emdash";
 
+const COLLECTIONS = [
+	{ slug: "dev", prefix: "dev" },
+	{ slug: "design", prefix: "design" },
+	{ slug: "policy", prefix: "policy" },
+	{ slug: "writing", prefix: "writing" },
+];
+
 export const GET: APIRoute = async ({ site, url }) => {
 	const siteUrl = site?.toString() || url.origin;
 	const settings = await getSiteSettings();
 	const siteTitle = settings?.title || "Studio";
 	const siteDescription = settings?.tagline || "Design & Development";
 
-	const { entries: projects } = await getEmDashCollection("projects", {
-		orderBy: { published_at: "desc" },
-		limit: 20,
-	});
+	// Query all collections in parallel — same pattern as the home page
+	const results = await Promise.all(
+		COLLECTIONS.map(async (col) => {
+			try {
+				const { entries } = await getEmDashCollection(col.slug);
+				return entries.map((e) => ({ ...e, _prefix: col.prefix }));
+			} catch {
+				return [];
+			}
+		}),
+	);
 
-	const items = projects
-		.map((project) => {
-			if (!project.data.publishedAt) return null;
-			const pubDate = project.data.publishedAt.toUTCString();
+	const allEntries = results
+		.flat()
+		.filter((e) => e.data.date || e.data.year)
+		.sort((a, b) => {
+			const da = a.data.date ? new Date(a.data.date).getTime() : parseInt(a.data.year || "0", 10) * 1e10;
+			const db = b.data.date ? new Date(b.data.date).getTime() : parseInt(b.data.year || "0", 10) * 1e10;
+			return db - da;
+		})
+		.slice(0, 20);
 
-			const projectUrl = `${siteUrl}/work/${project.id}`;
-			const title = escapeXml(project.data.title || "Untitled");
-			const description = escapeXml(project.data.summary || "");
+	const items = allEntries
+		.map((entry) => {
+			const pubDate = entry.data.date
+				? new Date(entry.data.date).toUTCString()
+				: new Date(`${entry.data.year}-01-01`).toUTCString();
+			const entryUrl = escapeXml(`${siteUrl}/work/${entry._prefix}/${entry.id}`);
+			const title = escapeXml(entry.data.title || "Untitled");
+			const description = escapeXml(entry.data.summary || "");
 
 			return `    <item>
       <title>${title}</title>
-      <link>${projectUrl}</link>
-      <guid isPermaLink="true">${projectUrl}</guid>
+      <link>${entryUrl}</link>
+      <guid isPermaLink="true">${entryUrl}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${description}</description>
     </item>`;
 		})
-		.filter(Boolean)
 		.join("\n");
 
 	const rss = `<?xml version="1.0" encoding="UTF-8"?>
@@ -37,8 +60,8 @@ export const GET: APIRoute = async ({ site, url }) => {
   <channel>
     <title>${escapeXml(siteTitle)}</title>
     <description>${escapeXml(siteDescription)}</description>
-    <link>${siteUrl}</link>
-    <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>
+    <link>${escapeXml(siteUrl)}</link>
+    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${items}

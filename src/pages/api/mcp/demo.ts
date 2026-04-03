@@ -50,9 +50,26 @@ export const GET: APIRoute = async () => {
 export const POST: APIRoute = async ({ request }) => {
   // Server-side tool calls are limited — the rendering happens in the browser.
   // This endpoint can serve static tools (get default code, list params).
-  const body = await request.json() as { tool: string; params?: Record<string, unknown> };
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify({ error: { code: "INVALID_JSON", message: "Request body must be valid JSON." } }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
-  switch (body.tool) {
+  if (typeof body !== "object" || body === null || typeof (body as any).tool !== "string") {
+    return new Response(JSON.stringify({ error: { code: "BAD_REQUEST", message: "Expected { tool: string, params?: object }" } }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { tool } = body as { tool: string; params?: Record<string, unknown> };
+
+  switch (tool) {
     case "get_code": {
       // Return the default Mandelbrot source inline (can't self-fetch on Workers)
       const code = `# Mandelbrot set renderer — compiled by Molt to WebAssembly
@@ -106,15 +123,17 @@ main()`;
         headers: { "Content-Type": "application/json" },
       });
 
-    default:
+    default: {
+      const safeName = String(tool).slice(0, 64);
       return new Response(JSON.stringify({
         error: {
           code: "BROWSER_ONLY",
-          message: `Tool '${body.tool}' requires browser execution. Use postMessage({ tool: '${body.tool}', params: ... }) on the /demo/molt iframe.`,
+          message: `Tool '${safeName}' requires browser execution. Use postMessage on the /demo/molt iframe.`,
         },
       }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
+    }
   }
 };

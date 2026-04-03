@@ -9,7 +9,7 @@ import Base from "../layouts/Base.astro";
 			<div class="line" data-type="alejandro peña">&nbsp;</div>
 			<div class="line" data-type="austin, tx">&nbsp;</div>
 		</div>
-		<a href="/contact" class="btn about-btn" id="about-cta" style="visibility:hidden">Get in touch</a>
+		<a href="/contact" class="btn about-btn" id="about-cta" style="opacity:0;transition:opacity 600ms ease;animation:none">Get in touch</a>
 	</main>
 </Base>
 
@@ -35,7 +35,9 @@ import Base from "../layouts/Base.astro";
 	}
 
 	.about-btn {
-		align-self: flex-start;
+		align-self: center;
+		font-size: var(--font-size-sm);
+		padding: 0.6rem var(--spacing-xl);
 	}
 
 	.cursor::after {
@@ -77,7 +79,7 @@ import Base from "../layouts/Base.astro";
 
 	function typeLine() {
 		if (lineIndex >= lines.length) {
-			cta!.style.visibility = 'visible';
+			if (cta) cta.style.opacity = '1';
 			return;
 		}
 

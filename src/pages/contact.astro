@@ -7,18 +7,27 @@ const TURNSTILE_SITE_KEY = "0x4AAAAAACzs7nZ1lZWuydob";
 
 let formStatus: "idle" | "success" | "error" = "idle";
 let formMessage = "";
+let name = "";
+let email = "";
+let message = "";
 
 if (Astro.request.method === "POST") {
 	try {
 		const formData = await Astro.request.formData();
-		const name = formData.get("name")?.toString().trim() || "";
-		const email = formData.get("email")?.toString().trim() || "";
-		const message = formData.get("message")?.toString().trim() || "";
+		name = formData.get("name")?.toString().trim() || "";
+		email = formData.get("email")?.toString().trim() || "";
+		message = formData.get("message")?.toString().trim() || "";
 		const turnstileToken = formData.get("cf-turnstile-response")?.toString() || "";
 
-		// Verify Turnstile token
+		// Verify Turnstile — fail closed if secret is not configured
 		const turnstileSecret = (env as any).TURNSTILE_SECRET as string | undefined;
-		if (turnstileSecret) {
+		if (!turnstileSecret) {
+			formStatus = "error";
+			formMessage = "Form is temporarily unavailable. Please email contact@adpena.com.";
+		} else if (!turnstileToken) {
+			formStatus = "error";
+			formMessage = "Verification required. Please try again.";
+		} else {
 			const ip = Astro.request.headers.get("cf-connecting-ip") || "";
 			const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
 				method: "POST",
@@ -47,9 +56,14 @@ if (Astro.request.method === "POST") {
 				formStatus = "error";
 				formMessage = "Input too long.";
 			} else {
-				await notifyAll(env as any, { name, email, message });
-				formStatus = "success";
-				formMessage = "Message sent. I'll be in touch.";
+				const result = await notifyAll(env as any, { name, email, message });
+				if (result.sent.length === 0) {
+					formStatus = "error";
+					formMessage = "Delivery failed. Please email contact@adpena.com directly.";
+				} else {
+					formStatus = "success";
+					formMessage = "Message sent. I'll be in touch.";
+				}
 			}
 		}
 	} catch {
@@ -78,17 +92,17 @@ if (Astro.request.method === "POST") {
 
 						<div class="form-field">
 							<label for="name">Name</label>
-							<input type="text" id="name" name="name" required aria-required="true" autocomplete="name" />
+							<input type="text" id="name" name="name" required aria-required="true" autocomplete="name" value={name} />
 						</div>
 
 						<div class="form-field">
 							<label for="email">Email</label>
-							<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" />
+							<input type="email" id="email" name="email" required aria-required="true" autocomplete="email" value={email} />
 						</div>
 
 						<div class="form-field form-field-wide">
 							<label for="message">Message</label>
-							<textarea id="message" name="message" required aria-required="true" rows="8"></textarea>
+							<textarea id="message" name="message" required aria-required="true" rows="8">{message}</textarea>
 						</div>
 
 						<div class="turnstile-row">
@@ -101,11 +115,11 @@ if (Astro.request.method === "POST") {
 
 			<aside class="contact-aside">
 				<div class="aside-section">
-					<h2 class="section-label">Direct</h2>
+					<label class="aside-label">Direct</label>
 					<a href="mailto:contact@adpena.com" class="aside-link">contact@adpena.com</a>
 				</div>
 				<div class="aside-section">
-					<h2 class="section-label">Elsewhere</h2>
+					<label class="aside-label">Elsewhere</label>
 					<a href="https://github.com/adpena" class="aside-link" target="_blank" rel="noopener noreferrer">GitHub</a>
 					<a href="https://x.com/adpenatx" class="aside-link" target="_blank" rel="noopener noreferrer">X</a>
 					<a href="https://linkedin.com/in/adpena" class="aside-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -114,138 +128,20 @@ if (Astro.request.method === "POST") {
 		</div>
 	</main>
 
-	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+	<script>
+		// Lazy-load Turnstile only when the form receives focus,
+		// so the script doesn't block View Transitions on navigation.
+		const form = document.querySelector('.contact-form');
+		if (form) {
+			let loaded = false;
+			form.addEventListener('focusin', () => {
+				if (loaded) return;
+				loaded = true;
+				const s = document.createElement('script');
+				s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+				s.async = true;
+				document.head.appendChild(s);
+			}, { once: true });
+		}
+	</script>
 </Base>
-
-<style>
-	.contact-page {
-		max-width: 56rem;
-		margin: 0 auto;
-		padding: var(--spacing-xl) var(--content-padding) var(--spacing-2xl);
-	}
-
-	.contact-layout {
-		display: grid;
-		grid-template-columns: 1fr 14rem;
-		gap: var(--spacing-2xl);
-		align-items: start;
-	}
-
-	.contact-form {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: var(--spacing-md) var(--spacing-lg);
-	}
-
-	.form-field-wide {
-		grid-column: 1 / -1;
-	}
-
-	.turnstile-row {
-		grid-column: 1 / -1;
-		display: flex;
-		align-items: center;
-		gap: var(--spacing-lg);
-		margin-top: var(--spacing-sm);
-	}
-
-	.contact-form .btn {
-		justify-self: start;
-	}
-
-	.form-error {
-		grid-column: 1 / -1;
-		border-left: 2px solid var(--color-error);
-		padding-left: var(--spacing-md);
-		color: var(--color-error);
-		font-size: var(--font-size-sm);
-	}
-
-	.contact-aside {
-		position: sticky;
-		top: var(--spacing-lg);
-	}
-
-	.aside-section {
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.aside-link {
-		display: block;
-		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
-		color: var(--color-secondary);
-		text-decoration: none;
-		line-height: 1.8;
-		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.aside-link:hover {
-		color: var(--color-text);
-	}
-
-	.contact-success .btn {
-		margin-top: var(--spacing-md);
-	}
-
-	@media (max-width: 768px) {
-		.contact-layout {
-			grid-template-columns: 1fr;
-		}
-
-		.contact-form {
-			grid-template-columns: 1fr;
-		}
-
-		.turnstile-row {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-
-		.contact-aside {
-			position: static;
-			display: flex;
-			gap: var(--spacing-xl);
-			padding-top: var(--spacing-lg);
-			border-top: 1px solid var(--color-border);
-		}
-
-		.aside-link {
-			min-height: 44px;
-			display: flex;
-			align-items: center;
-		}
-	}
-
-	@media (max-width: 480px) {
-		.contact-page {
-			padding-top: var(--spacing-md);
-		}
-
-		.contact-aside {
-			flex-direction: column;
-			gap: var(--spacing-md);
-		}
-
-		.contact-form input,
-		.contact-form textarea {
-			font-size: 1rem;
-		}
-
-		.turnstile-row {
-			gap: var(--spacing-md);
-		}
-
-		/* Turnstile widget can be up to 300px wide - ensure it fits */
-		.cf-turnstile {
-			max-width: 100%;
-			overflow: hidden;
-		}
-
-		.contact-form .btn {
-			min-height: 44px;
-			width: 100%;
-			text-align: center;
-		}
-	}
-</style>

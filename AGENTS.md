@@ -58,6 +58,14 @@ Use these instead of writing new styles:
 - Zero external CSS dependencies
 - Every element should feel intentionally designed
 
+## Known platform issues
+
+### Cloudflare Workers CSS filename bug
+Astro scoped CSS files with `@` in the filename (e.g., `index@_@astro.*.css`) are served as 0 bytes by Workers asset upload. **Put page-specific styles in `src/styles/global.css`** instead of using scoped `<style>` blocks for any page that must work on Workers. The global CSS bundles into `Base.*.css` which has a clean filename.
+
+### Debugging streaming responses
+Never pipe `curl` directly to `grep` when verifying Workers HTML output. Workers sends chunked/streaming responses — the pipe can close before the full response arrives, causing false negatives (e.g., CSS link appears missing when it's actually there). Always: `curl -s URL > /tmp/file.html` then grep the file.
+
 ## Deploy
 
 ```bash

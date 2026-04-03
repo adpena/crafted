@@ -215,6 +215,8 @@ const discord: Adapter = {
       `New contact\nFrom: ${sanitizeText(sub.name)} (${sanitizeText(sub.email)})\n\n${sanitizeText(sub.message)}`,
     );
 
+    validateUrl(env.DISCORD_WEBHOOK_URL!, "DISCORD_WEBHOOK_URL");
+
     if (env.DRY_RUN) {
       console.info("[DRY_RUN] Discord:", { content });
       return;
@@ -240,6 +242,8 @@ const slack: Adapter = {
     const text = truncate(
       `New contact\nFrom: ${sanitizeText(sub.name)} (${sanitizeText(sub.email)})\n\n${sanitizeText(sub.message)}`,
     );
+
+    validateUrl(env.SLACK_WEBHOOK_URL!, "SLACK_WEBHOOK_URL");
 
     if (env.DRY_RUN) {
       console.info("[DRY_RUN] Slack:", { text });

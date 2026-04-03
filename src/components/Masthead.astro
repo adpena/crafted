@@ -38,7 +38,7 @@ function isActive(href: string): boolean {
 <style>
 	.masthead {
 		border-bottom: 2px solid var(--color-text);
-		padding: var(--spacing-xl) 0 var(--spacing-lg);
+		padding: var(--spacing-xl) 0 0;
 	}
 
 	.masthead-inner {
@@ -58,11 +58,16 @@ function isActive(href: string): boolean {
 		text-decoration: none;
 		color: var(--color-text);
 		line-height: 1.1;
-		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition: color 200ms var(--ease);
 	}
 
 	.masthead-title:hover {
 		color: var(--color-secondary);
+	}
+
+	.masthead-title:visited,
+	.masthead-title:active {
+		color: var(--color-text);
 	}
 
 	.masthead-tagline {
@@ -78,7 +83,7 @@ function isActive(href: string): boolean {
 		justify-content: center;
 		gap: var(--spacing-xl);
 		margin-top: var(--spacing-md);
-		padding-top: var(--spacing-md);
+		padding: var(--spacing-sm) 0;
 		border-top: 1px solid var(--color-border);
 	}
 
@@ -94,23 +99,35 @@ function isActive(href: string): boolean {
 		transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
+	.masthead-nav-link:visited {
+		color: var(--color-secondary);
+	}
+
+	.masthead-nav-link:active {
+		color: var(--color-secondary);
+	}
+
 	.masthead-nav-link:hover {
 		color: var(--color-text);
 		text-decoration-color: var(--color-border);
 	}
 
-	.masthead-nav-link.active {
+	.masthead-nav-link.active,
+	.masthead-nav-link.active:visited {
 		color: var(--color-text);
 		text-decoration-color: var(--color-text);
 	}
 
 	@media (max-width: 768px) {
 		.masthead {
-			padding: var(--spacing-md) 0 var(--spacing-sm);
+			padding: var(--spacing-md) 0 0;
 		}
 
 		.masthead-title {
 			letter-spacing: 0.15em;
+			min-height: 44px;
+			display: inline-flex;
+			align-items: center;
 		}
 
 		.masthead-nav-link {

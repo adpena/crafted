@@ -12,14 +12,13 @@ const collectionDefs = [
 type Entry = { id: string; data: Record<string, any> };
 type Section = { label: string; slug: string; entries: Entry[] };
 
-// Manual ordering overrides (slug → sort priority, lower = first)
-const ORDER: Record<string, number> = {
-	"molt": 1,
-	"crafted-action-pages": 2,
-	"reproq": 3,
-};
+// Sort newest first — uses date field if available, falls back to year
+function entryTime(e: Entry): number {
+	if (e.data.date) return new Date(e.data.date).getTime();
+	return parseInt(e.data.year ?? "0", 10) * 1e10;
+}
 
-// Parallel queries — all collections at once
+// Parallel queries — all collections at once, sorted chronologically
 const results = await Promise.all(
 	collectionDefs.map(async (def) => {
 		try {
@@ -28,14 +27,7 @@ const results = await Promise.all(
 				try { Astro.cache.set(result.cacheHint); } catch {}
 			}
 			if (result.entries?.length > 0) {
-				const sorted = [...result.entries].sort((a, b) => {
-					const oa = ORDER[a.id] ?? 100;
-					const ob = ORDER[b.id] ?? 100;
-					if (oa !== ob) return oa - ob;
-					const ya = parseInt(a.data.year ?? "0", 10);
-					const yb = parseInt(b.data.year ?? "0", 10);
-					return yb - ya;
-				});
+				const sorted = [...result.entries].sort((a, b) => entryTime(b) - entryTime(a));
 				return { ...def, entries: sorted };
 			}
 		} catch {}
@@ -73,6 +65,7 @@ const highlights = [
 								<div class="compact-reveal">
 									<div>
 										{entry.data.summary && <p>{entry.data.summary}</p>}
+										{tags && <span class="compact-tags-reveal">{tags}</span>}
 									</div>
 								</div>
 							</li>
@@ -97,4 +90,18 @@ const highlights = [
 		</aside>
 	</main>
 </Base>
+
+<script>
+	const sidebar = document.querySelector('.work-sidebar');
+	const scroller = document.querySelector('.highlights');
+	if (sidebar && scroller) {
+		const update = () => {
+			const { scrollLeft, scrollWidth, clientWidth } = scroller;
+			sidebar.classList.toggle('scrolled-start', scrollLeft > 4);
+			sidebar.classList.toggle('scrolled-end', scrollLeft + clientWidth >= scrollWidth - 4);
+		};
+		scroller.addEventListener('scroll', update, { passive: true });
+		update();
+	}
+</script>
 
