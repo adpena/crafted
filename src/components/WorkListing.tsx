@@ -56,7 +56,7 @@ export default function WorkListing({ sections }: Props) {
 		: sections;
 
 	return (
-		<div className="work-main">
+		<div className="work-main" suppressHydrationWarning>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">
 					<span className="work-filter-label" aria-hidden="true">
@@ -105,14 +105,14 @@ export default function WorkListing({ sections }: Props) {
 					<ul className="compact-list" role="list">
 						{section.entries.map((entry) => {
 							const tags =
-								entry.data.stack ??
-								entry.data.publication ??
-								entry.data.medium ??
+								entry.data.stack ||
+								entry.data.publication ||
+								entry.data.medium ||
 								"";
 							const year =
-								entry.data.year ??
+								entry.data.year ||
 								(entry.data.date
-									? new Date(entry.data.date).getFullYear()
+									? String(new Date(entry.data.date).getFullYear())
 									: "");
 
 							return (

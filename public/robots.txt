@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /_emdash/
+Disallow: /api/
+
+Sitemap: https://adpena.com/sitemap.xml

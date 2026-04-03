@@ -45,19 +45,19 @@ const results = await Promise.all(
 				const entries: WorkEntry[] = sorted.map((e) => ({
 					id: e.id,
 					slug: e.id,
-					editRef: e.edit?.["data-emdash-ref"],
+					editRef: e.edit?.["data-emdash-ref"] ?? "",
 					data: {
-						title: e.data.title,
-						summary: e.data.summary,
-						stack: e.data.stack,
-						publication: e.data.publication,
-						medium: e.data.medium,
-						year: e.data.year,
-						date: e.data.date,
+						title: e.data.title ?? "",
+						summary: e.data.summary ?? "",
+						stack: e.data.stack ?? "",
+						publication: e.data.publication ?? "",
+						medium: e.data.medium ?? "",
+						year: e.data.year ?? "",
+						date: e.data.date ?? "",
 					},
 					fieldRefs: {
-						title: e.edit?.title?.["data-emdash-ref"],
-						summary: e.edit?.summary?.["data-emdash-ref"],
+						title: e.edit?.title?.["data-emdash-ref"] ?? "",
+						summary: e.edit?.summary?.["data-emdash-ref"] ?? "",
 					},
 				}));
 
