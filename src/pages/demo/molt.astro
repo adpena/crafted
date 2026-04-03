@@ -21,6 +21,13 @@
 //   3. Runs the result
 //   4. Returns stdout + canvas snapshot
 //   This enables fully autonomous AI visual art creation loops.
+
+import MoltDemo from "../../components/MoltDemo.tsx";
+
+const embedParam = Astro.url.searchParams.get("embed");
+const embedMode = embedParam === "1" ? "embed"
+	: embedParam === "stacked" ? "stacked"
+	: "standalone" as const;
 ---
 
 <html lang="en">
@@ -28,7 +35,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Molt — Mandelbrot Demo</title>
-  <style>
+  <!-- Self-contained styles: demo page renders outside the main site layout
+       as a standalone app and embeddable widget. Hex values intentionally
+       duplicate the design tokens for zero-dependency embedding. -->
+  <style is:global>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -44,9 +54,19 @@
       font-family: var(--serif);
       background: var(--bg);
       color: var(--text);
+      min-height: 100vh;
       min-height: 100dvh;
       display: flex;
       flex-direction: column;
+    }
+
+    /* Astro island and React root must fill the flex layout */
+    astro-island,
+    .molt-island {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     header {
@@ -157,6 +177,8 @@
       padding: 0.2rem 0.6rem;
       font-family: var(--mono);
       font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--text);
       background: transparent;
       border: 1px solid var(--border);
@@ -179,367 +201,19 @@
       justify-content: space-between;
     }
 
-    .placeholder-msg {
-      color: var(--secondary);
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      text-align: center;
-      max-width: 20rem;
-      line-height: 1.6;
-    }
-
-    /* Embed canvas-only: just the fractal */
-    .embed header,
-    .embed .status,
-    .embed .pane-left {
-      display: none !important;
-    }
-
-    .embed .demo-layout {
-      grid-template-rows: 1fr !important;
-    }
-
-    .embed .canvas-wrap {
-      padding: 0;
-    }
-
-    .embed canvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Embed stacked: full replit UI, no outer header, fixed canvas + scrollable code */
-    .embed-stacked header {
-      display: none !important;
-    }
-
-    .embed-stacked .demo-layout {
-      display: flex !important;
-      flex-direction: column;
-    }
-
-    .embed-stacked .canvas-wrap {
-      height: 24rem;
-      flex-shrink: 0;
-      padding: 0;
-    }
-
-    .embed-stacked canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .embed-stacked .pane-left {
-      flex: 1;
-      min-height: 0;
-      border-bottom: none;
-      border-top: 1px solid var(--border);
-    }
-
-    .embed-stacked .code-wrap {
-      overflow: auto;
-    }
-
     @media (max-width: 768px) {
-      :not(.embed) .demo-layout {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
-      }
-      :not(.embed) .pane-left {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-
-      header {
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        padding: 0.5rem 1rem;
-      }
-
-      .embed-stacked .canvas-wrap {
-        height: 16rem;
-      }
-
-      textarea {
-        white-space: pre-wrap;
-        word-break: break-word;
-        font-size: 1rem;
-      }
-
-      .line-numbers {
-        padding: 0.5rem 0.25rem 0.5rem 0.5rem;
-        font-size: 0.65rem;
-      }
-
-      .code-wrap {
-        grid-template-columns: 2rem 1fr;
-      }
+      header { flex-wrap: wrap; gap: 0.25rem; padding: 0.5rem 1rem; }
+      textarea { white-space: pre-wrap; word-break: break-word; font-size: 1rem; }
+      .line-numbers { padding: 0.5rem 0.25rem 0.5rem 0.5rem; font-size: 0.65rem; }
+      .code-wrap { grid-template-columns: 2rem 1fr; }
     }
 
     @media (max-width: 480px) {
-      .embed-stacked .canvas-wrap {
-        height: 12rem;
-      }
-
-      .status {
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        font-size: 0.55rem;
-      }
+      .status { flex-wrap: wrap; gap: 0.25rem; font-size: 0.55rem; }
     }
   </style>
 </head>
-<body>
-  <header>
-    <span class="title"><a href="/work/dev/molt">Molt</a> — Mandelbrot</span>
-    <span class="note">Python → Wasm → Canvas</span>
-  </header>
-
-  <div class="demo-layout">
-    <div class="pane">
-      <div class="canvas-wrap" id="canvas-wrap">
-        <canvas id="canvas"></canvas>
-      </div>
-    </div>
-
-    <div class="pane pane-left">
-      <div class="pane-header">
-        <span>mandelbrot.py</span>
-        <div style="display:flex;gap:0.3rem">
-          <!-- TODO(molt-compile): Enable when compilation endpoint is live -->
-          <button class="btn primary" id="compile-btn" disabled>Compile & Run</button>
-        </div>
-      </div>
-      <div class="code-wrap">
-        <div class="line-numbers" id="line-numbers"></div>
-        <textarea id="code" spellcheck="false"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="status">
-    <span id="status-text">Loading source...</span>
-    <span id="status-meta"></span>
-  </div>
-
-  <script>
-    const embedParam = new URLSearchParams(window.location.search).get('embed');
-    if (embedParam === '1') {
-      document.documentElement.classList.add('embed');
-    } else if (embedParam === 'stacked') {
-      document.documentElement.classList.add('embed-stacked');
-    }
-
-    const codeEl = document.getElementById('code');
-    const lineNumEl = document.getElementById('line-numbers');
-
-    function updateLineNumbers() {
-      const lines = (codeEl.value || '').split('\n').length;
-      lineNumEl.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
-    }
-
-    // Sync scroll between textarea and line numbers
-    codeEl.addEventListener('scroll', () => {
-      lineNumEl.style.transform = `translateY(-${codeEl.scrollTop}px)`;
-    });
-
-    codeEl.addEventListener('input', updateLineNumbers);
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const compileBtn = document.getElementById('compile-btn');
-    const statusText = document.getElementById('status-text');
-    const statusMeta = document.getElementById('status-meta');
-
-    // Load the Mandelbrot source, init line numbers, start animation
-    fetch('/molt-demo/mandelbrot.py')
-      .then(r => r.text())
-      .then(src => {
-        codeEl.value = src;
-        updateLineNumbers();
-        if (statusText) statusText.textContent = 'Animating — click canvas to pause';
-      });
-
-    // Match canvas resolution to displayed size for crisp rendering.
-    // Cap at 600px wide to keep 60fps — the worker renders every pixel.
-    const container = document.getElementById('canvas-wrap');
-    const rect = container.getBoundingClientRect();
-    const maxW = 600;
-    const aspect = rect.width / rect.height;
-    const W = Math.min(maxW, Math.round(rect.width));
-    const H = Math.round(W / aspect);
-    canvas.width = W;
-    canvas.height = H;
-
-    const TARGET_X = -0.7453;
-    const TARGET_Y = 0.1127;
-    let zoom = 1.0;
-    let frame = 0;
-    let animating = true;
-    let rendering = false;
-
-    // Off-thread rendering via Web Worker
-    const worker = new Worker('/molt-demo/mandelbrot-worker.js');
-
-    worker.onmessage = (e) => {
-      const { buf, W: w, H: h } = e.data;
-      const img = new ImageData(new Uint8ClampedArray(buf), w, h);
-      ctx.putImageData(img, 0, 0);
-      rendering = false;
-    };
-
-    function parseParams() {
-      const src = codeEl.value;
-      const p = (name, fb) => {
-        const m = src.match(new RegExp(name + '\\s*[:=]\\s*([\\-0-9.]+)'));
-        return m ? parseFloat(m[1]) : fb;
-      };
-      return {
-        maxIter: p('MAX_ITER', 100),
-        cx: p('CENTER_X', TARGET_X),
-        cy: p('CENTER_Y', TARGET_Y),
-      };
-    }
-
-    function requestRender() {
-      if (rendering) return;
-      rendering = true;
-      const { maxIter, cx, cy } = parseParams();
-      const dynamicIter = Math.min(800, Math.max(maxIter, 50 + Math.floor(Math.log(zoom + 1) * 40)));
-      worker.postMessage({ W, H, cx, cy, zoom, maxIter: dynamicIter, colorShift: frame * 0.08 });
-    }
-
-    function animate() {
-      if (!animating) return;
-      zoom *= 1.0015;
-      if (zoom > 1e12) zoom = 1.0;
-      frame++;
-
-      requestRender();
-
-      if (statusMeta) {
-        const dynIter = Math.min(800, 50 + Math.floor(Math.log(zoom + 1) * 40));
-        statusMeta.textContent = `${W}×${H} · zoom: ${zoom.toFixed(1)}x · iter: ${dynIter} · frame ${frame}`;
-      }
-      requestAnimationFrame(animate);
-    }
-
-    // Start immediately
-    requestRender();
-    requestAnimationFrame(animate);
-
-    canvas.addEventListener('click', () => {
-      animating = !animating;
-      if (animating) requestAnimationFrame(animate);
-      if (statusText) statusText.textContent = animating ? 'Animating' : 'Paused — click to resume';
-    });
-
-    codeEl.addEventListener('input', () => {
-      animating = false;
-      if (statusText) statusText.textContent = 'Paused — editing';
-      updateLineNumbers();
-      requestRender();
-    });
-
-    // -----------------------------------------------------------------------
-    // WebMCP interface — allows AI agents to control the demo programmatically
-    // via postMessage (iframe) or via the /api/mcp/demo endpoint (HTTP).
-    //
-    // Tools:
-    //   get_code        → { code: string }
-    //   set_code        → accepts { code: string }, returns { ok: true }
-    //   set_parameters  → accepts { center_x?, center_y?, zoom?, max_iter? }
-    //   get_state       → { zoom, frame, animating, width, height }
-    //   pause           → pauses animation
-    //   resume          → resumes animation
-    //   reset           → resets zoom to 1.0
-    //   snapshot        → returns canvas as base64 PNG
-    // -----------------------------------------------------------------------
-
-    window.addEventListener('message', (e) => {
-      if (!e.data || typeof e.data.tool !== 'string') return;
-
-      const { tool, params } = e.data;
-      let result;
-
-      switch (tool) {
-        case 'get_code':
-          result = { code: codeEl.value };
-          break;
-
-        case 'set_code':
-          if (typeof params?.code === 'string') {
-            codeEl.value = params.code;
-            updateLineNumbers();
-            animating = false;
-            requestRender();
-            result = { ok: true };
-          } else {
-            result = { error: 'missing params.code' };
-          }
-          break;
-
-        case 'set_parameters': {
-          const src = codeEl.value;
-          let updated = src;
-          if (params?.center_x != null) updated = updated.replace(/CENTER_X[^=]*=\s*[\-0-9.]+/, `CENTER_X: float = ${params.center_x}`);
-          if (params?.center_y != null) updated = updated.replace(/CENTER_Y[^=]*=\s*[\-0-9.]+/, `CENTER_Y: float = ${params.center_y}`);
-          if (params?.max_iter != null) updated = updated.replace(/MAX_ITER[^=]*=\s*\d+/, `MAX_ITER: int = ${params.max_iter}`);
-          if (params?.zoom != null) zoom = Number(params.zoom);
-          codeEl.value = updated;
-          updateLineNumbers();
-          requestRender();
-          result = { ok: true, zoom };
-          break;
-        }
-
-        case 'get_state':
-          result = { zoom, frame, animating, width: W, height: H };
-          break;
-
-        case 'pause':
-          animating = false;
-          result = { ok: true };
-          break;
-
-        case 'resume':
-          animating = true;
-          requestAnimationFrame(animate);
-          result = { ok: true };
-          break;
-
-        case 'reset':
-          zoom = 1.0;
-          frame = 0;
-          requestRender();
-          result = { ok: true };
-          break;
-
-        case 'snapshot':
-          result = { image: canvas.toDataURL('image/png') };
-          break;
-
-        default:
-          result = { error: `unknown tool: ${tool}` };
-      }
-
-      // Reply to the caller
-      if (e.source && e.source !== window) {
-        e.source.postMessage({ id: e.data.id, result }, { targetOrigin: '*' });
-      }
-    });
-
-    // Expose tools list for discovery
-    window.__molt_mcp_tools = [
-      { name: 'get_code', description: 'Get the current Python source code' },
-      { name: 'set_code', description: 'Replace the Python source code', params: { code: 'string' } },
-      { name: 'set_parameters', description: 'Update render parameters', params: { center_x: 'number?', center_y: 'number?', zoom: 'number?', max_iter: 'number?' } },
-      { name: 'get_state', description: 'Get current animation state (zoom, frame, animating)' },
-      { name: 'pause', description: 'Pause the animation' },
-      { name: 'resume', description: 'Resume the animation' },
-      { name: 'reset', description: 'Reset zoom to 1.0' },
-      { name: 'snapshot', description: 'Capture the canvas as a base64 PNG image' },
-    ];
-  </script>
+<body class={embedMode === "embed" ? "embed" : embedMode === "stacked" ? "embed-stacked" : ""}>
+  <MoltDemo embedMode={embedMode} client:load />
 </body>
 </html>
