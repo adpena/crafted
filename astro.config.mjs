@@ -1,5 +1,4 @@
 import cloudflare from "@astrojs/cloudflare";
-import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import { defineConfig } from "astro/config";
 import { fileURLToPath } from "node:url";
@@ -22,7 +21,6 @@ export default defineConfig({
 		responsiveStyles: true,
 	},
 	integrations: [
-		react(),
 		emdash({
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),

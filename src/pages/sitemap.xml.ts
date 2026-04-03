@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { getEmDashCollection } from "emdash";
+import { escapeXml } from "../lib/xml";
 
 const COLLECTIONS = [
 	{ slug: "dev", prefix: "work/dev" },
@@ -61,12 +62,3 @@ ${urls.join("\n")}
 		},
 	});
 };
-
-function escapeXml(str: string): string {
-	return str
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&apos;");
-}
