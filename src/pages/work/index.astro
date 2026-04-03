@@ -320,31 +320,39 @@ const highlights = [
 			margin-bottom: var(--spacing-lg);
 		}
 
-		/* Highlights: keep readable */
 		.highlight {
 			min-width: 8rem;
 		}
 
-		/* Project list: smaller text, tags wrap underneath */
+		/* Stack: title+year on first row, tags on second row */
+		.compact-item {
+			flex-wrap: wrap;
+		}
+
 		.compact-title {
 			font-size: 0.9rem;
+			flex: 1;
+			min-width: 0;
 		}
 
 		.compact-tags {
-			font-size: 0.65rem;
+			flex-basis: 100%;
+			max-width: 100%;
 			white-space: normal;
-			overflow-wrap: break-word;
-			max-width: none;
+			text-align: left;
+			font-size: 0.65rem;
 			text-overflow: clip;
+			overflow: visible;
+			opacity: 0.6;
+			order: 3;
 		}
 
 		.compact-year {
 			font-size: 0.65rem;
 		}
 
-		/* Revealed descriptions: smaller */
 		.compact-reveal p {
-			font-size: 0.75rem;
+			font-size: 0.8rem;
 		}
 	}
 </style>
