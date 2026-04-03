@@ -56,6 +56,12 @@ export default function WorkListing({ sections }: Props) {
 		: sections;
 
 	return (
+		// TODO(astro-react-hydration): React 19 + Astro SSR produces a hydration
+		// mismatch (#418) due to whitespace differences between server-rendered HTML
+		// and React's client-side expectation. suppressHydrationWarning mitigates but
+		// doesn't fully resolve. Track: https://github.com/withastro/astro/issues
+		// Lighthouse Best Practices docked 4 points for the console error.
+		// Fix: upgrade @astrojs/react when the upstream fix ships, then remove this.
 		<div className="work-main" suppressHydrationWarning>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">

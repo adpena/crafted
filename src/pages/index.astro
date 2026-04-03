@@ -1,5 +1,6 @@
 ---
 import { getEmDashCollection } from "emdash";
+import { env } from "cloudflare:workers";
 import Base from "../layouts/Base.astro";
 import WorkListing from "../components/WorkListing.tsx";
 import type { WorkSection, WorkEntry } from "../components/WorkListing.tsx";
@@ -12,7 +13,6 @@ const collectionDefs = [
 ];
 
 // Pinned entries float to top; everything else sorts newest-first.
-// To pin a project, add its slug here with a lower number = higher position.
 const PIN: Record<string, number> = {
 	"molt": 1,
 	"crafted-action-pages": 2,
@@ -23,52 +23,75 @@ function entryTime(e: { data: Record<string, any> }): number {
 	return parseInt(e.data.year ?? "0", 10) * 1e10;
 }
 
-// Parallel queries — all collections at once
-const results = await Promise.all(
-	collectionDefs.map(async (def) => {
-		try {
-			const result = await getEmDashCollection(def.slug);
-			if (result.cacheHint) {
-				try { Astro.cache.set(result.cacheHint); } catch {}
-			}
-			if (result.entries?.length > 0) {
-				const sorted = [...result.entries].sort((a, b) => {
-					const pa = PIN[a.id] ?? Infinity;
-					const pb = PIN[b.id] ?? Infinity;
-					if (pa !== pb) return pa - pb;
-					return entryTime(b) - entryTime(a);
-				});
+function serializeEntries(entries: any[], slug: string, label: string): WorkSection | null {
+	if (!entries?.length) return null;
+	const sorted = [...entries].sort((a, b) => {
+		const pa = PIN[a.id] ?? Infinity;
+		const pb = PIN[b.id] ?? Infinity;
+		if (pa !== pb) return pa - pb;
+		return entryTime(b) - entryTime(a);
+	});
 
-				// Serialize entries for the React island boundary.
-				// The .edit proxy is non-serializable — extract data-emdash-ref
-				// strings so the React component can apply them as attributes.
-				const entries: WorkEntry[] = sorted.map((e) => ({
-					id: e.id,
-					slug: e.id,
-					editRef: e.edit?.["data-emdash-ref"] ?? "",
-					data: {
-						title: e.data.title ?? "",
-						summary: e.data.summary ?? "",
-						stack: e.data.stack ?? "",
-						publication: e.data.publication ?? "",
-						medium: e.data.medium ?? "",
-						year: e.data.year ?? "",
-						date: e.data.date ?? "",
-					},
-					fieldRefs: {
-						title: e.edit?.title?.["data-emdash-ref"] ?? "",
-						summary: e.edit?.summary?.["data-emdash-ref"] ?? "",
-					},
-				}));
+	return {
+		slug,
+		label,
+		entries: sorted.map((e) => ({
+			id: e.id,
+			slug: e.id,
+			editRef: e.edit?.["data-emdash-ref"] ?? "",
+			data: {
+				title: e.data.title ?? "",
+				summary: e.data.summary ?? "",
+				stack: e.data.stack ?? "",
+				publication: e.data.publication ?? "",
+				medium: e.data.medium ?? "",
+				year: e.data.year ?? "",
+				date: e.data.date ?? "",
+			},
+			fieldRefs: {
+				title: e.edit?.title?.["data-emdash-ref"] ?? "",
+				summary: e.edit?.summary?.["data-emdash-ref"] ?? "",
+			},
+		})),
+	};
+}
 
-				return { slug: def.slug, label: def.label, entries };
-			}
-		} catch {}
-		return null;
-	})
-);
+// KV edge cache: serve sections from the nearest PoP (~20ms) instead
+// of querying D1 (~584ms). TTL keeps content fresh within 60 seconds.
+const CACHE_KEY = "work-sections-v1";
+const CACHE_TTL = 60;
 
-const sections: WorkSection[] = results.filter((s): s is WorkSection => s !== null);
+let sections: WorkSection[] = [];
+const kv = (env as any).CACHE as KVNamespace | undefined;
+
+// Try KV cache first
+let cached: string | null = null;
+try { cached = kv ? await kv.get(CACHE_KEY) : null; } catch {}
+
+if (cached) {
+	sections = JSON.parse(cached);
+} else {
+	// Cache miss — query D1 in parallel
+	const results = await Promise.all(
+		collectionDefs.map(async (def) => {
+			try {
+				const result = await getEmDashCollection(def.slug);
+				if (result.cacheHint) {
+					try { Astro.cache.set(result.cacheHint); } catch {}
+				}
+				return serializeEntries(result.entries, def.slug, def.label);
+			} catch {}
+			return null;
+		})
+	);
+
+	sections = results.filter((s): s is WorkSection => s !== null);
+
+	// Store in KV for subsequent requests
+	if (kv && sections.length > 0) {
+		try { await kv.put(CACHE_KEY, JSON.stringify(sections), { expirationTtl: CACHE_TTL }); } catch {}
+	}
+}
 
 const highlights = [
 	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev/molt", tag: "Featured" },
