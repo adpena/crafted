@@ -1,6 +1,8 @@
 ---
 import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
+import WorkListing from "../components/WorkListing.tsx";
+import type { WorkSection, WorkEntry } from "../components/WorkListing.tsx";
 
 const collectionDefs = [
 	{ slug: "dev", label: "Development" },
@@ -9,9 +11,6 @@ const collectionDefs = [
 	{ slug: "writing", label: "Writing" },
 ];
 
-type Entry = { id: string; data: Record<string, any> };
-type Section = { label: string; slug: string; entries: Entry[] };
-
 // Pinned entries float to top; everything else sorts newest-first.
 // To pin a project, add its slug here with a lower number = higher position.
 const PIN: Record<string, number> = {
@@ -19,18 +18,9 @@ const PIN: Record<string, number> = {
 	"crafted-action-pages": 2,
 };
 
-function entryTime(e: Entry): number {
+function entryTime(e: { data: Record<string, any> }): number {
 	if (e.data.date) return new Date(e.data.date).getTime();
 	return parseInt(e.data.year ?? "0", 10) * 1e10;
-}
-
-function sortEntries(entries: Entry[]): Entry[] {
-	return [...entries].sort((a, b) => {
-		const pa = PIN[a.id] ?? Infinity;
-		const pb = PIN[b.id] ?? Infinity;
-		if (pa !== pb) return pa - pb;
-		return entryTime(b) - entryTime(a);
-	});
 }
 
 // Parallel queries — all collections at once
@@ -42,14 +32,43 @@ const results = await Promise.all(
 				try { Astro.cache.set(result.cacheHint); } catch {}
 			}
 			if (result.entries?.length > 0) {
-				return { ...def, entries: sortEntries(result.entries) };
+				const sorted = [...result.entries].sort((a, b) => {
+					const pa = PIN[a.id] ?? Infinity;
+					const pb = PIN[b.id] ?? Infinity;
+					if (pa !== pb) return pa - pb;
+					return entryTime(b) - entryTime(a);
+				});
+
+				// Serialize entries for the React island boundary.
+				// The .edit proxy is non-serializable — extract data-emdash-ref
+				// strings so the React component can apply them as attributes.
+				const entries: WorkEntry[] = sorted.map((e) => ({
+					id: e.id,
+					slug: e.id,
+					editRef: e.edit?.["data-emdash-ref"],
+					data: {
+						title: e.data.title,
+						summary: e.data.summary,
+						stack: e.data.stack,
+						publication: e.data.publication,
+						medium: e.data.medium,
+						year: e.data.year,
+						date: e.data.date,
+					},
+					fieldRefs: {
+						title: e.edit?.title?.["data-emdash-ref"],
+						summary: e.edit?.summary?.["data-emdash-ref"],
+					},
+				}));
+
+				return { slug: def.slug, label: def.label, entries };
 			}
 		} catch {}
 		return null;
 	})
 );
 
-const sections: Section[] = results.filter((s): s is Section => s !== null);
+const sections: WorkSection[] = results.filter((s): s is WorkSection => s !== null);
 
 const highlights = [
 	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev/molt", tag: "Featured" },
@@ -62,36 +81,7 @@ const highlights = [
 
 <Base>
 	<main id="main-content" class="work-layout">
-		<div class="work-main">
-			{sections.length === 0 && (
-				<p class="page-summary" style="text-align:center;padding:var(--spacing-3xl) 0">Work unavailable — check back shortly.</p>
-			)}
-			{sections.map((section) => (
-				<section class="work-section">
-					<h2 class="section-label">{section.label}</h2>
-					<ul class="compact-list" role="list">
-						{section.entries.map((entry) => {
-							const tags = entry.data.stack ?? entry.data.publication ?? entry.data.medium ?? "";
-							return (
-							<li>
-								<a href={`/work/${section.slug}/${entry.id}`} class="compact-item">
-									<span class="compact-title">{entry.data.title}</span>
-									<span class="compact-tags">{tags}</span>
-									<span class="compact-year">{entry.data.year ?? (entry.data.date ? new Date(entry.data.date).getFullYear() : "")}</span>
-								</a>
-								<div class="compact-reveal">
-									<div>
-										{entry.data.summary && <p>{entry.data.summary}</p>}
-										{tags && <span class="compact-tags-reveal">{tags}</span>}
-									</div>
-								</div>
-							</li>
-							);
-						})}
-					</ul>
-				</section>
-			))}
-		</div>
+		<WorkListing sections={sections} client:load />
 
 		<aside class="work-sidebar" aria-label="Highlighted projects">
 			<h2 class="section-label">Highlights</h2>
@@ -109,16 +99,18 @@ const highlights = [
 </Base>
 
 <script>
-	const sidebar = document.querySelector('.work-sidebar');
-	const scroller = document.querySelector('.highlights');
-	if (sidebar && scroller) {
-		const update = () => {
-			const { scrollLeft, scrollWidth, clientWidth } = scroller;
-			sidebar.classList.toggle('scrolled-start', scrollLeft > 4);
-			sidebar.classList.toggle('scrolled-end', scrollLeft + clientWidth >= scrollWidth - 4);
-		};
-		scroller.addEventListener('scroll', update, { passive: true });
-		update();
-	}
+	// Defer scroll-fade init until after React island hydrates
+	requestAnimationFrame(() => {
+		const sidebar = document.querySelector('.work-sidebar');
+		const scroller = document.querySelector('.highlights');
+		if (sidebar && scroller) {
+			const update = () => {
+				const { scrollLeft, scrollWidth, clientWidth } = scroller;
+				sidebar.classList.toggle('scrolled-start', scrollLeft > 4);
+				sidebar.classList.toggle('scrolled-end', scrollLeft + clientWidth >= scrollWidth - 4);
+			};
+			scroller.addEventListener('scroll', update, { passive: true });
+			update();
+		}
+	});
 </script>
-
