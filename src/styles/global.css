@@ -579,3 +579,37 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Work page mobile — in global.css because Astro scoped CSS files
+   with @ in the filename are silently dropped by Workers asset upload. */
+@media (max-width: 480px) {
+	:where(.compact-item) {
+		flex-wrap: wrap !important;
+	}
+
+	:where(.compact-title) {
+		font-size: 0.9rem !important;
+		flex: 1;
+		min-width: 0;
+	}
+
+	:where(.compact-tags) {
+		flex-basis: 100% !important;
+		max-width: 100% !important;
+		white-space: normal !important;
+		text-align: left !important;
+		font-size: 0.65rem !important;
+		text-overflow: clip !important;
+		overflow: visible !important;
+		opacity: 0.6;
+		order: 3;
+	}
+
+	:where(.compact-year) {
+		font-size: 0.65rem !important;
+	}
+
+	:where(.compact-reveal) p {
+		font-size: 0.8rem !important;
+	}
+}
