@@ -6,12 +6,12 @@ import Base from "../layouts/Base.astro";
 	<main id="main-content" class="page about-page">
 		<div class="terminal">
 			<div class="line">$ whoami</div>
-			<div class="line hidden" data-line="0">alejandro peña</div>
-			<div class="line hidden" data-line="1">austin, tx</div>
-			<div class="line hidden" data-line="2">&nbsp;</div>
-			<div class="line hidden" data-line="3">building tools for people who build things.</div>
+			<div class="line" data-type="alejandro peña">&nbsp;</div>
+			<div class="line" data-type="austin, tx">&nbsp;</div>
+			<div class="line">&nbsp;</div>
+			<div class="line" data-type="building tools for people who build things.">&nbsp;</div>
 		</div>
-		<a href="/contact" class="btn about-btn hidden" data-line="4">Get in touch</a>
+		<a href="/contact" class="btn about-btn" id="about-cta" style="visibility:hidden">Get in touch</a>
 	</main>
 </Base>
 
@@ -32,33 +32,58 @@ import Base from "../layouts/Base.astro";
 
 	.line {
 		white-space: pre;
-	}
-
-	.hidden {
-		visibility: hidden;
-	}
-
-	.revealed {
-		visibility: visible;
+		min-height: 1.8em;
 	}
 
 	.about-btn {
 		align-self: flex-start;
 	}
 
+	.cursor::after {
+		content: "_";
+		animation: blink 1s step-end infinite;
+	}
+
+	@keyframes blink {
+		50% { opacity: 0; }
+	}
+
 	@media (prefers-reduced-motion: reduce) {
-		.hidden { visibility: visible; }
+		.cursor::after { animation: none; }
 	}
 </style>
 
 <script>
-	const lines = document.querySelectorAll('[data-line]');
-	const delays = [800, 1200, 1500, 1800, 2400];
+	const lines = Array.from(document.querySelectorAll('[data-type]'));
+	const cta = document.getElementById('about-cta');
+	const charDelay = 35;
+	const lineGap = 250;
+	let lineIndex = 0;
 
-	lines.forEach((el, i) => {
-		setTimeout(() => {
-			el.classList.remove('hidden');
-			el.classList.add('revealed');
-		}, delays[i] ?? 800 + i * 400);
-	});
+	function typeLine() {
+		if (lineIndex >= lines.length) {
+			cta!.style.visibility = 'visible';
+			return;
+		}
+
+		const el = lines[lineIndex];
+		const text = el.getAttribute('data-type') || '';
+		let ci = 0;
+
+		el.textContent = '';
+		function typeChar() {
+			if (ci < text.length) {
+				el.textContent = text.slice(0, ci + 1);
+				ci++;
+				setTimeout(typeChar, charDelay);
+			} else {
+				lineIndex++;
+				setTimeout(typeLine, lineGap);
+			}
+		}
+
+		typeChar();
+	}
+
+	setTimeout(typeLine, 600);
 </script>
