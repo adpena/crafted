@@ -250,6 +250,43 @@
         border-right: none;
         border-bottom: 1px solid var(--border);
       }
+
+      header {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .embed-stacked .canvas-wrap {
+        height: 16rem;
+      }
+
+      textarea {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 1rem;
+      }
+
+      .line-numbers {
+        padding: 0.5rem 0.25rem 0.5rem 0.5rem;
+        font-size: 0.65rem;
+      }
+
+      .code-wrap {
+        grid-template-columns: 2rem 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .embed-stacked .canvas-wrap {
+        height: 12rem;
+      }
+
+      .status {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        font-size: 0.55rem;
+      }
     }
   </style>
 </head>

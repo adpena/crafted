@@ -90,8 +90,27 @@ const hasMoltDemo = slug === "molt";
 	}
 
 	@media (max-width: 768px) {
+		.page-wide {
+			max-width: 100%;
+			padding-left: var(--content-padding);
+			padding-right: var(--content-padding);
+		}
+
+		.demo-embed {
+			margin-left: 0;
+			margin-right: 0;
+		}
+
 		.demo-embed iframe {
-			height: 70vh;
+			height: 60vh;
+			min-height: 20rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.demo-embed iframe {
+			height: 50vh;
+			min-height: 16rem;
 		}
 	}
 </style>

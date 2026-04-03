@@ -49,6 +49,7 @@
 html {
 	scroll-behavior: smooth;
 	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 body {
@@ -63,6 +64,7 @@ body {
 	min-height: 100dvh;
 	display: flex;
 	flex-direction: column;
+	overflow-x: hidden;
 }
 
 body > main,
@@ -123,6 +125,7 @@ pre {
 	overflow-x: auto;
 	background: var(--color-surface);
 	color: var(--color-secondary);
+	max-width: 100%;
 }
 
 code {
@@ -517,7 +520,10 @@ code {
 
 	/* Ensure form inputs are 16px+ to prevent iOS zoom */
 	.form-field input,
-	.form-field textarea {
+	.form-field textarea,
+	input,
+	textarea,
+	select {
 		font-size: 1rem;
 	}
 
@@ -526,6 +532,12 @@ code {
 	.body p,
 	.about-content p {
 		max-width: 100%;
+	}
+
+	/* Pre blocks: wrap on mobile to prevent overflow */
+	pre {
+		white-space: pre-wrap;
+		word-break: break-word;
 	}
 
 	.breadcrumb {

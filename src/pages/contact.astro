@@ -231,5 +231,21 @@ if (Astro.request.method === "POST") {
 		.contact-form textarea {
 			font-size: 1rem;
 		}
+
+		.turnstile-row {
+			gap: var(--spacing-md);
+		}
+
+		/* Turnstile widget can be up to 300px wide - ensure it fits */
+		.cf-turnstile {
+			max-width: 100%;
+			overflow: hidden;
+		}
+
+		.contact-form .btn {
+			min-height: 44px;
+			width: 100%;
+			text-align: center;
+		}
 	}
 </style>

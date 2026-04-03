@@ -75,10 +75,21 @@ const socialLinks = [
 		}
 	}
 
+	@media (max-width: 480px) {
+		.site-footer {
+			padding: var(--spacing-sm) var(--content-padding) var(--spacing-md);
+		}
+
+		.social-nav {
+			gap: var(--spacing-sm);
+		}
+	}
+
 	@media (max-width: 375px) {
 		.colophon {
 			font-size: var(--font-size-xs);
 			line-height: 1.5;
+			word-break: break-word;
 		}
 	}
 </style>

@@ -97,10 +97,12 @@ const committeeName = pageData.committee_name ?? "";
       margin-top: 1rem;
     }
     @media (max-width: 480px) {
-      body { padding: 1.5rem 1rem; }
+      body { padding: 1.5rem 1rem; max-width: 100%; }
       h1 { font-size: 1.25rem; }
       .amounts { gap: 0.5rem; }
-      .amount { flex: 1 1 auto; text-align: center; }
+      .amount { flex: 1 1 calc(33% - 0.5rem); text-align: center; min-width: 0; font-size: 0.875rem; }
+      .cta { width: 100%; text-align: center; display: block; font-size: 1rem; }
+      .disclaimer { font-size: 0.7rem; }
     }
   </style>
 </head>
