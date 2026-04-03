@@ -321,22 +321,31 @@ const highlights = [
 		}
 
 		.highlight {
-			min-width: 8.5rem;
+			min-width: 8rem;
 		}
 
 		.compact-title {
-			font-size: var(--font-size-base);
+			font-size: var(--font-size-sm);
 		}
 
-		.compact-item {
-			flex-wrap: wrap;
+		.compact-year {
+			font-size: 0.65rem;
 		}
 
 		.compact-tags {
-			max-width: 100%;
-			white-space: normal;
-			text-align: left;
-			flex-basis: 100%;
+			display: none;
+		}
+
+		.compact-item {
+			gap: var(--spacing-sm);
+		}
+
+		.compact-reveal p {
+			font-size: var(--font-size-xs);
+		}
+
+		.section-label {
+			font-size: 0.65rem;
 		}
 	}
 </style>

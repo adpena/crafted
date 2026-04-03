@@ -1,0 +1,90 @@
+---
+import Base from "../layouts/Base.astro";
+import FeaturedProject from "../components/FeaturedProject.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+// Static snapshot — no D1 queries at runtime.
+// Refresh: EMDASH_TOKEN=... node --experimental-strip-types scripts/refresh-homepage.ts
+// Then: npm run deploy
+import homepageData from "../data/homepage.json";
+
+const { featured, latest } = homepageData;
+---
+
+<Base>
+	<main id="main-content" class="homepage">
+		<div class="container">
+			{featured ? (
+				<div class="columns">
+					<section aria-label="Featured project" class="col-featured">
+						<FeaturedProject
+							title={featured.title}
+							summary={featured.summary}
+							href={featured.href}
+						/>
+					</section>
+
+					<div class="col-divider" aria-hidden="true" />
+
+					<section aria-label="Latest projects" class="col-latest">
+						<span class="section-label">Latest</span>
+						<div class="latest-list">
+							{latest.map((item) => (
+								<ProjectCard
+									title={item.title}
+									summary={item.summary}
+									href={item.href}
+								/>
+							))}
+						</div>
+					</section>
+				</div>
+			) : (
+				<p class="empty">No projects yet.</p>
+			)}
+		</div>
+	</main>
+</Base>
+
+<style>
+	.homepage {
+		padding: var(--spacing-2xl) 0;
+	}
+
+	.columns {
+		display: grid;
+		grid-template-columns: 1fr 1px 1fr;
+		gap: var(--spacing-xl);
+	}
+
+	.col-divider {
+		background: var(--color-border);
+	}
+
+	.section-label {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.latest-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	@media (max-width: 768px) {
+		.columns {
+			grid-template-columns: 1fr;
+			gap: var(--spacing-lg);
+		}
+
+		.col-divider {
+			height: 1px;
+		}
+	}
+</style>
