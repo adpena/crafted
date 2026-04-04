@@ -67,7 +67,6 @@ const pageCtx = createPublicPageContext({
 		<Footer />
 		<script is:inline>
 			if('onpagereveal' in window)addEventListener('pagereveal',function(e){if(e.viewTransition)document.documentElement.classList.add('vt')});
-			try{if(sessionStorage.getItem('v'))document.documentElement.classList.add('visited');sessionStorage.setItem('v','1')}catch(e){}
 		</script>
 	</body>
 </html>

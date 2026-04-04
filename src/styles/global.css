@@ -589,13 +589,9 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 }
 
 /* Skip entrance animations during view-transition navigations —
-   the cross-fade already provides a smooth page entry.
-   Also skip on return visits within the same session to avoid
-   the fade-in feeling like a loading spinner on repeat views. */
+   the cross-fade already provides a smooth page entry. */
 .vt main > *,
-.vt main > .container > *,
-.visited main > *,
-.visited main > .container > * {
+.vt main > .container > * {
 	animation: none;
 }
 
