@@ -9,14 +9,22 @@ import Base from "../layouts/Base.astro";
 			<div class="line" data-type="alejandro peña">&nbsp;</div>
 			<div class="line" data-type="austin, tx">&nbsp;</div>
 		</div>
-		<p class="visually-hidden">alejandro peña — austin, tx</p>
+
+		<div class="about-body" id="about-body" aria-hidden="true">
+			<p class="about-line">Full-stack engineer. Django, Python, React, Rust, TypeScript.</p>
+			<p class="about-line">Previously at Texas AFT, where a data analysis led to an 11% raise for 350,000 educators.</p>
+			<p class="about-line">Currently building Molt, an AOT Python-to-WebAssembly compiler, and tools for progressive campaigns on Cloudflare Workers.</p>
+		</div>
+
+		<p class="visually-hidden">Alejandro Peña — Austin, TX. Full-stack engineer. Django, Python, React, Rust, TypeScript. Previously at Texas AFT, where a data analysis led to an 11% raise for 350,000 educators. Currently building Molt, an AOT Python-to-WebAssembly compiler, and tools for progressive campaigns on Cloudflare Workers.</p>
+
 		<a href="/contact" class="btn about-btn" id="about-cta" style="opacity:0;visibility:hidden;transition:opacity 600ms ease,visibility 0s linear 0s;animation:none">Get in touch</a>
 	</main>
 </Base>
 
 <style>
 	.about-page {
-		min-height: 50vh;
+		min-height: 60vh;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -33,6 +41,27 @@ import Base from "../layouts/Base.astro";
 		white-space: pre-wrap;
 		word-break: break-word;
 		min-height: 1.8em;
+	}
+
+	.about-body {
+		max-width: 32rem;
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.about-line {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		line-height: 1.6;
+		margin-bottom: var(--spacing-sm);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity 500ms ease, transform 500ms ease;
+	}
+
+	.about-line.visible {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	.about-btn {
@@ -52,11 +81,15 @@ import Base from "../layouts/Base.astro";
 
 	@media (max-width: 480px) {
 		.about-page {
-			min-height: 30vh;
+			min-height: 40vh;
 		}
 
 		.terminal {
 			font-size: var(--font-size-sm);
+		}
+
+		.about-line {
+			font-size: var(--font-size-xs);
 		}
 
 		.about-btn {
@@ -68,11 +101,13 @@ import Base from "../layouts/Base.astro";
 
 	@media (prefers-reduced-motion: reduce) {
 		.cursor::after { animation: none; }
+		.about-line { opacity: 1; transform: none; transition: none; }
 	}
 </style>
 
 <script>
 	const lines = Array.from(document.querySelectorAll('[data-type]'));
+	const aboutLines = Array.from(document.querySelectorAll('.about-line'));
 	const cta = document.getElementById('about-cta');
 
 	function showCta() {
@@ -81,9 +116,24 @@ import Base from "../layouts/Base.astro";
 		cta.style.opacity = '1';
 	}
 
-	// Respect reduced motion — show content instantly
-	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+	function revealBio() {
+		aboutLines.forEach((el, i) => {
+			setTimeout(() => el.classList.add('visible'), i * 400);
+		});
+		setTimeout(() => {
+			showCta();
+			try { sessionStorage.setItem('about-seen', '1'); } catch {}
+		}, aboutLines.length * 400 + 300);
+	}
+
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let seenBefore = false;
+	try { seenBefore = !!sessionStorage.getItem('about-seen'); } catch {}
+
+	// Show static version on reduced motion or return visits
+	if (reducedMotion || seenBefore) {
 		lines.forEach(el => { el.textContent = el.getAttribute('data-type') || ''; });
+		aboutLines.forEach(el => el.classList.add('visible'));
 		showCta();
 	} else {
 		const charDelay = 35;
@@ -91,7 +141,7 @@ import Base from "../layouts/Base.astro";
 		let lineIndex = 0;
 
 		function typeLine() {
-			if (lineIndex >= lines.length) { showCta(); return; }
+			if (lineIndex >= lines.length) { revealBio(); return; }
 
 			const el = lines[lineIndex];
 			const text = el.getAttribute('data-type') || '';
