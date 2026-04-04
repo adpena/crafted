@@ -609,6 +609,13 @@ main > .container > *:nth-child(5) { animation-delay: 200ms; }
 
 /* Work/home page layout — in global.css because Astro scoped CSS
    with @ in the filename is silently dropped by Workers asset upload. */
+/* The work-main div is a React island (client:load). Its entrance
+   animation is handled by the island hydration, not the global
+   enter animation — which would flicker on hydration swap. */
+astro-island {
+	animation: none;
+}
+
 .work-layout {
 	width: 100%;
 	max-width: 56rem;
