@@ -35,3 +35,6 @@ docs/superpowers/
 
 # Agent worktrees (created by parallel agent dispatch)
 .claude/worktrees/
+
+# Playwright MCP logs
+.playwright-mcp/

@@ -2,7 +2,7 @@ import type { RouteContext, PluginContext } from "emdash";
 import { validateSubmission } from "../modules/validate.ts";
 import type { SubmissionInput } from "../modules/validate.ts";
 import { buildCallbacks } from "../lib/webhook-config.ts";
-import { fireWebhooks } from "@crafted/notifications";
+import { fireWebhooks } from "@adpena/notifications";
 
 const ALLOWED_TYPES = new Set<SubmissionInput["type"]>(["donation_click", "petition_sign", "gotv_pledge", "signup"]);
 const RATE_LIMIT = 5;

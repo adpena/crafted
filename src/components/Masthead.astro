@@ -31,6 +31,14 @@ function isActive(href: string): boolean {
 					aria-current={isActive(link.href) ? "page" : undefined}
 				>{link.label}</a>
 			))}
+			<button
+				class="theme-toggle"
+				id="theme-toggle"
+				aria-label="Toggle dark mode"
+				type="button"
+			>
+				<span class="theme-toggle-icon" aria-hidden="true"></span>
+			</button>
 		</nav>
 	</div>
 </header>
@@ -159,4 +167,63 @@ function isActive(href: string): boolean {
 			gap: var(--spacing-sm);
 		}
 	}
+
+	.theme-toggle {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0.25rem;
+		margin-left: var(--spacing-sm);
+		color: var(--color-secondary);
+		transition: color 200ms var(--ease);
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		min-width: 44px;
+		justify-content: center;
+	}
+
+	.theme-toggle:hover {
+		color: var(--color-text);
+	}
+
+	/* Sun icon (light mode) */
+	.theme-toggle-icon::before {
+		content: "☀";
+		font-size: 1rem;
+	}
+
+	/* Moon icon (dark mode) */
+	:global(:root[data-theme="dark"]) .theme-toggle-icon::before,
+	:global(:root:not([data-theme="light"])) .theme-toggle-icon::before {
+		content: "☀";
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme="light"])) .theme-toggle-icon::before {
+			content: "☾";
+		}
+	}
+
+	:global(:root[data-theme="dark"]) .theme-toggle-icon::before {
+		content: "☾";
+	}
 </style>
+
+<script>
+	const toggle = document.getElementById('theme-toggle');
+	if (toggle) {
+		// Read saved preference
+		const saved = localStorage.getItem('theme');
+		if (saved) document.documentElement.setAttribute('data-theme', saved);
+
+		toggle.addEventListener('click', () => {
+			const current = document.documentElement.getAttribute('data-theme');
+			const isDark = current === 'dark' ||
+				(!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
+			const next = isDark ? 'light' : 'dark';
+			document.documentElement.setAttribute('data-theme', next);
+			localStorage.setItem('theme', next);
+		});
+	}
+</script>

@@ -1,11 +1,11 @@
 /**
  * Contact form notification dispatch.
  *
- * Thin wrapper around @crafted/notifications that maps the contact form's
+ * Thin wrapper around @adpena/notifications that maps the contact form's
  * Submission interface to the shared package's Message interface.
  */
 
-import { notifyAll as dispatch, type NotifyResult, type NotifyEnv } from "@crafted/notifications";
+import { notifyAll as dispatch, type NotifyResult, type NotifyEnv } from "@adpena/notifications";
 
 export type { NotifyResult, NotifyEnv };
 

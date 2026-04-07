@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode, CSSProperties } from "react";
 import { createRegistry } from "../lib/registry.ts";
-import type { WebhookConfig } from "@crafted/notifications";
+import type { WebhookConfig } from "@adpena/notifications";
 import { resolveTheme } from "./themes/index.ts";
 import type { Theme } from "./themes/index.ts";
 import { Transition } from "./Transition.tsx";

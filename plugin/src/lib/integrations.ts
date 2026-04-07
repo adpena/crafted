@@ -1,4 +1,4 @@
-import { fireWebhooks, type WebhookConfig, sendToSheets, type SubmissionData } from "@crafted/notifications";
+import { fireWebhooks, type WebhookConfig, sendToSheets, type SubmissionData } from "@adpena/notifications";
 
 export type { WebhookConfig as Callback };
 

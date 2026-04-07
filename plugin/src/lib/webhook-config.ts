@@ -1,4 +1,4 @@
-import type { WebhookConfig } from "@crafted/notifications";
+import type { WebhookConfig } from "@adpena/notifications";
 
 const ALL_EVENTS = ["petition_sign", "donation_click", "gotv_pledge", "signup"];
 
