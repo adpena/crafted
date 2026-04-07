@@ -17,10 +17,13 @@ const containerStyle: CSSProperties = {
 };
 
 export function Disclaimer({ committee_name, treasurer_name }: DisclaimerProps) {
+  // FEC compliance: don't render a broken "Paid for by" with no name
+  if (!committee_name?.trim()) return null;
+
   return (
     <footer style={containerStyle}>
       <p>Paid for by {committee_name}</p>
-      {treasurer_name && (
+      {treasurer_name?.trim() && (
         <p>{treasurer_name}, Treasurer</p>
       )}
     </footer>

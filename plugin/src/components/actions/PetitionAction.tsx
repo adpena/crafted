@@ -281,6 +281,7 @@ export function PetitionAction({
         <textarea
           value={form.comment}
           onChange={set("comment")}
+          maxLength={1000}
           rows={3}
           style={{
             ...fieldInput(),

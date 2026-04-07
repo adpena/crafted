@@ -19,6 +19,7 @@ export interface SignupActionProps {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SignupAction({
+  list_name,
   cta_text,
   onComplete,
   pageId,
@@ -125,6 +126,11 @@ export function SignupAction({
       noValidate
       style={{ padding: "1.5rem", maxWidth: "42em" }}
     >
+      {list_name && (
+        <p style={{ fontFamily: s.mono, fontSize: "0.72rem", color: s.secondary, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>
+          Joining: {list_name}
+        </p>
+      )}
       {/* Inline layout: name + email + button */}
       <div
         style={{
