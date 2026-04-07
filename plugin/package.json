@@ -1,17 +1,16 @@
 {
-  "name": "@crafted/action-pages",
-  "version": "0.1.0",
+  "name": "@adpena/action-pages",
+  "version": "0.2.0",
   "description": "Campaign action page engine for emdash CMS with FEC/state disclaimer compliance, geo-personalization, A/B testing, and embeddable widgets.",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adpena/crafted.git",
-    "directory": "plugin"
+    "url": "git+https://github.com/adpena/action-pages.git"
   },
-  "homepage": "https://github.com/adpena/crafted/tree/main/plugin#readme",
+  "homepage": "https://github.com/adpena/action-pages#readme",
   "bugs": {
-    "url": "https://github.com/adpena/crafted/issues"
+    "url": "https://github.com/adpena/action-pages/issues"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -47,6 +46,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@crafted/notifications": "github:adpena/notifications"
+    "@adpena/notifications": "^0.1.0"
   }
 }

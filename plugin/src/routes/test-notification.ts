@@ -1,5 +1,5 @@
 import type { RouteContext, PluginContext } from "emdash";
-import { notifyAll, type NotifyEnv, type NotifyResult } from "@crafted/notifications";
+import { notifyAll, type NotifyEnv, type NotifyResult } from "@adpena/notifications";
 
 /**
  * POST /test-notification
