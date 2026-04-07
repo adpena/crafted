@@ -19,6 +19,8 @@ import {
 import { HeroSimple } from "../../plugin/src/components/templates/HeroSimple.tsx";
 import { HeroMedia } from "../../plugin/src/components/templates/HeroMedia.tsx";
 import { HeroStory } from "../../plugin/src/components/templates/HeroStory.tsx";
+import { HeroLayered } from "../../plugin/src/components/templates/HeroLayered.tsx";
+import { HeroSplit } from "../../plugin/src/components/templates/HeroSplit.tsx";
 
 // Built-in actions
 import { FundraiseAction } from "../../plugin/src/components/actions/FundraiseAction.tsx";
@@ -32,6 +34,8 @@ if (!templates.has("hero-simple")) {
   templates.register("hero-simple", HeroSimple as any);
   templates.register("hero-media", HeroMedia as any);
   templates.register("hero-story", HeroStory as any);
+  templates.register("hero-layered", HeroLayered as any);
+  templates.register("hero-split", HeroSplit as any);
 }
 
 // Register actions into the renderer's registry
