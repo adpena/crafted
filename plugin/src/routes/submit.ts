@@ -87,7 +87,7 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
   }
 
   // Turnstile validation (optional -- skipped if no secret configured)
-  // TODO: Move to wrangler secret binding once Turnstile is configured
+  // Turnstile secret read from KV settings (configured via admin UI)
   const turnstileSecret = await ctx.kv.get<string>("turnstile_secret");
   if (turnstileSecret) {
     const token = body.turnstile_token;
@@ -135,8 +135,11 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
     console.error("[submit] webhook dispatch failed:", err);
   });
 
-  if (typeof (routeCtx as any).waitUntil === "function") {
-    (routeCtx as any).waitUntil(webhookPromise);
+  // Cloudflare Workers extend the context with waitUntil for background work.
+  // Use a runtime check since the emdash RouteContext type doesn't declare it.
+  const ctx_with_wait = routeCtx as RouteContext & { waitUntil?: (p: Promise<unknown>) => void };
+  if (ctx_with_wait.waitUntil) {
+    ctx_with_wait.waitUntil(webhookPromise);
   }
 
   return { status: 200, body: { data: { ok: true } } };

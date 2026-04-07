@@ -25,7 +25,7 @@ export {
 
 /**
  * Submissions placeholder -- rendered at /_emdash/admin/plugins/crafted-action-pages/submissions.
- * TODO: Build full submissions viewer with filtering, export, and campaign drill-down.
+ * Placeholder: submissions viewer with filtering, export, and campaign drill-down.
  */
 function SubmissionsPage() {
   return (

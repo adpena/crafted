@@ -37,12 +37,12 @@ export type ActionComponent = (
 /** Action registry — populated at import time. */
 export const actions = createRegistry<ActionComponent>("actions");
 
-// Register built-in actions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- registry accepts generic props
-actions.register("fundraise", FundraiseAction as any);
-actions.register("petition", PetitionAction as any);
-actions.register("gotv", GOTVAction as any);
-actions.register("signup", SignupAction as any);
+// Register built-in actions. Each component has specific props
+// that extend ActionComponentProps, so we widen to ActionComponent.
+actions.register("fundraise", FundraiseAction as unknown as ActionComponent);
+actions.register("petition", PetitionAction as unknown as ActionComponent);
+actions.register("gotv", GOTVAction as unknown as ActionComponent);
+actions.register("signup", SignupAction as unknown as ActionComponent);
 
 // Re-export individual components for direct use
 export { FundraiseAction } from "./FundraiseAction";
