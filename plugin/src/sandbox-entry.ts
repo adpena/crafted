@@ -21,6 +21,7 @@ import { handleSubmit } from "./routes/submit.ts";
 import { handlePage } from "./routes/page.ts";
 import { handleEmbed } from "./routes/embed.ts";
 import { handleStats } from "./routes/stats.ts";
+import { handleCreatePage } from "./routes/create-page.ts";
 
 export default definePlugin({
   hooks: {
@@ -34,5 +35,6 @@ export default definePlugin({
     page: { handler: handlePage, public: true },
     embed: { handler: handleEmbed, public: true },
     stats: { handler: handleStats },
+    "create-page": { handler: handleCreatePage },
   },
 });
