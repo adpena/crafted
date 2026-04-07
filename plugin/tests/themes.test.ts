@@ -65,6 +65,6 @@ describe("resolveTheme", () => {
     const result = resolveTheme(custom);
 
     expect(result["--page-bg"]).toBe("#ff0000");
-    expect((result as Record<string, string>)["--random-prop"]).toBeUndefined();
+    expect((result as unknown as Record<string, string>)["--random-prop"]).toBeUndefined();
   });
 });

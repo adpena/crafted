@@ -3,6 +3,30 @@ import type { WebhookConfig } from "@crafted/notifications";
 const ALL_EVENTS = ["petition_sign", "donation_click", "gotv_pledge", "signup"];
 
 /**
+ * Validate that a webhook URL is HTTPS and not an internal address.
+ * Prevents SSRF via configured webhook URLs.
+ */
+function isValidWebhookUrl(url: string): boolean {
+	try {
+		const parsed = new URL(url);
+		if (parsed.protocol !== "https:") return false;
+		// Block internal/loopback addresses
+		const host = parsed.hostname.toLowerCase();
+		if (host === "localhost" || host === "0.0.0.0") return false;
+		if (host.startsWith("127.") || host.startsWith("10.") || host.startsWith("192.168.")) return false;
+		if (host.startsWith("172.")) {
+			const second = parseInt(host.split(".")[1] ?? "0", 10);
+			if (second >= 16 && second <= 31) return false;
+		}
+		// Block link-local
+		if (host.startsWith("169.254.")) return false;
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
  * Build webhook configurations from plugin KV settings.
  */
 export async function buildCallbacks(ctx: { kv: { get<T>(key: string): Promise<T | null> } }): Promise<WebhookConfig[]> {
@@ -15,27 +39,26 @@ export async function buildCallbacks(ctx: { kv: { get<T>(key: string): Promise<T
 
 	const callbacks: WebhookConfig[] = [];
 
-	if (url1?.trim()) {
-		callbacks.push({
-			url: url1.trim(),
-			events: ALL_EVENTS,
-			format: "json",
-			...(secret?.trim() ? { secret: secret.trim() } : {}),
-		});
+	const trimmedSecret = secret?.trim();
+
+	for (const rawUrl of [url1, url2]) {
+		const trimmed = rawUrl?.trim();
+		if (trimmed && isValidWebhookUrl(trimmed)) {
+			callbacks.push({
+				url: trimmed,
+				events: ALL_EVENTS,
+				format: "json",
+				...(trimmedSecret ? { secret: trimmedSecret } : {}),
+			});
+		} else if (trimmed) {
+			console.warn("[webhook-config] rejected invalid webhook URL");
+		}
 	}
 
-	if (url2?.trim()) {
+	const sheets = sheetsUrl?.trim();
+	if (sheets && isValidWebhookUrl(sheets)) {
 		callbacks.push({
-			url: url2.trim(),
-			events: ALL_EVENTS,
-			format: "json",
-			...(secret?.trim() ? { secret: secret.trim() } : {}),
-		});
-	}
-
-	if (sheetsUrl?.trim()) {
-		callbacks.push({
-			url: sheetsUrl.trim(),
+			url: sheets,
 			events: ALL_EVENTS,
 			format: "json",
 		});

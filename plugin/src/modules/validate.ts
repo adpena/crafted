@@ -37,15 +37,27 @@ function isEmail(value: string): boolean {
 }
 
 export function validateSubmission(input: SubmissionInput): ValidationResult {
+  // Defensive: input may be malformed (null, missing fields, wrong shape)
+  if (!input || typeof input !== "object") {
+    return { valid: false, errors: ["Invalid input"] };
+  }
+
   const schema = schemas[input.type];
   if (!schema) {
     return { valid: false, errors: [`Unknown submission type: ${input.type}`] };
   }
 
+  // Defensive: data must be a non-null plain object
+  if (!input.data || typeof input.data !== "object" || Array.isArray(input.data)) {
+    return { valid: false, errors: ["data must be a non-null object"] };
+  }
+
   const errors: string[] = [];
 
   for (const field of schema.required) {
-    if (!input.data[field]) {
+    const value = input.data[field];
+    // Reject only null, undefined, or empty string — accept 0, false
+    if (value == null || value === "") {
       errors.push(`Missing required field: ${field}`);
     }
   }

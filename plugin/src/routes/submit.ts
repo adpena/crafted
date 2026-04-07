@@ -120,17 +120,24 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
     created_at: new Date().toISOString(),
   });
 
-  // Fire webhooks async — don't block the response
-  buildCallbacks(ctx).then((callbacks) => {
+  // Fire webhooks async — don't block the response, but use waitUntil
+  // so the Worker doesn't terminate before dispatch completes.
+  const webhookPromise = buildCallbacks(ctx).then((callbacks) => {
     if (callbacks.length > 0) {
-      fireWebhooks(callbacks, body.type, {
+      return fireWebhooks(callbacks, body.type, {
         submission_id: id,
         page_id: body.page_id,
         campaign_id: body.campaign_id ?? null,
         ...result.sanitized,
       });
     }
+  }).catch((err) => {
+    console.error("[submit] webhook dispatch failed:", err);
   });
+
+  if (typeof (routeCtx as any).waitUntil === "function") {
+    (routeCtx as any).waitUntil(webhookPromise);
+  }
 
   return { status: 200, body: { data: { ok: true } } };
 }

@@ -1,7 +1,10 @@
 import type { PluginDescriptor } from "emdash";
 
+// Note: cast to PluginDescriptor at the return because the emdash type
+// in this version doesn't yet include the `admin` field for settings UI.
+// The runtime accepts it via the standard plugin descriptor format.
 export function actionPages(): PluginDescriptor {
-  return {
+  return ({
     id: "crafted-action-pages",
     version: "0.2.0",
     format: "standard",
@@ -168,5 +171,5 @@ export function actionPages(): PluginDescriptor {
         { id: "action-stats", size: "half", title: "Action Page Stats" },
       ],
     },
-  };
+  } as unknown as PluginDescriptor);
 }
