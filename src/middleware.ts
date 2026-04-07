@@ -63,6 +63,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set(key, value);
   }
 
+  // Content-hash fingerprinted assets can be cached forever
+  if (context.url.pathname.startsWith("/_astro/")) {
+    response.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  }
+
   // Action pages and demos are public embeddable widgets.
   if (context.url.pathname.startsWith("/action/") || context.url.pathname.startsWith("/demo/")) {
     response.headers.delete("X-Frame-Options");
