@@ -365,6 +365,8 @@ export const POST: APIRoute = async ({ request }) => {
         followup_props: p.followup_props ?? null,
         followup_message: p.followup_message ? sanitize(p.followup_message, 500) : null,
         disclaimer: sanitizedDisclaimer,
+        locale: p.locale === "es" ? "es" : "en",
+        consent: p.consent ?? null,
         theme: p.theme ?? "warm",
         variants: p.variants ?? [],
         callbacks: p.callbacks ?? [],

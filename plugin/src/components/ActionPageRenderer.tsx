@@ -140,6 +140,7 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
             pageId={page.slug}
             visitorId={visitorId}
             variant={variant}
+            locale={page.locale}
           />
         ) : (
           Followup && (
@@ -162,6 +163,7 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
                 pageId={page.slug}
                 visitorId={visitorId}
                 variant={variant}
+                locale={page.locale}
               />
             </Transition>
           )

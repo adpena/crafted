@@ -3,6 +3,7 @@ type Locale = "en" | "es";
 interface Translations {
   // Petition
   petition_heading: string;
+  petition_tell: string;
   petition_first_name: string;
   petition_last_name: string;
   petition_email: string;
@@ -45,6 +46,7 @@ interface Translations {
 
 const en: Translations = {
   petition_heading: "Sign the Petition",
+  petition_tell: "Tell",
   petition_first_name: "First name",
   petition_last_name: "Last name",
   petition_email: "Email",
@@ -82,6 +84,7 @@ const en: Translations = {
 
 const es: Translations = {
   petition_heading: "Firma la petición",
+  petition_tell: "Dile a",
   petition_first_name: "Nombre",
   petition_last_name: "Apellido",
   petition_email: "Correo electrónico",

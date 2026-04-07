@@ -182,7 +182,7 @@ export function PetitionAction({
             marginBottom: "1.25rem",
           }}
         >
-          Tell {target}:
+          {t(locale, "petition_tell")} {target}:
         </p>
       )}
 
@@ -261,7 +261,7 @@ export function PetitionAction({
 
       {/* Zip */}
       <div style={{ marginBottom: "0.5rem" }}>
-        <label style={fieldLabel("Zip")}>Zip code</label>
+        <label style={fieldLabel("Zip")}>{t(locale, "petition_zip")}</label>
         <input
           type="text"
           inputMode="numeric"
@@ -279,8 +279,8 @@ export function PetitionAction({
 
       {/* Comment */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <label style={fieldLabel("Comment (optional)")}>
-          Comment (optional)
+        <label style={fieldLabel("Comment")}>
+          {t(locale, "petition_comment")}
         </label>
         <textarea
           value={form.comment}
