@@ -12,10 +12,11 @@ try { Astro.cache.set(cacheHint); } catch {}
 
 const d = entry.data;
 const hasMoltDemo = slug === "molt";
+const hasActionDemo = slug === "crafted-action-pages";
 ---
 
 <Base title={d.title}>
-	<main id="main-content" class={hasMoltDemo ? "page page-wide" : "page"}>
+	<main id="main-content" class={hasMoltDemo || hasActionDemo ? "page page-wide" : "page"}>
 		<nav class="breadcrumb" aria-label="Breadcrumb">
 			<a href="/work">Work</a> / Development / {d.title}
 		</nav>
@@ -37,6 +38,17 @@ const hasMoltDemo = slug === "molt";
 					src="/demo/molt?embed=stacked"
 					title="Molt Mandelbrot demo — Python compiled to WebAssembly"
 					loading="lazy"
+				></iframe>
+			</section>
+		)}
+
+		{hasActionDemo && (
+			<section class="demo-embed" aria-label="Live demo">
+				<iframe
+					src="/action/fund-public-schools?embed=1"
+					title="Campaign Action Pages demo — petition with fundraise follow-up"
+					loading="lazy"
+					style="min-height:600px"
 				></iframe>
 			</section>
 		)}
