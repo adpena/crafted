@@ -13,9 +13,10 @@ try { Astro.cache.set(cacheHint); } catch {}
 const d = entry.data;
 const hasMoltDemo = slug === "molt";
 const hasActionDemo = slug === "action-pages";
+const ogImage = `/og/${slug}.png`;
 ---
 
-<Base title={d.title}>
+<Base title={d.title} description={d.summary} image={ogImage}>
 	<main id="main-content" class={hasMoltDemo || hasActionDemo ? "page page-wide" : "page"}>
 		<nav class="breadcrumb" aria-label="Breadcrumb">
 			<a href="/work">Work</a> / Development / {d.title}

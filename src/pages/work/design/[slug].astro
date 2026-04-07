@@ -11,9 +11,10 @@ if (!entry) return Astro.redirect("/404");
 try { Astro.cache.set(cacheHint); } catch {}
 
 const d = entry.data;
+const ogImage = `/og/${slug}.png`;
 ---
 
-<Base title={d.title}>
+<Base title={d.title} description={d.summary} image={ogImage}>
 	<main id="main-content" class="page">
 		<nav class="breadcrumb" aria-label="Breadcrumb">
 			<a href="/work">Work</a> / Design / {d.title}

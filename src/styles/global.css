@@ -49,6 +49,38 @@
 	--ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark mode — respects system preference */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--color-bg: #1a1a1a;
+		--color-text: #e8e8e3;
+		--color-secondary: #999990;
+		--color-border: #333330;
+		--color-surface: #252520;
+		--color-error: #f87171;
+	}
+}
+
+/* Manual dark mode override */
+:root[data-theme="dark"] {
+	--color-bg: #1a1a1a;
+	--color-text: #e8e8e3;
+	--color-secondary: #999990;
+	--color-border: #333330;
+	--color-surface: #252520;
+	--color-error: #f87171;
+}
+
+/* Manual light mode override (force light even in dark OS) */
+:root[data-theme="light"] {
+	--color-bg: #f5f5f0;
+	--color-text: #1a1a1a;
+	--color-secondary: #707070;
+	--color-border: #d4d4cc;
+	--color-surface: #eeeee8;
+	--color-error: #dc2626;
+}
+
 html {
 	scroll-behavior: smooth;
 	overflow-y: scroll;
