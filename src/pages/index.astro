@@ -15,7 +15,7 @@ const collectionDefs = [
 // Pinned entries float to top; everything else sorts newest-first.
 const PIN: Record<string, number> = {
 	"molt": 1,
-	"crafted-action-pages": 2,
+	"action-pages": 2,
 };
 
 function entryTime(e: { data: Record<string, any> }): number {
@@ -96,7 +96,7 @@ if (cached) {
 const highlights = [
 	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev/molt", tag: "Featured" },
 	{ title: "Lost Decade", desc: "Analysis → 11% raise for educators", href: "/work/policy/the-lost-decade-and-a-half", tag: "Impact" },
-	{ title: "Action Pages", desc: "Live campaign page engine", href: "/work/dev/crafted-action-pages", tag: "Demo" },
+	{ title: "Action Pages", desc: "Live campaign page engine", href: "/work/dev/action-pages", tag: "Demo" },
 	{ title: "Respect Campaign", desc: "District-level interactive map", href: "/work/design/respect-campaign-map", tag: "Featured" },
 	{ title: "Public Ed Data", desc: "TX education data platform (3 repos)", href: "/work/dev/data-for-public-education", tag: "OSS" },
 ];
