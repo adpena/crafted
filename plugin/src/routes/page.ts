@@ -4,6 +4,7 @@ import type { GeoContext } from "../modules/geo-ask.ts";
 import { assignVariant } from "../modules/ab-assign.ts";
 import { resolveDisclaimer } from "../modules/disclaimers.ts";
 import type { Disclaimer } from "../modules/disclaimers.ts";
+import { SLUG_RE } from "../lib/slug.ts";
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 

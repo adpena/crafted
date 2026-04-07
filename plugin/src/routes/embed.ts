@@ -1,4 +1,5 @@
 import type { RouteContext, PluginContext } from "emdash";
+import { SLUG_RE } from "../lib/slug.ts";
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 

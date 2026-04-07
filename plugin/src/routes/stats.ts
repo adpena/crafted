@@ -1,4 +1,5 @@
 import type { RouteContext, PluginContext } from "emdash";
+import { SLUG_RE } from "../lib/slug.ts";
 
 export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
   const input = routeCtx.input as { page_id?: string; campaign?: string } | undefined;

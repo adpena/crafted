@@ -407,6 +407,13 @@ export const POST: APIRoute = async ({ request }) => {
       if (!row) return err("NOT_FOUND", `No action page with slug '${String(slug).slice(0, 64)}'`, 404);
 
       const d = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+
+      // Strip sensitive fields from public responses — callbacks may contain
+      // webhook URLs and HMAC secrets. Authenticated callers get full data.
+      if (!isAuthenticated(request)) {
+        delete d.callbacks;
+      }
+
       return json({ data: { id: row.id, ...d } });
     }
 

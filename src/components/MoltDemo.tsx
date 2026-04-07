@@ -279,7 +279,7 @@ export default function MoltDemo({ embedMode = "standalone" }: MoltDemoProps) {
 						<div className="pane-header">
 							<span>mandelbrot.py</span>
 							<div style={{ display: "flex", gap: "0.3rem" }}>
-								<button className="btn primary" id="compile-btn" disabled>
+								<button className="btn primary" id="compile-btn" disabled title="Molt compilation coming soon">
 									Compile & Run
 								</button>
 							</div>

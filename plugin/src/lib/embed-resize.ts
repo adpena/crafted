@@ -9,18 +9,18 @@
  * Usage: import { initEmbedResize } from './embed-resize'; initEmbedResize();
  */
 
-const ORIGIN_WILDCARD = "*";
 const MSG_TYPE = "crafted:resize";
 const DEBOUNCE_MS = 100;
 
 let lastHeight = 0;
 let timer: ReturnType<typeof setTimeout> | null = null;
+let targetOrigin = "*";
 
 function reportHeight() {
   const height = document.documentElement.scrollHeight;
   if (height !== lastHeight) {
     lastHeight = height;
-    window.parent.postMessage({ type: MSG_TYPE, height }, ORIGIN_WILDCARD);
+    window.parent.postMessage({ type: MSG_TYPE, height }, targetOrigin);
   }
 }
 
@@ -41,6 +41,11 @@ export function initEmbedResize(): void {
 
   // Only run inside an iframe
   if (window === window.parent) return;
+
+  // Narrow postMessage target to the embedding parent's origin
+  try {
+    if (document.referrer) targetOrigin = new URL(document.referrer).origin;
+  } catch { /* keep wildcard as fallback */ }
 
   // Initial report once DOM is ready
   if (document.readyState === "loading") {

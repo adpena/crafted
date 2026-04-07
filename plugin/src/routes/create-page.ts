@@ -1,4 +1,5 @@
 import type { RouteContext, PluginContext } from "emdash";
+import { SLUG_RE } from "../lib/slug.ts";
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const KNOWN_TEMPLATES = new Set(["hero-simple", "hero-media", "hero-story", "hero-layered", "hero-split"]);
@@ -15,17 +16,17 @@ export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContex
 
 	// Validate template
 	if (!body.template || !KNOWN_TEMPLATES.has(body.template)) {
-		return { status: 400, body: { error: `Unknown template. Available: ${[...KNOWN_TEMPLATES].join(", ")}` } };
+		return { status: 400, body: { error: { code: "INVALID_TEMPLATE", message: `Unknown template. Available: ${[...KNOWN_TEMPLATES].join(", ")}` } } };
 	}
 
 	// Validate action
 	if (!body.action || !KNOWN_ACTIONS.has(body.action)) {
-		return { status: 400, body: { error: `Unknown action. Available: ${[...KNOWN_ACTIONS].join(", ")}` } };
+		return { status: 400, body: { error: { code: "INVALID_ACTION", message: `Unknown action. Available: ${[...KNOWN_ACTIONS].join(", ")}` } } };
 	}
 
 	// Validate followup
 	if (body.followup && !KNOWN_FOLLOWUPS.has(body.followup)) {
-		return { status: 400, body: { error: `Unknown followup. Available: ${[...KNOWN_FOLLOWUPS].join(", ")}` } };
+		return { status: 400, body: { error: { code: "INVALID_FOLLOWUP", message: `Unknown followup. Available: ${[...KNOWN_FOLLOWUPS].join(", ")}` } } };
 	}
 
 	// Validate ActBlue URL for fundraise actions
