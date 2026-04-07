@@ -10,15 +10,15 @@
  * For browser-side control, use postMessage on the demo iframe instead.
  */
 
-// TODO(mcp-protocol): Upgrade to full MCP Streamable HTTP transport.
+// Future(mcp-protocol): Upgrade to full MCP Streamable HTTP transport.
 //   Current implementation is a simplified JSON-RPC-style API.
 //   When emdash supports plugin-provided MCP tools, register these
 //   through the plugin system instead of a standalone endpoint.
 //
-// TODO(molt-compile): Add compile_and_run tool that accepts arbitrary
+// Future(molt-compile): Add compile_and_run tool that accepts arbitrary
 //   Python, compiles via Molt Worker, runs the result, returns output.
 //
-// TODO(monty-interpret): Add interpret tool that runs Python via Monty
+// Future(monty-interpret): Add interpret tool that runs Python via Monty
 //   Wasm in the browser (intermediate step before Molt compilation).
 
 import type { APIRoute } from "astro";

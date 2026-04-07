@@ -61,7 +61,7 @@ function requireHttpsUrl(value: unknown, label: string): string {
  * Returns true if authenticated, false otherwise.
  */
 function isAuthenticated(request: Request): boolean {
-  const token = (env as any).MCP_ADMIN_TOKEN as string | undefined;
+  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
   if (!token) {
     // No token configured — fail closed in production, log warning
     console.warn("[mcp/actions] MCP_ADMIN_TOKEN not configured — denying all writes");
@@ -409,7 +409,7 @@ export const POST: APIRoute = async ({ request }) => {
       const db = getDb();
       const row = await db.prepare(
         "SELECT id, data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
-      ).bind(PLUGIN_ID, slug).first() as any;
+      ).bind(PLUGIN_ID, slug).first() as { id: string; data: string } | null;
 
       if (!row) return err("NOT_FOUND", `No action page with slug '${String(slug).slice(0, 64)}'`, 404);
 

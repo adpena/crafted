@@ -235,7 +235,8 @@ export default function MoltDemo({ embedMode = "standalone" }: MoltDemoProps) {
 		window.addEventListener("message", handler);
 
 		// Expose tools list for discovery
-		(window as any).__molt_mcp_tools = [
+		// Expose tools list for MCP agent discovery
+		(window as unknown as Record<string, unknown>).__molt_mcp_tools = [
 			{ name: "get_code", description: "Get the current Python source code" },
 			{ name: "set_code", description: "Replace the Python source code", params: { code: "string" } },
 			{ name: "set_parameters", description: "Update render parameters", params: { center_x: "number?", center_y: "number?", zoom: "number?", max_iter: "number?" } },

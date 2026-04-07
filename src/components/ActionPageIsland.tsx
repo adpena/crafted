@@ -13,6 +13,8 @@ import {
   templates,
   actions,
   type ActionPageRendererProps,
+  type TemplateComponent,
+  type ActionComponent,
 } from "../../plugin/src/components/ActionPageRenderer.tsx";
 
 // Built-in templates
@@ -29,22 +31,20 @@ import { GOTVAction } from "../../plugin/src/components/actions/GOTVAction.tsx";
 import { SignupAction } from "../../plugin/src/components/actions/SignupAction.tsx";
 
 // Register templates into the renderer's registry
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- concrete props widen to Record<string, unknown>
 if (!templates.has("hero-simple")) {
-  templates.register("hero-simple", HeroSimple as any);
-  templates.register("hero-media", HeroMedia as any);
-  templates.register("hero-story", HeroStory as any);
-  templates.register("hero-layered", HeroLayered as any);
-  templates.register("hero-split", HeroSplit as any);
+  templates.register("hero-simple", HeroSimple as unknown as TemplateComponent);
+  templates.register("hero-media", HeroMedia as unknown as TemplateComponent);
+  templates.register("hero-story", HeroStory as unknown as TemplateComponent);
+  templates.register("hero-layered", HeroLayered as unknown as TemplateComponent);
+  templates.register("hero-split", HeroSplit as unknown as TemplateComponent);
 }
 
 // Register actions into the renderer's registry
 if (!actions.has("fundraise")) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actions.register("fundraise", FundraiseAction as any);
-  actions.register("petition", PetitionAction as any);
-  actions.register("gotv", GOTVAction as any);
-  actions.register("signup", SignupAction as any);
+  actions.register("fundraise", FundraiseAction as unknown as ActionComponent);
+  actions.register("petition", PetitionAction as unknown as ActionComponent);
+  actions.register("gotv", GOTVAction as unknown as ActionComponent);
+  actions.register("signup", SignupAction as unknown as ActionComponent);
 }
 
 export default function ActionPageIsland(props: ActionPageRendererProps) {

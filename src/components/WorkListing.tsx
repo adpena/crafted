@@ -56,8 +56,8 @@ export default function WorkListing({ sections }: Props) {
 		: sections;
 
 	return (
-		// TODO(astro-react-hydration): React 19 + Astro SSR hydration mismatch (#418).
-		// Track: https://github.com/withastro/astro/issues
+		// Known: React 19 + Astro SSR produces a hydration mismatch (#418) due to
+		// whitespace differences. No functional impact. Tracked upstream at withastro/astro.
 		<>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">
