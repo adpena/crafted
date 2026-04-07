@@ -7,7 +7,8 @@ export function hashVisitor(visitorId: string): number {
   return Math.abs(hash);
 }
 
-/** Deterministic variant assignment via hash modulo */
+/** Deterministic variant assignment via hash modulo. Returns "control" for empty arrays. */
 export function assignVariant(visitorId: string, variants: string[]): string {
+  if (!variants || variants.length === 0) return "control";
   return variants[hashVisitor(visitorId) % variants.length]!;
 }

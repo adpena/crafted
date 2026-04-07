@@ -18,6 +18,79 @@ import { env } from "cloudflare:workers";
 const PLUGIN_ID = "crafted-action-pages";
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
+const VALID_ACTIONS = new Set(["fundraise", "petition", "gotv", "signup"]);
+
+/**
+ * Sanitize a user-provided string before storage. Strips HTML tags
+ * and dangerous characters. Used for committee name, treasurer name,
+ * and other display strings that come from untrusted input.
+ */
+function sanitize(value: unknown, maxLength = 200): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/[<>]/g, "")
+    .replace(/[\x00-\x1f\x7f]/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+/**
+ * Validate that a URL is HTTPS. Throws on invalid input.
+ * Used for media URLs, ActBlue URLs, video sources.
+ */
+function requireHttpsUrl(value: unknown, label: string): string {
+  if (typeof value !== "string" || !value) {
+    throw new Error(`${label} is required`);
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new Error(`${label} is not a valid URL`);
+  }
+  if (parsed.protocol !== "https:") {
+    throw new Error(`${label} must use HTTPS`);
+  }
+  return parsed.href;
+}
+
+/**
+ * Authenticate the request via Bearer token.
+ * Token is read from MCP_ADMIN_TOKEN env var.
+ * Returns true if authenticated, false otherwise.
+ */
+function isAuthenticated(request: Request): boolean {
+  const token = (env as any).MCP_ADMIN_TOKEN as string | undefined;
+  if (!token) {
+    // No token configured — fail closed in production, log warning
+    console.warn("[mcp/actions] MCP_ADMIN_TOKEN not configured — denying all writes");
+    return false;
+  }
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
+  const provided = authHeader.slice(7).trim();
+  // Constant-time comparison to prevent timing attacks
+  if (provided.length !== token.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < provided.length; i++) {
+    mismatch |= provided.charCodeAt(i) ^ token.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+/** Tools that read data — no auth required */
+const READ_ONLY_TOOLS = new Set([
+  "list_pages",
+  "get_page",
+  "list_templates",
+  "list_actions",
+  "list_themes",
+  "generate_theme",
+]);
+
+/** Tools that write or read sensitive data — auth required */
+const WRITE_TOOLS = new Set(["create_page", "get_submissions"]);
+
 const TEMPLATES = [
   { name: "hero-simple", props: ["headline", "subhead", "align"] },
   { name: "hero-media", props: ["headline", "media_url", "overlay_opacity"] },
@@ -198,6 +271,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { tool, params = {} } = body as { tool: string; params?: Record<string, unknown> };
 
+  // Auth gate: write/read-sensitive tools require Bearer token
+  if (WRITE_TOOLS.has(tool) && !isAuthenticated(request)) {
+    return err("UNAUTHORIZED", "This tool requires authentication. Set MCP_ADMIN_TOKEN and provide Authorization: Bearer <token>.", 401);
+  }
+
   switch (tool) {
     /* -------------------------------------------------------------- */
     case "create_page": {
@@ -218,21 +296,68 @@ export const POST: APIRoute = async ({ request }) => {
       if (!p.action || typeof p.action !== "string") {
         return err("MISSING_FIELD", "action is required (string)");
       }
+      if (!VALID_ACTIONS.has(p.action)) {
+        return err(
+          "INVALID_ACTION",
+          `action must be one of: ${[...VALID_ACTIONS].join(", ")}`,
+        );
+      }
       if (!p.disclaimer || typeof p.disclaimer !== "object") {
         return err("MISSING_FIELD", "disclaimer is required (object with committee_name)");
+      }
+
+      // Sanitize disclaimer fields (user-provided strings)
+      const disclaimer = p.disclaimer as Record<string, unknown>;
+      const sanitizedDisclaimer: Record<string, string> = {
+        committee_name: sanitize(disclaimer.committee_name, 200),
+      };
+      if (disclaimer.treasurer_name) sanitizedDisclaimer.treasurer_name = sanitize(disclaimer.treasurer_name, 200);
+      if (disclaimer.candidate_name) sanitizedDisclaimer.candidate_name = sanitize(disclaimer.candidate_name, 200);
+      if (disclaimer.office) sanitizedDisclaimer.office = sanitize(disclaimer.office, 200);
+
+      if (!sanitizedDisclaimer.committee_name) {
+        return err("MISSING_FIELD", "disclaimer.committee_name is required (FEC compliance)");
+      }
+
+      // Validate URLs in template_props (user-provided, may be malicious)
+      const templateProps = (p.template_props ?? {}) as Record<string, unknown>;
+      const urlFields = ["media_url", "background_image", "background_video", "splash_image"];
+      for (const field of urlFields) {
+        if (templateProps[field]) {
+          try {
+            templateProps[field] = requireHttpsUrl(templateProps[field], `template_props.${field}`);
+          } catch (e) {
+            return err("INVALID_URL", e instanceof Error ? e.message : "URL validation failed");
+          }
+        }
+      }
+
+      // Validate ActBlue URL in action_props if action is fundraise
+      const actionProps = (p.action_props ?? {}) as Record<string, unknown>;
+      if (p.action === "fundraise" && actionProps.actblue_url) {
+        try {
+          const url = requireHttpsUrl(actionProps.actblue_url, "action_props.actblue_url");
+          const parsed = new URL(url);
+          if (!parsed.hostname.endsWith("actblue.com")) {
+            return err("INVALID_URL", "actblue_url must be on actblue.com");
+          }
+          actionProps.actblue_url = url;
+        } catch (e) {
+          return err("INVALID_URL", e instanceof Error ? e.message : "URL validation failed");
+        }
       }
 
       const pageData = {
         slug,
         campaign_id: p.campaign_id ?? null,
         template: p.template,
-        template_props: p.template_props ?? {},
+        template_props: templateProps,
         action: p.action,
-        action_props: p.action_props ?? {},
+        action_props: actionProps,
         followup: p.followup ?? null,
         followup_props: p.followup_props ?? null,
-        followup_message: p.followup_message ?? null,
-        disclaimer: p.disclaimer,
+        followup_message: p.followup_message ? sanitize(p.followup_message, 500) : null,
+        disclaimer: sanitizedDisclaimer,
         theme: p.theme ?? "warm",
         variants: p.variants ?? [],
         callbacks: p.callbacks ?? [],
@@ -279,7 +404,7 @@ export const POST: APIRoute = async ({ request }) => {
         "SELECT id, data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
       ).bind(PLUGIN_ID, slug).first() as any;
 
-      if (!row) return err("NOT_FOUND", `No action page with slug '${String(slug).slice(0, 64)}'`, 400);
+      if (!row) return err("NOT_FOUND", `No action page with slug '${String(slug).slice(0, 64)}'`, 404);
 
       const d = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
       return json({ data: { id: row.id, ...d } });

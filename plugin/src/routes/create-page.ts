@@ -1,10 +1,12 @@
+import type { RouteContext, PluginContext } from "emdash";
+
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
-const KNOWN_TEMPLATES = new Set(["hero-simple", "hero-media", "hero-story"]);
+const KNOWN_TEMPLATES = new Set(["hero-simple", "hero-media", "hero-story", "hero-layered", "hero-split"]);
 const KNOWN_ACTIONS = new Set(["fundraise", "petition", "gotv", "signup"]);
 const KNOWN_FOLLOWUPS = new Set(["fundraise", "signup"]);
 
-export async function handleCreatePage(ctx: any) {
-	const body = ctx.input;
+export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContext) {
+	const body = (routeCtx.input ?? {}) as Record<string, any>;
 
 	// Validate slug
 	if (!body.slug || typeof body.slug !== "string" || !SLUG_RE.test(body.slug)) {

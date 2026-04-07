@@ -132,7 +132,15 @@ import ActionPageIsland from "../../components/ActionPageIsland.tsx";
         var timer = null;
         function report() {
           var h = document.documentElement.scrollHeight;
-          if (h !== last) { last = h; window.parent.postMessage({ type: MSG, height: h }, "*"); }
+          if (h !== last) {
+            last = h;
+            // Restrict targetOrigin to the embedding parent's origin to avoid
+            // broadcasting to any frame. Falls back to "*" only if the embedder
+            // is unknown (no referrer), preserving compatibility.
+            var target = "*";
+            try { if (document.referrer) target = new URL(document.referrer).origin; } catch (e) {}
+            window.parent.postMessage({ type: MSG, height: h }, target);
+          }
         }
         function debounced() { clearTimeout(timer); timer = setTimeout(report, 100); }
         if (document.readyState === "loading") {

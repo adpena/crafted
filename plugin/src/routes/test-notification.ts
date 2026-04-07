@@ -53,7 +53,10 @@ function buildNotifyEnv(
     return value && value.trim() ? value.trim() : undefined;
   };
 
-  const env: NotifyEnv = {
+  // Note: cast to NotifyEnv & Record<string, unknown> so newer adapter env
+  // vars (HubSpot, etc.) work even when the locally installed types lag
+  // behind the runtime package.
+  const env = {
     DISCORD_WEBHOOK_URL: pick("discord_webhook_url"),
     SLACK_WEBHOOK_URL: pick("slack_webhook_url"),
     TELEGRAM_BOT_TOKEN: pick("telegram_bot_token"),
@@ -70,7 +73,7 @@ function buildNotifyEnv(
     HUBSPOT_PORTAL_ID: pick("hubspot_portal_id"),
     HUBSPOT_FORM_ID: pick("hubspot_form_id"),
     HUBSPOT_API_TOKEN: pick("hubspot_api_token"),
-  };
+  } as NotifyEnv & Record<string, unknown>;
 
   // SEND_EMAIL binding is injected by the Workers runtime — forward it
   // through if present so the cloudflareEmail adapter activates.
