@@ -29,8 +29,10 @@ export function SignupAction({
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
+  locale: localeProp,
 }: SignupActionProps): ReactNode {
   const isMobile = useIsMobile();
+  const locale = getLocale(localeProp);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [errors, setErrors] = useState<{ email?: string }>({});
@@ -41,8 +43,8 @@ export function SignupAction({
 
   function validate() {
     const e: typeof errors = {};
-    if (!email.trim()) e.email = "Email is required";
-    else if (!EMAIL_RE.test(email)) e.email = "Enter a valid email";
+    if (!email.trim()) e.email = t(locale, "required_field");
+    else if (!EMAIL_RE.test(email)) e.email = t(locale, "invalid_email");
     return e;
   }
 

@@ -82,7 +82,9 @@ export function PetitionAction({
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
+  locale: localeProp,
 }: PetitionActionProps): ReactNode {
+  const locale = getLocale(localeProp);
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -104,10 +106,10 @@ export function PetitionAction({
 
   function validate(): FieldErrors {
     const e: FieldErrors = {};
-    if (!form.first_name.trim()) e.first_name = "First name is required";
-    if (!form.last_name.trim()) e.last_name = "Last name is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    else if (!EMAIL_RE.test(form.email)) e.email = "Enter a valid email";
+    if (!form.first_name.trim()) e.first_name = t(locale, "required_field");
+    if (!form.last_name.trim()) e.last_name = t(locale, "required_field");
+    if (!form.email.trim()) e.email = t(locale, "required_field");
+    else if (!EMAIL_RE.test(form.email)) e.email = t(locale, "invalid_email");
     if (!form.zip.trim()) e.zip = "Zip code is required";
     return e;
   }
@@ -212,7 +214,7 @@ export function PetitionAction({
         }}
       >
         <div>
-          <label style={fieldLabel("First name")}>First name</label>
+          <label style={fieldLabel("First name")}>{t(locale, "petition_first_name")}</label>
           <input
             type="text"
             autoComplete="given-name"
@@ -226,7 +228,7 @@ export function PetitionAction({
           <div style={errorText()}>{errors.first_name ?? ""}</div>
         </div>
         <div>
-          <label style={fieldLabel("Last name")}>Last name</label>
+          <label style={fieldLabel("Last name")}>{t(locale, "petition_last_name")}</label>
           <input
             type="text"
             autoComplete="family-name"
@@ -243,7 +245,7 @@ export function PetitionAction({
 
       {/* Email */}
       <div style={{ marginBottom: "0.5rem" }}>
-        <label style={fieldLabel("Email")}>Email</label>
+        <label style={fieldLabel("Email")}>{t(locale, "petition_email")}</label>
         <input
           type="email"
           autoComplete="email"
@@ -329,7 +331,7 @@ export function PetitionAction({
           transition: "opacity 150ms ease",
         }}
       >
-        {loading ? "Signing..." : "Add your name"}
+        {loading ? t(locale, "petition_signing") : t(locale, "petition_submit")}
       </button>
     </form>
   );

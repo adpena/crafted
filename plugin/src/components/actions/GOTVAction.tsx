@@ -22,6 +22,7 @@ export function GOTVAction({
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
+  locale: localeProp,
 }: GOTVActionProps): ReactNode {
   const [firstName, setFirstName] = useState("");
   const [zip, setZip] = useState("");
@@ -40,7 +41,7 @@ export function GOTVAction({
 
   function validate() {
     const e: typeof errors = {};
-    if (!firstName.trim()) e.first_name = "First name is required";
+    if (!firstName.trim()) e.first_name = t(locale, "required_field");
     if (!zip.trim()) e.zip = "Zip code is required";
     if (!pledged) e.pledge = "Please check the pledge";
     return e;
@@ -255,7 +256,7 @@ export function GOTVAction({
           transition: "opacity 150ms ease",
         }}
       >
-        {loading ? "Pledging..." : "Take the pledge"}
+        {loading ? t(locale, "gotv_pledging") : "Take the pledge"}
       </button>
     </form>
   );

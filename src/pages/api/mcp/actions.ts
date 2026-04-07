@@ -10,6 +10,7 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
+import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQUEST, RPC_METHOD_NOT_FOUND, RPC_INVALID_PARAMS } from "../../../lib/jsonrpc.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -194,11 +195,10 @@ export const GET: APIRoute = async () => {
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-const json = (data: unknown, status = 200) =>
-  new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
-
-const err = (code: string, message: string, status = 400) =>
-  json({ error: { code, message } }, status);
+// These helpers are redefined inside POST to capture the request `id`.
+// Declared here as types only so the switch block can reference them.
+type JsonFn = (data: unknown, status?: number) => Response;
+type ErrFn = (code: string, message: string, status?: number) => Response;
 
 function getDb() {
   return env.DB;
@@ -258,22 +258,29 @@ function generateTheme(prompt: string): Record<string, string> {
 /* ------------------------------------------------------------------ */
 
 export const POST: APIRoute = async ({ request }) => {
+  // Accepts both JSON-RPC 2.0 and legacy { tool, params } formats
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return err("INVALID_JSON", "Request body must be valid JSON.");
+    return rpcError(null, RPC_PARSE_ERROR, "Request body must be valid JSON.", 400);
   }
 
-  if (typeof body !== "object" || body === null || typeof (body as any).tool !== "string") {
-    return err("BAD_REQUEST", "Expected { tool: string, params?: object }");
+  const req = parseRpcRequest(body);
+  if (!req) {
+    return rpcError(null, RPC_INVALID_REQUEST, "Expected JSON-RPC 2.0 { jsonrpc, method, params, id } or legacy { tool, params }", 400);
   }
 
-  const { tool, params = {} } = body as { tool: string; params?: Record<string, unknown> };
+  const { method: tool, params, id } = req;
+
+  // Closure-scoped helpers that include the request id in responses
+  const json: JsonFn = (data, _status = 200) => rpcResult(id, data);
+  const err: ErrFn = (_code, message, status = 400) =>
+    rpcError(id, status === 401 ? -32001 : status === 404 ? -32004 : RPC_INVALID_PARAMS, message, status);
 
   // Auth gate: write/read-sensitive tools require Bearer token
   if (WRITE_TOOLS.has(tool) && !isAuthenticated(request)) {
-    return err("UNAUTHORIZED", "This tool requires authentication. Set MCP_ADMIN_TOKEN and provide Authorization: Bearer <token>.", 401);
+    return rpcError(id, -32001, "This tool requires authentication. Set MCP_ADMIN_TOKEN and provide Authorization: Bearer <token>.", 401);
   }
 
   switch (tool) {

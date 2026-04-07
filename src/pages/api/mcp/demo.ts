@@ -22,6 +22,7 @@
 //   Wasm in the browser (intermediate step before Molt compilation).
 
 import type { APIRoute } from "astro";
+import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQUEST, RPC_METHOD_NOT_FOUND } from "../../../lib/jsonrpc.ts";
 
 const TOOLS = [
   { name: "get_code", description: "Get the current Python source code" },
@@ -49,25 +50,20 @@ export const GET: APIRoute = async () => {
 
 export const POST: APIRoute = async ({ request }) => {
   // Server-side tool calls are limited — the rendering happens in the browser.
-  // This endpoint can serve static tools (get default code, list params).
+  // Accepts both JSON-RPC 2.0 and legacy { tool, params } formats.
   let body: unknown;
   try {
     body = await request.json();
   } catch {
-    return new Response(JSON.stringify({ error: { code: "INVALID_JSON", message: "Request body must be valid JSON." } }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return rpcError(null, RPC_PARSE_ERROR, "Request body must be valid JSON.", 400);
   }
 
-  if (typeof body !== "object" || body === null || typeof (body as any).tool !== "string") {
-    return new Response(JSON.stringify({ error: { code: "BAD_REQUEST", message: "Expected { tool: string, params?: object }" } }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+  const req = parseRpcRequest(body);
+  if (!req) {
+    return rpcError(null, RPC_INVALID_REQUEST, "Expected JSON-RPC 2.0 { jsonrpc, method, params, id } or legacy { tool, params }", 400);
   }
 
-  const { tool } = body as { tool: string; params?: Record<string, unknown> };
+  const { method: tool, id } = req;
 
   switch (tool) {
     case "get_code": {
@@ -106,34 +102,20 @@ def main() -> None:
     render()
 
 main()`;
-      return new Response(JSON.stringify({ data: { code } }), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return rpcResult(id, { code });
     }
 
     case "get_state":
-      return new Response(JSON.stringify({
-        data: {
-          note: "State is browser-side. Use postMessage on the iframe for live state.",
-          default_center_x: -0.7453,
-          default_center_y: 0.1127,
-          default_max_iter: 100,
-        },
-      }), {
-        headers: { "Content-Type": "application/json" },
+      return rpcResult(id, {
+        note: "State is browser-side. Use postMessage on the iframe for live state.",
+        default_center_x: -0.7453,
+        default_center_y: 0.1127,
+        default_max_iter: 100,
       });
 
     default: {
       const safeName = String(tool).slice(0, 64);
-      return new Response(JSON.stringify({
-        error: {
-          code: "BROWSER_ONLY",
-          message: `Tool '${safeName}' requires browser execution. Use postMessage on the /demo/molt iframe.`,
-        },
-      }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+      return rpcError(id, RPC_METHOD_NOT_FOUND, `Tool '${safeName}' requires browser execution. Use postMessage on the /demo/molt iframe.`);
     }
   }
 };
