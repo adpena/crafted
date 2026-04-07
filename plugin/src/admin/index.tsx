@@ -24,7 +24,7 @@ export {
 } from "./components/ThemeSwatch";
 
 /**
- * Submissions placeholder -- rendered at /_emdash/admin/plugins/crafted-action-pages/submissions.
+ * Submissions placeholder -- rendered at /_emdash/admin/plugins/action-pages/submissions.
  * Placeholder: submissions viewer with filtering, export, and campaign drill-down.
  */
 function SubmissionsPage() {
@@ -35,7 +35,7 @@ function SubmissionsPage() {
       </h1>
       <p style={{ color: "#6b7280" }}>
         Submissions viewer coming soon. Use the plugin API at{" "}
-        <code>/api/_plugin/crafted-action-pages/stats</code> to query submission data.
+        <code>/api/_plugin/action-pages/stats</code> to query submission data.
       </p>
     </div>
   );
@@ -57,7 +57,7 @@ function ActionStatsWidget() {
 
 /**
  * Admin page registry -- keyed by the `path` declared in adminPages.
- * The emdash admin panel looks up pluginAdmins["crafted-action-pages"].pages[path]
+ * The emdash admin panel looks up pluginAdmins["action-pages"].pages[path]
  * to render the React component for each admin page.
  */
 export const pages: Record<string, React.ComponentType> = {
@@ -68,7 +68,7 @@ export const pages: Record<string, React.ComponentType> = {
 
 /**
  * Dashboard widget registry -- keyed by widget `id`.
- * The emdash admin panel looks up pluginAdmins["crafted-action-pages"].widgets[id].
+ * The emdash admin panel looks up pluginAdmins["action-pages"].widgets[id].
  */
 export const widgets: Record<string, React.ComponentType> = {
   "action-stats": ActionStatsWidget,

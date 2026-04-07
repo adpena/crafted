@@ -49,12 +49,12 @@ describe("generateHtmlForm", () => {
 
   it("includes the correct submit endpoint", () => {
     const html = generateHtmlForm({ ...baseOpts, action: "petition" });
-    expect(html).toContain('action="https://adpena.com/api/_plugin/crafted-action-pages/submit"');
+    expect(html).toContain('action="https://adpena.com/api/_plugin/action-pages/submit"');
   });
 
   it("strips trailing slashes from the domain", () => {
     const html = generateHtmlForm({ ...baseOpts, domain: "https://adpena.com///", action: "signup" });
-    expect(html).toContain('action="https://adpena.com/api/_plugin/crafted-action-pages/submit"');
+    expect(html).toContain('action="https://adpena.com/api/_plugin/action-pages/submit"');
     expect(html).not.toContain("//api/_plugin");
   });
 
@@ -104,7 +104,7 @@ describe("generateHtmlForm", () => {
 
   it("includes hx-* attributes when htmx is requested", () => {
     const html = generateHtmlForm({ ...baseOpts, action: "petition", htmx: true });
-    expect(html).toContain('hx-post="https://adpena.com/api/_plugin/crafted-action-pages/submit"');
+    expect(html).toContain('hx-post="https://adpena.com/api/_plugin/action-pages/submit"');
     expect(html).toContain("hx-target");
     expect(html).toContain("hx-swap");
   });
@@ -133,7 +133,7 @@ describe("generateHtmlForm", () => {
 
 describe("handleWebComponent route", () => {
   it("returns the IIFE-wrapped script with the right headers", async () => {
-    const fakeReq = new Request("https://adpena.com/api/_plugin/crafted-action-pages/web-component.js");
+    const fakeReq = new Request("https://adpena.com/api/_plugin/action-pages/web-component.js");
     const result = await handleWebComponent(
       { request: fakeReq, requestMeta: {}, input: undefined } as never,
       {} as never,

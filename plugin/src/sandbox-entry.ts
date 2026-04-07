@@ -20,7 +20,7 @@ import { handleTestNotification } from "./routes/test-notification.ts";
  */
 export function createPlugin() {
   return definePlugin({
-    id: "crafted-action-pages",
+    id: "action-pages",
     version: "0.2.0",
     capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
     allowedHosts: ["secure.actblue.com", "*.cloudflareinsights.com"],
@@ -31,7 +31,7 @@ export function createPlugin() {
       ab_variants: { indexes: ["page_id"] },
     },
     admin: {
-      entry: "@crafted/action-pages/admin",
+      entry: "@adpena/action-pages/admin",
       settingsSchema: {
         default_committee_name: {
           type: "string",

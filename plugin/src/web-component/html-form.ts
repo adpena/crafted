@@ -108,7 +108,7 @@ function themeToCss(theme: Theme): string {
 
 function buildSubmitUrl(domain: string): string {
   const trimmed = domain.replace(/\/+$/, "");
-  return `${trimmed}/api/_plugin/crafted-action-pages/submit`;
+  return `${trimmed}/api/_plugin/action-pages/submit`;
 }
 
 /* ------------------------------------------------------------------ */

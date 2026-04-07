@@ -3,11 +3,11 @@ import type { RouteContext, PluginContext } from "emdash";
 /**
  * Serves the <crafted-action-page> Web Component as a standalone IIFE.
  *
- * Mounted at /api/_plugin/crafted-action-pages/web-component.js by emdash's
+ * Mounted at /api/_plugin/action-pages/web-component.js by emdash's
  * route conventions. Designers drop one script tag into any HTML page and
  * use the custom element anywhere in the document:
  *
- *   <script src="https://adpena.com/api/_plugin/crafted-action-pages/web-component.js" async></script>
+ *   <script src="https://adpena.com/api/_plugin/action-pages/web-component.js" async></script>
  *   <crafted-action-page slug="my-petition"></crafted-action-page>
  *
  * The body below is the runtime form of plugin/src/web-component/action-page.ts,

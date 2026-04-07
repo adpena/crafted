@@ -16,7 +16,7 @@ import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQU
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const PLUGIN_ID = "crafted-action-pages";
+const PLUGIN_ID = "action-pages";
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
 const VALID_ACTIONS = new Set(["fundraise", "petition", "gotv", "signup"]);

@@ -5,7 +5,7 @@
  * mounted directly by Astro — emdash routes are sandboxed. This bridge
  * imports the SCRIPT constant and serves it as a public JavaScript asset.
  *
- * URL: /api/_plugin/crafted-action-pages/web-component.js
+ * URL: /api/_plugin/action-pages/web-component.js
  */
 
 import type { APIRoute } from "astro";

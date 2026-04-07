@@ -1,7 +1,7 @@
 /**
  * Loader entry for <crafted-action-page>.
  *
- * Designed to be served from /api/_plugin/crafted-action-pages/web-component.js
+ * Designed to be served from /api/_plugin/action-pages/web-component.js
  * as an inline IIFE source. Designers can drop one script tag into any HTML
  * page and use the custom element anywhere in the document:
  *

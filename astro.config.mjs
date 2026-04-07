@@ -12,9 +12,9 @@ export default defineConfig({
 	vite: {
 		resolve: {
 			alias: {
-				"@crafted/action-pages/sandbox": fileURLToPath(new URL("./plugin/src/sandbox-entry.ts", import.meta.url)),
-				"@crafted/action-pages/admin": fileURLToPath(new URL("./plugin/src/admin/index.tsx", import.meta.url)),
-				"@crafted/action-pages": fileURLToPath(new URL("./plugin/src/index.ts", import.meta.url)),
+				"@adpena/action-pages/sandbox": fileURLToPath(new URL("./plugin/src/sandbox-entry.ts", import.meta.url)),
+				"@adpena/action-pages/admin": fileURLToPath(new URL("./plugin/src/admin/index.tsx", import.meta.url)),
+				"@adpena/action-pages": fileURLToPath(new URL("./plugin/src/index.ts", import.meta.url)),
 			},
 		},
 	},

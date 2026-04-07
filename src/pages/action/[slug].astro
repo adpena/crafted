@@ -12,7 +12,7 @@ const db = env.DB;
 let pageData: Record<string, any> | null = null;
 try {
   const row = await db.prepare(
-    "SELECT data FROM _plugin_storage WHERE plugin_id = 'crafted-action-pages' AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
+    "SELECT data FROM _plugin_storage WHERE plugin_id = 'action-pages' AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
   ).bind(slug).first();
   if (row?.data) {
     pageData = typeof row.data === "string" ? JSON.parse(row.data) : row.data;

@@ -309,7 +309,7 @@ const subHeadingStyle: CSSProperties = {
 /* ------------------------------------------------------------------ */
 
 const DEFAULT_CREATE_URL =
-  "/api/_plugin/crafted-action-pages/create-page";
+  "/api/_plugin/action-pages/create-page";
 
 export function PageBuilder({
   campaigns = [],
