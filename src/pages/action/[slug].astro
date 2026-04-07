@@ -4,13 +4,8 @@ if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
   return new Response("Not found", { status: 404 });
 }
 
-const embedParam = Astro.url.searchParams.get("embed");
-const embedMode = embedParam === "1" ? "embed"
-  : embedParam === "stacked" ? "stacked"
-  : "standalone" as const;
-const isEmbed = embedMode !== "standalone";
+const isEmbed = Astro.url.searchParams.get("embed") === "1";
 
-// Access the plugin storage directly via D1
 import { env } from "cloudflare:workers";
 const db = env.DB;
 
@@ -33,21 +28,15 @@ if (!pageData) {
 // Validate ActBlue URL
 let actblueUrl = "";
 try {
-  const raw = pageData.actblue_url ?? "";
+  const raw = pageData.actblue_url ?? pageData.action_props?.actblue_url ?? "";
   if (raw) {
     const parsed = new URL(raw);
     if (parsed.protocol === "https:" && (parsed.hostname === "secure.actblue.com" || parsed.hostname === "actblue.com")) {
       actblueUrl = parsed.href;
     }
   }
-} catch { /* invalid URL, leave empty */ }
+} catch {}
 
-// Map D1 row data -> ActionPageConfig for the renderer.
-// Pages stored before the renderer existed have flat fields (title, body,
-// actblue_url, etc.). Pages created with the new MCP/admin tools store
-// nested template_props / action_props with `action` (not `type`). Handle
-// both shapes — prefer the new shape's `action` field, fall back to legacy
-// `type`, and finally default to "fundraise" so legacy demo rows render.
 const actionType = pageData.action ?? pageData.type ?? "fundraise";
 const actionConfig = {
   slug,
@@ -68,63 +57,59 @@ const actionConfig = {
   disclaimer: pageData.disclaimer ?? {
     committee_name: pageData.committee_name ?? "",
   },
+  locale: pageData.locale ?? "en",
+  consent: pageData.consent ?? undefined,
   theme: pageData.theme ?? "warm",
   callbacks: pageData.callbacks ?? [],
 };
 
 const title = pageData.template_props?.headline ?? pageData.title ?? "Action Page";
 
+// Resolve theme server-side — each page gets its own visual identity
+const THEMES: Record<string, Record<string, string>> = {
+  warm: { "--page-bg":"#f5f5f0","--page-text":"#1a1a1a","--page-accent":"#1a1a1a","--page-secondary":"#6b6b6b","--page-border":"#d4d4c8","--page-radius":"0px","--page-font-serif":"Georgia, 'Times New Roman', serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+  bold: { "--page-bg":"#0a0a0a","--page-text":"#ffffff","--page-accent":"#ef4444","--page-secondary":"#a1a1a1","--page-border":"#2a2a2a","--page-radius":"8px","--page-font-serif":"Inter, system-ui, sans-serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+  clean: { "--page-bg":"#ffffff","--page-text":"#1a1a1a","--page-accent":"#2563eb","--page-secondary":"#6b7280","--page-border":"#e5e5e5","--page-radius":"4px","--page-font-serif":"system-ui, -apple-system, sans-serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+};
+
+// Support custom theme objects from the page config
+const resolvedTheme = typeof actionConfig.theme === "object"
+  ? actionConfig.theme
+  : THEMES[actionConfig.theme as string] ?? THEMES.warm;
+
+const cssVarString = Object.entries(resolvedTheme).map(([k, v]) => `${k}:${v}`).join(";");
+
 import ActionPageIsland from "../../components/ActionPageIsland.tsx";
 ---
 
-<html lang="en">
+<html lang={actionConfig.locale === "es" ? "es" : "en"}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
-  <!-- Self-contained styles: action pages are embeddable widgets (iframe)
-       that render outside the main site layout. Hex values intentionally
-       duplicate the design tokens for zero-dependency embedding. -->
-  <style>
+  <style is:global>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --page-bg: #f5f5f0;
-      --page-text: #1a1a1a;
-      --page-accent: #1a1a1a;
-      --page-secondary: #6b6b6b;
-      --page-border: #d4d4c8;
-      --page-radius: 0px;
-      --page-font-serif: Georgia, 'Times New Roman', serif;
-      --page-font-mono: 'SF Mono', 'Fira Code', monospace;
-    }
 
     body {
       font-family: var(--page-font-serif);
       line-height: 1.6;
       color: var(--page-text);
       background: var(--page-bg);
-      padding: 3rem 1.5rem;
-      max-width: 32rem;
-      margin: 0 auto;
+      min-height: 100vh;
     }
 
+    /* Hero templates render full-width; action forms are centered */
+    main { width: 100%; }
     astro-island { display: contents; }
-
-    @media (max-width: 480px) {
-      body { padding: 1.5rem 1rem; max-width: 100%; }
-    }
   </style>
 </head>
-<body>
+<body style={cssVarString}>
   <main id="main-content">
     <ActionPageIsland page={actionConfig} client:load />
   </main>
 
   {isEmbed && (
     <script>
-      // Embed resize: report content height to parent frame via postMessage.
-      // Inlined to avoid an extra network request for the embed case.
       (function() {
         if (window === window.parent) return;
         var MSG = "crafted:resize";
@@ -134,9 +119,6 @@ import ActionPageIsland from "../../components/ActionPageIsland.tsx";
           var h = document.documentElement.scrollHeight;
           if (h !== last) {
             last = h;
-            // Restrict targetOrigin to the embedding parent's origin to avoid
-            // broadcasting to any frame. Falls back to "*" only if the embedder
-            // is unknown (no referrer), preserving compatibility.
             var target = "*";
             try { if (document.referrer) target = new URL(document.referrer).origin; } catch (e) {}
             window.parent.postMessage({ type: MSG, height: h }, target);

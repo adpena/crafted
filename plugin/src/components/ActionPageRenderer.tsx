@@ -122,50 +122,65 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
     return null;
   }
 
+  const actionContainerStyle: CSSProperties = {
+    maxWidth: "42rem",
+    margin: "0 auto",
+    padding: "2rem 1.5rem",
+  };
+
   return (
     <div style={rootStyle}>
       <Template {...page.template_props} />
 
-      {!completed ? (
-        <Action
-          {...page.action_props}
-          onComplete={handleComplete}
-          pageId={page.slug}
-          visitorId={visitorId}
-          variant={variant}
-        />
-      ) : (
-        Followup && (
-          <Transition show={completed}>
-            {page.followup_message && (
-              <p style={{ color: "var(--page-text)", fontFamily: "var(--page-font-serif)" }}>
-                {page.followup_message}
-              </p>
-            )}
-            <Followup
-              {...page.followup_props}
-              onComplete={handleFollowupComplete}
-              pageId={page.slug}
-              visitorId={visitorId}
-              variant={variant}
-            />
-          </Transition>
-        )
-      )}
+      <div style={actionContainerStyle}>
+        {!completed ? (
+          <Action
+            {...page.action_props}
+            onComplete={handleComplete}
+            pageId={page.slug}
+            visitorId={visitorId}
+            variant={variant}
+          />
+        ) : (
+          Followup && (
+            <Transition show={completed}>
+              {page.followup_message && (
+                <p style={{
+                  color: "var(--page-secondary)",
+                  fontFamily: "var(--page-font-serif)",
+                  fontSize: "1.1rem",
+                  textAlign: "center",
+                  marginBottom: "1.5rem",
+                  lineHeight: 1.5,
+                }}>
+                  {page.followup_message}
+                </p>
+              )}
+              <Followup
+                {...page.followup_props}
+                onComplete={handleFollowupComplete}
+                pageId={page.slug}
+                visitorId={visitorId}
+                variant={variant}
+              />
+            </Transition>
+          )
+        )}
 
-      {page.consent && (
-        <Consent
-          locale={page.locale}
-          privacy_url={page.consent.privacy_url}
+        {page.consent && (
+          <Consent
+            locale={page.locale}
+            privacy_url={page.consent.privacy_url}
           required={page.consent.required}
         />
       )}
 
-      <Disclaimer
-        committee_name={page.disclaimer.committee_name}
-        treasurer_name={page.disclaimer.treasurer_name}
-        locale={page.locale}
-      />
+        <Disclaimer
+          committee_name={page.disclaimer.committee_name}
+          treasurer_name={page.disclaimer.treasurer_name}
+          locale={page.locale}
+        />
+      </div>
     </div>
   );
 }
