@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
+import { useIsMobile } from "../hooks/useIsMobile.ts";
 
 export interface HeroSplitProps {
   headline: string;
@@ -15,21 +15,6 @@ export interface HeroSplitProps {
   // Style
   background_color?: string;
   ratio?: "1/1" | "1/2" | "2/3";
-}
-
-function useIsMobile(breakpoint = 768): boolean {
-  const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    setMobile(mql.matches);
-
-    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [breakpoint]);
-
-  return mobile;
 }
 
 const RATIO_MAP: Record<NonNullable<HeroSplitProps["ratio"]>, string> = {

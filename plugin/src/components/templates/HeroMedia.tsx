@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { useIsMobile } from "../hooks/useIsMobile.ts";
 
 export interface HeroMediaProps {
   headline: string;
@@ -7,21 +7,6 @@ export interface HeroMediaProps {
   media_url: string;
   media_type?: "image" | "video";
   overlay_opacity?: number;
-}
-
-function useIsMobile(breakpoint = 640): boolean {
-  const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
-    setMobile(mql.matches);
-
-    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [breakpoint]);
-
-  return mobile;
 }
 
 export function HeroMedia({

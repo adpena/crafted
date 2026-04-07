@@ -10,7 +10,7 @@ export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContex
 
 	// Validate slug
 	if (!body.slug || typeof body.slug !== "string" || !SLUG_RE.test(body.slug)) {
-		return { status: 400, body: { error: "Invalid slug. Use lowercase letters, numbers, and hyphens." } };
+		return { status: 400, body: { error: { code: "INVALID_SLUG", message: "Invalid slug. Use lowercase letters, numbers, and hyphens." } } };
 	}
 
 	// Validate template
@@ -35,10 +35,10 @@ export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContex
 			try {
 				const parsed = new URL(url);
 				if (parsed.protocol !== "https:" || !parsed.hostname.endsWith("actblue.com")) {
-					return { status: 400, body: { error: "ActBlue URL must be HTTPS on actblue.com" } };
+					return { status: 400, body: { error: { code: "INVALID_URL", message: "ActBlue URL must be HTTPS on actblue.com" } } };
 				}
 			} catch {
-				return { status: 400, body: { error: "Invalid ActBlue URL" } };
+				return { status: 400, body: { error: { code: "INVALID_URL", message: "Invalid ActBlue URL" } } };
 			}
 		}
 	}
@@ -46,7 +46,7 @@ export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContex
 	// Check for duplicate slug
 	const existing = await ctx.storage.action_pages!.query({ where: { slug: body.slug } });
 	if (existing.items.length > 0) {
-		return { status: 409, body: { error: `Page with slug "${body.slug}" already exists` } };
+		return { status: 409, body: { error: { code: "CONFLICT", message: `Page with slug "${body.slug}" already exists` } } };
 	}
 
 	// Store the page

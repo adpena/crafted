@@ -83,7 +83,6 @@ export type ActionPageRendererProps = {
 
 export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPageRendererProps) {
   const [completed, setCompleted] = useState(false);
-  const [, setSubmissionData] = useState<SubmissionData | null>(null);
 
   const Template = templates.get(page.template);
   const Action = actions.get(page.action);
@@ -91,7 +90,6 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
   const theme = resolveTheme(page.theme);
 
   const handleComplete = (data: SubmissionData) => {
-    setSubmissionData(data);
     setCompleted(true);
     fireWebhooks(page.callbacks, page.action, data);
   };

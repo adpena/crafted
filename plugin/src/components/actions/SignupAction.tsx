@@ -1,4 +1,5 @@
 import { useState, type ReactNode, type FormEvent } from "react";
+import { tokens as s } from "./tokens.ts";
 
 export interface SignupActionProps {
   list_name?: string;
@@ -15,17 +16,6 @@ export interface SignupActionProps {
 }
 
 /** Shared tokens */
-const s = {
-  mono: "var(--page-font-mono, 'SFMono-Regular', Consolas, monospace)",
-  serif: "var(--page-font-serif, Georgia, serif)",
-  accent: "var(--page-accent, #c62828)",
-  bg: "var(--page-bg, #fff)",
-  text: "var(--page-text, #1a1a1a)",
-  secondary: "var(--page-secondary, #555)",
-  border: "var(--page-border, #ddd)",
-  radius: "var(--page-radius, 4px)",
-} as const;
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SignupAction({
