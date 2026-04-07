@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode, CSSProperties } from "react";
 import { createRegistry } from "../lib/registry.ts";
-import { fireWebhooks, type WebhookConfig } from "@crafted/notifications";
+import type { WebhookConfig } from "@crafted/notifications";
 import { resolveTheme } from "./themes/index.ts";
 import type { Theme } from "./themes/index.ts";
 import { Transition } from "./Transition.tsx";
@@ -98,15 +98,16 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
   const Followup = page.followup ? actions.get(page.followup) : null;
   const theme = resolveTheme(page.theme);
 
+  // Webhooks are fired server-side in routes/submit.ts after form POST.
+  // Do NOT fire webhooks here — it would expose callback URLs and HMAC
+  // secrets in the client-side bundle.
   const handleComplete = (data: SubmissionData) => {
     setCompleted(true);
-    fireWebhooks(page.callbacks, page.action, data);
   };
 
-  const handleFollowupComplete = (data: SubmissionData) => {
-    if (page.followup) {
-      fireWebhooks(page.callbacks, page.followup, data);
-    }
+  const handleFollowupComplete = (_data: SubmissionData) => {
+    // Follow-up completion is purely a UI state change.
+    // Server-side webhook dispatch handles notification.
   };
 
   const rootStyle: CSSProperties = { ...theme } as CSSProperties;

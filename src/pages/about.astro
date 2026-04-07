@@ -112,10 +112,16 @@ import Base from "../layouts/Base.astro";
 	const aboutLines = Array.from(document.querySelectorAll('.about-line'));
 	const cta = document.getElementById('about-cta');
 
+	const aboutBody = document.getElementById('about-body');
+	const srFallback = document.querySelector('.visually-hidden');
+
 	function showCta() {
 		if (!cta) return;
 		cta.style.visibility = 'visible';
 		cta.style.opacity = '1';
+		// Toggle accessibility: reveal the real content, hide the fallback
+		if (aboutBody) aboutBody.setAttribute('aria-hidden', 'false');
+		if (srFallback) srFallback.setAttribute('aria-hidden', 'true');
 	}
 
 	function revealBio() {

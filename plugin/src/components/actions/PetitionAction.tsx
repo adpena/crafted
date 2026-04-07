@@ -76,7 +76,7 @@ export function PetitionAction({
   show_count,
   signatureCount,
   onComplete,
-  pageId,
+  page_id: pageId,
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
@@ -127,7 +127,7 @@ export function PetitionAction({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "petition_sign",
-          pageId,
+          page_id: pageId,
           visitorId,
           variant,
           data: {

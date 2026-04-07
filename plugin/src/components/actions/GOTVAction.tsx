@@ -16,7 +16,7 @@ export function GOTVAction({
   pledge_text,
   election_date,
   onComplete,
-  pageId,
+  page_id: pageId,
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
@@ -61,7 +61,7 @@ export function GOTVAction({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "gotv_pledge",
-          pageId,
+          page_id: pageId,
           visitorId,
           variant,
           data: {

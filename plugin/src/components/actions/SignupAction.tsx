@@ -22,7 +22,7 @@ export function SignupAction({
   list_name,
   cta_text,
   onComplete,
-  pageId,
+  page_id: pageId,
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
@@ -59,7 +59,7 @@ export function SignupAction({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "signup",
-          pageId,
+          page_id: pageId,
           visitorId,
           variant,
           data: {
