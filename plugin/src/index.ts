@@ -18,6 +18,7 @@ export function actionPages(): PluginDescriptor {
       ab_variants: { indexes: ["page_id"] },
     },
     admin: {
+      entry: "@crafted/action-pages/admin",
       settingsSchema: {
         default_committee_name: {
           type: "string",
