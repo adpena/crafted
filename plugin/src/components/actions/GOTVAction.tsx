@@ -18,7 +18,7 @@ export function GOTVAction({
   pledge_text,
   election_date,
   onComplete,
-  page_id: pageId,
+  pageId,
   visitorId,
   variant,
   submitUrl = "/api/action/submit",

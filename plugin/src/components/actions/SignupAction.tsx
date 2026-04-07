@@ -25,7 +25,7 @@ export function SignupAction({
   list_name,
   cta_text,
   onComplete,
-  page_id: pageId,
+  pageId,
   visitorId,
   variant,
   submitUrl = "/api/action/submit",
