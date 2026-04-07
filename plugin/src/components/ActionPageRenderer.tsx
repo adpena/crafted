@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { ReactNode, CSSProperties } from "react";
 import { createRegistry } from "../lib/registry.ts";
-import { fireCallbacks } from "../lib/callbacks.ts";
-import type { Callback } from "../lib/callbacks.ts";
+import { fireWebhooks, type WebhookConfig } from "@crafted/notifications";
 import { resolveTheme } from "./themes/index.ts";
 import type { Theme } from "./themes/index.ts";
 import { Transition } from "./Transition.tsx";
@@ -65,7 +64,7 @@ export type ActionPageConfig = {
 
   theme?: string | Record<string, string>;
 
-  callbacks?: Callback[];
+  callbacks?: WebhookConfig[];
 };
 
 /* ------------------------------------------------------------------ */
@@ -94,12 +93,12 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
   const handleComplete = (data: SubmissionData) => {
     setSubmissionData(data);
     setCompleted(true);
-    fireCallbacks(page.callbacks, page.action, data);
+    fireWebhooks(page.callbacks, page.action, data);
   };
 
   const handleFollowupComplete = (data: SubmissionData) => {
     if (page.followup) {
-      fireCallbacks(page.callbacks, page.followup, data);
+      fireWebhooks(page.callbacks, page.followup, data);
     }
   };
 

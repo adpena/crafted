@@ -45,5 +45,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@crafted/notifications": "github:adpena/notifications"
   }
 }

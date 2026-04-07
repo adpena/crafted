@@ -1,8 +1,10 @@
 import type { RouteContext, PluginContext } from "emdash";
 import { validateSubmission } from "../modules/validate.ts";
 import type { SubmissionInput } from "../modules/validate.ts";
+import { buildCallbacks } from "../lib/webhook-config.ts";
+import { fireWebhooks } from "@crafted/notifications";
 
-const ALLOWED_TYPES = new Set<SubmissionInput["type"]>(["donation_click", "petition_sign", "gotv_pledge"]);
+const ALLOWED_TYPES = new Set<SubmissionInput["type"]>(["donation_click", "petition_sign", "gotv_pledge", "signup"]);
 const RATE_LIMIT = 5;
 const RATE_WINDOW_SECONDS = 60;
 
@@ -116,6 +118,18 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
     country: geo?.country ?? null,
     city: geo?.city ?? null,
     created_at: new Date().toISOString(),
+  });
+
+  // Fire webhooks async — don't block the response
+  buildCallbacks(ctx).then((callbacks) => {
+    if (callbacks.length > 0) {
+      fireWebhooks(callbacks, body.type, {
+        submission_id: id,
+        page_id: body.page_id,
+        campaign_id: body.campaign_id ?? null,
+        ...result.sanitized,
+      });
+    }
   });
 
   return { status: 200, body: { data: { ok: true } } };

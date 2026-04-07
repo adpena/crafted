@@ -1,13 +1,11 @@
-import type { Callback } from "./callbacks.ts";
+import type { WebhookConfig } from "@crafted/notifications";
 
 const ALL_EVENTS = ["petition_sign", "donation_click", "gotv_pledge", "signup"];
 
 /**
- * Build webhook callback configurations from plugin KV settings.
- * Reads configured webhook URLs and secret, returns Callback[] objects
- * ready to pass to fireCallbacks().
+ * Build webhook configurations from plugin KV settings.
  */
-export async function buildCallbacks(ctx: { kv: { get<T>(key: string): Promise<T | null> } }): Promise<Callback[]> {
+export async function buildCallbacks(ctx: { kv: { get<T>(key: string): Promise<T | null> } }): Promise<WebhookConfig[]> {
 	const [url1, url2, secret, sheetsUrl] = await Promise.all([
 		ctx.kv.get<string>("settings:webhook_url_1"),
 		ctx.kv.get<string>("settings:webhook_url_2"),
@@ -15,7 +13,7 @@ export async function buildCallbacks(ctx: { kv: { get<T>(key: string): Promise<T
 		ctx.kv.get<string>("settings:google_sheets_webhook"),
 	]);
 
-	const callbacks: Callback[] = [];
+	const callbacks: WebhookConfig[] = [];
 
 	if (url1?.trim()) {
 		callbacks.push({
