@@ -12,7 +12,7 @@ export async function handlePageMetadata(
   if (!match) return null;
 
   const slug = match[1]!;
-  const result = await ctx.storage.action_pages.query({ where: { slug } });
+  const result = await ctx.storage.action_pages!.query({ where: { slug } });
   const page = result.items[0]?.data as Record<string, unknown> | undefined;
   if (!page) return null;
 

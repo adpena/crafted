@@ -26,7 +26,7 @@ async function checkRateLimit(ctx: PluginContext, ip: string): Promise<boolean> 
     return false;
   }
 
-  await ctx.kv.set(key, count, { ttl: RATE_WINDOW_SECONDS * 2 });
+  await ctx.kv.set(key, count);
   return true;
 }
 
@@ -106,7 +106,7 @@ export async function handleSubmit(routeCtx: RouteContext, ctx: PluginContext) {
   const geo = routeCtx.requestMeta.geo;
   const id = crypto.randomUUID();
 
-  await ctx.storage.submissions.put(id, {
+  await ctx.storage.submissions!.put(id, {
     page_id: body.page_id,
     campaign_id: body.campaign_id ?? null,
     type: body.type,

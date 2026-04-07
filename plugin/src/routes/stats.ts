@@ -9,7 +9,7 @@ export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
     return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid page_id parameter" } } };
   }
 
-  const result = await ctx.storage.ab_variants.query({ where: { page_id: pageId } });
+  const result = await ctx.storage.ab_variants!.query({ where: { page_id: pageId } });
 
   const stats = result.items.map((item) => {
     const v = item.data as Record<string, unknown>;

@@ -24,7 +24,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
       return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Invalid campaign" } } };
     }
     // Resolve campaign ID from slug
-    const campaignResult = await ctx.storage.campaigns.query({ where: { slug: campaignSlug } });
+    const campaignResult = await ctx.storage.campaigns!.query({ where: { slug: campaignSlug } });
     const campaign = campaignResult.items[0];
     if (!campaign) {
       return { status: 404, body: { error: { code: "NOT_FOUND", message: "Campaign not found" } } };
@@ -32,7 +32,7 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
     where.campaign_id = campaign.id;
   }
 
-  const result = await ctx.storage.action_pages.query({ where });
+  const result = await ctx.storage.action_pages!.query({ where });
   const page = result.items[0]?.data as Record<string, unknown> | undefined;
   if (!page) {
     return { status: 404, body: { error: { code: "NOT_FOUND", message: "Page not found" } } };

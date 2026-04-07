@@ -8,10 +8,10 @@ export async function handleInstall(_event: unknown, ctx: PluginContext): Promis
 
   // Seed a demo campaign and action page if none exist
   const demoMode = await ctx.kv.get<boolean>("demo_mode");
-  const existingCampaigns = await ctx.storage.campaigns.query({});
+  const existingCampaigns = await ctx.storage.campaigns!.query({});
   if (demoMode !== false && existingCampaigns.items.length === 0) {
     const campaignId = crypto.randomUUID();
-    await ctx.storage.campaigns.put(campaignId, {
+    await ctx.storage.campaigns!.put(campaignId, {
       slug: "demo",
       name: "Demo Campaign",
       committee_name: "Friends of Progress",
@@ -20,7 +20,7 @@ export async function handleInstall(_event: unknown, ctx: PluginContext): Promis
     ctx.log.info("Created demo campaign");
 
     const pageId = crypto.randomUUID();
-    await ctx.storage.action_pages.put(pageId, {
+    await ctx.storage.action_pages!.put(pageId, {
       slug: "demo-donate",
       campaign_id: campaignId,
       title: "Support the Cause",
