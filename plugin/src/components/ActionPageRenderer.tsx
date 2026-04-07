@@ -7,6 +7,8 @@ import type { Theme } from "./themes/index.ts";
 import { Transition } from "./Transition.tsx";
 import { Disclaimer } from "./Disclaimer.tsx";
 import type { DisclaimerProps } from "./Disclaimer.tsx";
+import { Consent } from "./Consent.tsx";
+import type { Locale } from "../lib/i18n.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Component types                                                    */
@@ -59,6 +61,13 @@ export type ActionPageConfig = {
     office?: string;
   };
   jurisdiction?: string;
+
+  locale?: Locale;
+
+  consent?: {
+    privacy_url?: string;
+    required?: boolean;
+  };
 
   variants?: string[];
 
@@ -143,9 +152,18 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
         )
       )}
 
+      {page.consent && (
+        <Consent
+          locale={page.locale}
+          privacy_url={page.consent.privacy_url}
+          required={page.consent.required}
+        />
+      )}
+
       <Disclaimer
         committee_name={page.disclaimer.committee_name}
         treasurer_name={page.disclaimer.treasurer_name}
+        locale={page.locale}
       />
     </div>
   );
