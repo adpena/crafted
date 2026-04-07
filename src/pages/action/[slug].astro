@@ -4,6 +4,11 @@ if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
   return new Response("Not found", { status: 404 });
 }
 
+const embedParam = Astro.url.searchParams.get("embed");
+const embedMode = embedParam === "1" ? "embed"
+  : embedParam === "stacked" ? "stacked"
+  : "standalone" as const;
+const isEmbed = embedMode !== "standalone";
 
 // Access the plugin storage directly via D1
 import { env } from "cloudflare:workers";
@@ -25,22 +30,49 @@ if (!pageData) {
   return new Response("Action page not found", { status: 404 });
 }
 
-const title = pageData.title ?? "Action Page";
-const type = pageData.type ?? "fundraise";
-const body = pageData.body ?? "";
-const rawActblueUrl = pageData.actblue_url ?? "";
-let actblue_url = "";
+// Validate ActBlue URL
+let actblueUrl = "";
 try {
-  if (rawActblueUrl) {
-    const parsed = new URL(rawActblueUrl);
+  const raw = pageData.actblue_url ?? "";
+  if (raw) {
+    const parsed = new URL(raw);
     if (parsed.protocol === "https:" && (parsed.hostname === "secure.actblue.com" || parsed.hostname === "actblue.com")) {
-      actblue_url = parsed.href;
+      actblueUrl = parsed.href;
     }
   }
 } catch { /* invalid URL, leave empty */ }
-const refcode = pageData.refcode ?? "";
-const amounts = pageData.amount_config?.base ?? [10, 25, 50, 100, 250];
-const committeeName = pageData.committee_name ?? "";
+
+// Map D1 row data -> ActionPageConfig for the renderer.
+// Pages stored before the renderer existed have flat fields (title, body,
+// actblue_url, etc.). Pages created with the new admin UI store nested
+// template_props / action_props directly. We handle both shapes.
+const actionType = pageData.type ?? "fundraise";
+const actionConfig = {
+  slug,
+  template: pageData.template ?? "hero-simple",
+  template_props: pageData.template_props ?? {
+    headline: pageData.title ?? "Action Page",
+    subhead: pageData.body ?? "",
+  },
+  action: actionType,
+  action_props: pageData.action_props ?? {
+    amounts: pageData.amount_config?.base ?? [10, 25, 50, 100, 250],
+    actblue_url: actblueUrl,
+    refcode: pageData.refcode ?? "",
+  },
+  followup: pageData.followup ?? undefined,
+  followup_props: pageData.followup_props ?? undefined,
+  followup_message: pageData.followup_message ?? undefined,
+  disclaimer: pageData.disclaimer ?? {
+    committee_name: pageData.committee_name ?? "",
+  },
+  theme: pageData.theme ?? "warm",
+  callbacks: pageData.callbacks ?? [],
+};
+
+const title = pageData.title ?? "Action Page";
+
+import ActionPageIsland from "../../components/ActionPageIsland.tsx";
 ---
 
 <html lang="en">
@@ -53,96 +85,63 @@ const committeeName = pageData.committee_name ?? "";
        duplicate the design tokens for zero-dependency embedding. -->
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg: #f5f5f0;
+      --page-text: #1a1a1a;
+      --page-accent: #1a1a1a;
+      --page-secondary: #6b6b6b;
+      --page-border: #d4d4c8;
+      --page-radius: 0px;
+      --page-font-serif: Georgia, 'Times New Roman', serif;
+      --page-font-mono: 'SF Mono', 'Fira Code', monospace;
+    }
+
     body {
-      font-family: Georgia, serif;
+      font-family: var(--page-font-serif);
       line-height: 1.6;
-      color: #1a1a1a;
-      background: #f5f5f0;
+      color: var(--page-text);
+      background: var(--page-bg);
       padding: 3rem 1.5rem;
       max-width: 32rem;
       margin: 0 auto;
     }
-    h1 { font-size: 1.5rem; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 1rem; }
-    .body-text { margin-bottom: 1.5rem; font-size: 1rem; }
-    .amounts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .amount {
-      padding: 0.5rem 1rem;
-      font-family: "Courier New", monospace;
-      font-size: 1rem;
-      background: transparent;
-      border: 1px solid #1a1a1a;
-      cursor: pointer;
-      transition: background 150ms, color 150ms;
-      min-height: 44px;
-      min-width: 44px;
-    }
-    .amount:hover, .amount.selected { background: #1a1a1a; color: #f5f5f0; }
-    .cta {
-      display: inline-block;
-      padding: 0.75rem 2rem;
-      font-family: "Courier New", monospace;
-      font-size: 1rem;
-      color: #f5f5f0;
-      background: #1a1a1a;
-      border: none;
-      text-decoration: none;
-      cursor: pointer;
-      margin-bottom: 1.5rem;
-      min-height: 44px;
-    }
-    .cta:hover { opacity: 0.85; }
-    .disclaimer {
-      font-family: "Courier New", monospace;
-      font-size: 0.75rem;
-      color: #707070;
-      border-top: 1px solid #d4d4cc;
-      padding-top: 0.75rem;
-      margin-top: 1rem;
-    }
+
+    astro-island { display: contents; }
+
     @media (max-width: 480px) {
       body { padding: 1.5rem 1rem; max-width: 100%; }
-      h1 { font-size: 1.25rem; }
-      .amounts { gap: 0.5rem; }
-      .amount { flex: 1 1 calc(33% - 0.5rem); text-align: center; min-width: 0; font-size: 0.875rem; }
-      .cta { width: 100%; text-align: center; display: block; font-size: 1rem; }
-      .disclaimer { font-size: 0.7rem; }
     }
   </style>
 </head>
 <body>
   <main id="main-content">
-    <h1>{title}</h1>
-    {body && <p class="body-text">{body}</p>}
-
-    {type === "fundraise" && (
-      <Fragment>
-        <div class="amounts">
-          {amounts.map((a: number) => (
-            <button class="amount" data-amount={a}>${a}</button>
-          ))}
-        </div>
-        <a id="donate-link" href={`${actblue_url}?refcode=${encodeURIComponent(refcode)}&amount=`} class="cta" target="_blank" rel="noopener noreferrer">
-          Donate
-        </a>
-      </Fragment>
-    )}
-
-    {committeeName && <p class="disclaimer">Paid for by {committeeName}</p>}
+    <ActionPageIsland page={actionConfig} client:load />
   </main>
 
-  <script>
-    document.querySelectorAll('.amount').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.amount').forEach(b => {
-          b.classList.remove('selected');
-          b.setAttribute('aria-pressed', 'false');
-        });
-        btn.classList.add('selected');
-        btn.setAttribute('aria-pressed', 'true');
-        const link = document.getElementById('donate-link');
-        if (link) link.href = link.href.replace(/amount=[^&]*/, 'amount=' + btn.dataset.amount);
-      });
-    });
-  </script>
+  {isEmbed && (
+    <script>
+      // Embed resize: report content height to parent frame via postMessage.
+      // Inlined to avoid an extra network request for the embed case.
+      (function() {
+        if (window === window.parent) return;
+        var MSG = "crafted:resize";
+        var last = 0;
+        var timer = null;
+        function report() {
+          var h = document.documentElement.scrollHeight;
+          if (h !== last) { last = h; window.parent.postMessage({ type: MSG, height: h }, "*"); }
+        }
+        function debounced() { clearTimeout(timer); timer = setTimeout(report, 100); }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", report);
+        } else { report(); }
+        var obs = new MutationObserver(debounced);
+        obs.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+        window.addEventListener("load", report);
+        window.addEventListener("resize", debounced);
+      })();
+    </script>
+  )}
 </body>
 </html>

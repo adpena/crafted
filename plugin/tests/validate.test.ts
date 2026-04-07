@@ -55,6 +55,48 @@ describe("validateSubmission", () => {
     expect(result.errors).toContain("Unknown submission type: unknown_type");
   });
 
+  it("passes a valid signup with just email", () => {
+    const input: SubmissionInput = {
+      type: "signup",
+      data: { email: "voter@example.com" },
+    };
+    const result = validateSubmission(input);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+    expect(result.sanitized).toEqual({ email: "voter@example.com" });
+  });
+
+  it("passes a valid signup with email and first_name", () => {
+    const input: SubmissionInput = {
+      type: "signup",
+      data: { email: "voter@example.com", first_name: "Ada" },
+    };
+    const result = validateSubmission(input);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+    expect(result.sanitized).toEqual({ email: "voter@example.com", first_name: "Ada" });
+  });
+
+  it("fails signup without email", () => {
+    const input: SubmissionInput = {
+      type: "signup",
+      data: { first_name: "Ada" },
+    };
+    const result = validateSubmission(input);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Missing required field: email");
+  });
+
+  it("fails signup with invalid email format", () => {
+    const input: SubmissionInput = {
+      type: "signup",
+      data: { email: "not-an-email" },
+    };
+    const result = validateSubmission(input);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Invalid email: email");
+  });
+
   it("sanitizes string inputs by stripping tags", () => {
     const input: SubmissionInput = {
       type: "donation_click",

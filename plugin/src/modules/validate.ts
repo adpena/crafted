@@ -1,5 +1,5 @@
 export type SubmissionInput = {
-  type: "donation_click" | "petition_sign" | "gotv_pledge";
+  type: "donation_click" | "petition_sign" | "gotv_pledge" | "signup";
   data: Record<string, unknown>;
 };
 
@@ -18,6 +18,7 @@ const schemas: Record<string, FieldSchema> = {
   donation_click: { required: [], emailFields: [] },
   petition_sign: { required: ["first_name", "last_name", "email", "zip"], emailFields: ["email"] },
   gotv_pledge: { required: ["first_name", "zip"], emailFields: [] },
+  signup: { required: ["email"], emailFields: ["email"] },
 };
 
 const MAX_LENGTHS: Record<string, number> = {
