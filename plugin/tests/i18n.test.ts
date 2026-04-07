@@ -11,8 +11,31 @@ describe("t()", () => {
   });
 
   it("falls back to English for unknown locale", () => {
-    // Cast to satisfy TS — runtime should still resolve to English
-    expect(t("fr" as Locale, "petition_heading")).toBe("Sign the Petition");
+    expect(t("xx" as Locale, "petition_heading")).toBe("Sign the Petition");
+  });
+
+  it("returns correct French", () => {
+    expect(t("fr", "petition_heading")).toBe("Signez la pétition");
+  });
+
+  it("returns correct Chinese", () => {
+    expect(t("zh", "petition_submit")).toBe("签名");
+  });
+
+  it("returns correct Vietnamese", () => {
+    expect(t("vi", "petition_first_name")).toBe("Tên");
+  });
+
+  it("returns correct Korean", () => {
+    expect(t("ko", "fundraise_donate")).toBe("기부");
+  });
+
+  it("returns correct Arabic", () => {
+    expect(t("ar", "petition_heading")).toBe("وقّع العريضة");
+  });
+
+  it("returns correct Tagalog", () => {
+    expect(t("tl", "petition_submit")).toBe("Pirmahan");
   });
 
   it("interpolates ${amount} variable", () => {
