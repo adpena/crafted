@@ -1,0 +1,296 @@
+/**
+ * MCP-compatible HTTP endpoint for Campaign Action Pages.
+ *
+ * Exposes tools for AI agents to create, query, and manage action pages
+ * and their submissions via HTTP.
+ *
+ * GET  /api/mcp/actions  → list available tools
+ * POST /api/mcp/actions  → call a tool ({ tool, params })
+ */
+
+import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
+
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
+const PLUGIN_ID = "crafted-action-pages";
+const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
+
+const TEMPLATES = [
+  { name: "hero-simple", props: ["headline", "subhead", "align"] },
+  { name: "hero-media", props: ["headline", "media_url", "overlay_opacity"] },
+  { name: "hero-story", props: ["headline", "body", "pull_quote"] },
+];
+
+const ACTIONS = [
+  { name: "fundraise", description: "Amount buttons + ActBlue redirect" },
+  { name: "petition", description: "Name, email, zip, optional comment" },
+  { name: "gotv", description: "Name, zip, pledge checkbox" },
+  { name: "signup", description: "Email + optional name, list capture" },
+];
+
+const THEMES: Record<string, Record<string, string>> = {
+  warm: {
+    "--page-bg": "#f5f5f0", "--page-text": "#1a1a1a", "--page-accent": "#1a1a1a",
+    "--page-secondary": "#6b6b6b", "--page-border": "#d4d4c8", "--page-radius": "0px",
+    "--page-font-serif": "Georgia, 'Times New Roman', serif",
+    "--page-font-mono": "'SF Mono', 'Fira Code', monospace",
+  },
+  bold: {
+    "--page-bg": "#0a0a0a", "--page-text": "#ffffff", "--page-accent": "#ef4444",
+    "--page-secondary": "#a1a1a1", "--page-border": "#2a2a2a", "--page-radius": "8px",
+    "--page-font-serif": "Inter, system-ui, sans-serif",
+    "--page-font-mono": "'SF Mono', 'Fira Code', monospace",
+  },
+  clean: {
+    "--page-bg": "#ffffff", "--page-text": "#1a1a1a", "--page-accent": "#2563eb",
+    "--page-secondary": "#6b7280", "--page-border": "#e5e5e5", "--page-radius": "4px",
+    "--page-font-serif": "system-ui, -apple-system, sans-serif",
+    "--page-font-mono": "'SF Mono', 'Fira Code', monospace",
+  },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Tool list (GET)                                                    */
+/* ------------------------------------------------------------------ */
+
+const TOOLS = [
+  { name: "create_page", description: "Create a new action page", params: { slug: "string", template: "string", action: "string", template_props: "object", action_props: "object", "disclaimer": "object", "theme?": "string | object", "followup?": "string", "followup_props?": "object", "followup_message?": "string", "campaign_id?": "string", "variants?": "string[]", "callbacks?": "object[]" } },
+  { name: "list_pages", description: "List all action pages" },
+  { name: "get_page", description: "Get an action page by slug", params: { slug: "string" } },
+  { name: "get_submissions", description: "Get submissions for a page", params: { page_id: "string", "limit?": "number", "offset?": "number" } },
+  { name: "generate_theme", description: "Generate a theme from a natural language description", params: { prompt: "string" } },
+  { name: "list_templates", description: "List available templates" },
+  { name: "list_actions", description: "List available action types" },
+  { name: "list_themes", description: "List available themes" },
+];
+
+export const GET: APIRoute = async () => {
+  return new Response(JSON.stringify({
+    name: "action-pages",
+    description: "Campaign action page management — create pages, query submissions, generate themes",
+    tools: TOOLS,
+    transport: "http",
+  }), {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+const json = (data: unknown, status = 200) =>
+  new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
+
+const err = (code: string, message: string, status = 400) =>
+  json({ error: { code, message } }, status);
+
+function getDb() {
+  return env.DB;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Theme generator (deterministic, no AI call)                        */
+/* ------------------------------------------------------------------ */
+
+const COLOR_MAP: Record<string, string> = {
+  red: "#dc2626", blue: "#2563eb", green: "#16a34a", purple: "#9333ea",
+  orange: "#ea580c", pink: "#ec4899", yellow: "#eab308", teal: "#0d9488",
+  navy: "#1e3a5f", gold: "#b8860b", black: "#0a0a0a", white: "#ffffff",
+  crimson: "#dc143c", indigo: "#4f46e5", emerald: "#059669", slate: "#475569",
+};
+
+function generateTheme(prompt: string): Record<string, string> {
+  const p = prompt.toLowerCase();
+
+  // Start from warm base
+  const theme = { ...THEMES.warm };
+
+  // Detect base style
+  if (p.includes("dark") || p.includes("night") || p.includes("bold")) {
+    Object.assign(theme, THEMES.bold);
+  } else if (p.includes("clean") || p.includes("modern") || p.includes("minimal")) {
+    Object.assign(theme, THEMES.clean);
+  }
+
+  // Override accent with detected color
+  for (const [name, hex] of Object.entries(COLOR_MAP)) {
+    if (p.includes(name)) {
+      theme["--page-accent"] = hex;
+      break;
+    }
+  }
+
+  // Rounded corners
+  if (p.includes("round") || p.includes("soft") || p.includes("friendly")) {
+    theme["--page-radius"] = "12px";
+  } else if (p.includes("sharp") || p.includes("angular") || p.includes("brutalist")) {
+    theme["--page-radius"] = "0px";
+  }
+
+  // Font style
+  if (p.includes("serif") || p.includes("classic") || p.includes("traditional")) {
+    theme["--page-font-serif"] = "Georgia, 'Times New Roman', serif";
+  } else if (p.includes("sans") || p.includes("modern") || p.includes("tech")) {
+    theme["--page-font-serif"] = "Inter, system-ui, sans-serif";
+  }
+
+  return theme;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Tool dispatch (POST)                                               */
+/* ------------------------------------------------------------------ */
+
+export const POST: APIRoute = async ({ request }) => {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return err("INVALID_JSON", "Request body must be valid JSON.");
+  }
+
+  if (typeof body !== "object" || body === null || typeof (body as any).tool !== "string") {
+    return err("BAD_REQUEST", "Expected { tool: string, params?: object }");
+  }
+
+  const { tool, params = {} } = body as { tool: string; params?: Record<string, unknown> };
+
+  switch (tool) {
+    /* -------------------------------------------------------------- */
+    case "create_page": {
+      const p = params;
+      const slug = p.slug as string | undefined;
+      if (!slug || typeof slug !== "string" || !SLUG_RE.test(slug)) {
+        return err("INVALID_SLUG", "slug must match /^[a-z0-9][a-z0-9-]*$/");
+      }
+      if (!p.template || typeof p.template !== "string") {
+        return err("MISSING_FIELD", "template is required (string)");
+      }
+      if (!p.action || typeof p.action !== "string") {
+        return err("MISSING_FIELD", "action is required (string)");
+      }
+      if (!p.disclaimer || typeof p.disclaimer !== "object") {
+        return err("MISSING_FIELD", "disclaimer is required (object with committee_name)");
+      }
+
+      const pageData = {
+        slug,
+        campaign_id: p.campaign_id ?? null,
+        template: p.template,
+        template_props: p.template_props ?? {},
+        action: p.action,
+        action_props: p.action_props ?? {},
+        followup: p.followup ?? null,
+        followup_props: p.followup_props ?? null,
+        followup_message: p.followup_message ?? null,
+        disclaimer: p.disclaimer,
+        theme: p.theme ?? "warm",
+        variants: p.variants ?? [],
+        callbacks: p.callbacks ?? [],
+        status: "active",
+        created_at: new Date().toISOString(),
+      };
+
+      const db = getDb();
+      const id = crypto.randomUUID();
+      await db.prepare(
+        "INSERT INTO _plugin_storage (id, plugin_id, collection, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+      ).bind(
+        id, PLUGIN_ID, "action_pages",
+        JSON.stringify(pageData),
+        pageData.created_at, pageData.created_at,
+      ).run();
+
+      return json({ data: { ok: true, page_id: id, url: `/action/${slug}` } });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "list_pages": {
+      const db = getDb();
+      const { results } = await db.prepare(
+        "SELECT id, data, created_at FROM _plugin_storage WHERE plugin_id = ? AND collection = 'action_pages' ORDER BY created_at DESC"
+      ).bind(PLUGIN_ID).all();
+
+      const pages = (results ?? []).map((row: any) => {
+        const d = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+        return { id: row.id, slug: d.slug, title: d.template_props?.headline ?? d.title ?? d.slug, action: d.action, template: d.template, created_at: d.created_at ?? row.created_at };
+      });
+      return json({ data: pages });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "get_page": {
+      const slug = params.slug as string | undefined;
+      if (!slug || typeof slug !== "string") {
+        return err("MISSING_FIELD", "slug is required (string)");
+      }
+
+      const db = getDb();
+      const row = await db.prepare(
+        "SELECT id, data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'action_pages' AND json_extract(data, '$.slug') = ?"
+      ).bind(PLUGIN_ID, slug).first() as any;
+
+      if (!row) return err("NOT_FOUND", `No action page with slug '${String(slug).slice(0, 64)}'`, 400);
+
+      const d = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+      return json({ data: { id: row.id, ...d } });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "get_submissions": {
+      const pageId = params.page_id as string | undefined;
+      if (!pageId || typeof pageId !== "string") {
+        return err("MISSING_FIELD", "page_id is required (string)");
+      }
+      const limit = Math.min(Math.max(Number(params.limit) || 50, 1), 500);
+      const offset = Math.max(Number(params.offset) || 0, 0);
+
+      const db = getDb();
+      const { results } = await db.prepare(
+        "SELECT id, data, created_at FROM _plugin_storage WHERE plugin_id = ? AND collection = 'submissions' AND json_extract(data, '$.page_id') = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
+      ).bind(PLUGIN_ID, pageId, limit, offset).all();
+
+      const submissions = (results ?? []).map((row: any) => {
+        const d = typeof row.data === "string" ? JSON.parse(row.data) : row.data;
+        return { id: row.id, ...d, created_at: d.created_at ?? row.created_at };
+      });
+      return json({ data: submissions });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "generate_theme": {
+      const prompt = params.prompt as string | undefined;
+      if (!prompt || typeof prompt !== "string") {
+        return err("MISSING_FIELD", "prompt is required (string)");
+      }
+      const theme = generateTheme(prompt);
+      return json({ data: { theme, prompt: prompt.slice(0, 200) } });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "list_templates": {
+      return json({ data: TEMPLATES });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "list_actions": {
+      return json({ data: ACTIONS });
+    }
+
+    /* -------------------------------------------------------------- */
+    case "list_themes": {
+      const data = Object.entries(THEMES).map(([name, vars]) => ({ name, preview: vars }));
+      return json({ data });
+    }
+
+    /* -------------------------------------------------------------- */
+    default: {
+      const safeName = String(tool).slice(0, 64);
+      return err("UNKNOWN_TOOL", `Tool '${safeName}' is not available. GET this endpoint for the tool list.`);
+    }
+  }
+};
