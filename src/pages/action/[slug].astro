@@ -44,9 +44,11 @@ try {
 
 // Map D1 row data -> ActionPageConfig for the renderer.
 // Pages stored before the renderer existed have flat fields (title, body,
-// actblue_url, etc.). Pages created with the new admin UI store nested
-// template_props / action_props directly. We handle both shapes.
-const actionType = pageData.type ?? "fundraise";
+// actblue_url, etc.). Pages created with the new MCP/admin tools store
+// nested template_props / action_props with `action` (not `type`). Handle
+// both shapes — prefer the new shape's `action` field, fall back to legacy
+// `type`, and finally default to "fundraise" so legacy demo rows render.
+const actionType = pageData.action ?? pageData.type ?? "fundraise";
 const actionConfig = {
   slug,
   template: pageData.template ?? "hero-simple",
@@ -70,7 +72,7 @@ const actionConfig = {
   callbacks: pageData.callbacks ?? [],
 };
 
-const title = pageData.title ?? "Action Page";
+const title = pageData.template_props?.headline ?? pageData.title ?? "Action Page";
 
 import ActionPageIsland from "../../components/ActionPageIsland.tsx";
 ---

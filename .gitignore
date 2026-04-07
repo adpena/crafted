@@ -32,3 +32,6 @@ npm-debug.log*
 data.db-shm
 data.db-wal
 docs/superpowers/
+
+# Agent worktrees (created by parallel agent dispatch)
+.claude/worktrees/

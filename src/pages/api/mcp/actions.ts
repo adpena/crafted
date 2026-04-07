@@ -22,7 +22,46 @@ const TEMPLATES = [
   { name: "hero-simple", props: ["headline", "subhead", "align"] },
   { name: "hero-media", props: ["headline", "media_url", "overlay_opacity"] },
   { name: "hero-story", props: ["headline", "body", "pull_quote"] },
+  {
+    name: "hero-layered",
+    props: [
+      "headline",
+      "subhead",
+      "background_type",
+      "background_color",
+      "background_gradient",
+      "background_image",
+      "background_video",
+      "background_position",
+      "splash_image",
+      "splash_alt",
+      "splash_position",
+      "splash_align",
+      "splash_size",
+      "overlay",
+      "overlay_opacity",
+      "content_position",
+      "content_color",
+      "height",
+    ],
+  },
+  {
+    name: "hero-split",
+    props: [
+      "headline",
+      "subhead",
+      "body",
+      "media_type",
+      "media_url",
+      "media_alt",
+      "media_side",
+      "background_color",
+      "ratio",
+    ],
+  },
 ];
+
+const VALID_TEMPLATES = new Set(TEMPLATES.map((t) => t.name));
 
 const ACTIONS = [
   { name: "fundraise", description: "Amount buttons + ActBlue redirect" },
@@ -169,6 +208,12 @@ export const POST: APIRoute = async ({ request }) => {
       }
       if (!p.template || typeof p.template !== "string") {
         return err("MISSING_FIELD", "template is required (string)");
+      }
+      if (!VALID_TEMPLATES.has(p.template)) {
+        return err(
+          "INVALID_TEMPLATE",
+          `template must be one of: ${[...VALID_TEMPLATES].join(", ")}`,
+        );
       }
       if (!p.action || typeof p.action !== "string") {
         return err("MISSING_FIELD", "action is required (string)");

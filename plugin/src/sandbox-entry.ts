@@ -22,6 +22,8 @@ import { handlePage } from "./routes/page.ts";
 import { handleEmbed } from "./routes/embed.ts";
 import { handleStats } from "./routes/stats.ts";
 import { handleCreatePage } from "./routes/create-page.ts";
+import { handleWebComponent } from "./routes/web-component.ts";
+import { handleTestNotification } from "./routes/test-notification.ts";
 
 export default definePlugin({
   hooks: {
@@ -36,5 +38,7 @@ export default definePlugin({
     embed: { handler: handleEmbed, public: true },
     stats: { handler: handleStats },
     "create-page": { handler: handleCreatePage },
+    "web-component.js": { handler: handleWebComponent, public: true },
+    "test-notification": { handler: handleTestNotification },
   },
 });

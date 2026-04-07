@@ -30,6 +30,11 @@ export function FundraiseAction({
   suggested,
   onComplete,
 }: FundraiseActionProps): ReactNode {
+  // Defensive: action_props from MCP/storage may omit `amounts` entirely.
+  // Falling back to a reasonable default keeps SSR from throwing on
+  // `amounts.map` and lets the page render even with partial config.
+  const safeAmounts: number[] =
+    Array.isArray(amounts) && amounts.length > 0 ? amounts : [10, 25, 50, 100, 250];
   const [selected, setSelected] = useState<number | null>(suggested ?? null);
   const [custom, setCustom] = useState("");
   const [isCustom, setIsCustom] = useState(false);
@@ -37,10 +42,15 @@ export function FundraiseAction({
   const activeAmount = isCustom ? parseFloat(custom) || 0 : selected ?? 0;
 
   function buildUrl(amount: number): string {
-    const url = new URL(actblue_url);
-    url.searchParams.set("amount", String(amount));
-    if (refcode) url.searchParams.set("refcode", refcode);
-    return url.toString();
+    if (!actblue_url) return "#";
+    try {
+      const url = new URL(actblue_url);
+      url.searchParams.set("amount", String(amount));
+      if (refcode) url.searchParams.set("refcode", refcode);
+      return url.toString();
+    } catch {
+      return "#";
+    }
   }
 
   function handleDonate() {
@@ -60,7 +70,7 @@ export function FundraiseAction({
           marginBottom: "1.25rem",
         }}
       >
-        {amounts.map((amt) => {
+        {safeAmounts.map((amt) => {
           const active = !isCustom && selected === amt;
           return (
             <button

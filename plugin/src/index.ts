@@ -64,22 +64,105 @@ export function actionPages(): PluginDescriptor {
         slack_webhook_url: {
           type: "string",
           label: "Slack Webhook URL",
-          description: "Slack incoming webhook URL for action notifications",
+          description: "Slack › Apps › Incoming Webhooks › Add to Slack. Paste the resulting URL here.",
         },
         discord_webhook_url: {
           type: "string",
           label: "Discord Webhook URL",
-          description: "Discord webhook URL for action notifications",
+          description: "Discord channel › Edit Channel › Integrations › Webhooks › New Webhook.",
         },
         notification_email: {
           type: "string",
           label: "Notification Email",
           description: "Email address to receive action summaries (uses emdash email)",
         },
+
+        // ── Telegram ─────────────────────────────────────────────────────
+        telegram_bot_token: {
+          type: "secret",
+          label: "Telegram Bot Token",
+          description: "Create a bot via @BotFather on Telegram, then paste the token here.",
+        },
+        telegram_chat_id: {
+          type: "string",
+          label: "Telegram Chat ID",
+          description: "Numeric chat ID (use @userinfobot or @RawDataBot to find it). Group IDs start with -100.",
+        },
+
+        // ── WhatsApp Business ────────────────────────────────────────────
+        whatsapp_api_token: {
+          type: "secret",
+          label: "WhatsApp API Token",
+          description: "Meta › WhatsApp Business › Generate access token (requires whatsapp_business_messaging scope).",
+        },
+        whatsapp_phone_id: {
+          type: "string",
+          label: "WhatsApp Phone Number ID",
+          description: "Phone number ID from Meta › WhatsApp › API Setup.",
+        },
+        whatsapp_to: {
+          type: "string",
+          label: "WhatsApp Recipient",
+          description: "Recipient phone number in E.164 format, no plus sign (e.g. 15551234567).",
+        },
+        whatsapp_api_url: {
+          type: "string",
+          label: "WhatsApp API URL (optional)",
+          description: "Override the Meta Graph API endpoint. Leave blank to use the default.",
+        },
+
+        // ── Resend ───────────────────────────────────────────────────────
+        resend_api_key: {
+          type: "secret",
+          label: "Resend API Key",
+          description: "Resend dashboard › API Keys › Create API Key. Starts with re_.",
+        },
+        resend_from_email: {
+          type: "string",
+          label: "Resend From Address",
+          description: "Verified sender (e.g. notifications@yourdomain.com). Domain must be verified in Resend.",
+        },
+        resend_to_email: {
+          type: "string",
+          label: "Resend To Address",
+          description: "Where transactional notifications are delivered.",
+        },
+
+        // ── Cloudflare Email Workers ────────────────────────────────────
+        cf_email_from: {
+          type: "string",
+          label: "Cloudflare Email From",
+          description: "Verified sender. Requires SEND_EMAIL binding (auto-injected by Workers runtime).",
+        },
+        cf_email_to: {
+          type: "string",
+          label: "Cloudflare Email To",
+          description: "Recipient address (must be verified destination in Cloudflare Email Routing).",
+        },
+
+        // ── HubSpot Forms (public, no auth) ─────────────────────────────
+        hubspot_portal_id: {
+          type: "string",
+          label: "HubSpot Portal ID",
+          description: "HubSpot › Settings › Account Defaults › Account ID. Numeric.",
+        },
+        hubspot_form_id: {
+          type: "string",
+          label: "HubSpot Form ID",
+          description: "Marketing › Forms › Form › Embed code. UUID format.",
+        },
+
+        // ── HubSpot Contacts (private app) ──────────────────────────────
+        hubspot_api_token: {
+          type: "secret",
+          label: "HubSpot Private App Token",
+          description: "HubSpot › Settings › Integrations › Private Apps. Requires crm.objects.contacts.write scope.",
+        },
       },
       pages: [
         { path: "/action-pages", label: "Action Pages", icon: "zap" },
         { path: "/submissions", label: "Submissions", icon: "inbox" },
+        { path: "/notifications", label: "Notifications", icon: "bell" },
       ],
       widgets: [
         { id: "action-stats", size: "half", title: "Action Page Stats" },
