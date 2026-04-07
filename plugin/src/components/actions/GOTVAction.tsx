@@ -1,5 +1,6 @@
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
+import { t, getLocale, type Locale } from "../../lib/i18n.ts";
 
 export interface GOTVActionProps {
   pledge_text?: string;
@@ -9,6 +10,7 @@ export interface GOTVActionProps {
   visitorId: string;
   variant?: string;
   submitUrl?: string;
+  locale?: Locale;
 }
 
 /** Shared tokens */

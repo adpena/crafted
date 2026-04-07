@@ -1,5 +1,7 @@
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
+import { t, getLocale, type Locale } from "../../lib/i18n.ts";
+import { useIsMobile } from "../hooks/useIsMobile.ts";
 
 export interface SignupActionProps {
   list_name?: string;
@@ -13,6 +15,7 @@ export interface SignupActionProps {
   visitorId: string;
   variant?: string;
   submitUrl?: string;
+  locale?: Locale;
 }
 
 /** Shared tokens */
@@ -27,6 +30,7 @@ export function SignupAction({
   variant,
   submitUrl = "/api/action/submit",
 }: SignupActionProps): ReactNode {
+  const isMobile = useIsMobile();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [errors, setErrors] = useState<{ email?: string }>({});
@@ -131,12 +135,12 @@ export function SignupAction({
           Joining: {list_name}
         </p>
       )}
-      {/* Inline layout: name + email + button */}
+      {/* Responsive: inline 3-col on desktop, stacked on mobile */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1.5fr auto",
-          gap: "1rem",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr auto",
+          gap: isMobile ? "0.75rem" : "1rem",
           alignItems: "end",
           marginBottom: "0.5rem",
         }}

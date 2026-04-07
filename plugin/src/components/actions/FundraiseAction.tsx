@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { tokens as s } from "./tokens.ts";
+import { t, getLocale, type Locale } from "../../lib/i18n.ts";
 
 export interface FundraiseActionProps {
   amounts: number[];
