@@ -1,0 +1,665 @@
+---
+import Base from "../layouts/Base.astro";
+
+const stats = [
+	{ value: "875+", label: "Tests passing" },
+	{ value: "8", label: "Action types" },
+	{ value: "7", label: "Platform integrations" },
+	{ value: "8", label: "Languages (i18n)" },
+	{ value: "$0", label: "On Cloudflare free tier" },
+];
+
+const actionTypes = [
+	{
+		icon: "✍",
+		name: "Petition",
+		desc: "Editorial long-form with photo, body, and pull quote.",
+	},
+	{
+		icon: "◈",
+		name: "Fundraise",
+		desc: "ActBlue integration with thermometer progress.",
+	},
+	{
+		icon: "✉",
+		name: "Letter to Congress",
+		desc: "Zip-based rep lookup with editable merge fields.",
+	},
+	{
+		icon: "☏",
+		name: "Call Your Rep",
+		desc: "Click-to-dial with scripts and talking points.",
+	},
+	{
+		icon: "◴",
+		name: "Event RSVP",
+		desc: "Calendar export, multi-platform sync (Mobilize/Eventbrite/Facebook).",
+	},
+	{
+		icon: "✦",
+		name: "GOTV Pledge",
+		desc: "Election countdown with urgency colors.",
+	},
+	{
+		icon: "✱",
+		name: "Newsletter Signup",
+		desc: "Minimal email capture.",
+	},
+	{
+		icon: "⌘",
+		name: "Multi-Step Form",
+		desc: "Generic branching form with conditional logic.",
+	},
+];
+
+const demos = [
+	{
+		slug: "/action/fund-public-schools",
+		name: "Fund Public Schools",
+		type: "Petition",
+		gradient: "linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%)",
+		emoji: "✍",
+	},
+	{
+		slug: "/action/climate-action-now",
+		name: "Climate Action Now",
+		type: "Fundraise",
+		gradient: "linear-gradient(135deg, #84cc16 0%, #059669 100%)",
+		emoji: "◈",
+	},
+	{
+		slug: "/action/healthcare-pledge",
+		name: "Healthcare Pledge",
+		type: "GOTV Pledge",
+		gradient: "linear-gradient(135deg, #ef4444 0%, #f59e0b 100%)",
+		emoji: "✦",
+	},
+	{
+		slug: "/action/voting-rights-signup",
+		name: "Voting Rights",
+		type: "Newsletter",
+		gradient: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+		emoji: "✱",
+	},
+	{
+		slug: "/action/write-your-rep",
+		name: "Write Your Rep",
+		type: "Letter to Congress",
+		gradient: "linear-gradient(135deg, #0891b2 0%, #4f46e5 100%)",
+		emoji: "✉",
+	},
+	{
+		slug: "/action/rally-town-hall",
+		name: "Rally Town Hall",
+		type: "Event RSVP",
+		gradient: "linear-gradient(135deg, #f97316 0%, #dc2626 100%)",
+		emoji: "◴",
+	},
+];
+
+const integrations = [
+	"Action Network",
+	"Mailchimp",
+	"NationBuilder",
+	"EveryAction / NGP VAN",
+	"Mobilize America",
+	"Eventbrite",
+	"Facebook Events",
+];
+
+const builtWith = [
+	{ name: "Cloudflare Workers + D1 + KV + R2", note: "Edge runtime and storage" },
+	{ name: "Astro 6 + React 19 islands", note: "Static-first with hydration" },
+	{ name: "emdash CMS", note: "Content authoring" },
+	{ name: "@adpena/action-pages", note: "npm package (this engine)" },
+	{ name: "Anthropic Claude", note: "AI page generator + copy variants" },
+	{ name: "Resend", note: "Transactional email" },
+	{ name: "Turnstile", note: "Bot protection" },
+	{ name: "Google Civic Information API", note: "Rep lookup by zip" },
+];
+
+const comparison = [
+	{ feature: "Free tier", crafted: "Unlimited", an: "500 contacts max" },
+	{ feature: "Monthly cost", crafted: "$0", an: "$59 – $1,500" },
+	{ feature: "Edge latency", crafted: "<100ms global", an: "US-centric" },
+	{ feature: "Petition pages", crafted: "yes", an: "yes" },
+	{ feature: "Letter to Congress", crafted: "yes", an: "yes" },
+	{ feature: "Event RSVPs", crafted: "yes + multi-platform sync", an: "yes" },
+	{ feature: "Click-to-call", crafted: "yes", an: "yes" },
+	{ feature: "AI page generator", crafted: "yes", an: "no" },
+	{ feature: "Brand extraction from URL", crafted: "yes", an: "no" },
+	{ feature: "Real-time SSE progress", crafted: "yes", an: "polling" },
+	{ feature: "8-language i18n", crafted: "yes", an: "manual" },
+	{ feature: "MCP server for AI agents", crafted: "yes", an: "no" },
+	{ feature: "Self-hostable", crafted: "yes", an: "no" },
+	{ feature: "Open source", crafted: "yes", an: "no" },
+];
+---
+
+<Base
+	title="Crafted Action Pages"
+	description="The open-source alternative to Action Network. Edge-native. Free tier. Production-hardened."
+>
+	<main id="main-content" class="ap-page">
+		<section class="ap-hero">
+			<p class="ap-eyebrow">Open source · Edge-native · Free</p>
+			<h1 class="ap-title">Crafted Action Pages</h1>
+			<p class="ap-subhead">
+				The open-source alternative to Action Network. Edge-native. Free tier.
+				Production-hardened.
+			</p>
+			<div class="ap-cta-row">
+				<a href="#demos" class="btn ap-btn-primary">View live demos</a>
+				<a
+					href="https://github.com/adpena/action-pages"
+					class="btn"
+					rel="noopener"
+				>
+					GitHub →
+				</a>
+			</div>
+		</section>
+
+		<section class="ap-stats" aria-label="Platform statistics">
+			{stats.map((s) => (
+				<div class="ap-stat">
+					<div class="ap-stat-value">{s.value}</div>
+					<div class="ap-stat-label">{s.label}</div>
+				</div>
+			))}
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Action types</h2>
+			<h3 class="ap-section-title">Eight page patterns, one engine.</h3>
+			<div class="ap-grid ap-grid-actions">
+				{actionTypes.map((a) => (
+					<article class="ap-card">
+						<div class="ap-card-icon" aria-hidden="true">{a.icon}</div>
+						<h4 class="ap-card-name">{a.name}</h4>
+						<p class="ap-card-desc">{a.desc}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="ap-section" id="demos">
+			<h2 class="ap-section-label">Live demos</h2>
+			<h3 class="ap-section-title">Running in production on this site.</h3>
+			<div class="ap-grid ap-grid-demos">
+				{demos.map((d) => (
+					<a href={d.slug} class="ap-demo-card">
+						<div
+							class="ap-demo-thumb"
+							style={`background: ${d.gradient}`}
+							aria-hidden="true"
+						>
+							<span class="ap-demo-emoji">{d.emoji}</span>
+						</div>
+						<div class="ap-demo-body">
+							<div class="ap-demo-slug">{d.slug}</div>
+							<div class="ap-demo-name">{d.name}</div>
+							<div class="ap-demo-type">{d.type}</div>
+						</div>
+					</a>
+				))}
+			</div>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Integrations</h2>
+			<h3 class="ap-section-title">Send data anywhere campaigns work.</h3>
+			<ul class="ap-integrations">
+				{integrations.map((i) => (
+					<li class="ap-integration">{i}</li>
+				))}
+			</ul>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Built with</h2>
+			<h3 class="ap-section-title">Modern platform, boring choices where it matters.</h3>
+			<dl class="ap-builtwith">
+				{builtWith.map((b) => (
+					<div class="ap-builtwith-row">
+						<dt>{b.name}</dt>
+						<dd>{b.note}</dd>
+					</div>
+				))}
+			</dl>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Comparison</h2>
+			<h3 class="ap-section-title">Crafted vs. Action Network</h3>
+			<div class="ap-table-wrap">
+				<table class="ap-table">
+					<thead>
+						<tr>
+							<th scope="col">Feature</th>
+							<th scope="col">Crafted</th>
+							<th scope="col">Action Network</th>
+						</tr>
+					</thead>
+					<tbody>
+						{comparison.map((c) => (
+							<tr>
+								<th scope="row">{c.feature}</th>
+								<td class={c.crafted === "no" ? "ap-cell-no" : "ap-cell-yes"}>
+									{c.crafted === "yes" ? "✓" : c.crafted === "no" ? "✗" : c.crafted}
+								</td>
+								<td class={c.an === "no" ? "ap-cell-no" : "ap-cell-neutral"}>
+									{c.an === "yes" ? "✓" : c.an === "no" ? "✗" : c.an}
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="ap-footer-cta">
+			<h2 class="ap-footer-title">Deploy your own in minutes.</h2>
+			<p class="ap-footer-sub">
+				Clone the repo, set a handful of env vars, and ship to Cloudflare's free tier.
+			</p>
+			<a
+				href="https://github.com/adpena/action-pages"
+				class="btn ap-btn-primary"
+				rel="noopener"
+			>
+				Get it on GitHub →
+			</a>
+		</section>
+	</main>
+</Base>
+
+<style>
+	.ap-page {
+		width: 100%;
+		max-width: 64rem;
+		margin: 0 auto;
+		padding: var(--spacing-xl) var(--content-padding) var(--spacing-4xl);
+	}
+
+	/* ── Hero ─────────────────────────────────── */
+	.ap-hero {
+		padding: var(--spacing-2xl) 0 var(--spacing-3xl);
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--spacing-2xl);
+	}
+
+	.ap-eyebrow {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.ap-title {
+		font-size: var(--font-size-4xl);
+		margin-bottom: var(--spacing-md);
+		max-width: 14ch;
+	}
+
+	.ap-subhead {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		color: var(--color-secondary);
+		line-height: 1.5;
+		max-width: 38rem;
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.ap-cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-md);
+	}
+
+	.ap-btn-primary {
+		background: var(--color-text);
+		color: var(--color-bg);
+	}
+
+	.ap-btn-primary:hover {
+		background: transparent;
+		color: var(--color-text);
+	}
+
+	/* ── Stats ────────────────────────────────── */
+	.ap-stats {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		gap: var(--spacing-lg);
+		padding: var(--spacing-xl) 0;
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--spacing-3xl);
+	}
+
+	.ap-stat-value {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-3xl);
+		font-weight: 400;
+		line-height: 1.1;
+		color: var(--color-text);
+	}
+
+	.ap-stat-label {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
+		margin-top: var(--spacing-xs);
+	}
+
+	/* ── Sections ─────────────────────────────── */
+	.ap-section {
+		margin-bottom: var(--spacing-4xl);
+		scroll-margin-top: var(--spacing-xl);
+	}
+
+	.ap-section-label {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		color: var(--color-secondary);
+		padding-bottom: var(--spacing-xs);
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.ap-section-title {
+		font-size: var(--font-size-2xl);
+		margin-bottom: var(--spacing-xl);
+		max-width: 36rem;
+	}
+
+	.ap-grid {
+		display: grid;
+		gap: var(--spacing-lg);
+	}
+
+	.ap-grid-actions {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	/* ── Action cards ─────────────────────────── */
+	.ap-card {
+		padding: var(--spacing-lg);
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+	}
+
+	.ap-card:hover {
+		border-color: var(--color-text);
+		transform: translateY(-2px);
+	}
+
+	.ap-card-icon {
+		font-size: var(--font-size-2xl);
+		line-height: 1;
+		margin-bottom: var(--spacing-md);
+		color: var(--color-accent);
+	}
+
+	.ap-card-name {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		font-weight: 400;
+		margin-bottom: var(--spacing-xs);
+	}
+
+	.ap-card-desc {
+		font-size: var(--font-size-sm);
+		color: var(--color-secondary);
+		line-height: 1.5;
+	}
+
+	/* ── Demo cards ───────────────────────────── */
+	.ap-grid-demos {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.ap-demo-card {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		overflow: hidden;
+		transition: border-color 200ms var(--ease), transform 200ms var(--ease);
+	}
+
+	.ap-demo-card:hover {
+		border-color: var(--color-text);
+		transform: translateY(-2px);
+	}
+
+	.ap-demo-thumb {
+		aspect-ratio: 16 / 9;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.ap-demo-emoji {
+		font-size: 3rem;
+		color: rgba(255, 255, 255, 0.92);
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	}
+
+	.ap-demo-body {
+		padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+	}
+
+	.ap-demo-slug {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-xs);
+		word-break: break-all;
+	}
+
+	.ap-demo-name {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		margin-bottom: var(--spacing-xs);
+	}
+
+	.ap-demo-type {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-accent);
+	}
+
+	/* ── Integrations ─────────────────────────── */
+	.ap-integrations {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0;
+		border-top: 1px solid var(--color-border);
+		border-left: 1px solid var(--color-border);
+	}
+
+	.ap-integration {
+		padding: var(--spacing-lg);
+		border-right: 1px solid var(--color-border);
+		border-bottom: 1px solid var(--color-border);
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		text-align: center;
+	}
+
+	/* ── Built with ───────────────────────────── */
+	.ap-builtwith {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0;
+		margin: 0;
+	}
+
+	.ap-builtwith-row {
+		display: grid;
+		grid-template-columns: 20rem 1fr;
+		gap: var(--spacing-lg);
+		padding: var(--spacing-md) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.ap-builtwith-row:first-child {
+		border-top: 1px solid var(--color-border);
+	}
+
+	.ap-builtwith dt {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		color: var(--color-text);
+	}
+
+	.ap-builtwith dd {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		color: var(--color-secondary);
+		margin: 0;
+	}
+
+	/* ── Comparison table ─────────────────────── */
+	.ap-table-wrap {
+		overflow-x: auto;
+	}
+
+	.ap-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-sm);
+	}
+
+	.ap-table th,
+	.ap-table td {
+		padding: var(--spacing-sm) var(--spacing-md);
+		text-align: left;
+		border-bottom: 1px solid var(--color-border);
+		vertical-align: top;
+	}
+
+	.ap-table thead th {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
+		font-weight: 400;
+		border-bottom: 1px solid var(--color-text);
+	}
+
+	.ap-table tbody th {
+		font-weight: 400;
+		color: var(--color-text);
+		width: 40%;
+	}
+
+	.ap-table tbody td {
+		color: var(--color-secondary);
+	}
+
+	.ap-cell-yes {
+		color: var(--color-accent) !important;
+		font-weight: 500;
+	}
+
+	.ap-cell-no {
+		color: var(--color-error) !important;
+	}
+
+	/* ── Footer CTA ───────────────────────────── */
+	.ap-footer-cta {
+		text-align: center;
+		padding: var(--spacing-3xl) var(--spacing-lg);
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		margin-top: var(--spacing-2xl);
+	}
+
+	.ap-footer-title {
+		font-size: var(--font-size-2xl);
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.ap-footer-sub {
+		font-family: var(--font-serif);
+		color: var(--color-secondary);
+		max-width: 32rem;
+		margin: 0 auto var(--spacing-xl);
+		line-height: 1.6;
+	}
+
+	/* ── Responsive ───────────────────────────── */
+	@media (max-width: 900px) {
+		.ap-grid-actions {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.ap-grid-demos {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.ap-stats {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.ap-integrations {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.ap-builtwith-row {
+			grid-template-columns: 1fr;
+			gap: var(--spacing-xs);
+		}
+	}
+
+	@media (max-width: 600px) {
+		.ap-page {
+			padding-top: var(--spacing-md);
+		}
+
+		.ap-hero {
+			padding: var(--spacing-lg) 0 var(--spacing-2xl);
+		}
+
+		.ap-grid-actions,
+		.ap-grid-demos {
+			grid-template-columns: 1fr;
+		}
+
+		.ap-stats {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.ap-integrations {
+			grid-template-columns: 1fr;
+		}
+
+		.ap-cta-row .btn {
+			width: 100%;
+			text-align: center;
+		}
+
+		.ap-table th,
+		.ap-table td {
+			padding: var(--spacing-xs) var(--spacing-sm);
+		}
+	}
+</style>

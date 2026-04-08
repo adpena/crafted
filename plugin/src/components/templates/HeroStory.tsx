@@ -5,6 +5,10 @@ export interface HeroStoryProps {
   subhead?: string;
   body: string;
   pull_quote?: string;
+  /** Lead photo displayed above the headline */
+  image_url?: string;
+  image_alt?: string;
+  image_credit?: string;
 }
 
 export function HeroStory({
@@ -12,6 +16,9 @@ export function HeroStory({
   subhead,
   body,
   pull_quote,
+  image_url,
+  image_alt = "",
+  image_credit,
 }: HeroStoryProps): ReactNode {
   const paragraphs = body.split(/\n{2,}/);
 
@@ -20,8 +27,42 @@ export function HeroStory({
       style={{
         padding: "2.5rem 1.5rem 2rem",
         maxWidth: "38em",
+        margin: "0 auto",
       }}
     >
+      {/* Lead photo */}
+      {image_url && (
+        <figure style={{ margin: "0 0 2rem 0" }}>
+          <img
+            src={image_url}
+            alt={image_alt}
+            loading="eager"
+            style={{
+              width: "100%",
+              height: "auto",
+              maxHeight: "420px",
+              objectFit: "cover",
+              borderRadius: "var(--page-radius, 4px)",
+              display: "block",
+            }}
+          />
+          {image_credit && (
+            <figcaption
+              style={{
+                fontFamily: "var(--page-font-mono, monospace)",
+                fontSize: "0.7rem",
+                color: "var(--page-secondary, #777)",
+                marginTop: "0.5rem",
+                textAlign: "right",
+                letterSpacing: "0.03em",
+              }}
+            >
+              {image_credit}
+            </figcaption>
+          )}
+        </figure>
+      )}
+
       {/* Headline */}
       <h1
         style={{

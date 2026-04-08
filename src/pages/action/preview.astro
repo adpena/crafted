@@ -1,0 +1,190 @@
+---
+/**
+ * Live preview route for the admin PageBuilder.
+ *
+ * GET /action/preview?config=<base64-encoded-json>
+ *
+ * Renders an ActionPageConfig passed inline as a base64 query param.
+ * No database lookup — config comes straight from the admin UI iframe.
+ *
+ * Security:
+ *   - Size cap on the encoded config (32 KB max)
+ *   - Strict ActionPageConfig validation (template/action in allowlist)
+ *   - X-Frame-Options: SAMEORIGIN (only loadable from admin)
+ *   - Robots: noindex, nofollow
+ *   - Slug defaults to "preview" and cannot be used to POST submissions
+ *   - Submit endpoint is overridden to /api/action/preview-submit (no-op)
+ */
+
+const MAX_CONFIG_BYTES = 32_768;
+const KNOWN_TEMPLATES = new Set([
+  "hero-simple", "hero-media", "hero-story", "hero-layered", "hero-split",
+]);
+const KNOWN_ACTIONS = new Set([
+  "petition", "fundraise", "gotv", "signup", "letter", "event", "call", "step",
+]);
+
+const encoded = Astro.url.searchParams.get("config") ?? "";
+if (!encoded || encoded.length > MAX_CONFIG_BYTES) {
+  return new Response("Invalid preview payload", { status: 400 });
+}
+
+// Decode base64url → JSON
+let config: Record<string, any> | null = null;
+try {
+  // Handle both base64 and base64url
+  const normalized = encoded.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized + "=".repeat((4 - normalized.length % 4) % 4);
+  const decoded = atob(padded);
+  if (decoded.length > MAX_CONFIG_BYTES) throw new Error("payload too large");
+  config = JSON.parse(decoded);
+} catch {
+  return new Response("Malformed preview config", { status: 400 });
+}
+
+// Validate shape
+if (!config || typeof config !== "object" || Array.isArray(config)) {
+  return new Response("Invalid preview config", { status: 400 });
+}
+
+const template = String(config.template ?? "hero-simple");
+const action = String(config.action ?? "petition");
+if (!KNOWN_TEMPLATES.has(template)) {
+  return new Response(`Unknown template: ${template.slice(0, 32)}`, { status: 400 });
+}
+if (!KNOWN_ACTIONS.has(action)) {
+  return new Response(`Unknown action: ${action.slice(0, 32)}`, { status: 400 });
+}
+
+/** Validate a URL is safe https:// — prevents javascript: / data: injection */
+function safeHttpsUrl(v: unknown): string | undefined {
+  if (typeof v !== "string" || !v) return undefined;
+  try {
+    const p = new URL(v);
+    return p.protocol === "https:" ? p.href : undefined;
+  } catch { return undefined; }
+}
+
+/** Sanitize URL fields in a props object */
+function sanitizeUrlFields(obj: Record<string, any>, fields: string[]): Record<string, any> {
+  const result = { ...obj };
+  for (const f of fields) {
+    if (result[f] !== undefined) result[f] = safeHttpsUrl(result[f]);
+  }
+  return result;
+}
+
+// Build a safe config with only known fields
+const URL_FIELDS = ["media_url", "background_image", "background_video", "splash_image", "image_url"];
+const ACTION_URL_FIELDS = ["actblue_url"];
+
+const previewConfig = {
+  slug: "preview",
+  template,
+  template_props: (config.template_props && typeof config.template_props === "object")
+    ? sanitizeUrlFields(config.template_props as Record<string, any>, URL_FIELDS)
+    : {},
+  action,
+  action_props: (config.action_props && typeof config.action_props === "object")
+    ? sanitizeUrlFields(config.action_props as Record<string, any>, ACTION_URL_FIELDS)
+    : {},
+  followup: typeof config.followup === "string" && KNOWN_ACTIONS.has(config.followup)
+    ? config.followup
+    : undefined,
+  followup_props: (config.followup_props && typeof config.followup_props === "object")
+    ? config.followup_props
+    : undefined,
+  followup_message: typeof config.followup_message === "string"
+    ? config.followup_message.slice(0, 500)
+    : undefined,
+  disclaimer: (config.disclaimer && typeof config.disclaimer === "object")
+    ? config.disclaimer
+    : { committee_name: "Preview Mode" },
+  locale: typeof config.locale === "string" ? config.locale : "en",
+  consent: config.consent,
+  sharing: config.sharing,
+  theme: config.theme ?? "warm",
+  // NOTE: We deliberately do not pass callbacks or turnstile — this is a preview
+};
+
+// Server-side theme resolution (copied from [slug].astro)
+const THEMES: Record<string, Record<string, string>> = {
+  warm: { "--page-bg":"#f5f5f0","--page-text":"#1a1a1a","--page-accent":"#1a1a1a","--page-secondary":"#6b6b6b","--page-border":"#d4d4c8","--page-radius":"0px","--page-font-serif":"Georgia, 'Times New Roman', serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+  bold: { "--page-bg":"#0a0a0a","--page-text":"#ffffff","--page-accent":"#ef4444","--page-secondary":"#a1a1a1","--page-border":"#2a2a2a","--page-radius":"8px","--page-font-serif":"Inter, system-ui, sans-serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+  clean: { "--page-bg":"#ffffff","--page-text":"#1a1a1a","--page-accent":"#2563eb","--page-secondary":"#6b7280","--page-border":"#e5e5e5","--page-radius":"4px","--page-font-serif":"system-ui, -apple-system, sans-serif","--page-font-mono":"'SF Mono', 'Fira Code', monospace" },
+};
+
+// Allowlist custom theme CSS vars — reject anything that isn't a `--page-*`
+// custom property with a safe value. This prevents CSS injection via arbitrary
+// key/value pairs in the admin-supplied config.
+const ALLOWED_CSS_VAR_RE = /^--page-[a-z][a-z-]{0,40}$/;
+const SAFE_CSS_VALUE_RE = /^[^;<>"']{0,200}$/;
+
+const resolvedTheme: Record<string, string> = typeof previewConfig.theme === "object" && previewConfig.theme !== null
+  ? Object.fromEntries(
+      Object.entries(previewConfig.theme as Record<string, unknown>)
+        .filter(([k, v]): v is string =>
+          typeof k === "string" &&
+          ALLOWED_CSS_VAR_RE.test(k) &&
+          typeof v === "string" &&
+          SAFE_CSS_VALUE_RE.test(v)
+        )
+    )
+  : (THEMES[previewConfig.theme as string] ?? THEMES.warm!);
+
+// If the custom theme filter rejected everything, fall back to warm
+const finalTheme = Object.keys(resolvedTheme).length > 0 ? resolvedTheme : THEMES.warm!;
+
+const cssVarString = Object.entries(finalTheme).map(([k, v]) => `${k}:${v}`).join(";");
+
+// Cap headline length defensively — prevents multi-kilobyte <title> injection
+const rawHeadline = previewConfig.template_props?.headline;
+const title = typeof rawHeadline === "string" ? rawHeadline.slice(0, 200) : "Preview";
+
+import ActionPageIsland from "../../components/ActionPageIsland.tsx";
+---
+
+<html lang={previewConfig.locale === "es" ? "es" : "en"}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Preview — {title}</title>
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--page-font-serif);
+      line-height: 1.6;
+      color: var(--page-text);
+      background: var(--page-bg);
+      min-height: 100vh;
+    }
+
+    main { width: 100%; }
+    astro-island { display: contents; }
+
+    /* Subtle "PREVIEW" watermark so the admin always sees this is not live */
+    .preview-watermark {
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding: 0.25rem 0.75rem;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-family: monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      z-index: 9999;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body style={cssVarString}>
+  <main id="main-content">
+    <ActionPageIsland page={previewConfig} client:load />
+  </main>
+  <div class="preview-watermark">preview</div>
+</body>
+</html>

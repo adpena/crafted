@@ -42,6 +42,24 @@ interface Translations {
   // Consent
   consent_data_collection: string;
   consent_privacy_policy: string;
+
+  // Social sharing
+  share_prompt: string;
+  share_twitter: string;
+  share_facebook: string;
+  share_email: string;
+  share_copy_link: string;
+  share_copied: string;
+
+  // Progress bar
+  progress_of_goal: string;
+  progress_days_remaining: string;
+  progress_hours_remaining: string;
+  progress_deadline_passed: string;
+  progress_signatures: string;
+  progress_pledges: string;
+  progress_signups: string;
+  progress_donors: string;
 }
 
 const en: Translations = {
@@ -73,6 +91,20 @@ const en: Translations = {
   treasurer: "Treasurer",
   consent_data_collection: "By submitting, you agree to the collection and use of your data as described in our",
   consent_privacy_policy: "privacy policy",
+  share_prompt: "Spread the word",
+  share_twitter: "Share",
+  share_facebook: "Share",
+  share_email: "Email",
+  share_copy_link: "Copy link",
+  share_copied: "Copied!",
+  progress_of_goal: "of ${goal} goal",
+  progress_days_remaining: "${days} day${plural} ${hours}h remaining",
+  progress_hours_remaining: "${hours} hours remaining",
+  progress_deadline_passed: "Deadline passed",
+  progress_signatures: "signatures",
+  progress_pledges: "pledges",
+  progress_signups: "sign-ups",
+  progress_donors: "donors",
 };
 
 const es: Translations = {
@@ -104,6 +136,20 @@ const es: Translations = {
   treasurer: "Tesorero/a",
   consent_data_collection: "Al enviar, acepta la recopilación y el uso de sus datos como se describe en nuestra",
   consent_privacy_policy: "política de privacidad",
+  share_prompt: "Comparte con otros",
+  share_twitter: "Compartir",
+  share_facebook: "Compartir",
+  share_email: "Correo",
+  share_copy_link: "Copiar enlace",
+  share_copied: "¡Copiado!",
+  progress_of_goal: "de ${goal} meta",
+  progress_days_remaining: "${days} día${plural} ${hours}h restante${plural}",
+  progress_hours_remaining: "${hours} horas restantes",
+  progress_deadline_passed: "Plazo vencido",
+  progress_signatures: "firmas",
+  progress_pledges: "compromisos",
+  progress_signups: "suscripciones",
+  progress_donors: "donantes",
 };
 
 const zh: Translations = {
@@ -135,6 +181,20 @@ const zh: Translations = {
   treasurer: "财务主管",
   consent_data_collection: "提交即表示您同意按照我们的",
   consent_privacy_policy: "隐私政策",
+  share_prompt: "分享给更多人",
+  share_twitter: "分享",
+  share_facebook: "分享",
+  share_email: "邮件",
+  share_copy_link: "复制链接",
+  share_copied: "已复制！",
+  progress_of_goal: "目标 ${goal}",
+  progress_days_remaining: "剩余 ${days} 天 ${hours} 小时",
+  progress_hours_remaining: "剩余 ${hours} 小时",
+  progress_deadline_passed: "截止日期已过",
+  progress_signatures: "签名",
+  progress_pledges: "承诺",
+  progress_signups: "注册",
+  progress_donors: "捐助者",
 };
 
 const vi: Translations = {
@@ -166,6 +226,20 @@ const vi: Translations = {
   treasurer: "Thủ quỹ",
   consent_data_collection: "Bằng cách gửi, bạn đồng ý với việc thu thập và sử dụng dữ liệu theo",
   consent_privacy_policy: "chính sách bảo mật",
+  share_prompt: "Chia sẻ với mọi người",
+  share_twitter: "Chia sẻ",
+  share_facebook: "Chia sẻ",
+  share_email: "Email",
+  share_copy_link: "Sao chép liên kết",
+  share_copied: "Đã sao chép!",
+  progress_of_goal: "trên ${goal} mục tiêu",
+  progress_days_remaining: "Còn ${days} ngày ${hours} giờ",
+  progress_hours_remaining: "Còn ${hours} giờ",
+  progress_deadline_passed: "Đã hết hạn",
+  progress_signatures: "chữ ký",
+  progress_pledges: "cam kết",
+  progress_signups: "đăng ký",
+  progress_donors: "nhà tài trợ",
 };
 
 const ko: Translations = {
@@ -197,6 +271,20 @@ const ko: Translations = {
   treasurer: "회계 담당자",
   consent_data_collection: "제출 시 당사의",
   consent_privacy_policy: "개인정보 처리방침",
+  share_prompt: "널리 알려주세요",
+  share_twitter: "공유",
+  share_facebook: "공유",
+  share_email: "이메일",
+  share_copy_link: "링크 복사",
+  share_copied: "복사됨!",
+  progress_of_goal: "${goal} 목표 중",
+  progress_days_remaining: "${days}일 ${hours}시간 남음",
+  progress_hours_remaining: "${hours}시간 남음",
+  progress_deadline_passed: "마감 완료",
+  progress_signatures: "서명",
+  progress_pledges: "서약",
+  progress_signups: "가입",
+  progress_donors: "후원자",
 };
 
 const tl: Translations = {
@@ -228,6 +316,20 @@ const tl: Translations = {
   treasurer: "Ingat-yaman",
   consent_data_collection: "Sa pag-submit, sumasang-ayon ka sa pagkolekta at paggamit ng iyong datos ayon sa aming",
   consent_privacy_policy: "patakaran sa privacy",
+  share_prompt: "Ipamahagi sa iba",
+  share_twitter: "I-share",
+  share_facebook: "I-share",
+  share_email: "Email",
+  share_copy_link: "Kopyahin ang link",
+  share_copied: "Nakopya!",
+  progress_of_goal: "sa ${goal} na layunin",
+  progress_days_remaining: "${days} araw ${hours} oras na lang",
+  progress_hours_remaining: "${hours} oras na lang",
+  progress_deadline_passed: "Lagpas na ang deadline",
+  progress_signatures: "pirma",
+  progress_pledges: "pangako",
+  progress_signups: "nag-sign up",
+  progress_donors: "nag-donate",
 };
 
 const fr: Translations = {
@@ -259,6 +361,20 @@ const fr: Translations = {
   treasurer: "Trésorier/ère",
   consent_data_collection: "En soumettant, vous acceptez la collecte et l'utilisation de vos données conformément à notre",
   consent_privacy_policy: "politique de confidentialité",
+  share_prompt: "Faites passer le mot",
+  share_twitter: "Partager",
+  share_facebook: "Partager",
+  share_email: "Courriel",
+  share_copy_link: "Copier le lien",
+  share_copied: "Copié !",
+  progress_of_goal: "sur ${goal} objectif",
+  progress_days_remaining: "${days} jour${plural} ${hours}h restant${plural}",
+  progress_hours_remaining: "${hours} heures restantes",
+  progress_deadline_passed: "Délai expiré",
+  progress_signatures: "signatures",
+  progress_pledges: "engagements",
+  progress_signups: "inscriptions",
+  progress_donors: "donateurs",
 };
 
 const ar: Translations = {
@@ -290,6 +406,20 @@ const ar: Translations = {
   treasurer: "أمين الصندوق",
   consent_data_collection: "بالإرسال، أنت توافق على جمع واستخدام بياناتك كما هو موضح في",
   consent_privacy_policy: "سياسة الخصوصية",
+  share_prompt: "ساعد في نشر الكلمة",
+  share_twitter: "مشاركة",
+  share_facebook: "مشاركة",
+  share_email: "بريد إلكتروني",
+  share_copy_link: "نسخ الرابط",
+  share_copied: "تم النسخ!",
+  progress_of_goal: "من أصل ${goal} هدف",
+  progress_days_remaining: "متبقي ${days} يوم ${hours} ساعة",
+  progress_hours_remaining: "متبقي ${hours} ساعة",
+  progress_deadline_passed: "انتهى الموعد النهائي",
+  progress_signatures: "توقيعات",
+  progress_pledges: "تعهدات",
+  progress_signups: "اشتراكات",
+  progress_donors: "متبرعين",
 };
 
 const translations: Record<Locale, Translations> = { en, es, zh, vi, ko, tl, fr, ar };

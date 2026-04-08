@@ -1,4 +1,5 @@
 import { definePlugin } from "emdash";
+import type { PluginDefinition } from "emdash";
 import { handleInstall } from "./hooks/install.ts";
 import { handleContentAfterSave } from "./hooks/content-after-save.ts";
 import { handlePageMetadata } from "./hooks/page-metadata.ts";
@@ -19,6 +20,8 @@ import { handleTestNotification } from "./routes/test-notification.ts";
  * to the runtime manifest so the admin panel can render them.
  */
 export function createPlugin() {
+  // Cast needed: TS overload resolution sees StandardPluginDefinition (no id)
+  // before PluginDefinition (with id). Explicit cast selects the native overload.
   return definePlugin({
     id: "action-pages",
     version: "0.2.0",
@@ -168,6 +171,13 @@ export function createPlugin() {
         { path: "/action-pages", label: "Action Pages", icon: "zap" },
         { path: "/submissions", label: "Submissions", icon: "inbox" },
         { path: "/notifications", label: "Notifications", icon: "bell" },
+        { path: "/templates", label: "Templates", icon: "layout" },
+        { path: "/brand", label: "Brand", icon: "palette" },
+        { path: "/generate", label: "AI Generator", icon: "sparkles" },
+        { path: "/email", label: "Email Blast", icon: "send" },
+        { path: "/import", label: "Import", icon: "upload" },
+        { path: "/webhooks", label: "Webhooks", icon: "webhook" },
+        { path: "/audit", label: "Audit Log", icon: "shield" },
       ],
       widgets: [
         { id: "action-stats", size: "half", title: "Action Page Stats" },
@@ -188,5 +198,5 @@ export function createPlugin() {
       "web-component.js": { handler: handleWebComponent, public: true },
       "test-notification": { handler: handleTestNotification },
     },
-  });
+  } as unknown as PluginDefinition);
 }

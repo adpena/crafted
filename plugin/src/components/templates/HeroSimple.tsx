@@ -4,12 +4,17 @@ export interface HeroSimpleProps {
   headline: string;
   subhead?: string;
   align?: "left" | "center";
+  /** Optional logo or small image displayed above headline */
+  image_url?: string;
+  image_alt?: string;
 }
 
 export function HeroSimple({
   headline,
   subhead,
   align = "left",
+  image_url,
+  image_alt = "",
 }: HeroSimpleProps): ReactNode {
   return (
     <header
@@ -20,6 +25,20 @@ export function HeroSimple({
         marginInline: align === "center" ? "auto" : undefined,
       }}
     >
+      {image_url && (
+        <img
+          src={image_url}
+          alt={image_alt}
+          loading="eager"
+          style={{
+            maxHeight: "3.5rem",
+            width: "auto",
+            display: "block",
+            marginBottom: "1.5rem",
+            marginInline: align === "center" ? "auto" : 0,
+          }}
+        />
+      )}
       <h1
         style={{
           fontFamily: "var(--page-font-serif, Georgia, serif)",

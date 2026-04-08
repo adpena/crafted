@@ -1,10 +1,17 @@
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
+import { labelStyle, inputStyle, errorStyle as errStyle, submitButtonStyle } from "./form-styles.ts";
 import { t, getLocale, type Locale } from "../../lib/i18n.ts";
+import { ProgressBar } from "../ProgressBar.tsx";
+import { useActionCount } from "../hooks/useActionCount.ts";
+import { useTurnstile } from "../hooks/useTurnstile.ts";
+import type { ProgressConfig } from "./progress-config.ts";
 
 export interface GOTVActionProps {
   pledge_text?: string;
   election_date?: string;
+  progress?: ProgressConfig;
+  turnstileSiteKey?: string;
   onComplete: (data: { type: "gotv_pledge"; first_name: string; zip: string }) => void;
   pageId: string;
   visitorId: string;
@@ -17,6 +24,8 @@ export interface GOTVActionProps {
 export function GOTVAction({
   pledge_text,
   election_date,
+  progress,
+  turnstileSiteKey,
   onComplete,
   pageId,
   visitorId,
@@ -24,6 +33,14 @@ export function GOTVAction({
   submitUrl = "/api/action/submit",
   locale: localeProp,
 }: GOTVActionProps): ReactNode {
+  const locale = getLocale(localeProp);
+  const { count: liveCount } = useActionCount(
+    progress?.enabled ? pageId : undefined,
+    progress?.countUrl,
+    progress?.refreshInterval,
+    progress?.sseUrl,
+  );
+  const turnstile = useTurnstile(turnstileSiteKey);
   const [firstName, setFirstName] = useState("");
   const [zip, setZip] = useState("");
   const [pledged, setPledged] = useState(false);
@@ -42,7 +59,7 @@ export function GOTVAction({
   function validate() {
     const e: typeof errors = {};
     if (!firstName.trim()) e.first_name = t(locale, "required_field");
-    if (!zip.trim()) e.zip = "Zip code is required";
+    if (!zip.trim()) e.zip = t(locale, "required_field");
     if (!pledged) e.pledge = "Please check the pledge";
     return e;
   }
@@ -52,6 +69,11 @@ export function GOTVAction({
     const fieldErrors = validate();
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
+      return;
+    }
+
+    if (turnstileSiteKey && !turnstile.token) {
+      setServerError(t(locale, "submit_error"));
       return;
     }
 
@@ -67,11 +89,13 @@ export function GOTVAction({
           page_id: pageId,
           visitorId,
           variant,
+          turnstile_token: turnstile.token ?? undefined,
           data: {
             first_name: firstName.trim(),
             zip: zip.trim(),
           },
         }),
+        signal: AbortSignal.timeout(15_000),
       });
 
       if (!res.ok) throw new Error(`Server error (${res.status})`);
@@ -82,48 +106,12 @@ export function GOTVAction({
         zip: zip.trim(),
       });
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : "Something went wrong",
-      );
+      const isTimeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
+      setServerError(isTimeout ? "Request timed out. Please try again." : (err instanceof Error ? err.message : "Something went wrong"));
     } finally {
       setLoading(false);
     }
   }
-
-  const labelStyle: React.CSSProperties = {
-    display: "block",
-    fontFamily: s.mono,
-    fontSize: "0.72rem",
-    fontWeight: 500,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    color: s.secondary,
-    marginBottom: "0.25rem",
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    fontFamily: s.serif,
-    fontSize: "1.05rem",
-    color: s.text,
-    background: "transparent",
-    border: "none",
-    borderBottom: `1.5px solid ${s.border}`,
-    borderRadius: 0,
-    padding: "0.5rem 0",
-    minHeight: "44px",
-    outline: "none",
-    transition: "border-color 150ms ease",
-    boxSizing: "border-box" as const,
-  };
-
-  const errStyle: React.CSSProperties = {
-    fontFamily: s.mono,
-    fontSize: "0.7rem",
-    color: s.accent,
-    marginTop: "0.25rem",
-    minHeight: "1rem",
-  };
 
   return (
     <form
@@ -131,6 +119,19 @@ export function GOTVAction({
       noValidate
       style={{ padding: "1.5rem", maxWidth: "42em" }}
     >
+      {/* Progress bar */}
+      {progress?.enabled && progress.goal && progress.goal > 0 && (
+        <ProgressBar
+          current={liveCount}
+          goal={progress.goal}
+          labelKey={progress.labelKey ?? "progress_pledges"}
+          mode={progress.mode ?? "bar"}
+          accentColor={progress.accentColor}
+          deadline={progress.deadline}
+          locale={locale}
+        />
+      )}
+
       {/* Compact two-column row */}
       <div
         style={{
@@ -216,14 +217,23 @@ export function GOTVAction({
         </span>
       </label>
       {errors.pledge && (
-        <div style={{ ...errStyle, marginTop: "-1rem", marginBottom: "1rem" }}>
+        <div role="alert" aria-live="polite" style={{ ...errStyle, marginTop: "-1rem", marginBottom: "1rem" }}>
           {errors.pledge}
+        </div>
+      )}
+
+      {/* Turnstile bot protection */}
+      {turnstileSiteKey && (
+        <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "center" }}>
+          <div ref={turnstile.ref} />
         </div>
       )}
 
       {/* Server error */}
       {serverError && (
         <p
+          role="alert"
+          aria-live="polite"
           style={{
             fontFamily: s.mono,
             fontSize: "0.78rem",
@@ -240,23 +250,12 @@ export function GOTVAction({
         type="submit"
         disabled={loading}
         style={{
-          width: "100%",
-          minHeight: "52px",
-          padding: "0.875rem 1.5rem",
-          fontFamily: s.serif,
-          fontSize: "1.15rem",
-          fontWeight: 700,
-          letterSpacing: "0.01em",
-          color: s.bg,
-          background: s.accent,
-          border: "none",
-          borderRadius: s.radius,
+          ...submitButtonStyle,
           cursor: loading ? "not-allowed" : "pointer",
           opacity: loading ? 0.6 : 1,
-          transition: "opacity 150ms ease",
         }}
       >
-        {loading ? t(locale, "gotv_pledging") : "Take the pledge"}
+        {loading ? t(locale, "gotv_pledging") : t(locale, "gotv_submit")}
       </button>
     </form>
   );

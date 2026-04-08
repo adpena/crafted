@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
+import { SLUG_RE } from "../lib/slug.ts";
 import { Section } from "./components/Section";
 import { Field, inputStyle } from "./components/Field";
 import {
@@ -69,6 +70,27 @@ interface ActionProps {
   // signup
   list_name: string;
   cta_text: string;
+  // letter
+  letter_subject: string;
+  letter_template: string;
+  rep_level: "senate" | "house" | "both";
+  talking_points: string; // newline-separated
+  // event
+  event_name: string;
+  event_date: string; // ISO
+  event_location: string;
+  event_description: string;
+  allow_guests: boolean;
+  offer_calendar: boolean;
+  mobilize_event_id: string;
+  eventbrite_event_id: string;
+  facebook_event_id: string;
+  // call
+  script: string;
+  // step — stored as raw JSON to keep the simple interface flat; advanced users
+  // can edit steps via the JSON pane in the admin
+  steps_json: string;
+  submit_label: string;
 }
 
 const EMPTY_TEMPLATE_PROPS: TemplateProps = {
@@ -82,21 +104,43 @@ const EMPTY_TEMPLATE_PROPS: TemplateProps = {
 };
 
 const EMPTY_ACTION_PROPS: ActionProps = {
+  // fundraise
   amounts: "25, 50, 100, 250",
   actblue_url: "",
   refcode: "",
+  // petition
   target: "",
   goal: "",
   show_count: true,
+  // gotv
   pledge_text: "",
   election_date: "",
+  // signup
   list_name: "",
   cta_text: "Sign up",
+  // letter
+  letter_subject: "",
+  letter_template: "Dear {{rep_name}},\n\nAs your constituent, I am writing to...\n\nSincerely,",
+  rep_level: "both",
+  talking_points: "",
+  // event
+  event_name: "",
+  event_date: "",
+  event_location: "",
+  event_description: "",
+  allow_guests: false,
+  offer_calendar: true,
+  mobilize_event_id: "",
+  eventbrite_event_id: "",
+  facebook_event_id: "",
+  // call
+  script: "",
+  // step
+  steps_json: "",
+  submit_label: "Submit",
 };
 
 type FieldErrors = Record<string, string>;
-
-const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
 /* ------------------------------------------------------------------ */
 /*  Validators                                                         */
@@ -468,6 +512,30 @@ export function PageBuilder({
           subhead: templateProps.subhead,
           body: templateProps.body,
           pull_quote: templateProps.pull_quote,
+          image_url: templateProps.media_url || undefined,
+        };
+      }
+      if (template === "hero-layered") {
+        return {
+          headline,
+          subhead: templateProps.subhead,
+          background_type: "image",
+          background_image: templateProps.media_url || undefined,
+          overlay: "dark",
+          overlay_opacity: templateProps.overlay_opacity,
+          content_position: "bottom-left",
+          content_color: "#ffffff",
+        };
+      }
+      if (template === "hero-split") {
+        return {
+          headline,
+          subhead: templateProps.subhead,
+          body: templateProps.body,
+          media_type: "image",
+          media_url: templateProps.media_url || undefined,
+          media_side: templateProps.align === "center" ? "right" : templateProps.align,
+          ratio: "1/1",
         };
       }
       return {};
@@ -501,6 +569,59 @@ export function PageBuilder({
         return {
           list_name: props.list_name.trim(),
           cta_text: props.cta_text.trim(),
+        };
+      }
+      if (kind === "letter") {
+        const talkingPoints = props.talking_points
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+        return {
+          subject: props.letter_subject.trim(),
+          letter_template: props.letter_template,
+          rep_level: props.rep_level,
+          talking_points: talkingPoints.length > 0 ? talkingPoints : undefined,
+        };
+      }
+      if (kind === "event") {
+        const eventIds: Record<string, string> = {};
+        if (props.mobilize_event_id.trim()) eventIds.mobilize = props.mobilize_event_id.trim();
+        if (props.eventbrite_event_id.trim()) eventIds.eventbrite = props.eventbrite_event_id.trim();
+        if (props.facebook_event_id.trim()) eventIds.facebook = props.facebook_event_id.trim();
+        return {
+          event_name: props.event_name.trim(),
+          event_date: props.event_date,
+          event_location: props.event_location.trim(),
+          event_description: props.event_description.trim() || undefined,
+          allow_guests: props.allow_guests,
+          offer_calendar: props.offer_calendar,
+          event_ids: Object.keys(eventIds).length > 0 ? eventIds : undefined,
+        };
+      }
+      if (kind === "call") {
+        const talkingPoints = props.talking_points
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+        return {
+          target: props.target.trim() || undefined,
+          script: props.script,
+          rep_level: props.rep_level,
+          talking_points: talkingPoints.length > 0 ? talkingPoints : undefined,
+        };
+      }
+      if (kind === "step") {
+        // Parse steps JSON — fall back to empty array on parse error.
+        // Validation happens client-side in StepAction itself.
+        let steps: unknown = [];
+        try {
+          steps = JSON.parse(props.steps_json || "[]");
+        } catch {
+          steps = [];
+        }
+        return {
+          steps: Array.isArray(steps) ? steps : [],
+          submit_label: props.submit_label.trim() || "Submit",
         };
       }
       return {};
@@ -926,6 +1047,210 @@ export function PageBuilder({
                 }
                 onBlur={onBlurValidate(`${prefix}_cta_text`)}
                 style={inputStyle(!!e("cta_text"))}
+              />
+            </Field>
+          </>
+        )}
+
+        {kind === "letter" && (
+          <>
+            <Field label="Subject line" htmlFor={`${prefix}_letter_subject`} required helper="Email subject line for the letter.">
+              <input
+                id={`${prefix}_letter_subject`}
+                type="text"
+                value={props.letter_subject}
+                onChange={(ev) => setProps({ ...props, letter_subject: ev.target.value })}
+                maxLength={200}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Letter template" htmlFor={`${prefix}_letter_template`} required helper="Merge fields: {{rep_name}}, {{rep_names}}. User can edit before sending.">
+              <textarea
+                id={`${prefix}_letter_template`}
+                value={props.letter_template}
+                onChange={(ev) => setProps({ ...props, letter_template: ev.target.value })}
+                rows={8}
+                maxLength={5000}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem" }}
+              />
+            </Field>
+            <Field label="Representative level" htmlFor={`${prefix}_rep_level`} helper="Which chambers to surface for the letter recipients.">
+              <select
+                id={`${prefix}_rep_level`}
+                value={props.rep_level}
+                onChange={(ev) => setProps({ ...props, rep_level: ev.target.value as "senate" | "house" | "both" })}
+                style={inputStyle()}
+              >
+                <option value="both">Both (House + Senate)</option>
+                <option value="house">House only</option>
+                <option value="senate">Senate only</option>
+              </select>
+            </Field>
+            <Field label="Talking points" htmlFor={`${prefix}_talking_points`} helper="One bullet per line. Optional — shown alongside the letter.">
+              <textarea
+                id={`${prefix}_talking_points`}
+                value={props.talking_points}
+                onChange={(ev) => setProps({ ...props, talking_points: ev.target.value })}
+                rows={4}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem" }}
+              />
+            </Field>
+          </>
+        )}
+
+        {kind === "event" && (
+          <>
+            <Field label="Event name" htmlFor={`${prefix}_event_name`} required>
+              <input
+                id={`${prefix}_event_name`}
+                type="text"
+                value={props.event_name}
+                onChange={(ev) => setProps({ ...props, event_name: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Event date + time" htmlFor={`${prefix}_event_date`} required helper="ISO date-time (e.g. 2026-05-15T18:30:00-05:00).">
+              <input
+                id={`${prefix}_event_date`}
+                type="datetime-local"
+                value={props.event_date}
+                onChange={(ev) => setProps({ ...props, event_date: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Location" htmlFor={`${prefix}_event_location`} required>
+              <input
+                id={`${prefix}_event_location`}
+                type="text"
+                value={props.event_location}
+                onChange={(ev) => setProps({ ...props, event_location: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Description" htmlFor={`${prefix}_event_description`} helper="Optional. Accessibility notes, parking info, childcare availability.">
+              <textarea
+                id={`${prefix}_event_description`}
+                value={props.event_description}
+                onChange={(ev) => setProps({ ...props, event_description: ev.target.value })}
+                rows={3}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem" }}
+              />
+            </Field>
+            <label style={checkboxRowStyle}>
+              <input
+                type="checkbox"
+                checked={props.allow_guests}
+                onChange={(ev) => setProps({ ...props, allow_guests: ev.target.checked })}
+                style={{ width: "1.1rem", height: "1.1rem" }}
+              />
+              Allow guests on the RSVP form
+            </label>
+            <label style={checkboxRowStyle}>
+              <input
+                type="checkbox"
+                checked={props.offer_calendar}
+                onChange={(ev) => setProps({ ...props, offer_calendar: ev.target.checked })}
+                style={{ width: "1.1rem", height: "1.1rem" }}
+              />
+              Offer .ics calendar download after RSVP
+            </label>
+            <Field label="Mobilize event ID" htmlFor={`${prefix}_mobilize_event_id`} helper="Optional. Syncs RSVPs to Mobilize. Format: eventId or eventId:timeslotId.">
+              <input
+                id={`${prefix}_mobilize_event_id`}
+                type="text"
+                value={props.mobilize_event_id}
+                onChange={(ev) => setProps({ ...props, mobilize_event_id: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Eventbrite event ID" htmlFor={`${prefix}_eventbrite_event_id`} helper="Optional. Syncs to Eventbrite.">
+              <input
+                id={`${prefix}_eventbrite_event_id`}
+                type="text"
+                value={props.eventbrite_event_id}
+                onChange={(ev) => setProps({ ...props, eventbrite_event_id: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Facebook event ID" htmlFor={`${prefix}_facebook_event_id`} helper="Optional. Syncs to Facebook Events via Graph API.">
+              <input
+                id={`${prefix}_facebook_event_id`}
+                type="text"
+                value={props.facebook_event_id}
+                onChange={(ev) => setProps({ ...props, facebook_event_id: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+          </>
+        )}
+
+        {kind === "call" && (
+          <>
+            <Field label="Target" htmlFor={`${prefix}_target`} helper="Who is being called? e.g. Congress, your Senator.">
+              <input
+                id={`${prefix}_target`}
+                type="text"
+                value={props.target}
+                onChange={(ev) => setProps({ ...props, target: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field label="Script" htmlFor={`${prefix}_script`} required helper="What to say on the call. Use [NAME], [CITY, STATE], [BILL] placeholders.">
+              <textarea
+                id={`${prefix}_script`}
+                value={props.script}
+                onChange={(ev) => setProps({ ...props, script: ev.target.value })}
+                rows={5}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem" }}
+              />
+            </Field>
+            <Field label="Representative level" htmlFor={`${prefix}_rep_level`}>
+              <select
+                id={`${prefix}_rep_level`}
+                value={props.rep_level}
+                onChange={(ev) => setProps({ ...props, rep_level: ev.target.value as "senate" | "house" | "both" })}
+                style={inputStyle()}
+              >
+                <option value="both">Both (House + Senate)</option>
+                <option value="house">House only</option>
+                <option value="senate">Senate only</option>
+              </select>
+            </Field>
+            <Field label="Talking points" htmlFor={`${prefix}_talking_points`} helper="One bullet per line. Shown alongside the script.">
+              <textarea
+                id={`${prefix}_talking_points`}
+                value={props.talking_points}
+                onChange={(ev) => setProps({ ...props, talking_points: ev.target.value })}
+                rows={4}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem" }}
+              />
+            </Field>
+          </>
+        )}
+
+        {kind === "step" && (
+          <>
+            <Field label="Submit button label" htmlFor={`${prefix}_submit_label`}>
+              <input
+                id={`${prefix}_submit_label`}
+                type="text"
+                value={props.submit_label}
+                onChange={(ev) => setProps({ ...props, submit_label: ev.target.value })}
+                style={inputStyle()}
+              />
+            </Field>
+            <Field
+              label="Steps (JSON)"
+              htmlFor={`${prefix}_steps_json`}
+              required
+              helper='Array of {id, heading, body, fields[], next_if[]}. See docs for the schema. Example: [{"id":"s1","heading":"Welcome","fields":[{"type":"email","name":"email","label":"Email","required":true}]}]'
+            >
+              <textarea
+                id={`${prefix}_steps_json`}
+                value={props.steps_json}
+                onChange={(ev) => setProps({ ...props, steps_json: ev.target.value })}
+                rows={10}
+                style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.5, padding: "0.75rem", fontFamily: "monospace", fontSize: "0.85rem" }}
               />
             </Field>
           </>

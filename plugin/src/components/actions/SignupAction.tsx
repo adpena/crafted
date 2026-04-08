@@ -1,11 +1,18 @@
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
+import { labelStyle, inputStyle, errorStyle as errStyle } from "./form-styles.ts";
 import { t, getLocale, type Locale } from "../../lib/i18n.ts";
 import { useIsMobile } from "../hooks/useIsMobile.ts";
+import { ProgressBar } from "../ProgressBar.tsx";
+import { useActionCount } from "../hooks/useActionCount.ts";
+import { useTurnstile } from "../hooks/useTurnstile.ts";
+import type { ProgressConfig } from "./progress-config.ts";
 
 export interface SignupActionProps {
   list_name?: string;
   cta_text?: string;
+  progress?: ProgressConfig;
+  turnstileSiteKey?: string;
   onComplete: (data: {
     type: "signup";
     email: string;
@@ -24,6 +31,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function SignupAction({
   list_name,
   cta_text,
+  progress,
+  turnstileSiteKey,
   onComplete,
   pageId,
   visitorId,
@@ -33,6 +42,13 @@ export function SignupAction({
 }: SignupActionProps): ReactNode {
   const isMobile = useIsMobile();
   const locale = getLocale(localeProp);
+  const { count: liveCount } = useActionCount(
+    progress?.enabled ? pageId : undefined,
+    progress?.countUrl,
+    progress?.refreshInterval,
+    progress?.sseUrl,
+  );
+  const turnstile = useTurnstile(turnstileSiteKey);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [errors, setErrors] = useState<{ email?: string }>({});
@@ -56,6 +72,11 @@ export function SignupAction({
       return;
     }
 
+    if (turnstileSiteKey && !turnstile.token) {
+      setServerError(t(locale, "submit_error"));
+      return;
+    }
+
     setLoading(true);
     setServerError("");
 
@@ -68,11 +89,13 @@ export function SignupAction({
           page_id: pageId,
           visitorId,
           variant,
+          turnstile_token: turnstile.token ?? undefined,
           data: {
             email: email.trim(),
             first_name: firstName.trim() || undefined,
           },
         }),
+        signal: AbortSignal.timeout(15_000),
       });
 
       if (!res.ok) throw new Error(`Server error (${res.status})`);
@@ -83,48 +106,12 @@ export function SignupAction({
         first_name: firstName.trim() || undefined,
       });
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : "Something went wrong",
-      );
+      const isTimeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
+      setServerError(isTimeout ? "Request timed out. Please try again." : (err instanceof Error ? err.message : "Something went wrong"));
     } finally {
       setLoading(false);
     }
   }
-
-  const labelStyle: React.CSSProperties = {
-    display: "block",
-    fontFamily: s.mono,
-    fontSize: "0.72rem",
-    fontWeight: 500,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase",
-    color: s.secondary,
-    marginBottom: "0.25rem",
-  };
-
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    fontFamily: s.serif,
-    fontSize: "1.05rem",
-    color: s.text,
-    background: "transparent",
-    border: "none",
-    borderBottom: `1.5px solid ${s.border}`,
-    borderRadius: 0,
-    padding: "0.5rem 0",
-    minHeight: "44px",
-    outline: "none",
-    transition: "border-color 150ms ease",
-    boxSizing: "border-box" as const,
-  };
-
-  const errStyle: React.CSSProperties = {
-    fontFamily: s.mono,
-    fontSize: "0.7rem",
-    color: s.accent,
-    marginTop: "0.25rem",
-    minHeight: "1rem",
-  };
 
   return (
     <form
@@ -132,6 +119,19 @@ export function SignupAction({
       noValidate
       style={{ padding: "1.5rem", maxWidth: "42em" }}
     >
+      {/* Progress bar */}
+      {progress?.enabled && progress.goal && progress.goal > 0 && (
+        <ProgressBar
+          current={liveCount}
+          goal={progress.goal}
+          labelKey={progress.labelKey ?? "progress_signups"}
+          mode={progress.mode ?? "bar"}
+          accentColor={progress.accentColor}
+          deadline={progress.deadline}
+          locale={locale}
+        />
+      )}
+
       {list_name && (
         <p style={{ fontFamily: s.mono, fontSize: "0.72rem", color: s.secondary, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem" }}>
           Joining: {list_name}
@@ -204,12 +204,19 @@ export function SignupAction({
         </button>
       </div>
 
-      {/* Error row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr auto", gap: "1rem" }}>
-        <div />
-        <div style={errStyle}>{errors.email ?? ""}</div>
+      {/* Error row — matches input grid layout */}
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr auto", gap: isMobile ? "0" : "1rem" }}>
+        {!isMobile && <div />}
+        <div role="alert" aria-live="polite" style={errStyle}>{errors.email ?? ""}</div>
         <div />
       </div>
+
+      {/* Turnstile bot protection */}
+      {turnstileSiteKey && (
+        <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "center" }}>
+          <div ref={turnstile.ref} />
+        </div>
+      )}
 
       {/* Server error */}
       {serverError && (

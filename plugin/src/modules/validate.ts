@@ -1,5 +1,5 @@
 export type SubmissionInput = {
-  type: "donation_click" | "petition_sign" | "gotv_pledge" | "signup";
+  type: "donation_click" | "petition_sign" | "gotv_pledge" | "signup" | "letter_sent" | "event_rsvp" | "call_made" | "step_form";
   data: Record<string, unknown>;
 };
 
@@ -19,6 +19,12 @@ const schemas: Record<string, FieldSchema> = {
   petition_sign: { required: ["first_name", "last_name", "email", "zip"], emailFields: ["email"] },
   gotv_pledge: { required: ["first_name", "zip"], emailFields: [] },
   signup: { required: ["email"], emailFields: ["email"] },
+  letter_sent: { required: ["first_name", "last_name", "email", "zip", "letter_body"], emailFields: ["email"] },
+  event_rsvp: { required: ["first_name", "last_name", "email"], emailFields: ["email"] },
+  call_made: { required: ["first_name", "last_name", "email", "zip"], emailFields: ["email"] },
+  // step_form has no required fields — the step definitions enforce their own validation client-side.
+  // Server still validates email format on any `email` field that is present.
+  step_form: { required: [], emailFields: ["email"] },
 };
 
 const MAX_LENGTHS: Record<string, number> = {
@@ -26,6 +32,10 @@ const MAX_LENGTHS: Record<string, number> = {
   last_name: 100,
   email: 254,
   zip: 10,
+  letter_subject: 200,
+  letter_body: 5000,
+  rep_names: 500,
+  notes: 500,
 };
 
 function sanitizeString(value: string): string {

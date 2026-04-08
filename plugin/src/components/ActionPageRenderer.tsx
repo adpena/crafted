@@ -3,11 +3,11 @@ import type { ReactNode, CSSProperties } from "react";
 import { createRegistry } from "../lib/registry.ts";
 import type { WebhookConfig } from "@adpena/notifications";
 import { resolveTheme } from "./themes/index.ts";
-import type { Theme } from "./themes/index.ts";
 import { Transition } from "./Transition.tsx";
 import { Disclaimer } from "./Disclaimer.tsx";
 import type { DisclaimerProps } from "./Disclaimer.tsx";
 import { Consent } from "./Consent.tsx";
+import { ShareButtons, type ShareButtonsProps } from "./ShareButtons.tsx";
 import type { Locale } from "../lib/i18n.ts";
 
 /* ------------------------------------------------------------------ */
@@ -72,6 +72,16 @@ export type ActionPageConfig = {
   variants?: string[];
 
   theme?: string | Record<string, string>;
+
+  /** Social sharing after action completion */
+  sharing?: {
+    enabled?: boolean;
+    text?: string;
+    platforms?: ShareButtonsProps["platforms"];
+  };
+
+  /** Cloudflare Turnstile site key — enables bot protection on action forms */
+  turnstile_site_key?: string;
 
   callbacks?: WebhookConfig[];
 };
@@ -141,32 +151,45 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
             visitorId={visitorId}
             variant={variant}
             locale={page.locale}
+            turnstileSiteKey={page.turnstile_site_key}
           />
         ) : (
-          Followup && (
-            <Transition show={completed}>
-              {page.followup_message && (
-                <p style={{
-                  color: "var(--page-secondary)",
-                  fontFamily: "var(--page-font-serif)",
-                  fontSize: "1.1rem",
-                  textAlign: "center",
-                  marginBottom: "1.5rem",
-                  lineHeight: 1.5,
-                }}>
-                  {page.followup_message}
-                </p>
-              )}
-              <Followup
-                {...page.followup_props}
-                onComplete={handleFollowupComplete}
-                pageId={page.slug}
-                visitorId={visitorId}
-                variant={variant}
+          <>
+            {Followup && (
+              <Transition show={completed}>
+                {page.followup_message && (
+                  <p style={{
+                    color: "var(--page-secondary)",
+                    fontFamily: "var(--page-font-serif)",
+                    fontSize: "1.1rem",
+                    textAlign: "center",
+                    marginBottom: "1.5rem",
+                    lineHeight: 1.5,
+                  }}>
+                    {page.followup_message}
+                  </p>
+                )}
+                <Followup
+                  {...page.followup_props}
+                  onComplete={handleFollowupComplete}
+                  pageId={page.slug}
+                  visitorId={visitorId}
+                  variant={variant}
+                  locale={page.locale}
+                  turnstileSiteKey={page.turnstile_site_key}
+                />
+              </Transition>
+            )}
+
+            {/* Social sharing — shown after action completion */}
+            {page.sharing?.enabled && (
+              <ShareButtons
+                text={page.sharing.text}
+                platforms={page.sharing.platforms}
                 locale={page.locale}
               />
-            </Transition>
-          )
+            )}
+          </>
         )}
 
         {page.consent && (

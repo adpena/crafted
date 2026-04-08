@@ -1,12 +1,20 @@
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
+import { labelStyle, inputStyle, errorStyle, submitButtonStyle } from "./form-styles.ts";
 import { t, getLocale, type Locale } from "../../lib/i18n.ts";
+import { ProgressBar } from "../ProgressBar.tsx";
+import { useActionCount } from "../hooks/useActionCount.ts";
+import { useTurnstile } from "../hooks/useTurnstile.ts";
+import type { ProgressConfig } from "./progress-config.ts";
 
 export interface PetitionActionProps {
   target?: string;
   goal?: number;
   show_count?: boolean;
   signatureCount?: number;
+  progress?: ProgressConfig;
+  /** Cloudflare Turnstile site key — enables bot protection when set */
+  turnstileSiteKey?: string;
   onComplete: (data: {
     type: "petition_sign";
     first_name: string;
@@ -28,55 +36,15 @@ interface FieldErrors {
   zip?: string;
 }
 
-/** Shared tokens */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function fieldLabel(text: string): React.CSSProperties {
-  return {
-    display: "block",
-    fontFamily: s.mono,
-    fontSize: "0.72rem",
-    fontWeight: 500,
-    letterSpacing: "0.06em",
-    textTransform: "uppercase" as const,
-    color: s.secondary,
-    marginBottom: "0.25rem",
-  };
-}
-
-function fieldInput(): React.CSSProperties {
-  return {
-    width: "100%",
-    fontFamily: s.serif,
-    fontSize: "1.05rem",
-    color: s.text,
-    background: "transparent",
-    border: "none",
-    borderBottom: `1.5px solid ${s.border}`,
-    borderRadius: 0,
-    padding: "0.5rem 0",
-    minHeight: "44px",
-    outline: "none",
-    transition: "border-color 150ms ease",
-    boxSizing: "border-box" as const,
-  };
-}
-
-function errorText(): React.CSSProperties {
-  return {
-    fontFamily: s.mono,
-    fontSize: "0.7rem",
-    color: s.accent,
-    marginTop: "0.25rem",
-    minHeight: "1rem",
-  };
-}
 
 export function PetitionAction({
   target,
   goal,
   show_count,
   signatureCount,
+  progress,
+  turnstileSiteKey,
   onComplete,
   pageId,
   visitorId,
@@ -85,6 +53,14 @@ export function PetitionAction({
   locale: localeProp,
 }: PetitionActionProps): ReactNode {
   const locale = getLocale(localeProp);
+  const progressGoal = progress?.goal ?? goal ?? 0;
+  const { count: liveCount } = useActionCount(
+    progress?.enabled ? pageId : undefined,
+    progress?.countUrl,
+    progress?.refreshInterval,
+    progress?.sseUrl,
+  );
+  const turnstile = useTurnstile(turnstileSiteKey);
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -110,7 +86,7 @@ export function PetitionAction({
     if (!form.last_name.trim()) e.last_name = t(locale, "required_field");
     if (!form.email.trim()) e.email = t(locale, "required_field");
     else if (!EMAIL_RE.test(form.email)) e.email = t(locale, "invalid_email");
-    if (!form.zip.trim()) e.zip = "Zip code is required";
+    if (!form.zip.trim()) e.zip = t(locale, "required_field");
     return e;
   }
 
@@ -119,6 +95,12 @@ export function PetitionAction({
     const fieldErrors = validate();
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
+      return;
+    }
+
+    // Block submit if Turnstile is configured but not yet verified
+    if (turnstileSiteKey && !turnstile.token) {
+      setServerError(t(locale, "submit_error"));
       return;
     }
 
@@ -134,6 +116,7 @@ export function PetitionAction({
           page_id: pageId,
           visitorId,
           variant,
+          turnstile_token: turnstile.token ?? undefined,
           data: {
             first_name: form.first_name.trim(),
             last_name: form.last_name.trim(),
@@ -142,6 +125,7 @@ export function PetitionAction({
             comment: form.comment.trim() || undefined,
           },
         }),
+        signal: AbortSignal.timeout(15_000),
       });
 
       if (!res.ok) {
@@ -156,9 +140,8 @@ export function PetitionAction({
         zip: form.zip.trim(),
       });
     } catch (err) {
-      setServerError(
-        err instanceof Error ? err.message : "Something went wrong",
-      );
+      const isTimeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
+      setServerError(isTimeout ? "Request timed out. Please try again." : (err instanceof Error ? err.message : "Something went wrong"));
     } finally {
       setLoading(false);
     }
@@ -186,8 +169,21 @@ export function PetitionAction({
         </p>
       )}
 
-      {/* Signature count */}
-      {show_count && signatureCount != null && (
+      {/* Progress bar — configurable mode, goal, colors */}
+      {progress?.enabled && progressGoal > 0 && (
+        <ProgressBar
+          current={liveCount || signatureCount || 0}
+          goal={progressGoal}
+          labelKey={progress.labelKey ?? "progress_signatures"}
+          mode={progress.mode ?? "bar"}
+          accentColor={progress.accentColor}
+          deadline={progress.deadline}
+          locale={locale}
+        />
+      )}
+
+      {/* Legacy signature count (when progress bar is not enabled) */}
+      {!progress?.enabled && show_count && signatureCount != null && (
         <p
           style={{
             fontFamily: s.mono,
@@ -214,81 +210,94 @@ export function PetitionAction({
         }}
       >
         <div>
-          <label style={fieldLabel("First name")}>{t(locale, "petition_first_name")}</label>
+          <label htmlFor="petition-first-name" style={labelStyle}>{t(locale, "petition_first_name")}</label>
           <input
+            id="petition-first-name"
             type="text"
             autoComplete="given-name"
+            aria-invalid={!!errors.first_name}
+            aria-describedby="petition-first-name-error"
             value={form.first_name}
             onChange={set("first_name")}
             style={{
-              ...fieldInput(),
+              ...inputStyle,
               borderBottomColor: errors.first_name ? s.accent : undefined,
             }}
           />
-          <div style={errorText()}>{errors.first_name ?? ""}</div>
+          <div id="petition-first-name-error" role="alert" aria-live="polite" style={errorStyle}>{errors.first_name ?? ""}</div>
         </div>
         <div>
-          <label style={fieldLabel("Last name")}>{t(locale, "petition_last_name")}</label>
+          <label htmlFor="petition-last-name" style={labelStyle}>{t(locale, "petition_last_name")}</label>
           <input
+            id="petition-last-name"
             type="text"
             autoComplete="family-name"
+            aria-invalid={!!errors.last_name}
+            aria-describedby="petition-last-name-error"
             value={form.last_name}
             onChange={set("last_name")}
             style={{
-              ...fieldInput(),
+              ...inputStyle,
               borderBottomColor: errors.last_name ? s.accent : undefined,
             }}
           />
-          <div style={errorText()}>{errors.last_name ?? ""}</div>
+          <div id="petition-last-name-error" role="alert" aria-live="polite" style={errorStyle}>{errors.last_name ?? ""}</div>
         </div>
       </div>
 
       {/* Email */}
       <div style={{ marginBottom: "0.5rem" }}>
-        <label style={fieldLabel("Email")}>{t(locale, "petition_email")}</label>
+        <label htmlFor="petition-email" style={labelStyle}>{t(locale, "petition_email")}</label>
         <input
+          id="petition-email"
           type="email"
           autoComplete="email"
+          aria-invalid={!!errors.email}
+          aria-describedby="petition-email-error"
           value={form.email}
           onChange={set("email")}
           style={{
-            ...fieldInput(),
+            ...inputStyle,
             borderBottomColor: errors.email ? s.accent : undefined,
           }}
         />
-        <div style={errorText()}>{errors.email ?? ""}</div>
+        <div id="petition-email-error" role="alert" aria-live="polite" style={errorStyle}>{errors.email ?? ""}</div>
       </div>
 
       {/* Zip */}
       <div style={{ marginBottom: "0.5rem" }}>
-        <label style={fieldLabel("Zip")}>{t(locale, "petition_zip")}</label>
+        <label htmlFor="petition-zip" style={labelStyle}>{t(locale, "petition_zip")}</label>
         <input
+          id="petition-zip"
           type="text"
           inputMode="numeric"
           autoComplete="postal-code"
+          aria-invalid={!!errors.zip}
+          aria-describedby="petition-zip-error"
           value={form.zip}
           onChange={set("zip")}
           style={{
-            ...fieldInput(),
+            ...inputStyle,
             borderBottomColor: errors.zip ? s.accent : undefined,
             maxWidth: "10rem",
           }}
         />
-        <div style={errorText()}>{errors.zip ?? ""}</div>
+        <div id="petition-zip-error" role="alert" aria-live="polite" style={errorStyle}>{errors.zip ?? ""}</div>
       </div>
 
       {/* Comment */}
       <div style={{ marginBottom: "1.5rem" }}>
-        <label style={fieldLabel("Comment")}>
+        <label htmlFor="petition-comment" style={labelStyle}>
           {t(locale, "petition_comment")}
         </label>
         <textarea
+          id="petition-comment"
           value={form.comment}
           onChange={set("comment")}
           maxLength={1000}
           rows={3}
           style={{
-            ...fieldInput(),
+            ...inputStyle,
             resize: "vertical" as const,
             minHeight: "60px",
             lineHeight: 1.5,
@@ -296,9 +305,18 @@ export function PetitionAction({
         />
       </div>
 
+      {/* Turnstile bot protection (only renders if site key configured) */}
+      {turnstileSiteKey && (
+        <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "center" }}>
+          <div ref={turnstile.ref} />
+        </div>
+      )}
+
       {/* Server error */}
       {serverError && (
         <p
+          role="alert"
+          aria-live="polite"
           style={{
             fontFamily: s.mono,
             fontSize: "0.78rem",
@@ -315,20 +333,9 @@ export function PetitionAction({
         type="submit"
         disabled={loading}
         style={{
-          width: "100%",
-          minHeight: "52px",
-          padding: "0.875rem 1.5rem",
-          fontFamily: s.serif,
-          fontSize: "1.15rem",
-          fontWeight: 700,
-          letterSpacing: "0.01em",
-          color: s.bg,
-          background: s.accent,
-          border: "none",
-          borderRadius: s.radius,
+          ...submitButtonStyle,
           cursor: loading ? "not-allowed" : "pointer",
           opacity: loading ? 0.6 : 1,
-          transition: "opacity 150ms ease",
         }}
       >
         {loading ? t(locale, "petition_signing") : t(locale, "petition_submit")}

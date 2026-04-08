@@ -4,6 +4,10 @@
 
 A personal portfolio and campaign action page engine, built on [emdash](https://github.com/emdash-cms/emdash) CMS and deployed to Cloudflare.
 
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/adpena/crafted)
+
+Full deploy guide: [docs/deploy.md](docs/deploy.md).
+
 ## What this is
 
 **The portfolio** is a newspaper-style editorial site running on Astro 6 + Cloudflare Workers. Content is managed through emdash's admin UI and MCP server.

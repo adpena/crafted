@@ -1,9 +1,35 @@
 import { PageBuilder } from "./PageBuilder";
 import { NotificationConfig } from "./NotificationConfig";
+import { SubmissionsViewer } from "./SubmissionsViewer";
+import { StatsWidget } from "./StatsWidget";
+import { TemplateGallery } from "./TemplateGallery";
+import { AIPageGenerator } from "./AIPageGenerator";
+import { BrandExtractor } from "./BrandExtractor";
+import { EmailBlastComposer } from "./EmailBlastComposer";
+import { CsvImportWizard } from "./CsvImportWizard";
+import { WebhookInboxViewer } from "./WebhookInboxViewer";
+import { AuditLogViewer } from "./AuditLogViewer";
+import { LivePagePreview } from "./LivePagePreview";
 
 export { PageBuilder } from "./PageBuilder";
 export type { PageBuilderProps, Campaign, PluginSettings } from "./PageBuilder";
 export { NotificationConfig } from "./NotificationConfig";
+export { SubmissionsViewer } from "./SubmissionsViewer";
+export { StatsWidget } from "./StatsWidget";
+export { TemplateGallery } from "./TemplateGallery";
+export type { TemplateGalleryProps, PageTemplate } from "./TemplateGallery";
+export { AIPageGenerator } from "./AIPageGenerator";
+export type { AIPageGeneratorProps } from "./AIPageGenerator";
+export { BrandExtractor } from "./BrandExtractor";
+export type { BrandExtractorProps, BrandKit, BrandThemeVariant } from "./BrandExtractor";
+export { EmailBlastComposer } from "./EmailBlastComposer";
+export type { EmailBlastComposerProps } from "./EmailBlastComposer";
+export { CsvImportWizard } from "./CsvImportWizard";
+export type { CsvImportWizardProps } from "./CsvImportWizard";
+export { WebhookInboxViewer } from "./WebhookInboxViewer";
+export { AuditLogViewer } from "./AuditLogViewer";
+export { LivePagePreview } from "./LivePagePreview";
+export type { LivePagePreviewProps, LivePagePreviewConfig } from "./LivePagePreview";
 
 export { Section } from "./components/Section";
 export { Field, inputStyle } from "./components/Field";
@@ -24,46 +50,21 @@ export {
 } from "./components/ThemeSwatch";
 
 /**
- * Submissions placeholder -- rendered at /_emdash/admin/plugins/action-pages/submissions.
- * Placeholder: submissions viewer with filtering, export, and campaign drill-down.
- */
-function SubmissionsPage() {
-  return (
-    <div style={{ padding: "2rem" }}>
-      <h1 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "1rem" }}>
-        Submissions
-      </h1>
-      <p style={{ color: "#6b7280" }}>
-        Submissions viewer coming soon. Use the plugin API at{" "}
-        <code>/api/_plugin/action-pages/stats</code> to query submission data.
-      </p>
-    </div>
-  );
-}
-
-/**
- * Action Stats dashboard widget.
- * Rendered in the emdash dashboard when the "action-stats" widget is configured.
- */
-function ActionStatsWidget() {
-  return (
-    <div style={{ padding: "1rem" }}>
-      <p style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-        Action page statistics widget coming soon.
-      </p>
-    </div>
-  );
-}
-
-/**
  * Admin page registry -- keyed by the `path` declared in adminPages.
  * The emdash admin panel looks up pluginAdmins["action-pages"].pages[path]
  * to render the React component for each admin page.
  */
 export const pages: Record<string, React.ComponentType> = {
   "/action-pages": PageBuilder,
-  "/submissions": SubmissionsPage,
+  "/submissions": SubmissionsViewer,
   "/notifications": NotificationConfig,
+  "/templates": TemplateGallery,
+  "/brand": BrandExtractor,
+  "/generate": AIPageGenerator,
+  "/email": EmailBlastComposer,
+  "/import": CsvImportWizard,
+  "/webhooks": WebhookInboxViewer,
+  "/audit": AuditLogViewer,
 };
 
 /**
@@ -71,7 +72,7 @@ export const pages: Record<string, React.ComponentType> = {
  * The emdash admin panel looks up pluginAdmins["action-pages"].widgets[id].
  */
 export const widgets: Record<string, React.ComponentType> = {
-  "action-stats": ActionStatsWidget,
+  "action-stats": StatsWidget,
 };
 
 export default PageBuilder;

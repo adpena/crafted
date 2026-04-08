@@ -78,7 +78,7 @@ export function captureAttribution(url?: string): ClickAttribution {
 	for (const param of CLICK_ID_PARAMS) {
 		const value = params.get(param);
 		if (value) {
-			(attr as Record<string, string>)[param] = value.slice(0, 500);
+			attr[param] = value.slice(0, 500);
 		}
 	}
 
@@ -86,7 +86,7 @@ export function captureAttribution(url?: string): ClickAttribution {
 	for (const param of UTM_PARAMS) {
 		const value = params.get(param);
 		if (value) {
-			(attr as Record<string, string>)[param] = value.slice(0, 200);
+			attr[param] = value.slice(0, 200);
 		}
 	}
 

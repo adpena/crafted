@@ -3,41 +3,9 @@
 
 /// <reference types="emdash/locals" />
 
-import type { ContentBylineCredit, PortableTextBlock } from "emdash";
-
-export interface Page {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  content?: PortableTextBlock[];
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-}
-
-export interface Project {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  featured_image: { id: string; src?: string; alt?: string; width?: number; height?: number };
-  client?: string;
-  year?: string;
-  summary?: string;
-  content?: PortableTextBlock[];
-  gallery?: unknown;
-  url?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-}
+import type { ContentBylineCredit } from "emdash";
 
 declare module "emdash" {
   interface EmDashCollections {
-    pages: Page;
-    projects: Project;
   }
 }

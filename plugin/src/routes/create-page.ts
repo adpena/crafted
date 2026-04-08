@@ -1,12 +1,11 @@
 import type { RouteContext, PluginContext } from "emdash";
 import { SLUG_RE } from "../lib/slug.ts";
-
-const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const KNOWN_TEMPLATES = new Set(["hero-simple", "hero-media", "hero-story", "hero-layered", "hero-split"]);
 const KNOWN_ACTIONS = new Set(["fundraise", "petition", "gotv", "signup"]);
 const KNOWN_FOLLOWUPS = new Set(["fundraise", "signup"]);
 
 export async function handleCreatePage(routeCtx: RouteContext, ctx: PluginContext) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- runtime-validated JSON-RPC input
 	const body = (routeCtx.input ?? {}) as Record<string, any>;
 
 	// Validate slug

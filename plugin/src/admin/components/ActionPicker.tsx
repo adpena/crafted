@@ -1,6 +1,14 @@
 import type { CSSProperties } from "react";
 
-export type ActionId = "fundraise" | "petition" | "gotv" | "signup";
+export type ActionId =
+  | "fundraise"
+  | "petition"
+  | "gotv"
+  | "signup"
+  | "letter"
+  | "event"
+  | "call"
+  | "step";
 
 export interface ActionOption {
   id: ActionId;
@@ -33,6 +41,30 @@ export const ACTION_OPTIONS: ActionOption[] = [
     name: "Signup",
     description: "Grow your list with a lightweight email capture.",
     glyph: "✉",
+  },
+  {
+    id: "letter",
+    name: "Letter to Congress",
+    description: "Zip-based rep lookup with editable merge fields.",
+    glyph: "✍",
+  },
+  {
+    id: "event",
+    name: "Event RSVP",
+    description: "Calendar export + multi-platform event sync.",
+    glyph: "⎈",
+  },
+  {
+    id: "call",
+    name: "Call Your Rep",
+    description: "Click-to-dial with scripts and talking points.",
+    glyph: "☎",
+  },
+  {
+    id: "step",
+    name: "Multi-Step Form",
+    description: "Branching form with conditional logic.",
+    glyph: "⇥",
   },
 ];
 

@@ -1,8 +1,6 @@
 import type { RouteContext, PluginContext } from "emdash";
 import { SLUG_RE } from "../lib/slug.ts";
 
-const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
-
 export async function handleEmbed(routeCtx: RouteContext, _ctx: PluginContext) {
   const input = routeCtx.input as { slug?: string; campaign?: string; base_url?: string } | undefined;
   const url = new URL(routeCtx.request.url);

@@ -1,0 +1,407 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const embedTypes = [
+	{ value: "iframe", label: "iframe" },
+	{ value: "webcomponent", label: "Web component" },
+	{ value: "react", label: "React" },
+	{ value: "vue", label: "Vue 3" },
+	{ value: "svelte", label: "Svelte" },
+	{ value: "htmx", label: "HTMX" },
+	{ value: "html", label: "Pure HTML form (no JS)" },
+];
+---
+
+<Base
+	title="Embed an action page · Crafted"
+	description="Drop a petition, donation form, or letter-to-congress form into any website. Zero JavaScript build step."
+>
+	<main id="main-content" class="ap-page">
+		<section class="ap-hero">
+			<p class="ap-eyebrow">Embed · Copy · Paste</p>
+			<h1 class="ap-title">Embed an action page</h1>
+			<p class="ap-subhead">
+				Drop a petition, donation form, or letter-to-congress form into any
+				website. Zero JavaScript build step.
+			</p>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Configure</h2>
+			<h3 class="ap-section-title">Pick a slug and a flavor.</h3>
+
+			<div class="embed-form">
+				<div class="embed-field">
+					<label for="embed-slug" class="embed-label">Action page slug</label>
+					<input
+						id="embed-slug"
+						type="text"
+						value="fund-public-schools"
+						required
+						placeholder="your-page-slug"
+						class="embed-input"
+					/>
+				</div>
+
+				<div class="embed-field">
+					<label for="embed-type" class="embed-label">Embed type</label>
+					<select id="embed-type" class="embed-input">
+						{embedTypes.map((t) => (
+							<option value={t.value}>{t.label}</option>
+						))}
+					</select>
+				</div>
+			</div>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Code</h2>
+			<h3 class="ap-section-title">Copy this into your site.</h3>
+
+			<div class="embed-code-wrap">
+				<button type="button" id="embed-copy" class="embed-copy-btn">
+					Copy
+				</button>
+				<pre id="embed-code" class="embed-code"><code id="embed-code-inner"></code></pre>
+			</div>
+		</section>
+
+		<section class="ap-section">
+			<h2 class="ap-section-label">Notes</h2>
+			<h3 class="ap-section-title">A few things to know.</h3>
+			<ul class="embed-notes">
+				<li>
+					The web component bundle auto-registers <code>&lt;crafted-action-page&gt;</code>
+					globally — load it once per page.
+				</li>
+				<li>
+					The pure HTML form works with JavaScript disabled. It posts directly
+					to the Crafted API and follows a redirect on success.
+				</li>
+				<li>
+					The iframe embed respects your parent site's dark mode via the
+					<code>?theme=dark</code> query param.
+				</li>
+				<li>
+					All embeds run on Cloudflare's edge — expect &lt;100 ms first paint
+					anywhere in the world.
+				</li>
+			</ul>
+		</section>
+	</main>
+</Base>
+
+<script is:inline>
+	(function () {
+		const BASE = "https://adpena.com";
+		const slugEl = document.getElementById("embed-slug");
+		const typeEl = document.getElementById("embed-type");
+		const codeEl = document.getElementById("embed-code-inner");
+		const copyBtn = document.getElementById("embed-copy");
+		if (!slugEl || !typeEl || !codeEl || !copyBtn) return;
+
+		function currentSlug() {
+			const v = (slugEl.value || "").trim();
+			return v || "fund-public-schools";
+		}
+
+		function render() {
+			const slug = currentSlug();
+			const type = typeEl.value;
+			codeEl.textContent = build(slug, type);
+		}
+
+		function build(slug, type) {
+			switch (type) {
+				case "iframe":
+					return (
+						'<iframe src="' +
+						BASE +
+						"/action/" +
+						slug +
+						'?embed=1" width="100%" height="600" frameborder="0"></iframe>'
+					);
+				case "webcomponent":
+					return (
+						'<script src="' +
+						BASE +
+						'/api/_plugin/action-pages/web-component.js"><\/script>\n' +
+						'<crafted-action-page slug="' +
+						slug +
+						'"></crafted-action-page>'
+					);
+				case "react":
+					return (
+						'import { useEffect } from "react";\n\n' +
+						"export function ActionPage({ slug }) {\n" +
+						"  useEffect(() => {\n" +
+						'    const s = document.createElement("script");\n' +
+						'    s.src = "' +
+						BASE +
+						'/api/_plugin/action-pages/web-component.js";\n' +
+						"    document.head.appendChild(s);\n" +
+						"  }, []);\n" +
+						"  return <crafted-action-page slug={slug} />;\n" +
+						"}\n\n" +
+						"// Usage: <ActionPage slug=\"" +
+						slug +
+						'" />'
+					);
+				case "vue":
+					return (
+						"<template>\n" +
+						'  <crafted-action-page :slug="slug" />\n' +
+						"</template>\n\n" +
+						"<script setup>\n" +
+						'import { onMounted } from "vue";\n' +
+						'const slug = "' +
+						slug +
+						'";\n' +
+						"onMounted(() => {\n" +
+						'  const s = document.createElement("script");\n' +
+						'  s.src = "' +
+						BASE +
+						'/api/_plugin/action-pages/web-component.js";\n' +
+						"  document.head.appendChild(s);\n" +
+						"});\n" +
+						"<\/script>"
+					);
+				case "svelte":
+					return (
+						"<script>\n" +
+						'  import { onMount } from "svelte";\n' +
+						'  export let slug = "' +
+						slug +
+						'";\n' +
+						"  onMount(() => {\n" +
+						'    const s = document.createElement("script");\n' +
+						'    s.src = "' +
+						BASE +
+						'/api/_plugin/action-pages/web-component.js";\n' +
+						"    document.head.appendChild(s);\n" +
+						"  });\n" +
+						"<\/script>\n\n" +
+						"<crafted-action-page {slug}></crafted-action-page>"
+					);
+				case "htmx":
+					return (
+						'<div hx-get="/action/' +
+						slug +
+						'?embed=1" hx-trigger="load"></div>'
+					);
+				case "html":
+					return (
+						'<form action="' +
+						BASE +
+						'/api/action/submit" method="post" enctype="application/x-www-form-urlencoded">\n' +
+						'  <input type="hidden" name="type" value="petition_sign">\n' +
+						'  <input type="hidden" name="page_id" value="' +
+						slug +
+						'">\n' +
+						'  <input type="text" name="first_name" placeholder="First name" required>\n' +
+						'  <input type="text" name="last_name" placeholder="Last name" required>\n' +
+						'  <input type="email" name="email" placeholder="Email" required>\n' +
+						'  <input type="text" name="zip" placeholder="Zip" required>\n' +
+						"  <button type=\"submit\">Sign the petition</button>\n" +
+						"</form>"
+					);
+				default:
+					return "";
+			}
+		}
+
+		slugEl.addEventListener("input", render);
+		typeEl.addEventListener("change", render);
+
+		copyBtn.addEventListener("click", async () => {
+			const text = codeEl.textContent || "";
+			try {
+				await navigator.clipboard.writeText(text);
+				copyBtn.textContent = "Copied";
+				setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+			} catch {
+				copyBtn.textContent = "Copy failed";
+				setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+			}
+		});
+
+		render();
+	})();
+</script>
+
+<style>
+	.ap-page {
+		width: 100%;
+		max-width: 64rem;
+		margin: 0 auto;
+		padding: var(--spacing-xl) var(--content-padding) var(--spacing-4xl);
+	}
+
+	.ap-hero {
+		padding: var(--spacing-2xl) 0 var(--spacing-3xl);
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--spacing-2xl);
+	}
+
+	.ap-eyebrow {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.ap-title {
+		font-size: var(--font-size-4xl);
+		margin-bottom: var(--spacing-md);
+		max-width: 18ch;
+	}
+
+	.ap-subhead {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-lg);
+		color: var(--color-secondary);
+		line-height: 1.5;
+		max-width: 38rem;
+	}
+
+	.ap-section {
+		margin-bottom: var(--spacing-4xl);
+		scroll-margin-top: var(--spacing-xl);
+	}
+
+	.ap-section-label {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		color: var(--color-secondary);
+		padding-bottom: var(--spacing-xs);
+		border-bottom: 1px solid var(--color-border);
+		margin-bottom: var(--spacing-md);
+	}
+
+	.ap-section-title {
+		font-size: var(--font-size-2xl);
+		margin-bottom: var(--spacing-xl);
+		max-width: 36rem;
+	}
+
+	.embed-form {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--spacing-lg);
+	}
+
+	.embed-field {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.embed-label {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--color-secondary);
+		margin-bottom: var(--spacing-xs);
+	}
+
+	.embed-input {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		color: var(--color-text);
+		background: transparent;
+		border: none;
+		border-bottom: 1.5px solid var(--color-border);
+		border-radius: 0;
+		padding: 0.6rem 0;
+		min-height: 44px;
+		box-sizing: border-box;
+		transition: border-color 150ms ease;
+	}
+
+	.embed-input:focus {
+		outline: none;
+		border-bottom-color: var(--color-text);
+	}
+
+	.embed-code-wrap {
+		position: relative;
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.embed-code {
+		margin: 0;
+		padding: var(--spacing-lg);
+		padding-right: 5rem;
+		overflow-x: auto;
+		font-family: var(--font-mono);
+		font-size: var(--font-size-sm);
+		line-height: 1.6;
+		color: var(--color-text);
+		white-space: pre;
+	}
+
+	.embed-copy-btn {
+		position: absolute;
+		top: var(--spacing-md);
+		right: var(--spacing-md);
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		padding: 0.5rem 0.875rem;
+		color: var(--color-text);
+		background: var(--color-bg);
+		border: 1px solid var(--color-border);
+		cursor: pointer;
+		transition: border-color 150ms ease;
+	}
+
+	.embed-copy-btn:hover {
+		border-color: var(--color-text);
+	}
+
+	.embed-notes {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: var(--font-size-base);
+		color: var(--color-secondary);
+		line-height: 1.7;
+	}
+
+	.embed-notes li {
+		padding: var(--spacing-sm) 0;
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.embed-notes li:first-child {
+		border-top: 1px solid var(--color-border);
+	}
+
+	.embed-notes code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		color: var(--color-text);
+	}
+
+	@media (max-width: 600px) {
+		.ap-page {
+			padding-top: var(--spacing-md);
+		}
+
+		.ap-hero {
+			padding: var(--spacing-lg) 0 var(--spacing-2xl);
+		}
+
+		.embed-form {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

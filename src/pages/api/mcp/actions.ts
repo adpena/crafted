@@ -11,15 +11,19 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQUEST, RPC_METHOD_NOT_FOUND, RPC_INVALID_PARAMS } from "../../../lib/jsonrpc.ts";
+import { verifyBearer } from "../../../lib/auth.ts";
+import { SLUG_RE } from "../../../lib/slug.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
 const PLUGIN_ID = "action-pages";
-const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 
-const VALID_ACTIONS = new Set(["fundraise", "petition", "gotv", "signup"]);
+const VALID_ACTIONS = new Set([
+  "fundraise", "petition", "gotv", "signup",
+  "letter", "event", "call", "step",
+]);
 
 /**
  * Sanitize a user-provided string before storage. Strips HTML tags
@@ -56,27 +60,12 @@ function requireHttpsUrl(value: unknown, label: string): string {
 }
 
 /**
- * Authenticate the request via Bearer token.
- * Token is read from MCP_ADMIN_TOKEN env var.
- * Returns true if authenticated, false otherwise.
+ * Authenticate the request via centralized verifyBearer.
+ * Delegates to src/lib/auth.ts for timing-safe HMAC comparison.
  */
-function isAuthenticated(request: Request): boolean {
+async function isAuthenticated(request: Request): Promise<boolean> {
   const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
-  if (!token) {
-    // No token configured — fail closed in production, log warning
-    console.warn("[mcp/actions] MCP_ADMIN_TOKEN not configured — denying all writes");
-    return false;
-  }
-  const authHeader = request.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
-  const provided = authHeader.slice(7).trim();
-  // Constant-time comparison to prevent timing attacks
-  if (provided.length !== token.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < provided.length; i++) {
-    mismatch |= provided.charCodeAt(i) ^ token.charCodeAt(i);
-  }
-  return mismatch === 0;
+  return verifyBearer(request.headers.get("Authorization"), token);
 }
 
 /** Tools that read data — no auth required */
@@ -142,6 +131,10 @@ const ACTIONS = [
   { name: "petition", description: "Name, email, zip, optional comment" },
   { name: "gotv", description: "Name, zip, pledge checkbox" },
   { name: "signup", description: "Email + optional name, list capture" },
+  { name: "letter", description: "Letter to Congress with zip-based rep lookup + editable merge fields" },
+  { name: "event", description: "Event RSVP with calendar export + multi-platform sync (Mobilize/Eventbrite/Facebook)" },
+  { name: "call", description: "Click-to-dial with rep lookup, script, and talking points" },
+  { name: "step", description: "Multi-step branching form with conditional logic" },
 ];
 
 const THEMES: Record<string, Record<string, string>> = {
@@ -279,7 +272,7 @@ export const POST: APIRoute = async ({ request }) => {
     rpcError(id, status === 401 ? -32001 : status === 404 ? -32004 : RPC_INVALID_PARAMS, message, status);
 
   // Auth gate: write/read-sensitive tools require Bearer token
-  if (WRITE_TOOLS.has(tool) && !isAuthenticated(request)) {
+  if (WRITE_TOOLS.has(tool) && !(await isAuthenticated(request))) {
     return rpcError(id, -32001, "This tool requires authentication. Set MCP_ADMIN_TOKEN and provide Authorization: Bearer <token>.", 401);
   }
 
@@ -419,7 +412,7 @@ export const POST: APIRoute = async ({ request }) => {
 
       // Strip sensitive fields from public responses — callbacks may contain
       // webhook URLs and HMAC secrets. Authenticated callers get full data.
-      if (!isAuthenticated(request)) {
+      if (!(await isAuthenticated(request))) {
         delete d.callbacks;
       }
 
@@ -476,7 +469,7 @@ export const POST: APIRoute = async ({ request }) => {
     /* -------------------------------------------------------------- */
     default: {
       const safeName = String(tool).slice(0, 64);
-      return err("UNKNOWN_TOOL", `Tool '${safeName}' is not available. GET this endpoint for the tool list.`);
+      return rpcError(id, RPC_METHOD_NOT_FOUND, `Tool '${safeName}' is not available. GET this endpoint for the tool list.`);
     }
   }
 };

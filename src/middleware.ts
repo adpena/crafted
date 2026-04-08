@@ -70,11 +70,20 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Action pages and demos are public embeddable widgets.
   if (context.url.pathname.startsWith("/action/") || context.url.pathname.startsWith("/demo/")) {
-    response.headers.delete("X-Frame-Options");
-    response.headers.set(
-      "Content-Security-Policy",
-      BASE_CSP + "; frame-ancestors *",
-    );
+    // Preview route is admin-only — restrict framing to same origin
+    if (context.url.pathname === "/action/preview") {
+      response.headers.set("X-Frame-Options", "SAMEORIGIN");
+      response.headers.set(
+        "Content-Security-Policy",
+        BASE_CSP + "; frame-ancestors 'self'",
+      );
+    } else {
+      response.headers.delete("X-Frame-Options");
+      response.headers.set(
+        "Content-Security-Policy",
+        BASE_CSP + "; frame-ancestors *",
+      );
+    }
   }
 
   return response;

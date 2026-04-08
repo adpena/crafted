@@ -1,12 +1,19 @@
 import { useState, type ReactNode } from "react";
 import { tokens as s } from "./tokens.ts";
-import { t, getLocale, type Locale } from "../../lib/i18n.ts";
+import { getLocale, type Locale } from "../../lib/i18n.ts";
+import { ProgressBar } from "../ProgressBar.tsx";
+import { useActionCount } from "../hooks/useActionCount.ts";
+import { useTurnstile } from "../hooks/useTurnstile.ts";
+import type { ProgressConfig } from "./progress-config.ts";
 
 export interface FundraiseActionProps {
   amounts: number[];
   actblue_url: string;
   refcode?: string;
   suggested?: number;
+  progress?: ProgressConfig;
+  turnstileSiteKey?: string;
+  locale?: Locale;
   onComplete: (data: { type: "donation_click"; amount: number }) => void;
   pageId?: string;
   visitorId?: string;
@@ -19,8 +26,24 @@ export function FundraiseAction({
   actblue_url,
   refcode,
   suggested,
+  progress,
+  turnstileSiteKey,
+  locale: localeProp,
   onComplete,
-}: FundraiseActionProps): ReactNode {
+  pageId,
+  visitorId,
+  variant,
+  submitUrl = "/api/action/submit",
+}: FundraiseActionProps & { submitUrl?: string }): ReactNode {
+  const locale = getLocale(localeProp);
+  void locale;
+  const { count: liveCount } = useActionCount(
+    progress?.enabled ? pageId : undefined,
+    progress?.countUrl,
+    progress?.refreshInterval,
+    progress?.sseUrl,
+  );
+  const turnstile = useTurnstile(turnstileSiteKey);
   // Defensive: action_props from MCP/storage may omit `amounts` entirely.
   // Falling back to a reasonable default keeps SSR from throwing on
   // `amounts.map` and lets the page render even with partial config.
@@ -36,6 +59,8 @@ export function FundraiseAction({
     if (!actblue_url) return "#";
     try {
       const url = new URL(actblue_url);
+      // Only allow HTTPS — reject javascript:, data:, vbscript:, etc.
+      if (url.protocol !== "https:") return "#";
       url.searchParams.set("amount", String(amount));
       if (refcode) url.searchParams.set("refcode", refcode);
       return url.toString();
@@ -44,14 +69,49 @@ export function FundraiseAction({
     }
   }
 
-  function handleDonate() {
+  async function handleDonate() {
     if (!activeAmount || activeAmount <= 0) return;
+    if (turnstileSiteKey && !turnstile.token) return;
+
+    // POST to server before navigating — ensures D1 write, KV cache,
+    // conversion tracking, and webhook dispatch all fire.
+    try {
+      await fetch(submitUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "donation_click",
+          page_id: pageId,
+          visitorId,
+          variant,
+          turnstile_token: turnstile.token ?? undefined,
+          data: { amount: activeAmount },
+        }),
+        signal: AbortSignal.timeout(15_000),
+      });
+    } catch {
+      // Non-blocking — navigate to ActBlue even if tracking fails
+    }
+
     onComplete({ type: "donation_click", amount: activeAmount });
     window.location.href = buildUrl(activeAmount);
   }
 
   return (
     <div style={{ padding: "1.5rem", maxWidth: "42em" }}>
+      {/* Progress bar */}
+      {progress?.enabled && progress.goal && progress.goal > 0 && (
+        <ProgressBar
+          current={liveCount}
+          goal={progress.goal}
+          labelKey={progress.labelKey ?? "progress_donors"}
+          mode={progress.mode ?? "bar"}
+          accentColor={progress.accentColor}
+          deadline={progress.deadline}
+          locale={locale}
+        />
+      )}
+
       {/* Amount button grid */}
       <div
         style={{
@@ -139,17 +199,23 @@ export function FundraiseAction({
             color: s.text,
             background: "transparent",
             border: "none",
-            outline: "none",
             padding: "0.375rem 0",
             minHeight: "44px",
           }}
         />
       </div>
 
+      {/* Turnstile bot protection */}
+      {turnstileSiteKey && (
+        <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "center" }}>
+          <div ref={turnstile.ref} />
+        </div>
+      )}
+
       {/* CTA */}
       <button
         type="button"
-        disabled={!activeAmount || activeAmount <= 0}
+        disabled={!activeAmount || activeAmount <= 0 || (!!turnstileSiteKey && !turnstile.token)}
         onClick={handleDonate}
         style={{
           width: "100%",
