@@ -1,13 +1,21 @@
 /**
  * Pure TypeScript QR code encoder — zero dependencies, runs on Workers.
  *
- * Supports byte mode (any ASCII/UTF-8), error correction level M,
- * versions 1–10 (up to 213 bytes of data — plenty for URLs).
+ * Supports byte mode (any ASCII/UTF-8), error correction levels L/M/Q/H,
+ * versions 1-10 (up to ~270 bytes at EC level L — plenty for URLs).
  *
  * Based on the Nayuki QR algorithm (MIT-licensed reference).
  *
  * @module
  */
+
+// ── EC level enum ─────────────────────────────────────────────────
+
+/** QR error correction levels, ordered by increasing redundancy. */
+export type ECLevel = "L" | "M" | "Q" | "H";
+
+/** Numeric EC level indicators for format information (ISO 18004 Table C.1) */
+const EC_LEVEL_BITS: Record<ECLevel, number> = { L: 0b01, M: 0b00, Q: 0b11, H: 0b10 };
 
 // ── Galois field GF(2^8) arithmetic for Reed-Solomon ──────────────
 
@@ -58,7 +66,7 @@ function rsEncode(data: Uint8Array, ecCount: number): Uint8Array {
   return remainder;
 }
 
-// ── QR version / capacity tables (byte mode, EC level M) ──────────
+// ── QR version / capacity tables (all EC levels, versions 1-10) ──
 
 interface VersionInfo {
   /** Total data codewords (before EC) */
@@ -77,36 +85,116 @@ interface VersionInfo {
   alignCenters: number[];
 }
 
-// Versions 1–10, EC level M
-const VERSION_TABLE: VersionInfo[] = [
-  /* v0 placeholder */ { dataCodewords: 0, ecPerBlock: 0, g1Blocks: 0, g1DataCw: 0, g2Blocks: 0, g2DataCw: 0, alignCenters: [] },
-  /* v1  */ { dataCodewords: 16, ecPerBlock: 10, g1Blocks: 1, g1DataCw: 16, g2Blocks: 0, g2DataCw: 0, alignCenters: [] },
-  /* v2  */ { dataCodewords: 28, ecPerBlock: 16, g1Blocks: 1, g1DataCw: 28, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 18] },
-  /* v3  */ { dataCodewords: 44, ecPerBlock: 26, g1Blocks: 1, g1DataCw: 44, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 22] },
-  /* v4  */ { dataCodewords: 64, ecPerBlock: 18, g1Blocks: 2, g1DataCw: 32, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 26] },
-  /* v5  */ { dataCodewords: 86, ecPerBlock: 24, g1Blocks: 2, g1DataCw: 43, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 30] },
-  /* v6  */ { dataCodewords: 108, ecPerBlock: 16, g1Blocks: 4, g1DataCw: 27, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 34] },
-  /* v7  */ { dataCodewords: 124, ecPerBlock: 18, g1Blocks: 4, g1DataCw: 31, g2Blocks: 0, g2DataCw: 0, alignCenters: [6, 22, 38] },
-  /* v8  */ { dataCodewords: 154, ecPerBlock: 22, g1Blocks: 2, g1DataCw: 38, g2Blocks: 2, g2DataCw: 39, alignCenters: [6, 24, 42] },
-  /* v9  */ { dataCodewords: 182, ecPerBlock: 22, g1Blocks: 3, g1DataCw: 36, g2Blocks: 2, g2DataCw: 37, alignCenters: [6, 26, 46] },
-  /* v10 */ { dataCodewords: 216, ecPerBlock: 26, g1Blocks: 4, g1DataCw: 43, g2Blocks: 1, g2DataCw: 44, alignCenters: [6, 28, 50] },
+/**
+ * ISO 18004 capacity tables for versions 1-10, all EC levels.
+ * Key: `${version}-${ecLevel}`, value: VersionInfo.
+ *
+ * Data from ISO 18004:2015 Tables 7, 9, and Annex A.
+ */
+const VERSION_EC_TABLE: Record<string, VersionInfo> = {};
+
+// Alignment pattern centers per version (shared across EC levels)
+const ALIGN_CENTERS: number[][] = [
+  /* v0 */ [],
+  /* v1 */ [],
+  /* v2 */ [6, 18],
+  /* v3 */ [6, 22],
+  /* v4 */ [6, 26],
+  /* v5 */ [6, 30],
+  /* v6 */ [6, 34],
+  /* v7 */ [6, 22, 38],
+  /* v8 */ [6, 24, 42],
+  /* v9 */ [6, 26, 46],
+  /* v10 */ [6, 28, 50],
 ];
 
-function selectVersion(dataLen: number): number {
+// Compact table: [version, level, dataCodewords, ecPerBlock, g1Blocks, g1DataCw, g2Blocks, g2DataCw]
+const RAW_TABLE: [number, ECLevel, number, number, number, number, number, number][] = [
+  // Version 1
+  [1, "L", 19, 7, 1, 19, 0, 0],
+  [1, "M", 16, 10, 1, 16, 0, 0],
+  [1, "Q", 13, 13, 1, 13, 0, 0],
+  [1, "H", 9, 17, 1, 9, 0, 0],
+  // Version 2
+  [2, "L", 34, 10, 1, 34, 0, 0],
+  [2, "M", 28, 16, 1, 28, 0, 0],
+  [2, "Q", 22, 22, 1, 22, 0, 0],
+  [2, "H", 16, 28, 1, 16, 0, 0],
+  // Version 3
+  [3, "L", 55, 15, 1, 55, 0, 0],
+  [3, "M", 44, 26, 1, 44, 0, 0],
+  [3, "Q", 34, 18, 2, 17, 0, 0],
+  [3, "H", 26, 22, 2, 13, 0, 0],
+  // Version 4
+  [4, "L", 80, 20, 1, 80, 0, 0],
+  [4, "M", 64, 18, 2, 32, 0, 0],
+  [4, "Q", 48, 26, 2, 24, 0, 0],
+  [4, "H", 36, 16, 4, 9, 0, 0],
+  // Version 5
+  [5, "L", 108, 26, 1, 108, 0, 0],
+  [5, "M", 86, 24, 2, 43, 0, 0],
+  [5, "Q", 62, 18, 2, 15, 2, 16],
+  [5, "H", 46, 22, 2, 11, 2, 12],
+  // Version 6
+  [6, "L", 136, 18, 2, 68, 0, 0],
+  [6, "M", 108, 16, 4, 27, 0, 0],
+  [6, "Q", 76, 24, 4, 19, 0, 0],
+  [6, "H", 60, 28, 4, 15, 0, 0],
+  // Version 7
+  [7, "L", 156, 20, 2, 78, 0, 0],
+  [7, "M", 124, 18, 4, 31, 0, 0],
+  [7, "Q", 88, 18, 2, 14, 4, 15],
+  [7, "H", 66, 26, 4, 13, 1, 14],
+  // Version 8
+  [8, "L", 194, 24, 2, 97, 0, 0],
+  [8, "M", 154, 22, 2, 38, 2, 39],
+  [8, "Q", 110, 22, 4, 18, 2, 19],
+  [8, "H", 86, 26, 4, 14, 2, 15],
+  // Version 9
+  [9, "L", 232, 30, 2, 116, 0, 0],
+  [9, "M", 182, 22, 3, 36, 2, 37],
+  [9, "Q", 132, 20, 4, 16, 4, 17],
+  [9, "H", 100, 24, 4, 12, 4, 13],
+  // Version 10
+  [10, "L", 274, 18, 2, 68, 2, 69],
+  [10, "M", 216, 26, 4, 43, 1, 44],
+  [10, "Q", 154, 24, 6, 19, 2, 20],
+  [10, "H", 122, 28, 6, 15, 2, 16],
+];
+
+for (const [v, ec, dataCw, ecPer, g1b, g1d, g2b, g2d] of RAW_TABLE) {
+  VERSION_EC_TABLE[`${v}-${ec}`] = {
+    dataCodewords: dataCw,
+    ecPerBlock: ecPer,
+    g1Blocks: g1b,
+    g1DataCw: g1d,
+    g2Blocks: g2b,
+    g2DataCw: g2d,
+    alignCenters: ALIGN_CENTERS[v],
+  };
+}
+
+function getVersionInfo(version: number, ecLevel: ECLevel): VersionInfo {
+  const info = VERSION_EC_TABLE[`${version}-${ecLevel}`];
+  if (!info) throw new Error(`No data for version ${version}, EC level ${ecLevel}`);
+  return info;
+}
+
+function selectVersion(dataLen: number, ecLevel: ECLevel): number {
   // Byte mode overhead: 4 bits mode + 8/16 bits length + data + terminator
   for (let v = 1; v <= 10; v++) {
     const charCountBits = v <= 9 ? 8 : 16;
     const totalBits = 4 + charCountBits + dataLen * 8;
-    const capacity = VERSION_TABLE[v].dataCodewords * 8;
+    const capacity = getVersionInfo(v, ecLevel).dataCodewords * 8;
     if (totalBits <= capacity) return v;
   }
-  throw new Error(`Data too long for QR versions 1-10 (${dataLen} bytes)`);
+  throw new Error(`Data too long for QR versions 1-10 at EC level ${ecLevel} (${dataLen} bytes)`);
 }
 
 // ── Data encoding (byte mode) ──────────────────────────────────────
 
-function encodeData(text: string, version: number): Uint8Array {
-  const info = VERSION_TABLE[version];
+function encodeData(text: string, version: number, ecLevel: ECLevel): Uint8Array {
+  const info = getVersionInfo(version, ecLevel);
   const data = new TextEncoder().encode(text);
   const charCountBits = version <= 9 ? 8 : 16;
 
@@ -149,8 +237,8 @@ function encodeData(text: string, version: number): Uint8Array {
 
 // ── Interleave data + EC blocks ────────────────────────────────────
 
-function interleave(data: Uint8Array, version: number): Uint8Array {
-  const info = VERSION_TABLE[version];
+function interleave(data: Uint8Array, version: number, ecLevel: ECLevel): Uint8Array {
+  const info = getVersionInfo(version, ecLevel);
   const totalBlocks = info.g1Blocks + info.g2Blocks;
 
   const dataBlocks: Uint8Array[] = [];
@@ -249,8 +337,9 @@ function reserveFormatBits(grid: Grid) {
   grid[size - 8][8] = true;
 }
 
-function placeFunctionPatterns(grid: Grid, version: number) {
+function placeFunctionPatterns(grid: Grid, version: number, ecLevel: ECLevel) {
   const size = grid.length;
+  const info = getVersionInfo(version, ecLevel);
 
   // Finder patterns
   placeFinderPattern(grid, 0, 0);
@@ -258,7 +347,7 @@ function placeFunctionPatterns(grid: Grid, version: number) {
   placeFinderPattern(grid, size - 7, 0);
 
   // Alignment patterns
-  const centers = VERSION_TABLE[version].alignCenters;
+  const centers = info.alignCenters;
   for (const r of centers) {
     for (const c of centers) {
       // Skip if overlapping finder patterns
@@ -419,30 +508,28 @@ function penaltyScore(grid: Grid): number {
 
 // ── Format information ─────────────────────────────────────────────
 
-// EC level M = 0b00, mask patterns 0-7
-const FORMAT_BITS_TABLE: number[] = [];
-
-(function initFormatBits() {
-  // BCH(15,5) encoding for format info
-  // Format = EC level (2 bits) + mask (3 bits) → 5 data bits → 15 total with EC
-  for (let mask = 0; mask < 8; mask++) {
-    let data = (0b00 << 3) | mask; // EC level M = 00
-    let bits = data << 10;
-    // Polynomial division by x^10 + x^8 + x^5 + x^4 + x^2 + x + 1 (0x537)
-    for (let i = 4; i >= 0; i--) {
-      if (bits & (1 << (i + 10))) {
-        bits ^= 0x537 << i;
-      }
+/**
+ * Compute format bits for a given EC level and mask pattern.
+ * BCH(15,5) encoding per ISO 18004 Annex C.
+ */
+function computeFormatBits(ecLevel: ECLevel, mask: number): number {
+  const ecBits = EC_LEVEL_BITS[ecLevel];
+  let data = (ecBits << 3) | mask;
+  let bits = data << 10;
+  // Polynomial division by x^10 + x^8 + x^5 + x^4 + x^2 + x + 1 (0x537)
+  for (let i = 4; i >= 0; i--) {
+    if (bits & (1 << (i + 10))) {
+      bits ^= 0x537 << i;
     }
-    bits = (data << 10) | bits;
-    bits ^= 0x5412; // XOR mask
-    FORMAT_BITS_TABLE.push(bits);
   }
-})();
+  bits = (data << 10) | bits;
+  bits ^= 0x5412; // XOR mask
+  return bits;
+}
 
-function placeFormatBits(grid: Grid, maskIdx: number) {
+function placeFormatBits(grid: Grid, ecLevel: ECLevel, maskIdx: number) {
   const size = grid.length;
-  const bits = FORMAT_BITS_TABLE[maskIdx];
+  const bits = computeFormatBits(ecLevel, maskIdx);
 
   // Horizontal strip near top-left
   const hPositions = [
@@ -474,27 +561,27 @@ function placeFormatBits(grid: Grid, maskIdx: number) {
 /**
  * Generate a QR code matrix from a text string.
  *
- * @param text - The data to encode (typically a URL, up to ~210 bytes)
+ * @param text - The data to encode (typically a URL, up to ~270 bytes at EC level L)
+ * @param ecLevel - Error correction level: L (7%), M (15%), Q (25%), H (30%). Default: M
  * @returns 2D boolean array where `true` = dark module
  */
-export function generateQR(text: string): boolean[][] {
-  const version = selectVersion(text.length);
+export function generateQR(text: string, ecLevel: ECLevel = "M"): boolean[][] {
+  const version = selectVersion(text.length, ecLevel);
   const size = moduleCount(version);
-  const info = VERSION_TABLE[version];
 
   // Encode data codewords
-  const dataCw = encodeData(text, version);
+  const dataCw = encodeData(text, version, ecLevel);
 
   // Generate interleaved data + EC codewords
-  const finalData = interleave(dataCw, version);
+  const finalData = interleave(dataCw, version, ecLevel);
 
   // Create function-pattern grid (to know which cells are reserved)
   const functionGrid = createGrid(size);
-  placeFunctionPatterns(functionGrid, version);
+  placeFunctionPatterns(functionGrid, version, ecLevel);
 
   // Place data in a working grid
   const workGrid = createGrid(size);
-  placeFunctionPatterns(workGrid, version);
+  placeFunctionPatterns(workGrid, version, ecLevel);
   placeData(workGrid, finalData);
 
   // Evaluate all 8 masks, pick the best
@@ -502,7 +589,7 @@ export function generateQR(text: string): boolean[][] {
   let bestScore = Infinity;
   for (let m = 0; m < 8; m++) {
     const masked = applyMask(workGrid, functionGrid, m);
-    placeFormatBits(masked, m);
+    placeFormatBits(masked, ecLevel, m);
     const score = penaltyScore(masked);
     if (score < bestScore) {
       bestScore = score;
@@ -512,7 +599,7 @@ export function generateQR(text: string): boolean[][] {
 
   // Apply best mask and format bits
   const result = applyMask(workGrid, functionGrid, bestMask);
-  placeFormatBits(result, bestMask);
+  placeFormatBits(result, ecLevel, bestMask);
 
   return result.map((row) => row.map((cell) => cell === true));
 }

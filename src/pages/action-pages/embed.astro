@@ -72,11 +72,35 @@ const embedTypes = [
 
 			<div class="qr-options">
 				<div class="embed-field">
-					<label for="qr-style" class="embed-label">Style</label>
+					<label for="qr-ec" class="embed-label">Error correction</label>
+					<select id="qr-ec" class="embed-input">
+						<option value="L">L — 7%</option>
+						<option value="M" selected>M — 15%</option>
+						<option value="Q">Q — 25%</option>
+						<option value="H">H — 30%</option>
+					</select>
+				</div>
+				<div class="embed-field">
+					<label for="qr-style" class="embed-label">Module shape</label>
 					<select id="qr-style" class="embed-input">
 						<option value="square">Square</option>
 						<option value="rounded">Rounded</option>
 						<option value="dot">Dot</option>
+						<option value="classy">Classy</option>
+						<option value="classy-rounded">Classy rounded</option>
+						<option value="extra-rounded">Extra rounded</option>
+						<option value="diamond">Diamond</option>
+						<option value="star">Star</option>
+					</select>
+				</div>
+				<div class="embed-field">
+					<label for="qr-eye" class="embed-label">Eye shape</label>
+					<select id="qr-eye" class="embed-input">
+						<option value="">Auto</option>
+						<option value="square">Square</option>
+						<option value="rounded">Rounded</option>
+						<option value="circle">Circle</option>
+						<option value="classy">Classy</option>
 					</select>
 				</div>
 				<div class="embed-field">
@@ -86,6 +110,37 @@ const embedTypes = [
 				<div class="embed-field">
 					<label for="qr-bg" class="embed-label">Background</label>
 					<input id="qr-bg" type="color" value="#ffffff" class="embed-color" />
+				</div>
+				<div class="embed-field">
+					<label for="qr-eye-color" class="embed-label">Eye color</label>
+					<input id="qr-eye-color" type="color" value="#000000" class="embed-color" />
+				</div>
+				<div class="embed-field">
+					<label for="qr-gradient" class="embed-label">Gradient</label>
+					<select id="qr-gradient" class="embed-input">
+						<option value="">None</option>
+						<option value="linear">Linear</option>
+						<option value="radial">Radial</option>
+					</select>
+				</div>
+				<div class="embed-field qr-gradient-field" style="display:none">
+					<label for="qr-grad-color1" class="embed-label">Gradient start</label>
+					<input id="qr-grad-color1" type="color" value="#0693e3" class="embed-color" />
+				</div>
+				<div class="embed-field qr-gradient-field" style="display:none">
+					<label for="qr-grad-color2" class="embed-label">Gradient end</label>
+					<input id="qr-grad-color2" type="color" value="#1a1a1a" class="embed-color" />
+				</div>
+				<div class="embed-field">
+					<label for="qr-logo" class="embed-label">Logo URL</label>
+					<input id="qr-logo" type="url" placeholder="https://..." class="embed-input" />
+				</div>
+				<div class="embed-field">
+					<label for="qr-shape" class="embed-label">Overall shape</label>
+					<select id="qr-shape" class="embed-input">
+						<option value="square">Square</option>
+						<option value="circle">Circle</option>
+					</select>
 				</div>
 			</div>
 
@@ -140,6 +195,15 @@ const embedTypes = [
 		const qrStyleEl = document.getElementById("qr-style");
 		const qrFgEl = document.getElementById("qr-fg");
 		const qrBgEl = document.getElementById("qr-bg");
+		const qrEcEl = document.getElementById("qr-ec");
+		const qrEyeEl = document.getElementById("qr-eye");
+		const qrEyeColorEl = document.getElementById("qr-eye-color");
+		const qrGradientEl = document.getElementById("qr-gradient");
+		const qrGradColor1El = document.getElementById("qr-grad-color1");
+		const qrGradColor2El = document.getElementById("qr-grad-color2");
+		const qrGradientFields = document.querySelectorAll(".qr-gradient-field");
+		const qrLogoEl = document.getElementById("qr-logo");
+		const qrShapeEl = document.getElementById("qr-shape");
 		const qrCopyBtn = document.getElementById("qr-copy-url");
 		if (!slugEl || !typeEl || !codeEl || !copyBtn) return;
 
@@ -148,13 +212,55 @@ const embedTypes = [
 			return v || "fund-public-schools";
 		}
 
+		// Toggle gradient color fields visibility
+		function updateGradientVisibility() {
+			var show = qrGradientEl && qrGradientEl.value !== "";
+			qrGradientFields.forEach(function(el) {
+				el.style.display = show ? "" : "none";
+			});
+		}
+		if (qrGradientEl) qrGradientEl.addEventListener("change", function() {
+			updateGradientVisibility();
+			renderQR();
+		});
+
 		function qrUrl() {
 			var slug = currentSlug();
 			var style = qrStyleEl ? qrStyleEl.value : "square";
 			var fg = qrFgEl ? qrFgEl.value.replace("#", "") : "000000";
 			var bg = qrBgEl ? qrBgEl.value.replace("#", "") : "ffffff";
-			return BASE + "/api/action/qr?slug=" + encodeURIComponent(slug) +
-				"&size=300&style=" + style + "&fg=" + fg + "&bg=" + bg;
+			var ec = qrEcEl ? qrEcEl.value : "M";
+			var params = "slug=" + encodeURIComponent(slug) +
+				"&size=300&style=" + style + "&fg=" + fg + "&bg=" + bg + "&ec=" + ec;
+
+			// Eye shape
+			if (qrEyeEl && qrEyeEl.value) {
+				params += "&eyeShape=" + qrEyeEl.value;
+			}
+
+			// Eye color
+			if (qrEyeColorEl) {
+				params += "&eyeColor=" + qrEyeColorEl.value.replace("#", "");
+			}
+
+			// Gradient
+			if (qrGradientEl && qrGradientEl.value) {
+				var c1 = qrGradColor1El ? qrGradColor1El.value.replace("#", "") : "0693e3";
+				var c2 = qrGradColor2El ? qrGradColor2El.value.replace("#", "") : "1a1a1a";
+				params += "&gradient=" + qrGradientEl.value + "&gradientColors=" + c1 + "," + c2;
+			}
+
+			// Logo
+			if (qrLogoEl && qrLogoEl.value && qrLogoEl.value.startsWith("https://")) {
+				params += "&logo=" + encodeURIComponent(qrLogoEl.value);
+			}
+
+			// Overall shape
+			if (qrShapeEl && qrShapeEl.value !== "square") {
+				params += "&shape=" + qrShapeEl.value;
+			}
+
+			return BASE + "/api/action/qr?" + params;
 		}
 
 		var qrAbort = null;
@@ -283,6 +389,19 @@ const embedTypes = [
 		if (qrStyleEl) qrStyleEl.addEventListener("change", renderQR);
 		if (qrFgEl) qrFgEl.addEventListener("input", renderQR);
 		if (qrBgEl) qrBgEl.addEventListener("input", renderQR);
+		if (qrEcEl) qrEcEl.addEventListener("change", renderQR);
+		if (qrEyeEl) qrEyeEl.addEventListener("change", renderQR);
+		if (qrEyeColorEl) qrEyeColorEl.addEventListener("input", renderQR);
+		if (qrGradColor1El) qrGradColor1El.addEventListener("input", renderQR);
+		if (qrGradColor2El) qrGradColor2El.addEventListener("input", renderQR);
+		if (qrShapeEl) qrShapeEl.addEventListener("change", renderQR);
+		if (qrLogoEl) {
+			var qrLogoTimer = null;
+			qrLogoEl.addEventListener("input", function() {
+				clearTimeout(qrLogoTimer);
+				qrLogoTimer = setTimeout(renderQR, 600);
+			});
+		}
 
 		copyBtn.addEventListener("click", async () => {
 			const text = codeEl.textContent || "";
@@ -477,7 +596,7 @@ const embedTypes = [
 
 	.qr-options {
 		display: grid;
-		grid-template-columns: 1fr auto auto;
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
 		gap: var(--spacing-lg);
 		align-items: end;
 		margin-bottom: var(--spacing-xl);
