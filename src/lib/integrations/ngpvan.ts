@@ -23,9 +23,24 @@ import type { IntegrationSubmission, IntegrationEnv, IntegrationResult } from ".
 const API_BASE = "https://api.securevan.com/v4";
 const TIMEOUT_MS = 10_000;
 
+/** KV interface for match rate counters (optional, injected via env) */
+interface VanKV {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string, opts?: { expirationTtl?: number }): Promise<void>;
+}
+
+async function incrementVanCounter(kv: VanKV | undefined, suffix: "matches" | "misses"): Promise<void> {
+  if (!kv) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `van-${suffix}:${today}`;
+  const current = parseInt(await kv.get(key) ?? "0", 10);
+  await kv.put(key, String(current + 1), { expirationTtl: 86400 * 7 });
+}
+
 export async function pushToNgpVan(
 	submission: IntegrationSubmission,
 	env: IntegrationEnv,
+	kv?: VanKV,
 ): Promise<IntegrationResult | undefined> {
 	if (!env.NGPVAN_API_KEY || !env.NGPVAN_APP_NAME) return undefined;
 	if (!submission.email) return undefined;
@@ -44,6 +59,7 @@ export async function pushToNgpVan(
 				firstName: submission.firstName ?? "",
 				lastName: submission.lastName ?? "",
 				emails: [{ email: submission.email }],
+				phones: submission.phone ? [{ phoneNumber: submission.phone }] : [],
 				addresses: submission.postalCode
 					? [{ zipOrPostalCode: submission.postalCode }]
 					: [],
@@ -61,7 +77,13 @@ export async function pushToNgpVan(
 		// VAN created the contact but no voter file match — expected for email-only
 		// submissions (match rates are typically 40-60%). Still ok: the contact
 		// exists in VAN, just not linked to a voter file record.
-		if (!vanId) return { ok: true, error: "no_van_match" };
+		if (!vanId) {
+			console.info("[ngpvan] no voter file match for submission");
+			await incrementVanCounter(kv, "misses").catch(() => {});
+			return { ok: true, error: "no_van_match" };
+		}
+		console.info("[ngpvan] voter file match found, vanId:", vanId);
+		await incrementVanCounter(kv, "matches").catch(() => {});
 
 		// Step 2: Apply activist code if configured
 		if (env.NGPVAN_ACTIVIST_CODE_ID) {

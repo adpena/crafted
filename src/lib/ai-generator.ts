@@ -296,7 +296,14 @@ function validateConfig(raw: Record<string, unknown>): ActionPageConfig {
 		template_props,
 		action,
 		action_props,
-		disclaimer: { committee_name, treasurer_name },
+		disclaimer: {
+			// AI-generated committee_name is always fake — force human review.
+			// MCP create_page validation rejects empty committee_name.
+			committee_name: "",
+			treasurer_name,
+			ai_generated: true,
+		},
+		_disclaimer_note: "Set your real committee name before publishing",
 		theme,
 		locale: "en",
 	};

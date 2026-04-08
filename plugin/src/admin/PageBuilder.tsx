@@ -322,6 +322,7 @@ export function buildCurrentConfig(
   theme: ThemeId,
   committeeName: string,
   treasurerName: string,
+  independentExpenditure = false,
 ): LivePagePreviewConfig | null {
   try {
     // Need at least a template or action selected to show anything useful
@@ -341,6 +342,8 @@ export function buildCurrentConfig(
       disclaimer: {
         committee_name: committeeName.trim() || "Preview Mode",
         treasurer_name: treasurerName.trim() || undefined,
+        ...(independentExpenditure ? { context: "independent_expenditure" as const } : {}),
+        ...(aiGenerated ? { ai_generated: true } : {}),
       },
       theme,
     };
@@ -610,6 +613,8 @@ export function PageBuilder({
   const [treasurerName, setTreasurerName] = useState(
     settings.default_treasurer_name ?? "",
   );
+  const [independentExpenditure, setIndependentExpenditure] = useState(false);
+  const [aiGenerated, setAiGenerated] = useState(false);
 
   /* ---------- Preview state ---------- */
   const [showPreview, setShowPreview] = useState(false); // mobile toggle
@@ -637,7 +642,7 @@ export function PageBuilder({
         slug, pageTitle, template, templateProps,
         action, actionProps, hasFollowup, followup,
         followupProps, followupMessage, theme,
-        committeeName, treasurerName,
+        committeeName, treasurerName, independentExpenditure,
       );
       setPreviewConfig(cfg);
     }, 500);
@@ -646,7 +651,7 @@ export function PageBuilder({
     slug, pageTitle, template, templateProps,
     action, actionProps, hasFollowup, followup,
     followupProps, followupMessage, theme,
-    committeeName, treasurerName,
+    committeeName, treasurerName, independentExpenditure,
   ]);
 
   /* ---------- Validation (computed) ---------- */
@@ -892,6 +897,8 @@ export function PageBuilder({
       disclaimer: {
         committee_name: committeeName.trim(),
         treasurer_name: treasurerName.trim() || undefined,
+        ...(independentExpenditure ? { context: "independent_expenditure" as const } : {}),
+        ...(aiGenerated ? { ai_generated: true } : {}),
       },
       theme: customTheme ?? theme,
       status,
@@ -947,7 +954,7 @@ export function PageBuilder({
       slug, pageTitle, template, templateProps,
       action, actionProps, hasFollowup, followup,
       followupProps, followupMessage, theme,
-      committeeName, treasurerName,
+      committeeName, treasurerName, independentExpenditure,
     );
     if (!cfg) return;
     try {
@@ -966,7 +973,7 @@ export function PageBuilder({
     slug, pageTitle, template, templateProps,
     action, actionProps, hasFollowup, followup,
     followupProps, followupMessage, theme,
-    committeeName, treasurerName,
+    committeeName, treasurerName, independentExpenditure,
   ]);
 
   /* ---------- Helpers for blur-based error display ---------- */
@@ -1884,6 +1891,48 @@ export function PageBuilder({
             style={inputStyle()}
           />
         </Field>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <input
+            id="independent_expenditure"
+            type="checkbox"
+            checked={independentExpenditure}
+            onChange={(e) => setIndependentExpenditure(e.target.checked)}
+            style={{ margin: 0 }}
+          />
+          <label
+            htmlFor="independent_expenditure"
+            style={{
+              fontFamily: "var(--page-font-mono, monospace)",
+              fontSize: "0.8rem",
+              color: "var(--page-text, #1a1a1a)",
+              cursor: "pointer",
+            }}
+          >
+            This is an independent expenditure (not authorized by any candidate)
+          </label>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
+          <input
+            id="ai_generated"
+            type="checkbox"
+            checked={aiGenerated}
+            onChange={(e) => setAiGenerated(e.target.checked)}
+            style={{ margin: 0 }}
+          />
+          <label
+            htmlFor="ai_generated"
+            style={{
+              fontFamily: "var(--page-font-mono, monospace)",
+              fontSize: "0.8rem",
+              color: "var(--page-text, #1a1a1a)",
+              cursor: "pointer",
+            }}
+          >
+            Show AI disclosure (page content was assisted by AI)
+          </label>
+        </div>
       </Section>
     </>
   );

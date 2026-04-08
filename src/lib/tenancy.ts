@@ -594,10 +594,10 @@ async function checkCampaignToken(
     }
   }
 
-  // Query D1 for all campaign records
+  // Query D1 for campaign records (bounded to prevent unbounded scans)
   const rows = await db
     .prepare(
-      "SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'campaigns'",
+      "SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'campaigns' LIMIT 500",
     )
     .bind(PLUGIN_ID)
     .all();

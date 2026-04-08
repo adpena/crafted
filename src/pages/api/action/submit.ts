@@ -18,6 +18,9 @@ import { checkGeoFilter, type GeoFilterConfig } from "../../../lib/geo-filter.ts
 import { checkDedup } from "../../../lib/dedup.ts";
 import { runPostSubmitPipeline } from "../../../lib/post-submit.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
+// Validation logic also extracted to src/lib/validate-submission.ts for
+// independent testing. This file keeps its own inline copies to avoid a
+// multi-file refactor; both are kept in sync.
 import { incrementWindow, detectSpike, isAlreadyNotified, markNotified } from "../../../lib/spike-detector.ts";
 import { notifyAll as dispatch, type NotifyEnv } from "@adpena/notifications";
 
@@ -75,7 +78,7 @@ export const POST: APIRoute = async (context) => {
   const rawData = (body.data ?? {}) as Record<string, unknown>;
   // Allowlist data fields — only store known keys, never arbitrary client payloads
   const ALLOWED_DATA_KEYS = new Set([
-    "first_name", "last_name", "email", "zip", "comment", "amount",
+    "first_name", "last_name", "email", "zip", "phone", "comment", "amount",
     // Letter action
     "letter_subject", "letter_body", "rep_names",
     // Event RSVP
@@ -105,6 +108,7 @@ export const POST: APIRoute = async (context) => {
   const firstName = typeof data.first_name === "string" ? (data.first_name as string).trim() : undefined;
   const lastName = typeof data.last_name === "string" ? (data.last_name as string).trim() : undefined;
   const zip = typeof data.zip === "string" ? (data.zip as string).trim() : undefined;
+  const phone = typeof data.phone === "string" ? (data.phone as string).trim() : undefined;
 
   // --- 2. Rate limit ---
   if (kv) {
@@ -221,6 +225,7 @@ export const POST: APIRoute = async (context) => {
       firstName,
       lastName,
       zip,
+      phone,
       eventIds,
       pageTitle,
       pageUrl: request.headers.get("referer") ?? undefined,
@@ -266,6 +271,7 @@ export const POST: APIRoute = async (context) => {
       HUSTLE_GROUP_ID: e.HUSTLE_GROUP_ID as string | undefined,
       SALSA_API_TOKEN: e.SALSA_API_TOKEN as string | undefined,
       SALSA_HOST: e.SALSA_HOST as string | undefined,
+      RESEND_DAILY_LIMIT: e.RESEND_DAILY_LIMIT as string | undefined,
     },
   });
 

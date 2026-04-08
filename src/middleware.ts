@@ -1,8 +1,16 @@
 import { defineMiddleware } from "astro:middleware";
 
 // Note: 'unsafe-inline' in script-src is required because Astro inlines scripts
-// at build time. The long-term goal is nonce-based CSP, but that requires Astro
-// nonce support or a post-build injection step. This is a known Astro limitation.
+// at build time (e.g. island hydration, view transitions). Nonce-based CSP would
+// be ideal but requires Astro to propagate a per-request nonce into every inline
+// <script> tag it generates. This is tracked upstream:
+//   https://github.com/withastro/astro/issues/5087
+// Until Astro ships nonce support (or we add a post-build injection step),
+// 'unsafe-inline' is the only viable option for script-src.
+//
+// 'unsafe-inline' in style-src is similarly required because Astro's scoped
+// styles and is:inline directives produce inline <style> blocks.
+//
 // wasm-unsafe-eval allows WebAssembly.compile without full unsafe-eval
 const BASE_CSP =
   "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com https://cloudflareinsights.com; frame-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'";

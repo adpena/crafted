@@ -11,6 +11,7 @@ export interface IntegrationSubmission {
   firstName?: string;
   lastName?: string;
   postalCode?: string;
+  phone?: string;
   pageTitle?: string;
   pageUrl?: string;
   /** External event platform IDs — set per-page via action_props */

@@ -15,12 +15,15 @@ export interface PetitionActionProps {
   progress?: ProgressConfig;
   /** Cloudflare Turnstile site key — enables bot protection when set */
   turnstileSiteKey?: string;
+  /** When true, show an optional phone field (improves VAN match rate) */
+  collect_phone?: boolean;
   onComplete: (data: {
     type: "petition_sign";
     first_name: string;
     last_name: string;
     email: string;
     zip: string;
+    phone?: string;
   }) => void;
   pageId: string;
   visitorId: string;
@@ -45,6 +48,7 @@ export function PetitionAction({
   signatureCount,
   progress,
   turnstileSiteKey,
+  collect_phone,
   onComplete,
   pageId,
   visitorId,
@@ -66,6 +70,7 @@ export function PetitionAction({
     last_name: "",
     email: "",
     zip: "",
+    phone: "",
     comment: "",
   });
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -124,6 +129,7 @@ export function PetitionAction({
             last_name: form.last_name.trim(),
             email: form.email.trim(),
             zip: form.zip.trim(),
+            ...(collect_phone && form.phone.trim() ? { phone: form.phone.trim() } : {}),
             comment: form.comment.trim() || undefined,
           },
         }),
@@ -141,6 +147,7 @@ export function PetitionAction({
         last_name: form.last_name.trim(),
         email: form.email.trim(),
         zip: form.zip.trim(),
+        ...(collect_phone && form.phone.trim() ? { phone: form.phone.trim() } : {}),
       });
     } catch (err) {
       clearTimeout(timeoutId);
@@ -288,6 +295,26 @@ export function PetitionAction({
         />
         <div id="petition-zip-error" role="alert" aria-live="polite" style={errorStyle}>{errors.zip ?? ""}</div>
       </div>
+
+      {/* Phone (optional, improves VAN match rate) */}
+      {collect_phone && (
+        <div style={{ marginBottom: "0.5rem" }}>
+          <label htmlFor="petition-phone" style={labelStyle}>
+            Phone (optional)
+          </label>
+          <input
+            id="petition-phone"
+            type="tel"
+            autoComplete="tel"
+            value={form.phone}
+            onChange={set("phone")}
+            style={{
+              ...inputStyle,
+              maxWidth: "14rem",
+            }}
+          />
+        </div>
+      )}
 
       {/* Comment */}
       <div style={{ marginBottom: "1.5rem" }}>

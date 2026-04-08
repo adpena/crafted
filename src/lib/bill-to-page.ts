@@ -297,7 +297,19 @@ export async function generatePageFromBill(
 
   // Parse and build config
   const generated = parseGeneratedJson(text);
-  return buildActionPageConfig(ref, bill, generated, actionType);
+  const config = buildActionPageConfig(ref, bill, generated, actionType);
+
+  // Safety: AI-generated committee_name is always fake — force human review.
+  // MCP create_page validation rejects empty committee_name, so the user must
+  // fill in their real committee name before publishing.
+  config.disclaimer.committee_name = "";
+  (config as Record<string, unknown>)._disclaimer_note =
+    "Set your real committee name before publishing";
+
+  // Mark as AI-generated for jurisdictions requiring AI disclosure
+  config.disclaimer.ai_generated = true;
+
+  return config;
 }
 
 function parseGeneratedJson(text: string): Record<string, unknown> {

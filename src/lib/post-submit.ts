@@ -39,6 +39,7 @@ export interface PostSubmitContext {
     firstName?: string;
     lastName?: string;
     zip?: string;
+    phone?: string;
     pageTitle?: string;
     pageUrl?: string;
     /** External event platform IDs (event_rsvp only) */
@@ -88,6 +89,8 @@ export interface PostSubmitContext {
     HUSTLE_GROUP_ID?: string;
     SALSA_API_TOKEN?: string;
     SALSA_HOST?: string;
+    /** Max emails per day via Resend (default 500) */
+    RESEND_DAILY_LIMIT?: string;
   };
 }
 
@@ -163,6 +166,7 @@ export async function runPostSubmitPipeline(
         firstName: ctx.submission.firstName,
         lastName: ctx.submission.lastName,
         postalCode: ctx.submission.zip,
+        phone: ctx.submission.phone,
         pageTitle: ctx.submission.pageTitle,
         pageUrl: ctx.submission.pageUrl,
         eventIds: ctx.submission.eventIds,
@@ -244,7 +248,22 @@ async function incrementKVCount(
 }
 
 async function sendConfirmationEmail(ctx: PostSubmitContext): Promise<void> {
-  const { submission, env } = ctx;
+  const { submission, env, kv } = ctx;
+
+  // Daily send cap — prevent bot attacks from burning Resend credits
+  const dailyLimit = parseInt(String(env.RESEND_DAILY_LIMIT ?? "500"), 10) || 500;
+  if (kv) {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const countKey = `resend-daily-count:${today}`;
+    const current = parseInt(await kv.get(countKey) ?? "0", 10);
+    if (current >= dailyLimit) {
+      console.info("[post-submit] daily email limit reached");
+      return;
+    }
+    // Increment after check (non-atomic, acceptable for advisory cap)
+    await kv.put(countKey, String(current + 1), { expirationTtl: 86400 });
+  }
+
   const template = renderConfirmationEmail({
     type: submission.type,
     firstName: submission.firstName,

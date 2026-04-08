@@ -5,6 +5,10 @@ export type DisclaimerProps = {
   committee_name: string;
   treasurer_name?: string;
   locale?: Locale;
+  /** When "independent_expenditure", renders the IE disclaimer line */
+  context?: "independent_expenditure";
+  /** When true, renders AI disclosure line */
+  ai_generated?: boolean;
 };
 
 const containerStyle: CSSProperties = {
@@ -18,7 +22,7 @@ const containerStyle: CSSProperties = {
   textAlign: "center",
 };
 
-export function Disclaimer({ committee_name, treasurer_name, locale: localeProp }: DisclaimerProps) {
+export function Disclaimer({ committee_name, treasurer_name, locale: localeProp, context, ai_generated }: DisclaimerProps) {
   // FEC compliance: don't render a broken "Paid for by" with no name
   if (!committee_name?.trim()) return null;
 
@@ -29,6 +33,12 @@ export function Disclaimer({ committee_name, treasurer_name, locale: localeProp 
       <p>{t(locale, "paid_for_by")} {committee_name}</p>
       {treasurer_name?.trim() && (
         <p>{treasurer_name}, {t(locale, "treasurer")}</p>
+      )}
+      {context === "independent_expenditure" && (
+        <p>Not authorized by any candidate or candidate's committee.</p>
+      )}
+      {ai_generated && (
+        <p>Page content assisted by AI.</p>
       )}
     </footer>
   );
