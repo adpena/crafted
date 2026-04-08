@@ -12,6 +12,7 @@ import { AuditLogViewer } from "./AuditLogViewer";
 import { LivePagePreview } from "./LivePagePreview";
 import { ListBuilder } from "./ListBuilder";
 import { CampaignManager } from "./CampaignManager";
+import { Dashboard } from "./Dashboard";
 
 export { PageBuilder } from "./PageBuilder";
 export type { PageBuilderProps, Campaign, PluginSettings } from "./PageBuilder";
@@ -33,6 +34,7 @@ export { AuditLogViewer } from "./AuditLogViewer";
 export { LivePagePreview } from "./LivePagePreview";
 export { ListBuilder } from "./ListBuilder";
 export { CampaignManager } from "./CampaignManager";
+export { Dashboard } from "./Dashboard";
 export type { LivePagePreviewProps, LivePagePreviewConfig } from "./LivePagePreview";
 
 export { Section } from "./components/Section";
@@ -59,6 +61,7 @@ export {
  * to render the React component for each admin page.
  */
 export const pages: Record<string, React.ComponentType> = {
+  "/": Dashboard,
   "/action-pages": PageBuilder,
   "/submissions": SubmissionsViewer,
   "/notifications": NotificationConfig,
@@ -81,4 +84,4 @@ export const widgets: Record<string, React.ComponentType> = {
   "action-stats": StatsWidget,
 };
 
-export default PageBuilder;
+export default Dashboard;

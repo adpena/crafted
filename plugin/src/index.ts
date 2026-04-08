@@ -26,6 +26,7 @@ export function actionPages(): PluginDescriptor {
       ab_variants: { indexes: ["page_id"] },
     },
     adminPages: [
+      { path: "/", label: "Dashboard", icon: "chart" },
       { path: "/action-pages", label: "Action Pages", icon: "zap" },
       { path: "/submissions", label: "Submissions", icon: "inbox" },
       { path: "/notifications", label: "Notifications", icon: "bell" },
