@@ -236,11 +236,11 @@ export async function getPageSlugsForCampaigns(
 ): Promise<string[]> {
   if (campaignIds.length === 0) return [];
 
-  // Query action pages that belong to these campaigns
+  // Query action pages that belong to these campaigns (capped at 5000 pages)
   const rows = await db
     .prepare(
       `SELECT data FROM _plugin_storage
-       WHERE plugin_id = ? AND collection = 'action_pages'`,
+       WHERE plugin_id = ? AND collection = 'action_pages' LIMIT 5000`,
     )
     .bind(PLUGIN_ID)
     .all();
@@ -649,10 +649,11 @@ async function getFirstFirm(db: TenancyD1): Promise<Firm | null> {
   }
 }
 
+/** Returns all active campaign IDs for a firm. Capped at 1000 campaigns. */
 async function getAllCampaignIds(db: TenancyD1, firmId: string): Promise<string[]> {
   const rows = await db
     .prepare(
-      "SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'campaigns'",
+      "SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'campaigns' LIMIT 1000",
     )
     .bind(PLUGIN_ID)
     .all();
