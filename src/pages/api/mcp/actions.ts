@@ -314,6 +314,7 @@ export const POST: APIRoute = async ({ request }) => {
       if (disclaimer.treasurer_name) sanitizedDisclaimer.treasurer_name = sanitize(disclaimer.treasurer_name, 200);
       if (disclaimer.candidate_name) sanitizedDisclaimer.candidate_name = sanitize(disclaimer.candidate_name, 200);
       if (disclaimer.office) sanitizedDisclaimer.office = sanitize(disclaimer.office, 200);
+      if (disclaimer.context === "independent_expenditure") sanitizedDisclaimer.context = "independent_expenditure";
 
       if (!sanitizedDisclaimer.committee_name) {
         return err("MISSING_FIELD", "disclaimer.committee_name is required (FEC compliance)");
@@ -379,6 +380,25 @@ export const POST: APIRoute = async ({ request }) => {
       ).bind(
         id, PLUGIN_ID, "action_pages",
         JSON.stringify(pageData),
+        pageData.created_at, pageData.created_at,
+      ).run();
+
+      // FEC audit trail: snapshot the full page config at publish time.
+      // This captures committee_name, treasurer_name, context, and all
+      // page content so compliance counsel can reconstruct what the page
+      // looked like on any given date. One extra D1 INSERT per publish.
+      const snapshotId = crypto.randomUUID();
+      const snapshotData = {
+        page_id: id,
+        slug,
+        snapshot_at: pageData.created_at,
+        config: pageData,
+      };
+      await db.prepare(
+        "INSERT INTO _plugin_storage (id, plugin_id, collection, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+      ).bind(
+        snapshotId, PLUGIN_ID, "page_snapshots",
+        JSON.stringify(snapshotData),
         pageData.created_at, pageData.created_at,
       ).run();
 

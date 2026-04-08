@@ -69,14 +69,16 @@ describe("pushToMailchimp", () => {
 		expect(calls).toHaveLength(0);
 	});
 
-	it("uses correct URL pattern with datacenter and list id", async () => {
+	it("uses PUT upsert URL with subscriber hash", async () => {
 		const { fn, calls } = makeFetchStub({ ok: true });
 		vi.stubGlobal("fetch", fn);
 
 		await pushToMailchimp(baseSubmission(), mcEnv());
-		expect(calls[0]!.url).toBe(
-			"https://us7.api.mailchimp.com/3.0/lists/list123/members",
+		// URL should include MD5 subscriber hash of lowercase email
+		expect(calls[0]!.url).toMatch(
+			/^https:\/\/us7\.api\.mailchimp\.com\/3\.0\/lists\/list123\/members\/[a-f0-9]{32}$/,
 		);
+		expect(calls[0]!.init.method).toBe("PUT");
 	});
 
 	it("sends HTTP Basic auth with anystring:{api_key} base64", async () => {
@@ -89,7 +91,7 @@ describe("pushToMailchimp", () => {
 		expect(headers.Authorization).toBe(expected);
 	});
 
-	it("payload includes email, status, merge_fields, tags", async () => {
+	it("payload includes email, status_if_new, merge_fields, tags", async () => {
 		const { fn, calls } = makeFetchStub({ ok: true });
 		vi.stubGlobal("fetch", fn);
 
@@ -99,7 +101,9 @@ describe("pushToMailchimp", () => {
 		);
 		const body = JSON.parse(calls[0]!.init.body as string);
 		expect(body.email_address).toBe("ada@example.com");
-		expect(body.status).toBe("subscribed");
+		// Uses status_if_new (not status) to avoid re-subscribing unsubscribed contacts
+		expect(body.status_if_new).toBe("subscribed");
+		expect(body.status).toBeUndefined();
 		expect(body.merge_fields.FNAME).toBe("Ada");
 		expect(body.merge_fields.LNAME).toBe("Lovelace");
 		expect(body.tags).toContain("email_signup");

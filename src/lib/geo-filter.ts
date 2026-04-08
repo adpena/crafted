@@ -14,6 +14,15 @@ export interface GeoFilterConfig {
   mode: "whitelist" | "blacklist" | "off";
   /** ISO 3166-1 alpha-2 country codes */
   countries: string[];
+  /**
+   * When true, allow submissions from unknown countries (XX, T1, null)
+   * even in whitelist mode. Default: false (strict FEC compliance).
+   *
+   * Use case: issue advocacy campaigns (non-federal, no foreign national
+   * restrictions) that still want a country whitelist but don't want to
+   * block VPN users or requests missing cf-ipcountry.
+   */
+  allow_unknown?: boolean;
 }
 
 export interface GeoFilterResult {
@@ -34,9 +43,10 @@ export function checkGeoFilter(
     return { allowed: true, country };
   }
 
-  // Unknown country — block in whitelist mode (FEC compliance), allow in blacklist mode
+  // Unknown country — block in whitelist mode (FEC compliance), allow in blacklist mode.
+  // allow_unknown overrides the whitelist block for issue advocacy campaigns.
   if (!country || country === "XX" || country === "T1") {
-    if (config.mode === "whitelist") {
+    if (config.mode === "whitelist" && !config.allow_unknown) {
       return { allowed: false, country, reason: "unknown_country_whitelist" };
     }
     return { allowed: true, country, reason: "unknown_country" };

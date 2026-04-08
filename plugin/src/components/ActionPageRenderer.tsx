@@ -203,6 +203,7 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
         <Disclaimer
           committee_name={page.disclaimer.committee_name}
           treasurer_name={page.disclaimer.treasurer_name}
+          context={page.disclaimer.context}
           locale={page.locale}
         />
       </div>

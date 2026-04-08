@@ -44,6 +44,8 @@ export interface PostSubmitContext {
     pageUrl?: string;
     /** External event platform IDs (event_rsvp only) */
     eventIds?: { mobilize?: string; eventbrite?: string; facebook?: string };
+    /** Per-page VAN activist code (overrides global NGPVAN_ACTIVIST_CODE_ID) */
+    vanActivistCodeId?: string;
   };
   /** Request context for tracking */
   request?: {
@@ -170,6 +172,7 @@ export async function runPostSubmitPipeline(
         pageTitle: ctx.submission.pageTitle,
         pageUrl: ctx.submission.pageUrl,
         eventIds: ctx.submission.eventIds,
+        activist_code_id: ctx.submission.vanActivistCodeId,
       },
       env: ctx.env as IntegrationEnv,
     })

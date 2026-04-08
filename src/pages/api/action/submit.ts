@@ -141,7 +141,7 @@ export const POST: APIRoute = async (context) => {
 
   // --- 4. Geo filter ---
   const country = request.headers.get("cf-ipcountry");
-  const { geoConfig: pageGeoConfig, pageTitle } = await getPageMetadata(db, slug);
+  const { geoConfig: pageGeoConfig, pageTitle, vanActivistCodeId } = await getPageMetadata(db, slug);
   const geo = checkGeoFilter(country, pageGeoConfig);
   if (!geo.allowed) {
     return error(403, "GEO_BLOCKED", "Submissions are not accepted from your location.");
@@ -229,6 +229,7 @@ export const POST: APIRoute = async (context) => {
       eventIds,
       pageTitle,
       pageUrl: request.headers.get("referer") ?? undefined,
+      vanActivistCodeId,
     },
     request: {
       clientIp: request.headers.get("cf-connecting-ip") ?? undefined,
@@ -318,18 +319,19 @@ async function verifyTurnstile(
 async function getPageMetadata(
   db: D1,
   slug: string,
-): Promise<{ geoConfig: GeoFilterConfig | undefined; pageTitle: string | undefined }> {
+): Promise<{ geoConfig: GeoFilterConfig | undefined; pageTitle: string | undefined; vanActivistCodeId: string | undefined }> {
   try {
     const row = await db.prepare(
       "SELECT data FROM _plugin_storage WHERE plugin_id = ? AND collection = 'action_pages' AND json_extract(data, '$.slug') = ? LIMIT 1"
     ).bind(PLUGIN_ID, slug).first();
-    if (!row) return { geoConfig: undefined, pageTitle: undefined };
+    if (!row) return { geoConfig: undefined, pageTitle: undefined, vanActivistCodeId: undefined };
     const pageData = JSON.parse(row.data as string);
     const geoConfig = pageData.action_props?.geo_filter ?? pageData.geo_filter ?? undefined;
     const pageTitle = pageData.template_props?.headline ?? pageData.template_props?.eyebrow ?? undefined;
-    return { geoConfig, pageTitle };
+    const vanActivistCodeId = pageData.action_props?.van_activist_code_id ?? undefined;
+    return { geoConfig, pageTitle, vanActivistCodeId };
   } catch {
-    return { geoConfig: undefined, pageTitle: undefined };
+    return { geoConfig: undefined, pageTitle: undefined, vanActivistCodeId: undefined };
   }
 }
 

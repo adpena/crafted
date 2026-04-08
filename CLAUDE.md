@@ -77,15 +77,15 @@ warm (editorial), bold (dark), clean (minimal) + brand extraction (URL → 4 aut
 ### Admin panels (10)
 PageBuilder, SubmissionsViewer, NotificationConfig, TemplateGallery, BrandExtractor, AIPageGenerator, EmailBlastComposer, CsvImportWizard, WebhookInboxViewer, AuditLogViewer
 
-### Integrations (11 — 9 push + 2 read-back)
-Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0), SendGrid, Constant Contact
+### Integrations (14 — 12 push + 2 read-back)
+Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0), SendGrid, Constant Contact, NGP VAN (voter file), Hustle (P2P texting), Salsa Labs
 Read-back webhooks: ActBlue (Basic auth), Action Network (HMAC-SHA256)
 
 ### i18n (8 locales)
 en, es, zh, vi, ko, tl, fr, ar
 
 ### Tests
-1,677 tests across 28 files: `npm test`
+1,709 tests across 32 files: `npm test`
 
 ## API Endpoints
 
@@ -119,6 +119,7 @@ en, es, zh, vi, ko, tl, fr, ar
 - `GET /api/admin/webhook-inbox` — incoming webhook log
 - `GET /api/admin/attribution?slug=X` — attribution summary (petition->donation conversion)
 - `GET /api/admin/attribution?contact=email` — contact attribution journey
+- `GET /api/admin/snapshots?slug=X` — FEC audit trail: page config snapshots at each publish
 
 ## Attribution Tracking
 
@@ -132,7 +133,7 @@ with SHA-256 hashed emails. `src/lib/attribution.ts` provides query functions fo
 1. KV count cache increment
 2. Confirmation email via Resend (HTML templates per action type)
 3. Meta CAPI + Google Ads conversion tracking (v25.0)
-4. Campaign platform integrations (9 adapters fire in parallel)
+4. Campaign platform integrations (12 adapters fire in parallel)
 5. Contact upsert (D1 dedup by email)
 
 ## Case Study

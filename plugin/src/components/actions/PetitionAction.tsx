@@ -183,7 +183,7 @@ export function PetitionAction({
       {/* Progress bar — configurable mode, goal, colors */}
       {progress?.enabled && progressGoal > 0 && (
         <ProgressBar
-          current={liveCount || signatureCount || 0}
+          current={(liveCount || signatureCount || 0) + (progress.initialCount ?? 0)}
           goal={progressGoal}
           labelKey={progress.labelKey ?? "progress_signatures"}
           mode={progress.mode ?? "bar"}

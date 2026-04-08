@@ -126,7 +126,7 @@ export function SignupAction({
       {/* Progress bar */}
       {progress?.enabled && progress.goal && progress.goal > 0 && (
         <ProgressBar
-          current={liveCount}
+          current={liveCount + (progress.initialCount ?? 0)}
           goal={progress.goal}
           labelKey={progress.labelKey ?? "progress_signups"}
           mode={progress.mode ?? "bar"}

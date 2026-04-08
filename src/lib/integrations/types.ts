@@ -20,6 +20,8 @@ export interface IntegrationSubmission {
     eventbrite?: string;
     facebook?: string;
   };
+  /** Per-page VAN activist code (overrides global NGPVAN_ACTIVIST_CODE_ID) */
+  activist_code_id?: string;
 }
 
 export interface IntegrationEnv {

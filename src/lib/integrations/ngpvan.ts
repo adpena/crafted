@@ -85,8 +85,17 @@ export async function pushToNgpVan(
 		console.info("[ngpvan] voter file match found, vanId:", vanId);
 		await incrementVanCounter(kv, "matches").catch(() => {});
 
-		// Step 2: Apply activist code if configured
-		if (env.NGPVAN_ACTIVIST_CODE_ID) {
+		// Step 2: Apply activist code if configured.
+		// Per-page activist code (from action_props) overrides global env var.
+		//
+		// Per-action-type canvass responses: To differentiate petition signers
+		// from donors from letter writers in VAN, the campaign's VAN admin
+		// creates separate activist codes per action type, then the platform
+		// admin sets each page's `activist_code_id` in action_props. VAN
+		// survey questions require pre-existing IDs and cannot be created
+		// via API, so per-page activist codes are the pragmatic approach.
+		const activistCodeId = submission.activist_code_id ?? env.NGPVAN_ACTIVIST_CODE_ID;
+		if (activistCodeId) {
 			await fetch(`${API_BASE}/people/${vanId}/canvassResponses`, {
 				method: "POST",
 				headers: {
@@ -99,7 +108,7 @@ export async function pushToNgpVan(
 						inputTypeId: 11,   // API input type
 					},
 					responses: [{
-						activistCodeId: parseInt(String(env.NGPVAN_ACTIVIST_CODE_ID), 10),
+						activistCodeId: parseInt(String(activistCodeId), 10),
 						action: "Apply",
 						type: "ActivistCode",
 					}],

@@ -23,4 +23,10 @@ export interface ProgressConfig {
   countUrl?: string;
   /** SSE endpoint for live updates (e.g., /api/action/stream?slug=X) */
   sseUrl?: string;
+  /**
+   * Initial count offset for platform migration.
+   * When set, the progress bar adds this to the live count from the API.
+   * Example: "we already have 5,000 signatures from our previous platform."
+   */
+  initialCount?: number;
 }

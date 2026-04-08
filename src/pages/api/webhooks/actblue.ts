@@ -150,25 +150,38 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // --- Fire-and-forget KV updates for live progress ---
-  if (kv && refcode && !isRefund && amount > 0) {
-    // Increment action count (same pattern as post-submit.ts)
-    const countKey = `action-count:${refcode}`;
-    kv.get(countKey).then(async (raw) => {
-      const current = raw !== null ? parseInt(raw, 10) : 0;
-      await kv.put(countKey, String(current + 1), { expirationTtl: 86400 * 30 });
-    }).catch((err) => {
-      console.error("[actblue-webhook] KV count increment failed:", err instanceof Error ? err.message : "unknown");
-    });
-
-    // Increment cumulative donation total (stored as cents for precision)
-    const totalKey = `donation-total:${refcode}`;
+  if (kv && refcode && amount > 0) {
     const amountCents = Math.round(amount * 100);
-    kv.get(totalKey).then(async (raw) => {
-      const current = raw !== null ? parseInt(raw, 10) : 0;
-      await kv.put(totalKey, String(current + amountCents), { expirationTtl: 86400 * 30 });
-    }).catch((err) => {
-      console.error("[actblue-webhook] KV donation total increment failed:", err instanceof Error ? err.message : "unknown");
-    });
+
+    if (isRefund) {
+      // Decrement donation total on refund (guard against going below 0)
+      const totalKey = `donation-total:${refcode}`;
+      kv.get(totalKey).then(async (raw) => {
+        const current = raw !== null ? parseInt(raw, 10) : 0;
+        const updated = Math.max(0, current - amountCents);
+        await kv.put(totalKey, String(updated), { expirationTtl: 86400 * 30 });
+      }).catch((err) => {
+        console.error("[actblue-webhook] KV donation total decrement failed:", err instanceof Error ? err.message : "unknown");
+      });
+    } else {
+      // Increment action count (same pattern as post-submit.ts)
+      const countKey = `action-count:${refcode}`;
+      kv.get(countKey).then(async (raw) => {
+        const current = raw !== null ? parseInt(raw, 10) : 0;
+        await kv.put(countKey, String(current + 1), { expirationTtl: 86400 * 30 });
+      }).catch((err) => {
+        console.error("[actblue-webhook] KV count increment failed:", err instanceof Error ? err.message : "unknown");
+      });
+
+      // Increment cumulative donation total (stored as cents for precision)
+      const totalKey = `donation-total:${refcode}`;
+      kv.get(totalKey).then(async (raw) => {
+        const current = raw !== null ? parseInt(raw, 10) : 0;
+        await kv.put(totalKey, String(current + amountCents), { expirationTtl: 86400 * 30 });
+      }).catch((err) => {
+        console.error("[actblue-webhook] KV donation total increment failed:", err instanceof Error ? err.message : "unknown");
+      });
+    }
   }
 
   return json(200, { ok: true });
