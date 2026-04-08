@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { SLUG_RE } from "../lib/slug.ts";
 import { Section } from "./components/Section";
 import { Field, inputStyle } from "./components/Field";
@@ -56,6 +56,59 @@ interface TemplateProps {
   overlay_opacity: number;
   body: string;
   pull_quote: string;
+  /** hero-blocks template: ordered block list. */
+  blocks: HeroBlockUi[];
+}
+
+/**
+ * UI-side block type for the hero-blocks editor. Mirrors the server
+ * validator in src/lib/hero-blocks-validator.ts; shape changes must
+ * stay in sync there.
+ */
+export type HeroBlockUiType =
+  | "headline"
+  | "subhead"
+  | "body"
+  | "image"
+  | "pull_quote"
+  | "divider"
+  | "spacer"
+  | "rich_text";
+
+export interface HeroBlockUi {
+  id: string;
+  type: HeroBlockUiType;
+  text?: string;
+  url?: string;
+  alt?: string;
+  credit?: string;
+  attribution?: string;
+  height?: number;
+  html?: string;
+}
+
+function makeBlockId(): string {
+  return `b_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function emptyBlockOfType(type: HeroBlockUiType): HeroBlockUi {
+  const id = makeBlockId();
+  switch (type) {
+    case "headline":
+    case "subhead":
+    case "body":
+    case "pull_quote":
+      return { id, type, text: "" };
+    case "image":
+      return { id, type, url: "", alt: "", credit: "" };
+    case "spacer":
+      return { id, type, height: 1 };
+    case "rich_text":
+      return { id, type, html: "" };
+    case "divider":
+    default:
+      return { id, type: "divider" };
+  }
 }
 
 interface ActionProps {
@@ -105,6 +158,7 @@ const EMPTY_TEMPLATE_PROPS: TemplateProps = {
   overlay_opacity: 0.4,
   body: "",
   pull_quote: "",
+  blocks: [],
 };
 
 const EMPTY_ACTION_PROPS: ActionProps = {
@@ -231,6 +285,21 @@ function buildTemplatePropsConfig(
         media_side: templateProps.align === "center" ? "right" : templateProps.align,
         ratio: "1/1",
       };
+    }
+    if (template === "hero-blocks") {
+      // Strip empty blocks and return the ordered array as-is. The server
+      // validator performs the strict pass; this is a cheap client sanity
+      // check so the live preview only shows renderable blocks.
+      const clean = (templateProps.blocks ?? []).filter((b) => {
+        if (!b || typeof b !== "object") return false;
+        if (b.type === "headline" || b.type === "subhead" || b.type === "body" || b.type === "pull_quote") {
+          return typeof b.text === "string" && b.text.trim().length > 0;
+        }
+        if (b.type === "image") return typeof b.url === "string" && b.url.trim().length > 0;
+        if (b.type === "rich_text") return typeof b.html === "string" && b.html.trim().length > 0;
+        return true; // divider, spacer — always renderable
+      });
+      return { blocks: clean };
     }
     return {};
   } catch { return {}; }
@@ -685,11 +754,34 @@ export function PageBuilder({
     }
 
     if (template) {
-      if (!templateProps.headline.trim() && !pageTitle.trim()) {
-        e.tp_headline = "Headline is required.";
-      }
-      if (template === "hero-media" && !templateProps.media_url.trim()) {
-        e.tp_media_url = "Media URL is required for this template.";
+      // hero-blocks has its own content model — only require a non-empty
+      // blocks array. Other templates still need a headline.
+      if (template === "hero-blocks") {
+        const blocks = templateProps.blocks ?? [];
+        if (blocks.length === 0) {
+          e.tp_blocks = "Add at least one block.";
+        } else if (
+          !blocks.some(
+            (b) =>
+              (b.type === "headline" ||
+                b.type === "subhead" ||
+                b.type === "body" ||
+                b.type === "rich_text" ||
+                b.type === "pull_quote") &&
+              ((b.text ?? "").trim().length > 0 ||
+                (b.html ?? "").trim().length > 0),
+          )
+        ) {
+          e.tp_blocks =
+            "Add at least one text block (headline, body, or rich text).";
+        }
+      } else {
+        if (!templateProps.headline.trim() && !pageTitle.trim()) {
+          e.tp_headline = "Headline is required.";
+        }
+        if (template === "hero-media" && !templateProps.media_url.trim()) {
+          e.tp_media_url = "Media URL is required for this template.";
+        }
       }
     }
 
@@ -801,6 +893,12 @@ export function PageBuilder({
           media_side: templateProps.align === "center" ? "right" : templateProps.align,
           ratio: "1/1",
         };
+      }
+      if (template === "hero-blocks") {
+        // Pass the blocks through as-is; the MCP create_page endpoint
+        // runs the authoritative validator (validateHeroBlocksServer)
+        // before writing to D1.
+        return { blocks: templateProps.blocks };
       }
       return {};
     };
@@ -1004,6 +1102,28 @@ export function PageBuilder({
   const renderTemplateFields = () => {
     if (!template) return null;
     const tplOpt = TEMPLATE_OPTIONS.find((o) => o.id === template);
+    // hero-blocks supplies its own content via the block editor; the
+    // shared headline/subhead inputs do not apply.
+    if (template === "hero-blocks") {
+      return (
+        <div style={subSectionStyle}>
+          <p style={subHeadingStyle}>{tplOpt?.name} fields</p>
+          {showError("tp_blocks") && (
+            <p
+              style={{
+                color: "#b33a3a",
+                fontFamily: "var(--page-font-mono, monospace)",
+                fontSize: "0.75rem",
+                margin: "0 0 0.5rem",
+              }}
+            >
+              {showError("tp_blocks")}
+            </p>
+          )}
+          {renderBlocksEditor()}
+        </div>
+      );
+    }
     return (
       <div style={subSectionStyle}>
         <p style={subHeadingStyle}>{tplOpt?.name} fields</p>
@@ -1153,6 +1273,298 @@ export function PageBuilder({
             </Field>
           </>
         )}
+
+      </div>
+    );
+  };
+
+  /**
+   * Hero-blocks editor: ordered list of typed blocks with move/remove
+   * controls and per-type field editors. The add-block dropdown at the
+   * bottom seeds an empty block of the chosen type.
+   *
+   * State: the blocks live in templateProps.blocks. Every mutation here
+   * produces a new array (no mutation in place) so React sees identity
+   * change and the debounced preview regenerates.
+   */
+  const renderBlocksEditor = (): ReactNode => {
+    const blocks = templateProps.blocks ?? [];
+
+    const updateBlocks = (next: HeroBlockUi[]): void => {
+      setTemplateProps({ ...templateProps, blocks: next });
+    };
+
+    const patchBlock = (id: string, patch: Partial<HeroBlockUi>): void => {
+      updateBlocks(blocks.map((b) => (b.id === id ? { ...b, ...patch } : b)));
+    };
+
+    const moveBlock = (index: number, direction: -1 | 1): void => {
+      const target = index + direction;
+      if (target < 0 || target >= blocks.length) return;
+      const next = blocks.slice();
+      const [removed] = next.splice(index, 1);
+      if (removed) next.splice(target, 0, removed);
+      updateBlocks(next);
+    };
+
+    const removeBlock = (id: string): void => {
+      updateBlocks(blocks.filter((b) => b.id !== id));
+    };
+
+    const addBlock = (type: HeroBlockUiType): void => {
+      updateBlocks([...blocks, emptyBlockOfType(type)]);
+    };
+
+    const blockCardStyle: CSSProperties = {
+      border: "1px solid var(--page-border, #d4d4c8)",
+      padding: "0.75rem 0.9rem",
+      marginBottom: "0.75rem",
+      background: "transparent",
+    };
+    const blockHeaderStyle: CSSProperties = {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "0.5rem",
+      marginBottom: "0.5rem",
+    };
+    const blockLabelStyle: CSSProperties = {
+      fontFamily: "var(--page-font-mono, monospace)",
+      fontSize: "0.7rem",
+      letterSpacing: "0.08em",
+      textTransform: "uppercase" as const,
+      color: "var(--page-secondary, #6b6b6b)",
+    };
+    const btnStyle: CSSProperties = {
+      background: "transparent",
+      border: "1px solid var(--page-border, #d4d4c8)",
+      padding: "0.25rem 0.5rem",
+      fontFamily: "var(--page-font-mono, monospace)",
+      fontSize: "0.7rem",
+      cursor: "pointer",
+      color: "var(--page-text, #1a1a1a)",
+      minWidth: "28px",
+    };
+    const btnDangerStyle: CSSProperties = {
+      ...btnStyle,
+      color: "#b33a3a",
+      borderColor: "#d4d4c8",
+    };
+
+    return (
+      <div style={{ marginTop: "1rem" }}>
+        <p style={subHeadingStyle}>
+          Blocks ({blocks.length}){" "}
+          <span
+            style={{
+              fontFamily: "var(--page-font-mono, monospace)",
+              fontSize: "0.7rem",
+              color: "var(--page-secondary, #6b6b6b)",
+              textTransform: "none",
+              letterSpacing: 0,
+            }}
+          >
+            — reorder, add, or remove in any order.
+          </span>
+        </p>
+
+        {blocks.length === 0 && (
+          <p
+            style={{
+              fontFamily: "var(--page-font-serif, Georgia, serif)",
+              fontSize: "0.85rem",
+              color: "var(--page-secondary, #6b6b6b)",
+              fontStyle: "italic",
+              margin: "0 0 0.75rem",
+            }}
+          >
+            No blocks yet. Add one below to get started.
+          </p>
+        )}
+
+        {blocks.map((block, i) => (
+          <div key={block.id} style={blockCardStyle}>
+            <div style={blockHeaderStyle}>
+              <span style={blockLabelStyle}>
+                {i + 1}. {block.type.replace("_", " ")}
+              </span>
+              <div style={{ display: "flex", gap: "0.25rem" }}>
+                <button
+                  type="button"
+                  onClick={() => moveBlock(i, -1)}
+                  disabled={i === 0}
+                  aria-label="Move up"
+                  style={{ ...btnStyle, opacity: i === 0 ? 0.4 : 1 }}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveBlock(i, 1)}
+                  disabled={i === blocks.length - 1}
+                  aria-label="Move down"
+                  style={{
+                    ...btnStyle,
+                    opacity: i === blocks.length - 1 ? 0.4 : 1,
+                  }}
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeBlock(block.id)}
+                  aria-label={`Delete ${block.type}`}
+                  style={btnDangerStyle}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {(block.type === "headline" ||
+              block.type === "subhead" ||
+              block.type === "pull_quote") && (
+              <input
+                type="text"
+                value={block.text ?? ""}
+                onChange={(e) => patchBlock(block.id, { text: e.target.value })}
+                placeholder={
+                  block.type === "headline"
+                    ? "Big bold statement"
+                    : block.type === "subhead"
+                      ? "Supporting line"
+                      : "Standout quote"
+                }
+                style={inputStyle()}
+              />
+            )}
+
+            {block.type === "body" && (
+              <textarea
+                value={block.text ?? ""}
+                onChange={(e) => patchBlock(block.id, { text: e.target.value })}
+                rows={5}
+                placeholder="A paragraph or two. Leave a blank line to start a new paragraph."
+                style={{ ...inputStyle(), minHeight: "6rem", resize: "vertical" }}
+              />
+            )}
+
+            {block.type === "pull_quote" && (
+              <input
+                type="text"
+                value={block.attribution ?? ""}
+                onChange={(e) =>
+                  patchBlock(block.id, { attribution: e.target.value })
+                }
+                placeholder="Attribution (optional)"
+                style={{ ...inputStyle(), marginTop: "0.5rem" }}
+              />
+            )}
+
+            {block.type === "image" && (
+              <>
+                <input
+                  type="url"
+                  value={block.url ?? ""}
+                  onChange={(e) => patchBlock(block.id, { url: e.target.value })}
+                  placeholder="https://cdn.example.com/photo.jpg"
+                  style={inputStyle()}
+                />
+                <input
+                  type="text"
+                  value={block.alt ?? ""}
+                  onChange={(e) => patchBlock(block.id, { alt: e.target.value })}
+                  placeholder="Alt text (for screen readers)"
+                  style={{ ...inputStyle(), marginTop: "0.5rem" }}
+                />
+                <input
+                  type="text"
+                  value={block.credit ?? ""}
+                  onChange={(e) =>
+                    patchBlock(block.id, { credit: e.target.value })
+                  }
+                  placeholder="Photo credit (optional)"
+                  style={{ ...inputStyle(), marginTop: "0.5rem" }}
+                />
+              </>
+            )}
+
+            {block.type === "spacer" && (
+              <input
+                type="number"
+                min={0}
+                max={8}
+                step={0.5}
+                value={block.height ?? 1}
+                onChange={(e) =>
+                  patchBlock(block.id, { height: Number(e.target.value) || 0 })
+                }
+                style={{ ...inputStyle(), width: "8rem" }}
+              />
+            )}
+
+            {block.type === "rich_text" && (
+              <textarea
+                value={block.html ?? ""}
+                onChange={(e) => patchBlock(block.id, { html: e.target.value })}
+                rows={5}
+                placeholder="<p>Raw HTML…</p>"
+                style={{
+                  ...inputStyle(),
+                  fontFamily: "var(--page-font-mono, monospace)",
+                  fontSize: "0.8rem",
+                  minHeight: "6rem",
+                  resize: "vertical",
+                }}
+              />
+            )}
+
+            {block.type === "divider" && (
+              <p
+                style={{
+                  fontFamily: "var(--page-font-mono, monospace)",
+                  fontSize: "0.75rem",
+                  color: "var(--page-secondary, #6b6b6b)",
+                  margin: 0,
+                }}
+              >
+                Horizontal rule — no fields.
+              </p>
+            )}
+          </div>
+        ))}
+
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+            marginTop: "0.5rem",
+          }}
+        >
+          <span style={blockLabelStyle}>Add block:</span>
+          {(
+            [
+              "headline",
+              "subhead",
+              "body",
+              "image",
+              "pull_quote",
+              "divider",
+              "spacer",
+              "rich_text",
+            ] as HeroBlockUiType[]
+          ).map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => addBlock(t)}
+              style={btnStyle}
+            >
+              + {t.replace("_", " ")}
+            </button>
+          ))}
+        </div>
       </div>
     );
   };

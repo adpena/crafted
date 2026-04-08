@@ -1,6 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
 
-export type TemplateId = "hero-simple" | "hero-media" | "hero-story";
+export type TemplateId =
+  | "hero-simple"
+  | "hero-media"
+  | "hero-story"
+  | "hero-blocks";
 
 export interface TemplateOption {
   id: TemplateId;
@@ -23,6 +27,11 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     id: "hero-story",
     name: "Hero — Story",
     description: "Long-form narrative with a pull quote.",
+  },
+  {
+    id: "hero-blocks",
+    name: "Hero — Blocks",
+    description: "Ordered blocks. Reorder, insert, and remove any section.",
   },
 ];
 
@@ -124,10 +133,32 @@ function HeroStoryThumb(): ReactNode {
   );
 }
 
+function HeroBlocksThumb(): ReactNode {
+  return (
+    <svg viewBox="0 0 160 90" width="100%" height="100%" aria-hidden>
+      <rect x="0" y="0" width="160" height="90" fill="#f5f5f0" />
+      <rect x="16" y="10" width="4" height="4" fill="#6b6b6b" />
+      <rect x="24" y="10" width="118" height="4" fill="#1a1a1a" />
+      <rect x="16" y="20" width="4" height="4" fill="#6b6b6b" />
+      <rect x="24" y="20" width="90" height="3" fill="#1a1a1a" />
+      <rect x="16" y="30" width="4" height="18" fill="#6b6b6b" />
+      <rect x="24" y="30" width="118" height="18" fill="#d4d4c8" />
+      <rect x="16" y="54" width="4" height="4" fill="#6b6b6b" />
+      <rect x="24" y="54" width="118" height="2" fill="#6b6b6b" />
+      <rect x="24" y="60" width="92" height="2" fill="#6b6b6b" />
+      <rect x="16" y="70" width="4" height="10" fill="#1a1a1a" />
+      <rect x="26" y="72" width="2" height="6" fill="#1a1a1a" />
+      <rect x="32" y="72" width="100" height="2" fill="#1a1a1a" />
+      <rect x="32" y="76" width="70" height="2" fill="#1a1a1a" />
+    </svg>
+  );
+}
+
 const THUMBS: Record<TemplateId, ReactNode> = {
   "hero-simple": <HeroSimpleThumb />,
   "hero-media": <HeroMediaThumb />,
   "hero-story": <HeroStoryThumb />,
+  "hero-blocks": <HeroBlocksThumb />,
 };
 
 export function TemplatePicker({ value, onChange }: TemplatePickerProps) {

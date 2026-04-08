@@ -14,6 +14,7 @@ import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQU
 import { verifyBearer } from "../../../lib/auth.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
 import { sanitizeCustomCss } from "../../../lib/sanitize-css.ts";
+import { validateHeroBlocksServer } from "../../../lib/hero-blocks-validator.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -122,6 +123,13 @@ const TEMPLATES = [
       "background_color",
       "ratio",
     ],
+  },
+  {
+    name: "hero-blocks",
+    // Ordered blocks array — each entry has {id?, type, ...fields}
+    // where type is one of: headline, subhead, body, image, pull_quote,
+    // divider, spacer, rich_text. See plugin/src/components/templates/HeroBlocks.
+    props: ["blocks"],
   },
 ];
 
@@ -337,6 +345,23 @@ export const POST: APIRoute = async ({ request }) => {
             return err("INVALID_URL", e instanceof Error ? e.message : "URL validation failed");
           }
         }
+      }
+
+      // Hero-blocks payload: validate + clean the blocks array.
+      if (p.template === "hero-blocks") {
+        const result = validateHeroBlocksServer(templateProps.blocks);
+        if (result.blocks.length === 0) {
+          return err(
+            "INVALID_BLOCKS",
+            `hero-blocks requires at least one valid block. Rejected: ${result.rejected
+              .slice(0, 5)
+              .map((r) => `#${r.index}: ${r.reason}`)
+              .join("; ")}`,
+          );
+        }
+        // Replace with cleaned array — drops invalid entries, backfills ids,
+        // normalizes image URLs to canonical href, clamps spacer height.
+        templateProps.blocks = result.blocks;
       }
 
       // Validate ActBlue URL in action_props if action is fundraise
