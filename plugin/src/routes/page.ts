@@ -45,7 +45,9 @@ export async function handlePage(routeCtx: RouteContext, ctx: PluginContext) {
 
   const jurisdiction = resolveJurisdiction(geo);
 
-  const visitorId = routeCtx.request.headers.get("x-visitor-id") ?? crypto.randomUUID();
+  const rawVisitorId = routeCtx.request.headers.get("x-visitor-id") ?? "";
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const visitorId = UUID_RE.test(rawVisitorId) ? rawVisitorId : crypto.randomUUID();
   const variants = (page.variants as string[]) ?? ["control"];
   const variant = assignVariant(visitorId, variants);
 

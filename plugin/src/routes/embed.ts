@@ -45,8 +45,14 @@ export async function handleEmbed(routeCtx: RouteContext, _ctx: PluginContext) {
   iframe.style.minHeight = '400px';
   iframe.setAttribute('loading', 'lazy');
   iframe.setAttribute('title', 'Action Page');
+  iframe.setAttribute('allow', 'payment');
   shadow.appendChild(iframe);
-  document.currentScript.parentNode.insertBefore(container, document.currentScript);
+  var cs = document.currentScript;
+  if (cs && cs.parentNode) {
+    cs.parentNode.insertBefore(container, cs);
+  } else {
+    document.body.appendChild(container);
+  }
 })();
 `.trim();
 

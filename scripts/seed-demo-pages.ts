@@ -364,7 +364,11 @@ async function rpc(method: string, params: Record<string, unknown>): Promise<Rpc
 		},
 		body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
 	});
-	return (await res.json()) as RpcResponse;
+	try {
+		return (await res.json()) as RpcResponse;
+	} catch {
+		return { error: { code: -1, message: `Non-JSON response (HTTP ${res.status})` } };
+	}
 }
 
 async function main() {

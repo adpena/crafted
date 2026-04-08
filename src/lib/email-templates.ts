@@ -110,12 +110,12 @@ function petitionEmail(data: EmailTemplateData): EmailOutput {
         Thank you${name !== "there" ? `, ${esc(name)}` : ""}!
       </h1>
       <p style="font-size:16px;line-height:1.6;color:#444;margin:0 0 16px;">
-        Your signature has been recorded. Every voice matters — thank you for adding yours.
+        ${data.pageTitle ? `Your signature for <strong>${esc(data.pageTitle)}</strong> has been recorded.` : "Your signature has been recorded."} Every voice matters — thank you for adding yours.
       </p>
       ${shareBlock(data)}
       ${footerBlock(data)}
     `),
-    text: `Thank you${name !== "there" ? `, ${name}` : ""}! Your signature has been recorded.${data.pageUrl ? ` Share: ${data.pageUrl}` : ""}`,
+    text: `Thank you${name !== "there" ? `, ${name}` : ""}! ${data.pageTitle ? `Your signature for ${data.pageTitle} has been recorded.` : "Your signature has been recorded."}${data.pageUrl ? ` Share: ${data.pageUrl}` : ""}`,
   };
 }
 

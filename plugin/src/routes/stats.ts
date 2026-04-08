@@ -6,7 +6,7 @@ export async function handleStats(routeCtx: RouteContext, ctx: PluginContext) {
   const url = new URL(routeCtx.request.url);
   const pageId = input?.page_id ?? url.searchParams.get("page_id");
   const campaign = input?.campaign ?? url.searchParams.get("campaign");
-  if (!pageId || !/^[a-z0-9][a-z0-9-]*$/.test(pageId)) {
+  if (!pageId || !SLUG_RE.test(pageId)) {
     return { status: 400, body: { error: { code: "INVALID_INPUT", message: "Missing or invalid page_id parameter" } } };
   }
 

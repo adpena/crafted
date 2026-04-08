@@ -134,7 +134,8 @@ const SCRIPT = `(function () {
   };
 
   ActionPageElement.prototype._handleMessage = function (event) {
-    if (this._origin && event.origin !== this._origin) return;
+    if (!this._origin) return;
+    if (event.origin !== this._origin) return;
     if (!this._iframe || event.source !== this._iframe.contentWindow) return;
     if (!isCraftedMessage(event.data)) return;
     if (event.data.type === "crafted:resize") {
