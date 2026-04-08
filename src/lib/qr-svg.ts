@@ -404,7 +404,7 @@ export function renderQRSvg(
   // ── SVG open ───────────────────────────────────────────────────
 
   parts.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" shape-rendering="crispEdges">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"${shape === "square" ? ' shape-rendering="crispEdges"' : ""}>`,
   );
 
   if (defs.length > 0) {

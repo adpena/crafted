@@ -566,7 +566,10 @@ function placeFormatBits(grid: Grid, ecLevel: ECLevel, maskIdx: number) {
  * @returns 2D boolean array where `true` = dark module
  */
 export function generateQR(text: string, ecLevel: ECLevel = "M"): boolean[][] {
-  const version = selectVersion(text.length, ecLevel);
+  // Use UTF-8 byte length for version selection — JS string.length counts
+  // UTF-16 code units which undercount multi-byte characters (emoji, CJK).
+  const byteLength = new TextEncoder().encode(text).length;
+  const version = selectVersion(byteLength, ecLevel);
   const size = moduleCount(version);
 
   // Encode data codewords

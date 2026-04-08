@@ -112,7 +112,7 @@ en, es, zh, vi, ko, tl, fr, ar
 - **Rate limiting + Turnstile** -- per-IP KV rate limiting with optional Cloudflare Turnstile
 - **Email dedup** -- SHA-256 hash per email+slug prevents duplicate submissions
 - **OG metadata injection** -- automatic Open Graph tags for action page URLs
-- **QR codes** -- `/api/action/qr?slug=X&size=300` generates PNG QR codes (goqr.me API)
+- **QR codes** -- `/api/action/qr?slug=X&style=rounded&ec=H` generates styled SVG QR codes (8 shapes, 4 EC levels, gradients, eye styling — zero dependencies)
 - **Conversion tracking** -- Meta CAPI + Google Ads with click attribution forwarding
 - **WYSIWYG preview** -- live side-by-side preview in PageBuilder
 
@@ -140,7 +140,7 @@ The plugin follows emdash's two-entrypoint pattern:
 
 ## Tests
 
-1,677 tests across 28 files:
+1,693 tests across 30 files:
 
 ```bash
 cd plugin && npm test
