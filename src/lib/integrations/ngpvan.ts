@@ -58,7 +58,10 @@ export async function pushToNgpVan(
 
 		const person = await matchRes.json() as { vanId?: number };
 		const vanId = person.vanId;
-		if (!vanId) return { ok: true }; // Created but no VAN ID returned
+		// VAN created the contact but no voter file match — expected for email-only
+		// submissions (match rates are typically 40-60%). Still ok: the contact
+		// exists in VAN, just not linked to a voter file record.
+		if (!vanId) return { ok: true, error: "no_van_match" };
 
 		// Step 2: Apply activist code if configured
 		if (env.NGPVAN_ACTIVIST_CODE_ID) {

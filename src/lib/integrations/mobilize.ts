@@ -97,7 +97,7 @@ async function pushAttendance(
 	}
 
 	const timeslotId = perPage?.timeslotId ?? env.MOBILIZE_TIMESLOT_ID;
-	if (!timeslotId) return undefined; // no timeslot configured — skip silently
+	if (!timeslotId) return { ok: false, error: "timeslot_id required — configure MOBILIZE_TIMESLOT_ID or use per-page event_ids with format eventId:timeslotId" };
 	if (!ID_RE.test(timeslotId)) {
 		return { ok: false, error: "invalid timeslot id" };
 	}

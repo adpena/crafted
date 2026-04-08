@@ -6,7 +6,7 @@ const stats = [
 	{ value: "8", label: "Action types" },
 	{ value: "9", label: "Platform integrations" },
 	{ value: "8", label: "Languages (i18n)" },
-	{ value: "$0", label: "On Cloudflare free tier" },
+	{ value: "$5/mo", label: "Production cost" },
 ];
 
 const actionTypes = [
@@ -119,8 +119,8 @@ const builtWith = [
 ];
 
 const comparison = [
-	{ feature: "Free tier", crafted: "Unlimited", an: "500 contacts max" },
-	{ feature: "Monthly cost", crafted: "$0", an: "$59 – $1,500" },
+	{ feature: "Free tier", crafted: "$0 demos / $5 production", an: "500 contacts max" },
+	{ feature: "Monthly cost", crafted: "$5–85", an: "$59 – $1,500" },
 	{ feature: "Edge latency", crafted: "<100ms global", an: "US-centric" },
 	{ feature: "Petition pages", crafted: "yes", an: "yes" },
 	{ feature: "Letter to Congress", crafted: "yes", an: "yes" },
@@ -138,14 +138,14 @@ const comparison = [
 
 <Base
 	title="Crafted Action Pages"
-	description="The open-source alternative to Action Network. Edge-native. Free tier. Production-hardened."
+	description="The open-source alternative to Action Network. Edge-native. Starts at $5/month. Production-hardened."
 >
 	<main id="main-content" class="ap-page">
 		<section class="ap-hero">
-			<p class="ap-eyebrow">Open source · Edge-native · Free</p>
+			<p class="ap-eyebrow">Open source · Edge-native · From $5/mo</p>
 			<h1 class="ap-title">Crafted Action Pages</h1>
 			<p class="ap-subhead">
-				The open-source alternative to Action Network. Edge-native. Free tier.
+				The open-source alternative to Action Network. Edge-native. Starts at $5/month.
 				Production-hardened.
 			</p>
 			<div class="ap-cta-row">
@@ -262,9 +262,9 @@ const comparison = [
 		<section class="ap-section">
 			<h2 class="ap-section-title">How it was built</h2>
 			<div class="ap-case-study">
-				<h3 class="ap-case-title">Building Action Network on Cloudflare's free tier</h3>
+				<h3 class="ap-case-title">Building an open-source Action Network alternative</h3>
 				<p class="ap-case-desc">
-					How I built a production-hardened campaign action pages platform with 1,677 tests, 8 action types, 9 integrations, and AI-generated pages — all running for $0/month.
+					How I built a production-hardened campaign action pages platform with 1,677 tests, 8 action types, 9 integrations, and AI-generated pages — starting at $5/month on Cloudflare Workers.
 				</p>
 				<p class="ap-case-topics">
 					Architecture &middot; Security (5 audit passes) &middot; Browser compatibility &middot; The AI layer &middot; Integration layer &middot; Testing discipline &middot; Cost breakdown
@@ -281,7 +281,7 @@ const comparison = [
 		<section class="ap-footer-cta">
 			<h2 class="ap-footer-title">Deploy your own in minutes.</h2>
 			<p class="ap-footer-sub">
-				Clone the repo, set a handful of env vars, and ship to Cloudflare's free tier.
+				Clone the repo, set a handful of env vars, and ship to Cloudflare Workers.
 			</p>
 			<div class="ap-footer-btns">
 				<a

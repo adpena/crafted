@@ -658,7 +658,14 @@ export function PageBuilder({
     if (!pageTitle.trim()) e.pageTitle = "Page title is required.";
     if (!template) e.template = "Pick a template.";
     if (!action) e.action = "Pick an action.";
-    if (!committeeName.trim()) e.committeeName = "Committee name is required.";
+    if (!committeeName.trim()) {
+      e.committeeName = "Committee name is required.";
+    } else {
+      const PLACEHOLDER_NAMES = new Set(["preview mode", "preview", "test", "example", "your committee"]);
+      if (PLACEHOLDER_NAMES.has(committeeName.toLowerCase().trim())) {
+        e.committeeName = "Committee name cannot be a placeholder — FEC compliance requires the actual committee name.";
+      }
+    }
 
     if (template) {
       if (!templateProps.headline.trim() && !pageTitle.trim()) {

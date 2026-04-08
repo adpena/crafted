@@ -1,14 +1,22 @@
 # Deploying Crafted
 
-Crafted runs entirely on Cloudflare's free tier: Workers for compute, D1
-for the database, KV for edge caching, and R2 for media. A fresh deploy
-takes under ten minutes end-to-end.
+Crafted runs on Cloudflare Workers with D1 for the database, KV for edge
+caching, and R2 for media. A fresh deploy takes under ten minutes
+end-to-end.
+
+## Pricing
+
+- **Demo / low-volume** (< 500 submissions/day): Cloudflare free tier ($0)
+- **Production campaigns**: Cloudflare Workers Paid ($5/month) required for KV write limits (free tier caps at 1,000 writes/day; each submission uses 2+ KV writes)
+- **With email confirmations**: + Resend ($20/month for 50K emails)
+- **Typical cost for 10 active campaigns**: $25–85/month
+- **Compare**: Action Network $99–$1,500/month for equivalent features
 
 ---
 
 ## 1. Prerequisites
 
-- **Cloudflare account** — free tier is sufficient.
+- **Cloudflare account** — free tier works for demos; Workers Paid ($5/month) recommended for production.
   [Sign up](https://dash.cloudflare.com/sign-up).
 - **Node 22+** — check with `node --version`.
 - **Wrangler CLI** — `npm install -g wrangler` (or use `npx wrangler …`).

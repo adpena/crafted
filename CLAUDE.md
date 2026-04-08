@@ -47,6 +47,14 @@ Live at https://adpena.com (also https://crafted.adpena.workers.dev)
 - npm supply chain: ignore-scripts, save-exact, Dependabot
 - 5 security audit passes + 2 senior engineer reviews — 44+ issues found and fixed
 
+## Pricing Reality
+
+- Demo / low-volume (< 500 submissions/day): Cloudflare free tier ($0)
+- Production campaigns: Cloudflare Workers Paid ($5/month) required for KV write limits
+- With email confirmations: + Resend ($20/month for 50K emails)
+- Typical cost for 10 active campaigns: $25-85/month
+- Compare: Action Network $99-$1,500/month for equivalent features
+
 ## Deploy
 
 ```bash
@@ -104,7 +112,8 @@ en, es, zh, vi, ko, tl, fr, ar
 - `GET /api/admin/templates` — pre-built campaign template gallery
 - `POST /api/admin/email/send` — bulk email blast via Resend
 - `GET /api/admin/contacts` — contact list with search + tag filter
-- `GET/PATCH /api/admin/contacts/:id` — contact detail + tag management
+- `GET/PATCH/DELETE /api/admin/contacts/:id` — contact detail, tag management, CCPA erasure
+- `POST /api/admin/contacts/delete-bulk` — bulk CCPA/GDPR erasure by email or IDs
 - `POST /api/admin/contacts/import` — CSV contact import
 - `GET /api/admin/audit-log` — admin audit trail
 - `GET /api/admin/webhook-inbox` — incoming webhook log

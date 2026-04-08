@@ -319,6 +319,11 @@ export const POST: APIRoute = async ({ request }) => {
         return err("MISSING_FIELD", "disclaimer.committee_name is required (FEC compliance)");
       }
 
+      const PLACEHOLDER_NAMES = new Set(["preview mode", "preview", "test", "example", "your committee"]);
+      if (PLACEHOLDER_NAMES.has(sanitizedDisclaimer.committee_name.toLowerCase().trim())) {
+        return err("INVALID_DISCLAIMER", "committee_name cannot be a placeholder — FEC compliance requires the actual committee name");
+      }
+
       // Validate URLs in template_props (user-provided, may be malicious)
       const templateProps = (p.template_props ?? {}) as Record<string, unknown>;
       const urlFields = ["media_url", "background_image", "background_video", "splash_image"];

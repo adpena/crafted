@@ -32,6 +32,10 @@ export default defineConfig({
 });
 ```
 
+## Pricing
+
+Starts at $5/month for production use (Cloudflare Workers Paid plan). The free tier works for demos and low-volume pages (< 500 submissions/day) but will hit KV write limits under real campaign traffic. With email confirmations via Resend, typical cost for 10 active campaigns is $25–85/month. Compare: Action Network $99–$1,500/month.
+
 ## Action types (8)
 
 | Action | Submission type | Description |
