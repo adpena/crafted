@@ -18,6 +18,8 @@ import { checkGeoFilter, type GeoFilterConfig } from "../../../lib/geo-filter.ts
 import { checkDedup } from "../../../lib/dedup.ts";
 import { runPostSubmitPipeline } from "../../../lib/post-submit.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
+import { incrementWindow, detectSpike, isAlreadyNotified, markNotified } from "../../../lib/spike-detector.ts";
+import { notifyAll as dispatch, type NotifyEnv } from "@adpena/notifications";
 
 const PLUGIN_ID = "action-pages";
 const ALLOWED_TYPES = new Set([
@@ -177,6 +179,36 @@ export const POST: APIRoute = async (context) => {
   // Extract optional event platform IDs (only applicable for event_rsvp submissions)
   const eventIds = extractEventIds(body.event_ids);
 
+  // --- 6b. Spike detection (KV window increment + check) ---
+  let spikePromise: Promise<void> | undefined;
+  if (kv) {
+    spikePromise = (async () => {
+      try {
+        await incrementWindow(kv, slug);
+        const spike = await detectSpike(kv, slug);
+        if (spike.spiking) {
+          const alreadySent = await isAlreadyNotified(kv, slug);
+          if (!alreadySent) {
+            await markNotified(kv, slug);
+            const notifyEnv = e as unknown as NotifyEnv;
+            await dispatch(notifyEnv, {
+              subject: `${pageTitle ?? slug} is spiking`,
+              body: [
+                `${spike.currentRate} submissions in the last 15 min (${spike.multiplier}x normal)`,
+                `Baseline: ${spike.baselineRate}/15min`,
+                `Page: https://adpena.com/action/${slug}`,
+                `Stats: https://adpena.com/api/admin/attribution?slug=${slug}`,
+              ].join("\n"),
+            });
+            console.info(`[spike] ${slug}: ${spike.currentRate} submissions (${spike.multiplier}x baseline)`);
+          }
+        }
+      } catch (err) {
+        console.error("[spike] detection/notification failed:", err instanceof Error ? err.message : "unknown");
+      }
+    })();
+  }
+
   // --- 7. Async post-submit pipeline (non-blocking) ---
   // Use waitUntil if available (Cloudflare Workers), else fire-and-forget
   const pipelinePromise = runPostSubmitPipeline({
@@ -242,6 +274,7 @@ export const POST: APIRoute = async (context) => {
     | undefined;
   if (typeof cfContext?.waitUntil === "function") {
     cfContext.waitUntil(pipelinePromise);
+    if (spikePromise) cfContext.waitUntil(spikePromise);
   }
   // else: fire-and-forget (catch already attached above)
 

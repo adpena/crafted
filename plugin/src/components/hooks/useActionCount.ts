@@ -14,8 +14,9 @@ export function useActionCount(
   countUrl = "/api/action/count",
   refreshInterval?: number,
   sseUrl?: string,
-): { count: number; loading: boolean; live: boolean } {
+): { count: number; raised: number; loading: boolean; live: boolean } {
   const [count, setCount] = useState(0);
+  const [raised, setRaised] = useState(0);
   const [loading, setLoading] = useState(!!slug);
 
   // Build SSE URL from slug if sseUrl template is provided
@@ -23,18 +24,19 @@ export function useActionCount(
     ? `${sseUrl}${sseUrl.includes("?") ? "&" : "?"}slug=${encodeURIComponent(slug)}`
     : undefined;
 
-  const { count: sseCount, connected } = useSSECount(
+  const { count: sseCount, raised: sseRaised, connected } = useSSECount(
     slug ? resolvedSseUrl : undefined,
     0,
   );
 
-  // If SSE is connected, use its count and clear loading state
+  // If SSE is connected, use its count/raised and clear loading state
   useEffect(() => {
     if (connected) {
       setLoading(false);
       setCount(sseCount);
+      setRaised(sseRaised);
     }
-  }, [sseCount, connected]);
+  }, [sseCount, sseRaised, connected]);
 
   // Fetch/poll fallback when SSE is not in use
   useEffect(() => {
@@ -47,7 +49,10 @@ export function useActionCount(
         const res = await fetch(`${countUrl}?slug=${encodeURIComponent(slug!)}`);
         if (!res.ok) return;
         const json = await res.json();
-        if (!cancelled) setCount(json.count ?? 0);
+        if (!cancelled) {
+          setCount(json.count ?? 0);
+          setRaised(json.raised ?? 0);
+        }
       } catch {
         // Silently fail — progress bar just shows 0
       } finally {
@@ -65,5 +70,5 @@ export function useActionCount(
     return () => { cancelled = true; };
   }, [slug, countUrl, refreshInterval, connected]);
 
-  return { count, loading, live: connected };
+  return { count, raised, loading, live: connected };
 }

@@ -34,10 +34,16 @@ export const GET: APIRoute = async ({ url }) => {
 	// Try KV first — sub-millisecond edge reads
 	if (kv) {
 		try {
-			const cached = await kv.get(`action-count:${slug}`);
-			if (cached !== null) {
+			const [cachedCount, cachedRaised] = await Promise.all([
+				kv.get(`action-count:${slug}`),
+				kv.get(`donation-total:${slug}`),
+			]);
+			if (cachedCount !== null) {
+				const raisedCents = cachedRaised !== null ? parseInt(cachedRaised, 10) : 0;
+				const result: Record<string, number> = { count: parseInt(cachedCount, 10) };
+				if (raisedCents > 0) result.raised = raisedCents / 100;
 				return new Response(
-					JSON.stringify({ count: parseInt(cached, 10) }),
+					JSON.stringify(result),
 					{
 						status: 200,
 						headers: {

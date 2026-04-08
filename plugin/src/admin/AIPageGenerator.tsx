@@ -41,9 +41,16 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 	const [token, setToken] = useState(getToken());
 	const [tokenInput, setTokenInput] = useState("");
 
+	// Tab: "describe" (free text) or "legislation" (bill URL)
+	const [tab, setTab] = useState<"describe" | "legislation">("describe");
+
 	const [description, setDescription] = useState("");
 	const [brandUrl, setBrandUrl] = useState("");
 	const [preferredAction, setPreferredAction] = useState("");
+
+	// Legislation tab state
+	const [billInput, setBillInput] = useState("");
+	const [billAction, setBillAction] = useState<"letter" | "call">("letter");
 
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -61,7 +68,9 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 	const descLen = description.trim().length;
 	const descValid = descLen >= MIN_DESC && descLen <= MAX_DESC;
 	const brandUrlValid = !brandUrl || brandUrl.startsWith("https://");
-	const canSubmit = descValid && brandUrlValid && !loading;
+	const canSubmit = tab === "describe"
+		? descValid && brandUrlValid && !loading
+		: billInput.trim().length > 0 && !loading;
 
 	async function handleGenerate(e: React.FormEvent) {
 		e.preventDefault();
@@ -70,23 +79,39 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 		setError("");
 		setResult(null);
 		try {
-			const body: Record<string, unknown> = { description: description.trim() };
-			if (brandUrl) body.brandUrl = brandUrl;
-			if (preferredAction) body.preferredAction = preferredAction;
+			if (tab === "legislation") {
+				const res = await fetch("/api/admin/bill-to-page", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify({ bill: billInput.trim(), action: billAction }),
+				});
+				const json = (await res.json()) as Record<string, unknown>;
+				if (!res.ok) {
+					throw new Error((json.error as string) ?? `HTTP ${res.status}`);
+				}
+				setResult(json);
+			} else {
+				const body: Record<string, unknown> = { description: description.trim() };
+				if (brandUrl) body.brandUrl = brandUrl;
+				if (preferredAction) body.preferredAction = preferredAction;
 
-			const res = await fetch(endpoint, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(body),
-			});
-			const json = (await res.json()) as Record<string, unknown>;
-			if (!res.ok) {
-				throw new Error((json.error as string) ?? `HTTP ${res.status}`);
+				const res = await fetch(endpoint, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(body),
+				});
+				const json = (await res.json()) as Record<string, unknown>;
+				if (!res.ok) {
+					throw new Error((json.error as string) ?? `HTTP ${res.status}`);
+				}
+				setResult(json);
 			}
-			setResult(json);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Generation failed");
 		} finally {
@@ -120,76 +145,140 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 		<div style={{ padding: "2rem", maxWidth: "780px" }}>
 			<h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: "0 0 0.25rem" }}>AI Page Generator</h1>
 			<p style={{ color: "#6b7280", margin: "0 0 1.25rem", fontSize: "0.9rem" }}>
-				Describe your campaign and we&apos;ll draft a full action page for you.
+				Generate a complete action page from a description or legislation.
 			</p>
 
-			<form onSubmit={handleGenerate} noValidate>
-				<div style={{ marginBottom: "1rem" }}>
-					<label htmlFor="ai-description" style={labelStyle}>
-						Campaign description <span style={{ color: "#dc2626" }}>*</span>
-					</label>
-					<textarea
-						id="ai-description"
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-						placeholder="e.g. We're running a petition to save the local library from budget cuts. Our audience is parents and students in Travis County…"
-						rows={6}
-						required
-						minLength={MIN_DESC}
-						maxLength={MAX_DESC}
-						style={{ ...inputStyle, width: "100%", resize: "vertical", fontFamily: "inherit" }}
-					/>
-					<div
-						style={{
-							fontSize: "0.75rem",
-							color: descLen === 0 || descValid ? "#6b7280" : "#dc2626",
-							marginTop: "0.25rem",
-						}}
-					>
-						{descLen}/{MAX_DESC} characters (minimum {MIN_DESC})
-					</div>
-				</div>
+			{/* Tab switcher */}
+			<div style={{ display: "flex", gap: "0", marginBottom: "1.25rem", borderBottom: "1px solid #d1d5db" }}>
+				<button
+					type="button"
+					onClick={() => { setTab("legislation"); setError(""); setResult(null); }}
+					style={{
+						...tabBtnStyle,
+						borderBottom: tab === "legislation" ? "2px solid #1f2937" : "2px solid transparent",
+						color: tab === "legislation" ? "#1f2937" : "#6b7280",
+						fontWeight: tab === "legislation" ? 600 : 400,
+					}}
+				>
+					From legislation
+				</button>
+				<button
+					type="button"
+					onClick={() => { setTab("describe"); setError(""); setResult(null); }}
+					style={{
+						...tabBtnStyle,
+						borderBottom: tab === "describe" ? "2px solid #1f2937" : "2px solid transparent",
+						color: tab === "describe" ? "#1f2937" : "#6b7280",
+						fontWeight: tab === "describe" ? 600 : 400,
+					}}
+				>
+					From description
+				</button>
+			</div>
 
-				<div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem", marginBottom: "1rem" }}>
-					<div>
-						<label htmlFor="ai-brand-url" style={labelStyle}>
-							Brand URL (optional)
-						</label>
-						<input
-							id="ai-brand-url"
-							type="url"
-							value={brandUrl}
-							onChange={(e) => setBrandUrl(e.target.value)}
-							placeholder="https://example.org"
-							style={{ ...inputStyle, width: "100%" }}
-						/>
-						{!brandUrlValid && (
-							<div role="alert" style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "0.25rem" }}>
-								Must start with https://
+			<form onSubmit={handleGenerate} noValidate>
+				{tab === "legislation" ? (
+					<>
+						<div style={{ marginBottom: "1rem" }}>
+							<label htmlFor="ai-bill" style={labelStyle}>
+								Bill URL or reference <span style={{ color: "#dc2626" }}>*</span>
+							</label>
+							<input
+								id="ai-bill"
+								type="text"
+								value={billInput}
+								onChange={(e) => setBillInput(e.target.value)}
+								placeholder="e.g. https://www.congress.gov/bill/118th-congress/house-bill/4532 or HR 4532"
+								style={{ ...inputStyle, width: "100%" }}
+							/>
+							<div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.25rem" }}>
+								Congress.gov URL, or short form: HR 4532, S 1234, HJRES 123
 							</div>
-						)}
-					</div>
-					<div>
-						<label htmlFor="ai-preferred-action" style={labelStyle}>
-							Preferred action (optional)
-						</label>
-						<select
-							id="ai-preferred-action"
-							value={preferredAction}
-							onChange={(e) => setPreferredAction(e.target.value)}
-							style={{ ...inputStyle, width: "100%", minHeight: "44px" }}
-						>
-							{ACTION_OPTIONS.map((opt) => (
-								<option key={opt.value} value={opt.value}>
-									{opt.label}
-								</option>
-							))}
-						</select>
-					</div>
-				</div>
+						</div>
+						<div style={{ marginBottom: "1rem" }}>
+							<label style={labelStyle}>Action type</label>
+							<div style={{ display: "flex", gap: "1rem" }}>
+								<label style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.875rem", cursor: "pointer" }}>
+									<input type="radio" name="bill-action" value="letter" checked={billAction === "letter"} onChange={() => setBillAction("letter")} />
+									Letter to rep
+								</label>
+								<label style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.875rem", cursor: "pointer" }}>
+									<input type="radio" name="bill-action" value="call" checked={billAction === "call"} onChange={() => setBillAction("call")} />
+									Call your rep
+								</label>
+							</div>
+						</div>
+					</>
+				) : (
+					<>
+						<div style={{ marginBottom: "1rem" }}>
+							<label htmlFor="ai-description" style={labelStyle}>
+								Campaign description <span style={{ color: "#dc2626" }}>*</span>
+							</label>
+							<textarea
+								id="ai-description"
+								value={description}
+								onChange={(e) => setDescription(e.target.value)}
+								placeholder="e.g. We're running a petition to save the local library from budget cuts. Our audience is parents and students in Travis County…"
+								rows={6}
+								required
+								minLength={MIN_DESC}
+								maxLength={MAX_DESC}
+								style={{ ...inputStyle, width: "100%", resize: "vertical", fontFamily: "inherit" }}
+							/>
+							<div
+								style={{
+									fontSize: "0.75rem",
+									color: descLen === 0 || descValid ? "#6b7280" : "#dc2626",
+									marginTop: "0.25rem",
+								}}
+							>
+								{descLen}/{MAX_DESC} characters (minimum {MIN_DESC})
+							</div>
+						</div>
+
+						<div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem", marginBottom: "1rem" }}>
+							<div>
+								<label htmlFor="ai-brand-url" style={labelStyle}>
+									Brand URL (optional)
+								</label>
+								<input
+									id="ai-brand-url"
+									type="url"
+									value={brandUrl}
+									onChange={(e) => setBrandUrl(e.target.value)}
+									placeholder="https://example.org"
+									style={{ ...inputStyle, width: "100%" }}
+								/>
+								{!brandUrlValid && (
+									<div role="alert" style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "0.25rem" }}>
+										Must start with https://
+									</div>
+								)}
+							</div>
+							<div>
+								<label htmlFor="ai-preferred-action" style={labelStyle}>
+									Preferred action (optional)
+								</label>
+								<select
+									id="ai-preferred-action"
+									value={preferredAction}
+									onChange={(e) => setPreferredAction(e.target.value)}
+									style={{ ...inputStyle, width: "100%", minHeight: "44px" }}
+								>
+									{ACTION_OPTIONS.map((opt) => (
+										<option key={opt.value} value={opt.value}>
+											{opt.label}
+										</option>
+									))}
+								</select>
+							</div>
+						</div>
+					</>
+				)}
 
 				<button type="submit" disabled={!canSubmit} style={primaryBtn(canSubmit)}>
-					{loading ? "Generating…" : "Generate page"}
+					{loading ? "Generating…" : tab === "legislation" ? "Generate from bill" : "Generate page"}
 				</button>
 			</form>
 
@@ -292,6 +381,15 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 		</div>
 	);
 }
+
+const tabBtnStyle: CSSProperties = {
+	background: "none",
+	border: "none",
+	padding: "0.5rem 1rem",
+	fontSize: "0.85rem",
+	cursor: "pointer",
+	marginBottom: "-1px",
+};
 
 const inputStyle: CSSProperties = {
 	padding: "0.5rem 0.625rem",

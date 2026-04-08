@@ -9,8 +9,9 @@ import { useState, useEffect, useRef } from "react";
 export function useSSECount(
   sseUrl: string | undefined,
   fallbackCount = 0,
-): { count: number; connected: boolean } {
+): { count: number; raised: number; connected: boolean } {
   const [count, setCount] = useState(fallbackCount);
+  const [raised, setRaised] = useState(0);
   const [connected, setConnected] = useState(false);
   const esRef = useRef<EventSource | null>(null);
 
@@ -27,6 +28,9 @@ export function useSSECount(
         const data = JSON.parse(event.data);
         if (typeof data.count === "number") {
           setCount(data.count);
+        }
+        if (typeof data.raised === "number") {
+          setRaised(data.raised);
         }
       } catch {
         // Ignore malformed messages
@@ -45,5 +49,5 @@ export function useSSECount(
     };
   }, [sseUrl]);
 
-  return { count, connected };
+  return { count, raised, connected };
 }

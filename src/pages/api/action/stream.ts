@@ -33,6 +33,7 @@ export const GET: APIRoute = async ({ url }) => {
 	}
 
 	let lastCount = -1;
+	let lastRaised = -1;
 	let closed = false;
 	let cleanupRef: (() => void) | null = null;
 
@@ -62,11 +63,20 @@ export const GET: APIRoute = async ({ url }) => {
 			async function checkCount() {
 				if (closed) return;
 				try {
-					const cached = await kv!.get(`action-count:${slug}`);
-					const count = cached !== null ? parseInt(cached, 10) : 0;
-					if (count !== lastCount) {
+					const [cachedCount, cachedRaised] = await Promise.all([
+						kv!.get(`action-count:${slug}`),
+						kv!.get(`donation-total:${slug}`),
+					]);
+					const count = cachedCount !== null ? parseInt(cachedCount, 10) : 0;
+					const raisedCents = cachedRaised !== null ? parseInt(cachedRaised, 10) : 0;
+					const raised = raisedCents > 0 ? raisedCents / 100 : 0;
+
+					if (count !== lastCount || raised !== lastRaised) {
 						lastCount = count;
-						send(JSON.stringify({ count }));
+						lastRaised = raised;
+						const payload: Record<string, number> = { count };
+						if (raised > 0) payload.raised = raised;
+						send(JSON.stringify(payload));
 					}
 				} catch {
 					// KV read failed — skip this cycle

@@ -7,12 +7,14 @@ export interface ProgressBarProps {
 	labelKey?: "progress_signatures" | "progress_pledges" | "progress_signups" | "progress_donors";
 	/** Override the fill color */
 	accentColor?: string;
-	/** Display mode: bar (default), thermometer, countdown */
-	mode?: "bar" | "thermometer" | "countdown";
+	/** Display mode: bar (default), thermometer, countdown, raised */
+	mode?: "bar" | "thermometer" | "countdown" | "raised";
 	/** Countdown deadline (ISO date string) — only used in countdown mode */
 	deadline?: string;
 	/** Locale for translated labels */
 	locale?: Locale;
+	/** Dollar amount raised — only used in raised mode, updated live via SSE */
+	raised?: number;
 }
 
 /**
@@ -33,6 +35,7 @@ export function ProgressBar({
 	mode = "bar",
 	deadline,
 	locale: localeProp,
+	raised,
 }: ProgressBarProps) {
 	if (!goal || goal <= 0) return null;
 
@@ -42,6 +45,12 @@ export function ProgressBar({
 	const goalFormatted = goal.toLocaleString();
 	const accent = accentColor ?? "var(--page-accent)";
 	const label = t(locale, labelKey);
+
+	if (mode === "raised") {
+		const raisedDollars = raised ?? 0;
+		const raisedPct = Math.min(100, Math.round((raisedDollars / goal) * 100));
+		return <RaisedBar raised={raisedDollars} goal={goal} pct={raisedPct} accent={accent} />;
+	}
 
 	if (mode === "countdown" && deadline) {
 		return <CountdownBar current={current} goal={goal} label={label} accent={accent} pct={pct} formatted={formatted} goalFormatted={goalFormatted} deadline={deadline} locale={locale} />;
@@ -183,6 +192,53 @@ function ThermometerBar({ pct, accent, formatted, label }: {
 				}}>
 					{formatted} {label}
 				</div>
+			</div>
+		</div>
+	);
+}
+
+function RaisedBar({ raised, goal, pct, accent }: {
+	raised: number; goal: number; pct: number; accent: string;
+}) {
+	const raisedFormatted = raised.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+	const goalFormatted = goal.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+	return (
+		<div style={{ marginBottom: "1.5rem", textAlign: "center" }} role="progressbar" aria-valuenow={raised} aria-valuemin={0} aria-valuemax={goal} aria-label="Fundraising progress" aria-valuetext={`${raisedFormatted} raised of ${goalFormatted} goal`}>
+			<div style={{
+				fontFamily: "var(--page-font-serif)",
+				fontSize: "2rem",
+				fontWeight: 700,
+				color: "var(--page-text)",
+				marginBottom: "0.25rem",
+				transition: "all 300ms ease-out",
+			}}>
+				{raisedFormatted}
+			</div>
+			<div style={{
+				fontFamily: "var(--page-font-mono)",
+				fontSize: "0.75rem",
+				color: "var(--page-secondary)",
+				marginBottom: "0.75rem",
+				textTransform: "uppercase",
+				letterSpacing: "0.05em",
+			}}>
+				raised of {goalFormatted} goal
+			</div>
+			<div style={{
+				width: "100%",
+				height: "8px",
+				backgroundColor: "var(--page-border)",
+				borderRadius: "var(--page-radius, 4px)",
+				overflow: "hidden",
+			}}>
+				<div style={{
+					width: `${pct}%`,
+					height: "100%",
+					backgroundColor: accent,
+					borderRadius: "inherit",
+					transition: "width 600ms ease-out",
+				}} />
 			</div>
 		</div>
 	);
