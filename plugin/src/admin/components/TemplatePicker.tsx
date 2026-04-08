@@ -4,6 +4,8 @@ export type TemplateId =
   | "hero-simple"
   | "hero-media"
   | "hero-story"
+  | "hero-layered"
+  | "hero-split"
   | "hero-blocks";
 
 export interface TemplateOption {
@@ -27,6 +29,16 @@ export const TEMPLATE_OPTIONS: TemplateOption[] = [
     id: "hero-story",
     name: "Hero — Story",
     description: "Long-form narrative with a pull quote.",
+  },
+  {
+    id: "hero-layered",
+    name: "Hero — Layered",
+    description: "Full-bleed background with positioned headline + splash.",
+  },
+  {
+    id: "hero-split",
+    name: "Hero — Split",
+    description: "Two columns: headline on one side, media on the other.",
   },
   {
     id: "hero-blocks",
@@ -133,6 +145,41 @@ function HeroStoryThumb(): ReactNode {
   );
 }
 
+function HeroLayeredThumb(): ReactNode {
+  return (
+    <svg viewBox="0 0 160 90" width="100%" height="100%" aria-hidden>
+      {/* Full-bleed image background */}
+      <rect x="0" y="0" width="160" height="90" fill="#2a2a2a" />
+      <circle cx="120" cy="28" r="12" fill="#3a3a3a" />
+      <path d="M0 75 L40 55 L80 65 L120 48 L160 58 L160 90 L0 90 Z" fill="#1a1a1a" />
+      {/* Dark overlay */}
+      <rect x="0" y="0" width="160" height="90" fill="#000" opacity="0.35" />
+      {/* Splash image */}
+      <rect x="16" y="18" width="34" height="34" fill="#d4d4c8" stroke="#fff" strokeWidth="1" />
+      {/* Headline at bottom-left */}
+      <rect x="16" y="62" width="100" height="6" fill="#ffffff" />
+      <rect x="16" y="74" width="70" height="3" fill="#ffffff" opacity="0.8" />
+    </svg>
+  );
+}
+
+function HeroSplitThumb(): ReactNode {
+  return (
+    <svg viewBox="0 0 160 90" width="100%" height="100%" aria-hidden>
+      <rect x="0" y="0" width="160" height="90" fill="#f5f5f0" />
+      {/* Left column: text */}
+      <rect x="12" y="22" width="56" height="6" fill="#1a1a1a" />
+      <rect x="12" y="34" width="62" height="3" fill="#6b6b6b" />
+      <rect x="12" y="40" width="56" height="3" fill="#6b6b6b" />
+      <rect x="12" y="54" width="30" height="8" fill="#1a1a1a" />
+      {/* Right column: media */}
+      <rect x="84" y="10" width="64" height="70" fill="#d4d4c8" />
+      <circle cx="116" cy="36" r="8" fill="#f5f5f0" />
+      <path d="M84 66 L104 52 L120 60 L148 44 L148 80 L84 80 Z" fill="#b0b0a0" />
+    </svg>
+  );
+}
+
 function HeroBlocksThumb(): ReactNode {
   return (
     <svg viewBox="0 0 160 90" width="100%" height="100%" aria-hidden>
@@ -158,6 +205,8 @@ const THUMBS: Record<TemplateId, ReactNode> = {
   "hero-simple": <HeroSimpleThumb />,
   "hero-media": <HeroMediaThumb />,
   "hero-story": <HeroStoryThumb />,
+  "hero-layered": <HeroLayeredThumb />,
+  "hero-split": <HeroSplitThumb />,
   "hero-blocks": <HeroBlocksThumb />,
 };
 

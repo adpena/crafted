@@ -42,4 +42,11 @@
 	},
 	// Uncomment for sandboxed plugin execution (requires Workers Paid $5/mo):
 	// "worker_loaders": [{ "binding": "LOADER" }],
+	//
+	// Nightly D1 → R2 backup. Uncomment this block AND the BACKUPS r2
+	// binding above, then deploy. The worker's scheduled() handler is
+	// already wired to runBackup(env.DB, env.BACKUPS) in src/worker.ts.
+	// "triggers": {
+	// 	"crons": ["0 8 * * *"], // 08:00 UTC = ~03:00 CT — quiet hours
+	// },
 }

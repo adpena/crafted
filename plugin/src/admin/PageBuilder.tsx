@@ -1274,6 +1274,119 @@ export function PageBuilder({
           </>
         )}
 
+        {template === "hero-layered" && (
+          <>
+            <Field
+              label="Background image URL"
+              htmlFor="tp_layered_bg"
+              helper="Full-bleed image behind the layered composition."
+            >
+              <input
+                id="tp_layered_bg"
+                type="url"
+                value={templateProps.media_url}
+                onChange={(e) =>
+                  setTemplateProps({
+                    ...templateProps,
+                    media_url: e.target.value,
+                  })
+                }
+                style={inputStyle()}
+              />
+            </Field>
+            <Field
+              label="Overlay darkness"
+              htmlFor="tp_layered_overlay"
+              helper="Darkens the background so the headline stays legible."
+              rightLabel={
+                <span
+                  style={{
+                    fontFamily: "var(--page-font-mono)",
+                    fontSize: "0.7rem",
+                    color: "var(--page-secondary)",
+                  }}
+                >
+                  {templateProps.overlay_opacity.toFixed(2)}
+                </span>
+              }
+            >
+              <input
+                id="tp_layered_overlay"
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={templateProps.overlay_opacity}
+                onChange={(e) =>
+                  setTemplateProps({
+                    ...templateProps,
+                    overlay_opacity: Number(e.target.value),
+                  })
+                }
+                style={{ width: "100%", minHeight: "44px" }}
+              />
+            </Field>
+          </>
+        )}
+
+        {template === "hero-split" && (
+          <>
+            <Field
+              label="Body"
+              htmlFor="tp_split_body"
+              helper="Copy for the text side of the split."
+            >
+              <textarea
+                id="tp_split_body"
+                value={templateProps.body}
+                rows={5}
+                onChange={(e) =>
+                  setTemplateProps({ ...templateProps, body: e.target.value })
+                }
+                style={{ ...inputStyle(), minHeight: "7rem", resize: "vertical" }}
+              />
+            </Field>
+            <Field
+              label="Media URL"
+              htmlFor="tp_split_media"
+              helper="Image shown on the opposite side of the text."
+            >
+              <input
+                id="tp_split_media"
+                type="url"
+                value={templateProps.media_url}
+                onChange={(e) =>
+                  setTemplateProps({
+                    ...templateProps,
+                    media_url: e.target.value,
+                  })
+                }
+                style={inputStyle()}
+              />
+            </Field>
+            <Field
+              label="Media side"
+              htmlFor="tp_split_side"
+              helper="Which side the media sits on (left/right)."
+            >
+              <select
+                id="tp_split_side"
+                value={templateProps.align === "center" ? "right" : templateProps.align}
+                onChange={(e) =>
+                  setTemplateProps({
+                    ...templateProps,
+                    align: e.target.value as "left" | "center",
+                  })
+                }
+                style={inputStyle()}
+              >
+                <option value="left">Left</option>
+                <option value="center">Right</option>
+              </select>
+            </Field>
+          </>
+        )}
+
       </div>
     );
   };
