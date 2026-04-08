@@ -21,6 +21,14 @@ function isActive(href: string): boolean {
 
 <header role="banner" class="masthead">
 	<div class="masthead-inner">
+		<button
+			class="theme-toggle"
+			id="theme-toggle"
+			aria-label="Toggle dark mode"
+			type="button"
+		>
+			<span class="theme-toggle-icon" aria-hidden="true"></span>
+		</button>
 		<a href="/" class="masthead-title">{siteTitle}</a>
 		<p class="masthead-tagline">{tagline}</p>
 		<nav aria-label="Main navigation" class="masthead-nav">
@@ -31,14 +39,6 @@ function isActive(href: string): boolean {
 					aria-current={isActive(link.href) ? "page" : undefined}
 				>{link.label}</a>
 			))}
-			<button
-				class="theme-toggle"
-				id="theme-toggle"
-				aria-label="Toggle dark mode"
-				type="button"
-			>
-				<span class="theme-toggle-icon" aria-hidden="true"></span>
-			</button>
 		</nav>
 	</div>
 </header>
@@ -54,6 +54,7 @@ function isActive(href: string): boolean {
 		margin: 0 auto;
 		padding: 0 var(--content-padding);
 		text-align: center;
+		position: relative;
 	}
 
 	.masthead-title {
@@ -173,7 +174,6 @@ function isActive(href: string): boolean {
 		border: none;
 		cursor: pointer;
 		padding: 0.25rem;
-		margin-left: var(--spacing-sm);
 		color: var(--color-secondary);
 		transition: color 200ms var(--ease);
 		display: inline-flex;
@@ -181,6 +181,10 @@ function isActive(href: string): boolean {
 		min-height: 44px;
 		min-width: 44px;
 		justify-content: center;
+		/* Position top-right of the masthead */
+		position: absolute;
+		top: 0;
+		right: 0;
 	}
 
 	.theme-toggle:hover {
