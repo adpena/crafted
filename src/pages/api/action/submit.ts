@@ -283,8 +283,13 @@ export const POST: APIRoute = async (context) => {
   if (typeof cfContext?.waitUntil === "function") {
     cfContext.waitUntil(pipelinePromise);
     if (spikePromise) cfContext.waitUntil(spikePromise);
+  } else {
+    // OBSERVABLE: if this fires in production, waitUntil is not available and
+    // the post-submit pipeline (emails, integrations, contacts, tracking) runs
+    // detached. The Worker may terminate before completion, silently dropping tasks.
+    // Check Cloudflare dashboard logs if you see this message.
+    console.warn("[submit] cfContext.waitUntil unavailable — pipeline running detached (tasks may be dropped)");
   }
-  // else: fire-and-forget (catch already attached above)
 
   return ok({ ok: true, id });
 };

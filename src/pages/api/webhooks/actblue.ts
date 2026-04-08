@@ -14,7 +14,7 @@
  */
 
 import type { APIRoute } from "astro";
-import { sha256Hex } from "../../../lib/auth.ts";
+import { sha256Hex, timingSafeCompare } from "../../../lib/auth.ts";
 import { storeAttributionEvent, type AttributionEvent } from "../../../lib/attribution.ts";
 import { env } from "cloudflare:workers";
 
@@ -46,7 +46,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const authHeader = request.headers.get("authorization") ?? "";
-  if (!verifyBasicAuth(authHeader, secret)) {
+  if (!(await verifyBasicAuth(authHeader, secret))) {
     return json(401, { error: "Unauthorized" });
   }
 
@@ -199,14 +199,14 @@ interface ActBluePayload {
 }
 
 /**
- * Verify Basic auth header against expected secret.
- * The secret is the full "username:password" string (base64-encoded in the header).
+ * Verify Basic auth header against expected secret using timing-safe comparison.
+ * Prevents byte-by-byte timing side-channel attacks on the credential.
  */
-function verifyBasicAuth(header: string, secret: string): boolean {
+async function verifyBasicAuth(header: string, secret: string): Promise<boolean> {
   if (!header.startsWith("Basic ")) return false;
   try {
     const decoded = atob(header.slice(6));
-    return decoded === secret;
+    return timingSafeCompare(decoded, secret, secret);
   } catch {
     return false;
   }

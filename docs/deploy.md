@@ -8,8 +8,11 @@ end-to-end.
 
 - **Demo / low-volume** (< 500 submissions/day): Cloudflare free tier ($0)
 - **Production campaigns**: Cloudflare Workers Paid ($5/month) required for KV write limits (free tier caps at 1,000 writes/day; each submission uses 2+ KV writes)
-- **With email confirmations**: + Resend ($20/month for 50K emails)
-- **Typical cost for 10 active campaigns**: $25–85/month
+- **With email confirmations**: + Resend ($20/month for 50K emails, $0.40/1K above that)
+  - Resend free tier: 3,000 emails/month (exhausted in ~6 days at 500/day)
+  - 10 campaigns × 500 subs/day × 30 days = 150K emails → ~$68/month on Resend Pro
+  - Daily send cap: configurable via `RESEND_DAILY_LIMIT` (default 500/day)
+- **Typical cost for 10 active campaigns**: $25–85/month (Workers $5 + Resend $20-80)
 - **Compare**: Action Network $99–$1,500/month for equivalent features
 
 ---
