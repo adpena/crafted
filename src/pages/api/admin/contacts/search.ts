@@ -15,9 +15,14 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
-import { verifyBearer } from "../../../../lib/auth.ts";
 import type { ContactsD1 } from "../../../../lib/contacts.ts";
 import { runContactSearch, type SearchFilters } from "../../../../lib/contact-search.ts";
+import {
+  resolveAuthCompat,
+  getPageSlugsForCampaigns,
+  type TenancyD1,
+  type TenancyKV,
+} from "../../../../lib/tenancy.ts";
 
 const MAX_LIMIT = 500;
 const DEFAULT_LIMIT = 100;
@@ -29,8 +34,17 @@ interface SearchBody {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
-  if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
+  const e = env as Record<string, unknown>;
+  const db = e.DB as ContactsD1 | undefined;
+  const kv = e.CACHE as TenancyKV | undefined;
+  const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
+
+  if (!db) {
+    return json(503, { error: "Storage not available" });
+  }
+
+  const auth = await resolveAuthCompat(db as TenancyD1, kv, request.headers.get("Authorization"), mcpToken);
+  if (!auth) {
     return json(401, { error: "Unauthorized" });
   }
 
@@ -50,9 +64,14 @@ export const POST: APIRoute = async ({ request }) => {
   const limit = Math.min(Math.max(1, body.limit ?? DEFAULT_LIMIT), MAX_LIMIT);
   const offset = Math.max(0, body.offset ?? 0);
 
-  const db = (env as Record<string, unknown>).DB as ContactsD1 | undefined;
-  if (!db) {
-    return json(503, { error: "Storage not available" });
+  // Campaign-level: scope search to only this campaign's page slugs
+  if (auth.level === "campaign" && auth.campaignId) {
+    const campaignSlugs = await getPageSlugsForCampaigns(db as TenancyD1, [auth.campaignId]);
+    if (campaignSlugs.length === 0) {
+      return json(200, { data: [], pagination: { total: 0, limit, offset, has_more: false } });
+    }
+    // Override campaigns filter to only include this campaign's pages
+    filters.campaigns = campaignSlugs;
   }
 
   const { data, total } = await runContactSearch(db, filters, limit, offset);

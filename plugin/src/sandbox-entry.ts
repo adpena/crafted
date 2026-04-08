@@ -28,7 +28,8 @@ export function createPlugin() {
     capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
     allowedHosts: ["secure.actblue.com", "*.cloudflareinsights.com"],
     storage: {
-      campaigns: { indexes: ["slug"] },
+      firms: { indexes: ["slug"] },
+      campaigns: { indexes: ["slug", "firm_id", "status"] },
       action_pages: { indexes: ["slug", "status", "campaign_id"] },
       submissions: { indexes: ["page_id", "campaign_id", "created_at"] },
       ab_variants: { indexes: ["page_id"] },
@@ -179,6 +180,7 @@ export function createPlugin() {
         { path: "/webhooks", label: "Webhooks", icon: "webhook" },
         { path: "/audit", label: "Audit Log", icon: "shield" },
         { path: "/lists", label: "List Builder", icon: "users" },
+        { path: "/campaigns", label: "Campaigns", icon: "building" },
       ],
       widgets: [
         { id: "action-stats", size: "half", title: "Action Page Stats" },

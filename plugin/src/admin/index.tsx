@@ -11,6 +11,7 @@ import { WebhookInboxViewer } from "./WebhookInboxViewer";
 import { AuditLogViewer } from "./AuditLogViewer";
 import { LivePagePreview } from "./LivePagePreview";
 import { ListBuilder } from "./ListBuilder";
+import { CampaignManager } from "./CampaignManager";
 
 export { PageBuilder } from "./PageBuilder";
 export type { PageBuilderProps, Campaign, PluginSettings } from "./PageBuilder";
@@ -31,6 +32,7 @@ export { WebhookInboxViewer } from "./WebhookInboxViewer";
 export { AuditLogViewer } from "./AuditLogViewer";
 export { LivePagePreview } from "./LivePagePreview";
 export { ListBuilder } from "./ListBuilder";
+export { CampaignManager } from "./CampaignManager";
 export type { LivePagePreviewProps, LivePagePreviewConfig } from "./LivePagePreview";
 
 export { Section } from "./components/Section";
@@ -68,6 +70,7 @@ export const pages: Record<string, React.ComponentType> = {
   "/webhooks": WebhookInboxViewer,
   "/audit": AuditLogViewer,
   "/lists": ListBuilder,
+  "/campaigns": CampaignManager,
 };
 
 /**

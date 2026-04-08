@@ -10,15 +10,32 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
-import { verifyBearer } from "../../../lib/auth.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
+import {
+	resolveAuthCompat,
+	getCampaignForPage,
+	canAccess,
+	type TenancyD1,
+	type TenancyKV,
+} from "../../../lib/tenancy.ts";
 
 const PLUGIN_ID = "action-pages";
 
 export const GET: APIRoute = async ({ url, request }) => {
-	// Auth check — timing-safe comparison to prevent token extraction
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
-	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
+	const e = env as Record<string, unknown>;
+	const db = e.DB as TenancyD1 | undefined;
+	const kv = e.CACHE as TenancyKV | undefined;
+	const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
+
+	if (!db) {
+		return new Response(
+			JSON.stringify({ error: "Storage not available" }),
+			{ status: 503, headers: { "Content-Type": "application/json" } },
+		);
+	}
+
+	const auth = await resolveAuthCompat(db, kv, request.headers.get("Authorization"), mcpToken);
+	if (!auth) {
 		return new Response(
 			JSON.stringify({ error: "Unauthorized" }),
 			{ status: 401, headers: { "Content-Type": "application/json" } },
@@ -33,19 +50,22 @@ export const GET: APIRoute = async ({ url, request }) => {
 		);
 	}
 
+	// Campaign-level: verify this page belongs to their campaign
+	if (auth.level === "campaign" && auth.campaignId) {
+		const pageCampaign = await getCampaignForPage(db, slug);
+		if (pageCampaign && !canAccess(auth, pageCampaign)) {
+			return new Response(
+				JSON.stringify({ error: "Access denied to this page" }),
+				{ status: 403, headers: { "Content-Type": "application/json" } },
+			);
+		}
+	}
+
 	const format = url.searchParams.get("format") ?? "csv";
 	// Cap at 5,000 rows per export to stay within Worker memory budget.
 	// For larger exports, callers should paginate by created_at range.
 	const rawLimit = parseInt(url.searchParams.get("limit") ?? "", 10);
 	const limit = isNaN(rawLimit) || rawLimit <= 0 ? 1000 : Math.min(rawLimit, 5000);
-
-	const db = (env as Record<string, unknown>).DB as {
-		prepare: (sql: string) => {
-			bind: (...args: unknown[]) => {
-				all: () => Promise<{ results: Array<Record<string, unknown>> }>;
-			};
-		};
-	};
 
 	try {
 		const { results } = await db.prepare(

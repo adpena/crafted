@@ -17,15 +17,27 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
-import { verifyBearer } from "../../../lib/auth.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
+import {
+	resolveAuthCompat,
+	getCampaignForPage,
+	canAccess,
+	type TenancyD1,
+	type TenancyKV,
+} from "../../../lib/tenancy.ts";
 
 const PLUGIN_ID = "action-pages";
 
 export const GET: APIRoute = async ({ url, request }) => {
-	// Auth check — timing-safe
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
-	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
+	const e = env as Record<string, unknown>;
+	const db = e.DB as TenancyD1 | undefined;
+	const kv = e.CACHE as TenancyKV | undefined;
+	const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
+
+	if (!db) return json(503, { error: "Storage not available" });
+
+	const auth = await resolveAuthCompat(db, kv, request.headers.get("Authorization"), mcpToken);
+	if (!auth) {
 		return json(401, { error: "Unauthorized" });
 	}
 
@@ -34,14 +46,13 @@ export const GET: APIRoute = async ({ url, request }) => {
 		return json(400, { error: "Invalid slug" });
 	}
 
-	const db = (env as Record<string, unknown>).DB as {
-		prepare: (sql: string) => {
-			bind: (...args: unknown[]) => {
-				all: () => Promise<{ results: Array<Record<string, unknown>> }>;
-				first: () => Promise<Record<string, unknown> | null>;
-			};
-		};
-	};
+	// Campaign-level: verify this page belongs to their campaign
+	if (auth.level === "campaign" && auth.campaignId) {
+		const pageCampaign = await getCampaignForPage(db, slug);
+		if (pageCampaign && !canAccess(auth, pageCampaign)) {
+			return json(403, { error: "Access denied to this page" });
+		}
+	}
 
 	try {
 		// SQL GROUP BY aggregations — D1 computes these in SQLite, no JS loop over

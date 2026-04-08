@@ -13,11 +13,18 @@
 
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
-import { verifyBearer, sha256Hex } from "../../../lib/auth.ts";
+import { sha256Hex } from "../../../lib/auth.ts";
 import {
   getAttributionForPage,
   getAttributionForContact,
 } from "../../../lib/attribution.ts";
+import {
+  resolveAuthCompat,
+  getCampaignForPage,
+  canAccess,
+  type TenancyD1,
+  type TenancyKV,
+} from "../../../lib/tenancy.ts";
 
 interface D1Like {
   prepare(sql: string): {
@@ -32,15 +39,22 @@ interface D1Like {
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
 export const GET: APIRoute = async ({ url, request }) => {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
-  if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
-    return json(401, { error: "Unauthorized" });
-  }
+  const e = env as Record<string, unknown>;
+  const db = e.DB as D1Like | undefined;
+  const kv = e.CACHE as TenancyKV | undefined;
+  const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
 
-  const db = (env as Record<string, unknown>).DB as D1Like | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }
+
+  const auth = await resolveAuthCompat(db as TenancyD1, kv, request.headers.get("Authorization"), mcpToken);
+  if (!auth) {
+    return json(401, { error: "Unauthorized" });
+  }
+
+  // Campaign-level: check cross_campaign_attribution permission
+  // (they can always see their own pages' attribution)
 
   const slug = url.searchParams.get("slug");
   const contactEmail = url.searchParams.get("contact");
@@ -66,6 +80,15 @@ export const GET: APIRoute = async ({ url, request }) => {
     if (!SLUG_RE.test(slug)) {
       return json(400, { error: "Invalid slug" });
     }
+
+    // Campaign-level: verify this page belongs to their campaign
+    if (auth.level === "campaign" && auth.campaignId) {
+      const pageCampaign = await getCampaignForPage(db as TenancyD1, slug);
+      if (pageCampaign && !canAccess(auth, pageCampaign)) {
+        return json(403, { error: "Access denied to this page's attribution" });
+      }
+    }
+
     try {
       const summary = await getAttributionForPage(db, slug);
       return json(200, summary);
