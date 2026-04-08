@@ -226,6 +226,12 @@ export const POST: APIRoute = async (context) => {
       SENDGRID_LIST_ID: e.SENDGRID_LIST_ID as string | undefined,
       CONSTANT_CONTACT_API_KEY: e.CONSTANT_CONTACT_API_KEY as string | undefined,
       CONSTANT_CONTACT_LIST_ID: e.CONSTANT_CONTACT_LIST_ID as string | undefined,
+      NGPVAN_API_KEY: e.NGPVAN_API_KEY as string | undefined,
+      NGPVAN_APP_NAME: e.NGPVAN_APP_NAME as string | undefined,
+      NGPVAN_ACTIVIST_CODE_ID: e.NGPVAN_ACTIVIST_CODE_ID as string | undefined,
+      HUSTLE_API_TOKEN: e.HUSTLE_API_TOKEN as string | undefined,
+      HUSTLE_ORGANIZATION_ID: e.HUSTLE_ORGANIZATION_ID as string | undefined,
+      HUSTLE_GROUP_ID: e.HUSTLE_GROUP_ID as string | undefined,
     },
   });
 

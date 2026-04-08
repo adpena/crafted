@@ -22,6 +22,8 @@ import { pushToEventbrite } from "./eventbrite.ts";
 import { pushToFacebookEvent } from "./facebook.ts";
 import { pushToSendGrid } from "./sendgrid.ts";
 import { pushToConstantContact } from "./constantcontact.ts";
+import { pushToNgpVan } from "./ngpvan.ts";
+import { pushToHustle } from "./hustle.ts";
 import type { IntegrationSubmission, IntegrationEnv, IntegrationResult } from "./types.ts";
 
 export type { IntegrationSubmission, IntegrationEnv, IntegrationResult };
@@ -36,6 +38,8 @@ export interface IntegrationsSummary {
   facebook?: boolean;
   sendgrid?: boolean;
   constantcontact?: boolean;
+  ngpvan?: boolean;
+  hustle?: boolean;
 }
 
 interface AdapterDef {
@@ -56,6 +60,8 @@ const ADAPTERS: AdapterDef[] = [
   { key: "facebook", fn: pushToFacebookEvent },
   { key: "sendgrid", fn: pushToSendGrid },
   { key: "constantcontact", fn: pushToConstantContact },
+  { key: "ngpvan", fn: pushToNgpVan },
+  { key: "hustle", fn: pushToHustle },
 ];
 
 export interface DispatchContext {

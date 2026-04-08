@@ -80,6 +80,12 @@ export interface PostSubmitContext {
     SENDGRID_LIST_ID?: string;
     CONSTANT_CONTACT_API_KEY?: string;
     CONSTANT_CONTACT_LIST_ID?: string;
+    NGPVAN_API_KEY?: string;
+    NGPVAN_APP_NAME?: string;
+    NGPVAN_ACTIVIST_CODE_ID?: string;
+    HUSTLE_API_TOKEN?: string;
+    HUSTLE_ORGANIZATION_ID?: string;
+    HUSTLE_GROUP_ID?: string;
   };
 }
 
