@@ -113,10 +113,15 @@ export default function WorkListing({ sections }: Props) {
 								entry.data.publication ||
 								entry.data.medium ||
 								"";
+							// Use UTC year to avoid the edge case where a date string
+							// like "2026-01-01" parses as midnight UTC, then the client's
+							// local timezone (e.g. US Central, UTC-6) shifts it back to
+							// Dec 31 of the previous year — causing a hydration mismatch
+							// between the server-rendered year and the client-rendered year.
 							const year =
 								entry.data.year ||
 								(entry.data.date
-									? String(new Date(entry.data.date).getFullYear())
+									? String(new Date(entry.data.date).getUTCFullYear())
 									: "");
 
 							return (

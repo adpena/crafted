@@ -10,7 +10,18 @@ const { entry, cacheHint } = await getEmDashEntry("dev", slug);
 if (!entry) return Astro.redirect("/404");
 try { Astro.cache.set(cacheHint); } catch {}
 
-const d = entry.data;
+// emdash returns entry.data as `unknown` — narrow here.
+const d = entry.data as {
+	title?: string;
+	summary?: string;
+	stack?: string;
+	year?: string | number;
+	project_status?: string;
+	repo_url?: string;
+	live_url?: string;
+	featured_image?: unknown;
+	content?: unknown;
+};
 const hasMoltDemo = slug === "molt";
 const hasActionDemo = slug === "action-pages";
 const ogImage = `/og/${slug}.png`;
