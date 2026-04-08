@@ -14,7 +14,7 @@ import type { PluginDescriptor } from "emdash";
 export function actionPages(): PluginDescriptor {
   return ({
     id: "action-pages",
-    version: "0.2.0",
+    version: "0.3.0",
     entrypoint: "@adpena/action-pages/sandbox",
     adminEntry: "@adpena/action-pages/admin",
     capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
