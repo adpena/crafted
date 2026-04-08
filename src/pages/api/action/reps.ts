@@ -134,11 +134,18 @@ async function fetchProPublicaMembers(
 	// ProPublica members endpoint — current Congress
 	const url = `https://api.propublica.org/congress/v1/members/${chamber}/${state}/current.json`;
 
+	const apiKey = (env as Record<string, unknown>).PROPUBLICA_API_KEY as string | undefined;
+	if (!apiKey) {
+		// No API key configured — return empty rather than hitting ProPublica with
+		// an invalid key on every request. The letter/call actions gracefully handle
+		// empty rep lists by showing a "enter your zip to find representatives" state.
+		return [];
+	}
+
 	try {
 		const res = await fetch(url, {
 			headers: {
-				// ProPublica requires an API key header but accepts the demo key for basic usage
-				"X-API-Key": (env as Record<string, unknown>).PROPUBLICA_API_KEY as string || "DEMO_KEY",
+				"X-API-Key": apiKey,
 			},
 			signal: AbortSignal.timeout(8_000),
 		});

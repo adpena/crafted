@@ -257,6 +257,96 @@ const pages: PageDefinition[] = [
 		consent: { required: true },
 		sharing: { enabled: true, text: "I'm going to the Healthcare Town Hall — join me:" },
 	},
+	{
+		slug: "call-your-rep",
+		template: "hero-simple",
+		template_props: {
+			headline: "Call Congress now",
+			subhead: "A 60-second phone call is the most effective thing you can do. We'll look up your representatives and give you a script.",
+			align: "center",
+		},
+		action: "call",
+		action_props: {
+			target: "Congress",
+			script: "Hi, my name is [YOUR NAME] and I'm a constituent from [YOUR CITY]. I'm calling to urge the Senator/Representative to support full funding for Title I schools in the upcoming federal budget. Public education funding is critical for our community. Can I leave a message? Thank you.",
+			rep_level: "both",
+			talking_points: [
+				"Title I funds serve over 25 million students nationwide",
+				"Cuts would fall hardest on rural and low-income districts",
+				"Be brief — 30-60 seconds is plenty",
+				"State your zip code to confirm you're a constituent",
+			],
+		},
+		disclaimer: {
+			committee_name: "Educators for America",
+			treasurer_name: "Maria Lopez",
+		},
+		theme: "bold",
+		locale: "en",
+		consent: { required: true },
+		sharing: { enabled: true, text: "I just called Congress about education funding — you should too:" },
+	},
+	{
+		slug: "education-survey",
+		template: "hero-simple",
+		template_props: {
+			headline: "How should Congress invest in education?",
+			subhead: "Take our 3-question survey and we'll share the results with your representatives.",
+			align: "center",
+		},
+		action: "step",
+		action_props: {
+			steps: [
+				{
+					id: "priorities",
+					heading: "What's your top education priority?",
+					body: "Select the issue that matters most to you.",
+					fields: [
+						{
+							type: "radio",
+							name: "priority",
+							label: "Top priority",
+							required: true,
+							options: [
+								{ value: "funding", label: "Increase federal funding for public schools" },
+								{ value: "teachers", label: "Raise teacher pay and reduce class sizes" },
+								{ value: "access", label: "Expand pre-K and early childhood education" },
+								{ value: "equity", label: "Close the achievement gap in underserved communities" },
+							],
+						},
+					],
+				},
+				{
+					id: "contact",
+					heading: "Add your voice",
+					body: "We'll include your response when we present the results to Congress.",
+					fields: [
+						{ type: "text", name: "first_name", label: "First name", required: true, autoComplete: "given-name" },
+						{ type: "text", name: "last_name", label: "Last name", required: true, autoComplete: "family-name" },
+						{ type: "email", name: "email", label: "Email", required: true, autoComplete: "email" },
+						{ type: "zip", name: "zip", label: "Zip code", required: true, autoComplete: "postal-code" },
+					],
+				},
+				{
+					id: "comment",
+					heading: "Anything else?",
+					body: "Optional — share a personal story or message for your representative.",
+					fields: [
+						{ type: "textarea", name: "comment", label: "Your message (optional)", maxLength: 1000 },
+					],
+				},
+			],
+			submit_label: "Submit survey",
+		},
+		disclaimer: {
+			committee_name: "Educators for America",
+			treasurer_name: "Maria Lopez",
+		},
+		theme: "clean",
+		locale: "en",
+		consent: { required: true },
+		sharing: { enabled: true, text: "I just took the education priorities survey — add your voice:" },
+	},
 ];
 
 interface RpcResponse {

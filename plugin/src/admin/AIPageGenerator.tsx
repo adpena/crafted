@@ -24,6 +24,7 @@ const ACTION_OPTIONS = [
 	{ value: "gotv", label: "Get out the vote" },
 	{ value: "letter", label: "Letter to rep" },
 	{ value: "call", label: "Click to call" },
+	{ value: "step", label: "Multi-step form" },
 ];
 
 export interface AIPageGeneratorProps {
@@ -47,6 +48,9 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [result, setResult] = useState<Record<string, unknown> | null>(null);
+	const [creating, setCreating] = useState(false);
+	const [createError, setCreateError] = useState("");
+	const [createSuccess, setCreateSuccess] = useState("");
 
 	function saveToken() {
 		localStorage.setItem("action_pages_admin_token", tokenInput);
@@ -216,12 +220,57 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 						background: "#f9fafb",
 					}}
 				>
-					<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+					<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem", flexWrap: "wrap" }}>
 						<h2 style={{ margin: 0, fontSize: "1rem", fontWeight: 600 }}>Generated page</h2>
-						<button type="button" onClick={() => onApply?.(result)} style={primaryBtn(true)}>
-							Use this page
-						</button>
+						<div style={{ display: "flex", gap: "0.5rem" }}>
+							{onApply && (
+								<button type="button" onClick={() => onApply(result)} style={{ ...primaryBtn(true), background: "#fff", color: "#374151", border: "1px solid #d1d5db" }}>
+									Edit in PageBuilder
+								</button>
+							)}
+							<button
+								type="button"
+								disabled={creating}
+								onClick={async () => {
+									setCreating(true);
+									setCreateError("");
+									try {
+										const res = await fetch("/api/mcp/actions", {
+											method: "POST",
+											headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+											body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "create_page", params: result }),
+										});
+										const json = await res.json() as Record<string, unknown>;
+										const data = json.result as Record<string, unknown> | undefined;
+										if (data?.data && (data.data as Record<string, unknown>)?.ok) {
+											const url = (data.data as Record<string, unknown>).url as string;
+											setCreateSuccess(url);
+										} else {
+											const err = json.error as Record<string, unknown> | undefined;
+											setCreateError(err?.message as string ?? "Creation failed");
+										}
+									} catch (err) {
+										setCreateError(err instanceof Error ? err.message : "Creation failed");
+									} finally {
+										setCreating(false);
+									}
+								}}
+								style={primaryBtn(!creating)}
+							>
+								{creating ? "Creating…" : "Create & publish"}
+							</button>
+						</div>
 					</div>
+					{createError && (
+						<div role="alert" style={{ padding: "0.5rem 0.75rem", background: "#fef2f2", color: "#991b1b", border: "1px solid #fecaca", borderRadius: "0.25rem", marginBottom: "0.75rem", fontSize: "0.85rem" }}>
+							{createError}
+						</div>
+					)}
+					{createSuccess && (
+						<div style={{ padding: "0.5rem 0.75rem", background: "#ecfdf5", color: "#065f46", border: "1px solid #a7f3d0", borderRadius: "0.25rem", marginBottom: "0.75rem", fontSize: "0.85rem" }}>
+							Page created! <a href={createSuccess} target="_blank" rel="noopener noreferrer" style={{ color: "#065f46", fontWeight: 600 }}>{createSuccess}</a>
+						</div>
+					)}
 					<pre
 						style={{
 							margin: 0,
