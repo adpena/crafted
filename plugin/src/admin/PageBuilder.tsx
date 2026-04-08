@@ -16,6 +16,7 @@ import {
 import { ThemeSwatch, type ThemeId } from "./components/ThemeSwatch";
 import { LivePagePreview, type LivePagePreviewConfig } from "./LivePagePreview";
 import type { BrandKit, BrandThemeVariant } from "./BrandExtractor";
+import { getToken } from "./token.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -575,10 +576,7 @@ export function PageBuilder({
     setBrandError("");
     setBrandVariants([]);
     try {
-      const adminToken =
-        typeof window !== "undefined"
-          ? localStorage.getItem("action_pages_admin_token") ?? ""
-          : "";
+      const adminToken = getToken();
       const res = await fetch("/api/admin/brand-extract", {
         method: "POST",
         headers: {

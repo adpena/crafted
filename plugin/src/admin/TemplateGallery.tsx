@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Template gallery — grid of pre-built action page templates.
@@ -31,13 +32,8 @@ export interface TemplateGalleryProps {
 	fetchUrl?: string;
 }
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function TemplateGallery({ onSelect, fetchUrl = "/api/admin/templates" }: TemplateGalleryProps) {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 	const [data, setData] = useState<TemplatesResponse | null>(null);
 	const [loading, setLoading] = useState(false);
@@ -62,7 +58,7 @@ export function TemplateGallery({ onSelect, fetchUrl = "/api/admin/templates" }:
 	}, [token, category, fetchUrl]);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

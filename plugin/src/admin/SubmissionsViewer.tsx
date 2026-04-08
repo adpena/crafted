@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getToken as readToken, setToken as writeToken, clearToken } from "./token.ts";
 
 /**
  * Admin submissions viewer.
@@ -39,11 +40,6 @@ interface ListResponse {
 
 const PAGE_SIZE = 50;
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function SubmissionsViewer() {
 	const [slug, setSlug] = useState("");
 	const [search, setSearch] = useState("");
@@ -52,7 +48,7 @@ export function SubmissionsViewer() {
 	const [data, setData] = useState<ListResponse | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 
 	useEffect(() => {
@@ -91,7 +87,7 @@ export function SubmissionsViewer() {
 	}, [slug, search, variant, offset, token]);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}
@@ -167,7 +163,7 @@ export function SubmissionsViewer() {
 				<h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>Submissions</h1>
 				<button
 					type="button"
-					onClick={() => { localStorage.removeItem("action_pages_admin_token"); setToken(""); }}
+					onClick={() => { clearToken(); setToken(""); }}
 					style={{
 						padding: "0.25rem 0.75rem",
 						fontSize: "0.75rem",

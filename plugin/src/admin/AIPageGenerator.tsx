@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * AI-powered Action Page generator UI.
@@ -32,13 +33,8 @@ export interface AIPageGeneratorProps {
 	endpoint?: string;
 }
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page" }: AIPageGeneratorProps) {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 
 	// Tab: "describe" (free text) or "legislation" (bill URL)
@@ -60,7 +56,7 @@ export function AIPageGenerator({ onApply, endpoint = "/api/admin/generate-page"
 	const [createSuccess, setCreateSuccess] = useState("");
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

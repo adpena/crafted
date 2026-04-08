@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { getToken as readToken, setToken as writeToken, clearToken } from "./token.ts";
 
 /**
  * Cross-campaign list builder admin panel.
@@ -73,13 +74,8 @@ const PLATFORMS = [
   "constantcontact",
 ] as const;
 
-function getToken(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function ListBuilder() {
-  const [token, setToken] = useState(getToken());
+  const [token, setToken] = useState(readToken());
   const [tokenInput, setTokenInput] = useState("");
 
   // Search form state
@@ -251,7 +247,7 @@ export function ListBuilder() {
   }
 
   function saveToken() {
-    localStorage.setItem("action_pages_admin_token", tokenInput);
+    writeToken(tokenInput);
     setToken(tokenInput);
     setTokenInput("");
   }
@@ -289,7 +285,7 @@ export function ListBuilder() {
           <h2 style={{ fontSize: "1rem", fontWeight: 700, margin: 0 }}>Saved Lists</h2>
           <button
             type="button"
-            onClick={() => { localStorage.removeItem("action_pages_admin_token"); setToken(""); }}
+            onClick={() => { clearToken(); setToken(""); }}
             style={btnSmall}
           >
             Forget token

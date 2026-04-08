@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { getToken } from "./token.ts";
 
 /**
  * Campaign ROI Dashboard — interactive admin panel.
@@ -50,11 +51,6 @@ interface DashboardPayload {
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
-
-function getToken(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem("action_pages_admin_token") ?? "";
-}
 
 function fmt(n: number): string {
   return n.toLocaleString("en-US");

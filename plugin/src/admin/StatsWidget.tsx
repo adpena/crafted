@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getToken } from "./token.ts";
 
 /**
  * Action page stats dashboard widget.
@@ -21,11 +22,6 @@ interface StatsResponse {
 		p_value: number;
 		winner: string | null;
 	};
-}
-
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
 }
 
 export function StatsWidget() {

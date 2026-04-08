@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Brand extractor — pull a BrandKit from a URL and render 4 theme variants.
@@ -48,13 +49,8 @@ export interface BrandExtractorProps {
 	endpoint?: string;
 }
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function BrandExtractor({ onSelect, endpoint = "/api/admin/brand-extract" }: BrandExtractorProps) {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 	const [url, setUrl] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -62,7 +58,7 @@ export function BrandExtractor({ onSelect, endpoint = "/api/admin/brand-extract"
 	const [data, setData] = useState<ExtractResponse | null>(null);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

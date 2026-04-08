@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Audit log viewer.
@@ -31,13 +32,8 @@ interface AuditResponse {
 
 const PAGE_SIZE = 50;
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function AuditLogViewer() {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 	const [action, setAction] = useState("");
 	const [target, setTarget] = useState("");
@@ -74,7 +70,7 @@ export function AuditLogViewer() {
 	}, [token, action, target, actor, offset]);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

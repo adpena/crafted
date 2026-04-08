@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Campaign management admin panel (firm-level only).
@@ -26,11 +27,6 @@ interface CampaignRecord {
   created_at: string;
   page_count: number;
   submission_count: number;
-}
-
-function getToken(): string {
-  if (typeof window === "undefined") return "";
-  return localStorage.getItem("action_pages_admin_token") ?? "";
 }
 
 /* ------------------------------------------------------------------ */
@@ -158,7 +154,7 @@ const toggleDesc: CSSProperties = {
 /* ------------------------------------------------------------------ */
 
 export function CampaignManager() {
-  const [token, setToken] = useState(getToken());
+  const [token, setToken] = useState(readToken());
   const [campaigns, setCampaigns] = useState<CampaignRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -281,7 +277,7 @@ export function CampaignManager() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setToken((e.target as HTMLInputElement).value);
-                localStorage.setItem("action_pages_admin_token", (e.target as HTMLInputElement).value);
+                writeToken((e.target as HTMLInputElement).value);
               }
             }}
           />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Webhook inbox viewer.
@@ -29,13 +30,8 @@ interface InboxResponse {
 
 const PAGE_SIZE = 50;
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function WebhookInboxViewer() {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 	const [sourceFilter, setSourceFilter] = useState("");
 	const [offset, setOffset] = useState(0);
@@ -68,7 +64,7 @@ export function WebhookInboxViewer() {
 	}, [token, sourceFilter, offset]);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

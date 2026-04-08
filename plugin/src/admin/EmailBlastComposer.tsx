@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { CSSProperties } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * Email blast composer.
@@ -41,13 +42,8 @@ interface SendResponse {
 	errors: string[];
 }
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: EmailBlastComposerProps) {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 
 	const [subject, setSubject] = useState("");
@@ -62,7 +58,7 @@ export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: Email
 	const [result, setResult] = useState<SendResponse | null>(null);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { CSSProperties, DragEvent } from "react";
+import { getToken as readToken, setToken as writeToken } from "./token.ts";
 
 /**
  * CSV import wizard — three steps:
@@ -24,13 +25,8 @@ export interface CsvImportWizardProps {
 
 type Step = "pick" | "preview" | "uploading" | "done";
 
-function getToken(): string {
-	if (typeof window === "undefined") return "";
-	return localStorage.getItem("action_pages_admin_token") ?? "";
-}
-
 export function CsvImportWizard({ endpoint = "/api/admin/contacts/import" }: CsvImportWizardProps) {
-	const [token, setToken] = useState(getToken());
+	const [token, setToken] = useState(readToken());
 	const [tokenInput, setTokenInput] = useState("");
 
 	const [step, setStep] = useState<Step>("pick");
@@ -44,7 +40,7 @@ export function CsvImportWizard({ endpoint = "/api/admin/contacts/import" }: Csv
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	function saveToken() {
-		localStorage.setItem("action_pages_admin_token", tokenInput);
+		writeToken(tokenInput);
 		setToken(tokenInput);
 		setTokenInput("");
 	}
