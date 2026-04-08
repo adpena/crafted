@@ -324,12 +324,14 @@ export function buildCurrentConfig(
   committeeName: string,
   treasurerName: string,
   independentExpenditure = false,
+  aiGenerated = false,
+  customCss = "",
 ): LivePagePreviewConfig | null {
   try {
     // Need at least a template or action selected to show anything useful
     if (!template && !action) return null;
 
-    return {
+    const cfg: LivePagePreviewConfig = {
       slug: slug || "preview",
       template: template ?? "hero-simple",
       template_props: buildTemplatePropsConfig(template, templateProps, pageTitle),
@@ -348,6 +350,10 @@ export function buildCurrentConfig(
       },
       theme,
     };
+    if (customCss.trim()) {
+      (cfg as Record<string, unknown>).custom_css = customCss.trim();
+    }
+    return cfg;
   } catch {
     return null;
   }
@@ -614,6 +620,12 @@ export function PageBuilder({
   const [independentExpenditure, setIndependentExpenditure] = useState(false);
   const [aiGenerated, setAiGenerated] = useState(false);
 
+  /* ---------- Optional custom CSS override ---------- */
+  const [customCss, setCustomCss] = useState("");
+  const MAX_CUSTOM_CSS_BYTES = 16 * 1024;
+  const customCssBytes = new TextEncoder().encode(customCss).length;
+  const customCssOverLimit = customCssBytes > MAX_CUSTOM_CSS_BYTES;
+
   /* ---------- Preview state ---------- */
   const [showPreview, setShowPreview] = useState(false); // mobile toggle
   const [previewConfig, setPreviewConfig] = useState<LivePagePreviewConfig | null>(null);
@@ -641,6 +653,7 @@ export function PageBuilder({
         action, actionProps, hasFollowup, followup,
         followupProps, followupMessage, theme,
         committeeName, treasurerName, independentExpenditure,
+        aiGenerated, customCss,
       );
       setPreviewConfig(cfg);
     }, 500);
@@ -650,6 +663,7 @@ export function PageBuilder({
     action, actionProps, hasFollowup, followup,
     followupProps, followupMessage, theme,
     committeeName, treasurerName, independentExpenditure,
+    aiGenerated, customCss,
   ]);
 
   /* ---------- Validation (computed) ---------- */
@@ -899,6 +913,9 @@ export function PageBuilder({
         ...(aiGenerated ? { ai_generated: true } : {}),
       },
       theme: customTheme ?? theme,
+      ...(customCss.trim() && !customCssOverLimit
+        ? { custom_css: customCss.trim() }
+        : {}),
       status,
     };
   };
@@ -953,6 +970,7 @@ export function PageBuilder({
       action, actionProps, hasFollowup, followup,
       followupProps, followupMessage, theme,
       committeeName, treasurerName, independentExpenditure,
+      aiGenerated, customCss,
     );
     if (!cfg) return;
     try {
@@ -972,6 +990,7 @@ export function PageBuilder({
     action, actionProps, hasFollowup, followup,
     followupProps, followupMessage, theme,
     committeeName, treasurerName, independentExpenditure,
+    aiGenerated, customCss,
   ]);
 
   /* ---------- Helpers for blur-based error display ---------- */
@@ -1931,6 +1950,50 @@ export function PageBuilder({
             Show AI disclosure (page content was assisted by AI)
           </label>
         </div>
+      </Section>
+
+      <Section
+        step={5}
+        title="Advanced (optional)"
+        description="Custom CSS override. Leave blank unless you need it."
+      >
+        <Field
+          label="Custom CSS"
+          hint={`Injected into the page head after the theme. Max ${MAX_CUSTOM_CSS_BYTES / 1024} KB. Dangerous patterns (expression, @import, data: urls, javascript:, behavior, -moz-binding) are rejected at publish time.`}
+          error={customCssOverLimit ? `Too large: ${customCssBytes} bytes (max ${MAX_CUSTOM_CSS_BYTES})` : undefined}
+        >
+          <textarea
+            value={customCss}
+            onChange={(e) => setCustomCss(e.target.value)}
+            placeholder="/* e.g. override a heading */&#10;h1 { letter-spacing: -0.02em; }"
+            spellCheck={false}
+            rows={8}
+            style={{
+              width: "100%",
+              fontFamily: "var(--page-font-mono, 'SF Mono', monospace)",
+              fontSize: "0.85rem",
+              lineHeight: 1.5,
+              color: "var(--page-text, #1a1a1a)",
+              background: "transparent",
+              border: "none",
+              borderBottom: `1px solid ${customCssOverLimit ? "#d64545" : "var(--page-border, #d4d4c8)"}`,
+              padding: "0.5rem 0",
+              resize: "vertical" as const,
+              outline: "none",
+            }}
+          />
+          <div
+            style={{
+              fontFamily: "var(--page-font-mono, monospace)",
+              fontSize: "0.7rem",
+              color: customCssOverLimit ? "#d64545" : "var(--page-secondary, #6b6b6b)",
+              marginTop: "0.25rem",
+              textAlign: "right" as const,
+            }}
+          >
+            {customCssBytes.toLocaleString()} / {MAX_CUSTOM_CSS_BYTES.toLocaleString()} bytes
+          </div>
+        </Field>
       </Section>
     </>
   );

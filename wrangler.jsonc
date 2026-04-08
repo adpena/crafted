@@ -29,6 +29,13 @@
 			"binding": "MEDIA",
 			"bucket_name": "crafted-media",
 		},
+		// Uncomment and create the bucket to enable POST /api/admin/backup
+		// (scheduled D1 → R2 NDJSON dumps). The endpoint returns 503 until
+		// this binding is present.
+		// {
+		// 	"binding": "BACKUPS",
+		// 	"bucket_name": "crafted-backups",
+		// },
 	],
 	"observability": {
 		"enabled": true,
