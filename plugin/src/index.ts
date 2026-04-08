@@ -29,6 +29,7 @@ export function actionPages(): PluginDescriptor {
       { path: "/action-pages", label: "Action Pages", icon: "zap" },
       { path: "/submissions", label: "Submissions", icon: "inbox" },
       { path: "/notifications", label: "Notifications", icon: "bell" },
+      { path: "/lists", label: "List Builder", icon: "users" },
     ],
     adminWidgets: [
       { id: "action-stats", size: "half", title: "Action Page Stats" },

@@ -178,6 +178,7 @@ export function createPlugin() {
         { path: "/import", label: "Import", icon: "upload" },
         { path: "/webhooks", label: "Webhooks", icon: "webhook" },
         { path: "/audit", label: "Audit Log", icon: "shield" },
+        { path: "/lists", label: "List Builder", icon: "users" },
       ],
       widgets: [
         { id: "action-stats", size: "half", title: "Action Page Stats" },

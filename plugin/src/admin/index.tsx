@@ -10,6 +10,7 @@ import { CsvImportWizard } from "./CsvImportWizard";
 import { WebhookInboxViewer } from "./WebhookInboxViewer";
 import { AuditLogViewer } from "./AuditLogViewer";
 import { LivePagePreview } from "./LivePagePreview";
+import { ListBuilder } from "./ListBuilder";
 
 export { PageBuilder } from "./PageBuilder";
 export type { PageBuilderProps, Campaign, PluginSettings } from "./PageBuilder";
@@ -29,6 +30,7 @@ export type { CsvImportWizardProps } from "./CsvImportWizard";
 export { WebhookInboxViewer } from "./WebhookInboxViewer";
 export { AuditLogViewer } from "./AuditLogViewer";
 export { LivePagePreview } from "./LivePagePreview";
+export { ListBuilder } from "./ListBuilder";
 export type { LivePagePreviewProps, LivePagePreviewConfig } from "./LivePagePreview";
 
 export { Section } from "./components/Section";
@@ -65,6 +67,7 @@ export const pages: Record<string, React.ComponentType> = {
   "/import": CsvImportWizard,
   "/webhooks": WebhookInboxViewer,
   "/audit": AuditLogViewer,
+  "/lists": ListBuilder,
 };
 
 /**
