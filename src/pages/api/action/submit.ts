@@ -222,6 +222,10 @@ export const POST: APIRoute = async (context) => {
       EVENTBRITE_API_TOKEN: e.EVENTBRITE_API_TOKEN as string | undefined,
       EVENTBRITE_ORGANIZATION_ID: e.EVENTBRITE_ORGANIZATION_ID as string | undefined,
       FACEBOOK_ACCESS_TOKEN: e.FACEBOOK_ACCESS_TOKEN as string | undefined,
+      SENDGRID_API_KEY: e.SENDGRID_API_KEY as string | undefined,
+      SENDGRID_LIST_ID: e.SENDGRID_LIST_ID as string | undefined,
+      CONSTANT_CONTACT_API_KEY: e.CONSTANT_CONTACT_API_KEY as string | undefined,
+      CONSTANT_CONTACT_LIST_ID: e.CONSTANT_CONTACT_LIST_ID as string | undefined,
     },
   });
 

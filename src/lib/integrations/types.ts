@@ -51,6 +51,14 @@ export interface IntegrationEnv {
 
   // Facebook Events (requires Graph API access token with events_management scope)
   FACEBOOK_ACCESS_TOKEN?: string;
+
+  // SendGrid Marketing Contacts
+  SENDGRID_API_KEY?: string;
+  SENDGRID_LIST_ID?: string;
+
+  // Constant Contact
+  CONSTANT_CONTACT_API_KEY?: string;
+  CONSTANT_CONTACT_LIST_ID?: string;
 }
 
 export interface IntegrationResult {

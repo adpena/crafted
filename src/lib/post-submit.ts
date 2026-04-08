@@ -76,6 +76,10 @@ export interface PostSubmitContext {
     EVENTBRITE_API_TOKEN?: string;
     EVENTBRITE_ORGANIZATION_ID?: string;
     FACEBOOK_ACCESS_TOKEN?: string;
+    SENDGRID_API_KEY?: string;
+    SENDGRID_LIST_ID?: string;
+    CONSTANT_CONTACT_API_KEY?: string;
+    CONSTANT_CONTACT_LIST_ID?: string;
   };
 }
 

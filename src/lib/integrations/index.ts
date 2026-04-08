@@ -20,6 +20,8 @@ import { pushToEveryAction } from "./everyaction.ts";
 import { pushToMobilize } from "./mobilize.ts";
 import { pushToEventbrite } from "./eventbrite.ts";
 import { pushToFacebookEvent } from "./facebook.ts";
+import { pushToSendGrid } from "./sendgrid.ts";
+import { pushToConstantContact } from "./constantcontact.ts";
 import type { IntegrationSubmission, IntegrationEnv, IntegrationResult } from "./types.ts";
 
 export type { IntegrationSubmission, IntegrationEnv, IntegrationResult };
@@ -32,6 +34,8 @@ export interface IntegrationsSummary {
   mobilize?: boolean;
   eventbrite?: boolean;
   facebook?: boolean;
+  sendgrid?: boolean;
+  constantcontact?: boolean;
 }
 
 interface AdapterDef {
@@ -50,6 +54,8 @@ const ADAPTERS: AdapterDef[] = [
   { key: "mobilize", fn: pushToMobilize },
   { key: "eventbrite", fn: pushToEventbrite },
   { key: "facebook", fn: pushToFacebookEvent },
+  { key: "sendgrid", fn: pushToSendGrid },
+  { key: "constantcontact", fn: pushToConstantContact },
 ];
 
 export interface DispatchContext {
