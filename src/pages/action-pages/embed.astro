@@ -70,12 +70,36 @@ const embedTypes = [
 			<h2 class="ap-section-label">QR Code</h2>
 			<h3 class="ap-section-title">Print-ready QR code for your action page.</h3>
 
+			<div class="qr-options">
+				<div class="embed-field">
+					<label for="qr-style" class="embed-label">Style</label>
+					<select id="qr-style" class="embed-input">
+						<option value="square">Square</option>
+						<option value="rounded">Rounded</option>
+						<option value="dot">Dot</option>
+					</select>
+				</div>
+				<div class="embed-field">
+					<label for="qr-fg" class="embed-label">Foreground</label>
+					<input id="qr-fg" type="color" value="#000000" class="embed-color" />
+				</div>
+				<div class="embed-field">
+					<label for="qr-bg" class="embed-label">Background</label>
+					<input id="qr-bg" type="color" value="#ffffff" class="embed-color" />
+				</div>
+			</div>
+
 			<div class="qr-wrap">
-				<img id="qr-img" alt="QR code for action page" width="300" height="300" />
-				<p class="qr-hint">
-					Right-click to save, or use the direct URL:<br />
-					<code id="qr-url" class="qr-url-code"></code>
-				</p>
+				<div id="qr-preview" class="qr-preview"></div>
+				<div class="qr-meta">
+					<p class="qr-hint">
+						Right-click the image to save, or copy the direct URL:
+					</p>
+					<div class="qr-url-wrap">
+						<code id="qr-url" class="qr-url-code"></code>
+						<button type="button" id="qr-copy-url" class="embed-copy-btn qr-copy-btn">Copy URL</button>
+					</div>
+				</div>
 			</div>
 		</section>
 
@@ -111,8 +135,12 @@ const embedTypes = [
 		const typeEl = document.getElementById("embed-type");
 		const codeEl = document.getElementById("embed-code-inner");
 		const copyBtn = document.getElementById("embed-copy");
-		const qrImg = document.getElementById("qr-img");
+		const qrPreview = document.getElementById("qr-preview");
 		const qrUrlEl = document.getElementById("qr-url");
+		const qrStyleEl = document.getElementById("qr-style");
+		const qrFgEl = document.getElementById("qr-fg");
+		const qrBgEl = document.getElementById("qr-bg");
+		const qrCopyBtn = document.getElementById("qr-copy-url");
 		if (!slugEl || !typeEl || !codeEl || !copyBtn) return;
 
 		function currentSlug() {
@@ -120,13 +148,35 @@ const embedTypes = [
 			return v || "fund-public-schools";
 		}
 
+		function qrUrl() {
+			var slug = currentSlug();
+			var style = qrStyleEl ? qrStyleEl.value : "square";
+			var fg = qrFgEl ? qrFgEl.value.replace("#", "") : "000000";
+			var bg = qrBgEl ? qrBgEl.value.replace("#", "") : "ffffff";
+			return BASE + "/api/action/qr?slug=" + encodeURIComponent(slug) +
+				"&size=300&style=" + style + "&fg=" + fg + "&bg=" + bg;
+		}
+
+		var qrAbort = null;
+		function renderQR() {
+			if (qrAbort) qrAbort.abort();
+			var ctrl = new AbortController();
+			qrAbort = ctrl;
+			var url = qrUrl();
+			if (qrUrlEl) qrUrlEl.textContent = url;
+			fetch(url, { signal: ctrl.signal })
+				.then(function (r) { return r.text(); })
+				.then(function (svg) {
+					if (qrPreview) qrPreview.innerHTML = svg;
+				})
+				.catch(function () { /* aborted or failed — ignore */ });
+		}
+
 		function render() {
-			const slug = currentSlug();
-			const type = typeEl.value;
+			var slug = currentSlug();
+			var type = typeEl.value;
 			codeEl.textContent = build(slug, type);
-			var qrSrc = BASE + "/api/action/qr?slug=" + encodeURIComponent(slug) + "&size=300";
-			if (qrImg) qrImg.src = qrSrc;
-			if (qrUrlEl) qrUrlEl.textContent = qrSrc;
+			renderQR();
 		}
 
 		function build(slug, type) {
@@ -230,6 +280,9 @@ const embedTypes = [
 
 		slugEl.addEventListener("input", render);
 		typeEl.addEventListener("change", render);
+		if (qrStyleEl) qrStyleEl.addEventListener("change", renderQR);
+		if (qrFgEl) qrFgEl.addEventListener("input", renderQR);
+		if (qrBgEl) qrBgEl.addEventListener("input", renderQR);
 
 		copyBtn.addEventListener("click", async () => {
 			const text = codeEl.textContent || "";
@@ -242,6 +295,19 @@ const embedTypes = [
 				setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
 			}
 		});
+
+		if (qrCopyBtn) {
+			qrCopyBtn.addEventListener("click", async () => {
+				try {
+					await navigator.clipboard.writeText(qrUrl());
+					qrCopyBtn.textContent = "Copied";
+					setTimeout(() => (qrCopyBtn.textContent = "Copy URL"), 1500);
+				} catch {
+					qrCopyBtn.textContent = "Copy failed";
+					setTimeout(() => (qrCopyBtn.textContent = "Copy URL"), 1500);
+				}
+			});
+		}
 
 		render();
 	})();
@@ -409,6 +475,24 @@ const embedTypes = [
 		color: var(--color-text);
 	}
 
+	.qr-options {
+		display: grid;
+		grid-template-columns: 1fr auto auto;
+		gap: var(--spacing-lg);
+		align-items: end;
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.embed-color {
+		width: 44px;
+		height: 44px;
+		padding: 2px;
+		border: 1.5px solid var(--color-border);
+		border-radius: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
 	.qr-wrap {
 		display: flex;
 		align-items: flex-start;
@@ -416,9 +500,25 @@ const embedTypes = [
 		flex-wrap: wrap;
 	}
 
-	.qr-wrap img {
+	.qr-preview {
+		width: 300px;
+		height: 300px;
 		border: 1px solid var(--color-border);
 		background: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.qr-preview :global(svg) {
+		width: 100%;
+		height: 100%;
+	}
+
+	.qr-meta {
+		flex: 1;
+		min-width: 200px;
 	}
 
 	.qr-hint {
@@ -427,6 +527,14 @@ const embedTypes = [
 		color: var(--color-secondary);
 		line-height: 1.7;
 		max-width: 28rem;
+		margin-bottom: var(--spacing-sm);
+	}
+
+	.qr-url-wrap {
+		display: flex;
+		align-items: flex-start;
+		gap: var(--spacing-sm);
+		flex-wrap: wrap;
 	}
 
 	.qr-url-code {
@@ -434,6 +542,13 @@ const embedTypes = [
 		font-size: var(--font-size-xs);
 		color: var(--color-text);
 		word-break: break-all;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.qr-copy-btn {
+		position: static;
+		flex-shrink: 0;
 	}
 
 	@media (max-width: 600px) {

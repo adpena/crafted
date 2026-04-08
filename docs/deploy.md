@@ -62,7 +62,7 @@ Each of these unlocks a specific feature. Omit any you don't need.
 | Category | Secret |
 | -------- | ------ |
 | AI / theme | `ANTHROPIC_API_KEY` |
-| Reps lookup | `GOOGLE_CIVIC_API_KEY` |
+| Reps lookup | `PROPUBLICA_API_KEY` (optional — reps endpoint works without it but returns empty) |
 | Meta Pixel | `META_PIXEL_ID`, `META_ACCESS_TOKEN` |
 | Google Ads | `GOOGLE_CONVERSION_ID`, `GOOGLE_CONVERSION_LABEL` |
 | Action Network | `ACTION_NETWORK_API_KEY` |

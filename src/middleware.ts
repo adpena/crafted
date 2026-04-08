@@ -68,6 +68,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set("Cache-Control", "public, max-age=31536000, immutable");
   }
 
+  // Static showcase and embed playground — rarely change, cache at edge
+  if (
+    context.url.pathname === "/action-pages/" ||
+    context.url.pathname === "/action-pages" ||
+    context.url.pathname === "/action-pages/embed/" ||
+    context.url.pathname === "/action-pages/embed"
+  ) {
+    response.headers.set(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=3600",
+    );
+  }
+
   // Action pages and demos are public embeddable widgets.
   if (context.url.pathname.startsWith("/action/") || context.url.pathname.startsWith("/demo/")) {
     // Preview route is admin-only — restrict framing to same origin
@@ -82,6 +95,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
       response.headers.set(
         "Content-Security-Policy",
         BASE_CSP + "; frame-ancestors *",
+      );
+      // Dynamic action pages config rarely changes — cache at Cloudflare edge
+      response.headers.set(
+        "Cache-Control",
+        "public, s-maxage=60, stale-while-revalidate=3600",
       );
     }
   }

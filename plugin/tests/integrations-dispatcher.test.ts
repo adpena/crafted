@@ -19,6 +19,8 @@ const mocks = vi.hoisted(() => ({
 	mobilize: vi.fn(async () => undefined),
 	eventbrite: vi.fn(async () => undefined),
 	facebook: vi.fn(async () => undefined),
+	sendgrid: vi.fn(async () => undefined),
+	constantcontact: vi.fn(async () => undefined),
 }));
 
 vi.mock("../../src/lib/integrations/actionnetwork.ts", () => ({
@@ -41,6 +43,12 @@ vi.mock("../../src/lib/integrations/eventbrite.ts", () => ({
 }));
 vi.mock("../../src/lib/integrations/facebook.ts", () => ({
 	pushToFacebookEvent: mocks.facebook,
+}));
+vi.mock("../../src/lib/integrations/sendgrid.ts", () => ({
+	pushToSendGrid: mocks.sendgrid,
+}));
+vi.mock("../../src/lib/integrations/constantcontact.ts", () => ({
+	pushToConstantContact: mocks.constantcontact,
 }));
 
 import { dispatchIntegrations } from "../../src/lib/integrations/index.js";
@@ -78,6 +86,8 @@ describe("dispatchIntegrations", () => {
 		expect(mocks.mobilize).toHaveBeenCalledTimes(1);
 		expect(mocks.eventbrite).toHaveBeenCalledTimes(1);
 		expect(mocks.facebook).toHaveBeenCalledTimes(1);
+		expect(mocks.sendgrid).toHaveBeenCalledTimes(1);
+		expect(mocks.constantcontact).toHaveBeenCalledTimes(1);
 	});
 
 	it("includes per-adapter ok booleans in summary", async () => {
