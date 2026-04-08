@@ -11,6 +11,8 @@ const COLLECTIONS = [
 
 const STATIC_PAGES = [
 	{ path: "/", priority: "1.0" },
+	{ path: "/articles", priority: "0.8" },
+	{ path: "/action-pages", priority: "0.8" },
 	{ path: "/about", priority: "0.8" },
 	{ path: "/contact", priority: "0.8" },
 ];

@@ -1,0 +1,73 @@
+---
+/**
+ * Articles index — long-form writeups and case studies.
+ *
+ * Articles are distinct from the "writing" work collection: they are
+ * editorial pieces, case studies, and deep-dives that can live on the
+ * site indefinitely. The first article here is the Crafted Action
+ * Pages case study (/action-pages), which is the canonical writeup
+ * for that project.
+ *
+ * The article data is currently inline — no content collection — so
+ * adding a new article means editing this file and (usually) creating
+ * a new Astro page at the target slug. That's intentional: articles
+ * are rare enough that a content collection is over-engineering until
+ * there are 10+ entries.
+ */
+
+import Base from "../../layouts/Base.astro";
+
+interface Article {
+	slug: string;
+	href: string;
+	title: string;
+	summary: string;
+	tags: string;
+	date: string; // ISO date
+	year: string;
+}
+
+const articles: Article[] = [
+	{
+		slug: "crafted-action-pages",
+		href: "/action-pages",
+		title: "Building an open-source Action Network alternative",
+		summary:
+			"Case study: 1,709 tests, 8 action types, 12 platform integrations, AI page generator, all running on Cloudflare Workers starting at $5/month. Architecture, security review, browser compat, integrations, testing discipline.",
+		tags: "Case study · Cloudflare Workers · Astro · D1 · React",
+		date: "2026-04-07",
+		year: "2026",
+	},
+];
+---
+
+<Base
+	title="Articles"
+	description="Long-form writeups, case studies, and deep-dives."
+>
+	<main id="main-content" class="page">
+		<h1 class="page-title">Articles</h1>
+		<p class="page-summary">
+			Case studies and long-form writeups. A slower, more detailed companion
+			to the work listing.
+		</p>
+
+		<ul class="compact-list" role="list">
+			{articles.map((article) => (
+				<li>
+					<a href={article.href} class="compact-item">
+						<span class="compact-title">{article.title}</span>
+						<span class="compact-tags">{article.tags}</span>
+						<span class="compact-year">{article.year}</span>
+					</a>
+					<div class="compact-reveal">
+						<div>
+							<p>{article.summary}</p>
+							<span class="compact-tags-reveal">{article.tags}</span>
+						</div>
+					</div>
+				</li>
+			))}
+		</ul>
+	</main>
+</Base>

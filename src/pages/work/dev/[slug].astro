@@ -6,6 +6,15 @@ import Base from "../../../layouts/Base.astro";
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
 
+// The Action Pages project has a full case-study landing page at
+// /action-pages that's the canonical long-form writeup. Redirect the
+// work-detail route there so there's a single source of truth and
+// readers land on the convention-matching narrative rather than a
+// thin CMS entry with the same title.
+if (slug === "action-pages") {
+	return Astro.redirect("/action-pages", 301);
+}
+
 const { entry, cacheHint } = await getEmDashEntry("dev", slug);
 if (!entry) return Astro.redirect("/404");
 try { Astro.cache.set(cacheHint); } catch {}
