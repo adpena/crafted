@@ -91,6 +91,11 @@ const resolvedTheme = typeof actionConfig.theme === "object"
 const cssVarString = Object.entries(resolvedTheme).map(([k, v]) => `${k}:${v}`).join(";");
 
 import ActionPageIsland from "../../components/ActionPageIsland.tsx";
+import { sanitizeCustomCss } from "../../lib/sanitize-css.ts";
+
+const customCss = sanitizeCustomCss(
+  pageData.custom_css ?? pageData.action_props?.custom_css
+);
 ---
 
 <html lang={actionConfig.locale === "es" ? "es" : "en"}>
@@ -122,6 +127,9 @@ import ActionPageIsland from "../../components/ActionPageIsland.tsx";
     main { width: 100%; }
     astro-island { display: contents; }
   </style>
+  {customCss.css && (
+    <style is:global set:html={customCss.css} />
+  )}
 </head>
 <body style={cssVarString}>
   <main id="main-content">

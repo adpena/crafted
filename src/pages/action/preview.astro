@@ -142,6 +142,12 @@ const rawHeadline = previewConfig.template_props?.headline;
 const title = typeof rawHeadline === "string" ? rawHeadline.slice(0, 200) : "Preview";
 
 import ActionPageIsland from "../../components/ActionPageIsland.tsx";
+import { sanitizeCustomCss } from "../../lib/sanitize-css.ts";
+
+const customCss = sanitizeCustomCss(
+  (config as Record<string, unknown>).custom_css ??
+    ((config as Record<string, Record<string, unknown>>).action_props?.custom_css)
+);
 ---
 
 <html lang={previewConfig.locale === "es" ? "es" : "en"}>
@@ -180,6 +186,9 @@ import ActionPageIsland from "../../components/ActionPageIsland.tsx";
       pointer-events: none;
     }
   </style>
+  {customCss.css && (
+    <style is:global set:html={customCss.css} />
+  )}
 </head>
 <body style={cssVarString}>
   <main id="main-content">

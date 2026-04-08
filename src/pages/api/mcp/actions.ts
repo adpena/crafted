@@ -13,6 +13,7 @@ import { env } from "cloudflare:workers";
 import { parseRpcRequest, rpcResult, rpcError, RPC_PARSE_ERROR, RPC_INVALID_REQUEST, RPC_METHOD_NOT_FOUND, RPC_INVALID_PARAMS } from "../../../lib/jsonrpc.ts";
 import { verifyBearer } from "../../../lib/auth.ts";
 import { SLUG_RE } from "../../../lib/slug.ts";
+import { sanitizeCustomCss } from "../../../lib/sanitize-css.ts";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -163,7 +164,7 @@ const THEMES: Record<string, Record<string, string>> = {
 /* ------------------------------------------------------------------ */
 
 const TOOLS = [
-  { name: "create_page", description: "Create a new action page", params: { slug: "string", template: "string", action: "string", template_props: "object", action_props: "object", "disclaimer": "object", "theme?": "string | object", "followup?": "string", "followup_props?": "object", "followup_message?": "string", "campaign_id?": "string", "variants?": "string[]", "callbacks?": "object[]" } },
+  { name: "create_page", description: "Create a new action page", params: { slug: "string", template: "string", action: "string", template_props: "object", action_props: "object", "disclaimer": "object", "theme?": "string | object", "followup?": "string", "followup_props?": "object", "followup_message?": "string", "campaign_id?": "string", "variants?": "string[]", "callbacks?": "object[]", "custom_css?": "string (sanitized)" } },
   { name: "list_pages", description: "List all action pages" },
   { name: "get_page", description: "Get an action page by slug", params: { slug: "string" } },
   { name: "get_submissions", description: "Get submissions for a page", params: { page_id: "string", "limit?": "number", "offset?": "number" } },
@@ -353,7 +354,13 @@ export const POST: APIRoute = async ({ request }) => {
         }
       }
 
-      const pageData = {
+      // Sanitize optional custom CSS (admin-only, but still defense-in-depth)
+      const cssResult = sanitizeCustomCss(p.custom_css);
+      if (cssResult.rejected) {
+        return err("INVALID_CUSTOM_CSS", `custom_css rejected: ${cssResult.reason}`);
+      }
+
+      const pageData: Record<string, unknown> = {
         slug,
         campaign_id: p.campaign_id ?? null,
         template: p.template,
@@ -372,6 +379,7 @@ export const POST: APIRoute = async ({ request }) => {
         status: "active",
         created_at: new Date().toISOString(),
       };
+      if (cssResult.css) pageData.custom_css = cssResult.css;
 
       const db = getDb();
       const id = crypto.randomUUID();
