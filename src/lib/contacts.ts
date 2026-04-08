@@ -105,6 +105,12 @@ export async function upsertContact(
       total_actions: (typeof current.total_actions === "number" ? current.total_actions : 0) + 1,
       tags: Array.isArray(current.tags) ? current.tags : [],
       action_history: history,
+      // Preserve opt-out state across upserts — a fresh submission from
+      // an opted-out email should NOT re-subscribe them. They can only
+      // be re-opted-in explicitly via admin tooling.
+      opted_out: current.opted_out,
+      opted_out_at: current.opted_out_at,
+      opted_out_reason: current.opted_out_reason,
     };
 
     await db
@@ -154,3 +160,86 @@ export function sanitizeTag(raw: unknown): string | null {
 }
 
 export const MAX_TAGS_PER_CONTACT = 20;
+
+/**
+ * Mark a contact as opted-out (unsubscribed / bounced / spam-flagged).
+ *
+ * - Looks up by lowercased email (same key space as upsertContact).
+ * - If the contact does not exist, a minimal opted-out record is created
+ *   so future submissions from this email inherit the opt-out.
+ * - Sets opted_out=true, opted_out_at=now, opted_out_reason=reason.
+ * - Idempotent: calling twice is safe.
+ *
+ * Returns the contact id (existing or newly-created).
+ */
+export async function markContactOptedOut(
+  db: ContactsD1,
+  email: string,
+  reason: string,
+  timestamp?: string,
+): Promise<{ id: string; wasAlreadyOptedOut: boolean }> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) throw new Error("markContactOptedOut: email is required");
+  const now = timestamp ?? new Date().toISOString();
+
+  const existing = await db
+    .prepare(
+      "SELECT id, data FROM _plugin_storage WHERE plugin_id = ? AND collection = ? AND json_extract(data, '$.email') = ? LIMIT 1",
+    )
+    .bind(PLUGIN_ID, COLLECTION, normalized)
+    .first();
+
+  if (existing) {
+    const id = existing.id as string;
+    let current: Contact;
+    try {
+      current = JSON.parse(existing.data as string) as Contact;
+    } catch {
+      current = {
+        email: normalized,
+        first_seen_at: now,
+        last_action_at: now,
+        total_actions: 0,
+        tags: [],
+        action_history: [],
+      };
+    }
+    const wasAlreadyOptedOut = current.opted_out === true;
+    const updated: Contact = {
+      ...current,
+      email: normalized,
+      opted_out: true,
+      opted_out_at: current.opted_out_at ?? now,
+      opted_out_reason: reason,
+    };
+    await db
+      .prepare(
+        "UPDATE _plugin_storage SET data = ?, updated_at = ? WHERE id = ? AND plugin_id = ? AND collection = ?",
+      )
+      .bind(JSON.stringify(updated), now, id, PLUGIN_ID, COLLECTION)
+      .run();
+    return { id, wasAlreadyOptedOut };
+  }
+
+  // No existing record — create a shell so we still honor the opt-out
+  // if the user later submits via an action page.
+  const id = crypto.randomUUID();
+  const fresh: Contact = {
+    email: normalized,
+    first_seen_at: now,
+    last_action_at: now,
+    total_actions: 0,
+    tags: [],
+    action_history: [],
+    opted_out: true,
+    opted_out_at: now,
+    opted_out_reason: reason,
+  };
+  await db
+    .prepare(
+      "INSERT INTO _plugin_storage (id, plugin_id, collection, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+    )
+    .bind(id, PLUGIN_ID, COLLECTION, JSON.stringify(fresh), now, now)
+    .run();
+  return { id, wasAlreadyOptedOut: false };
+}

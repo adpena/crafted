@@ -25,9 +25,9 @@ import { pushToConstantContact } from "./constantcontact.ts";
 import { pushToNgpVan } from "./ngpvan.ts";
 import { pushToHustle } from "./hustle.ts";
 import { pushToSalsa } from "./salsa.ts";
-import type { IntegrationSubmission, IntegrationEnv, IntegrationResult } from "./types.ts";
+import type { IntegrationSubmission, IntegrationEnv, IntegrationResult, IntegrationOptions } from "./types.ts";
 
-export type { IntegrationSubmission, IntegrationEnv, IntegrationResult };
+export type { IntegrationSubmission, IntegrationEnv, IntegrationResult, IntegrationOptions };
 
 export interface IntegrationsSummary {
   actionnetwork?: boolean;
@@ -49,6 +49,7 @@ interface AdapterDef {
   fn: (
     submission: IntegrationSubmission,
     env: IntegrationEnv,
+    opts?: IntegrationOptions,
   ) => Promise<IntegrationResult | undefined>;
 }
 
@@ -70,6 +71,8 @@ const ADAPTERS: AdapterDef[] = [
 export interface DispatchContext {
   submission: IntegrationSubmission;
   env: IntegrationEnv;
+  /** Optional Cloudflare KV for adapter observability counters. */
+  kv?: IntegrationOptions["kv"];
 }
 
 /**
@@ -80,10 +83,11 @@ export async function dispatchIntegrations(
   ctx: DispatchContext,
 ): Promise<IntegrationsSummary> {
   const summary: IntegrationsSummary = {};
+  const opts: IntegrationOptions = { kv: ctx.kv };
 
   const tasks = ADAPTERS.map(async ({ key, fn }) => {
     try {
-      const result = await fn(ctx.submission, ctx.env);
+      const result = await fn(ctx.submission, ctx.env, opts);
       if (result === undefined) return; // not configured / not applicable
       summary[key] = result.ok;
       if (!result.ok) {

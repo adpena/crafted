@@ -22,6 +22,15 @@ export interface Contact {
   total_actions: number;
   tags: string[];
   action_history: ContactAction[];
+  /**
+   * True if the contact has unsubscribed, hard-bounced, or been
+   * marked as spam. Downstream email sending must skip opted-out
+   * contacts to stay compliant with CAN-SPAM / CASL / GDPR.
+   */
+  opted_out?: boolean;
+  opted_out_at?: string;
+  /** Machine-readable reason, e.g. "unsubscribe", "bounce", "cleaned". */
+  opted_out_reason?: string;
 }
 
 export interface ContactRow {

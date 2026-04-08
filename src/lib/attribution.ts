@@ -21,7 +21,9 @@ export type AttributionEventType =
   | "action"
   | "email_open"
   | "attendance"
-  | "volunteer_signup";
+  | "volunteer_signup"
+  | "unsubscribe"
+  | "bounce";
 
 export interface AttributionEvent {
   id: string;

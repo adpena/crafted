@@ -17,6 +17,7 @@
  */
 
 import type { KVNamespace } from "./cf-types.ts";
+import { sha256Hex } from "./auth.ts";
 import { renderConfirmationEmail, type ActionType } from "./email-templates.ts";
 import { fireConversions, type ConversionData, type TrackingConfig } from "./conversion-tracking.ts";
 import { upsertContact, type ContactsD1 } from "./contacts.ts";
@@ -46,6 +47,12 @@ export interface PostSubmitContext {
     eventIds?: { mobilize?: string; eventbrite?: string; facebook?: string };
     /** Per-page VAN activist code (overrides global NGPVAN_ACTIVIST_CODE_ID) */
     vanActivistCodeId?: string;
+    /** Per-page VAN activist code array (preferred over single). */
+    vanActivistCodeIds?: Array<string | number>;
+    /** Per-page VAN survey responses to differentiate action types. */
+    vanSurveyResponses?: Array<{ surveyQuestionId: number; surveyResponseId: number }>;
+    /** Per-page VAN source code id for attribution. */
+    vanSourceCodeId?: number;
   };
   /** Request context for tracking */
   request?: {
@@ -86,6 +93,7 @@ export interface PostSubmitContext {
     NGPVAN_API_KEY?: string;
     NGPVAN_APP_NAME?: string;
     NGPVAN_ACTIVIST_CODE_ID?: string;
+    NGPVAN_ACTIVIST_CODES_JSON?: string;
     HUSTLE_API_TOKEN?: string;
     HUSTLE_ORGANIZATION_ID?: string;
     HUSTLE_GROUP_ID?: string;
@@ -173,8 +181,12 @@ export async function runPostSubmitPipeline(
         pageUrl: ctx.submission.pageUrl,
         eventIds: ctx.submission.eventIds,
         activist_code_id: ctx.submission.vanActivistCodeId,
+        activist_code_ids: ctx.submission.vanActivistCodeIds,
+        survey_responses: ctx.submission.vanSurveyResponses,
+        van_source_code_id: ctx.submission.vanSourceCodeId,
       },
       env: ctx.env as IntegrationEnv,
+      kv: ctx.kv,
     })
       .then((summary) => { result.integrations = summary; })
       .catch((err) => console.error("[post-submit] integrations error:", err instanceof Error ? err.message : "unknown")),
@@ -252,6 +264,24 @@ async function incrementKVCount(
 
 async function sendConfirmationEmail(ctx: PostSubmitContext): Promise<void> {
   const { submission, env, kv } = ctx;
+  if (!submission.email) return;
+
+  // Suppression list check — honor unsubscribes / bounces / spam reports
+  // before consuming the daily cap. Fail open on KV errors so infra
+  // problems don't silently drop every confirmation email.
+  if (kv) {
+    try {
+      const normalized = submission.email.trim().toLowerCase();
+      const hashed = await sha256Hex(normalized);
+      const suppressed = await kv.get(`suppressed:${hashed}`);
+      if (suppressed) {
+        console.info("[post-submit] suppressed email, skipping confirmation");
+        return;
+      }
+    } catch {
+      // Fall through — better to send than to silently drop on KV errors.
+    }
+  }
 
   // Daily send cap — prevent bot attacks from burning Resend credits
   const dailyLimit = parseInt(String(env.RESEND_DAILY_LIMIT ?? "500"), 10) || 500;
