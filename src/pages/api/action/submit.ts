@@ -264,6 +264,8 @@ export const POST: APIRoute = async (context) => {
       HUSTLE_API_TOKEN: e.HUSTLE_API_TOKEN as string | undefined,
       HUSTLE_ORGANIZATION_ID: e.HUSTLE_ORGANIZATION_ID as string | undefined,
       HUSTLE_GROUP_ID: e.HUSTLE_GROUP_ID as string | undefined,
+      SALSA_API_TOKEN: e.SALSA_API_TOKEN as string | undefined,
+      SALSA_HOST: e.SALSA_HOST as string | undefined,
     },
   });
 

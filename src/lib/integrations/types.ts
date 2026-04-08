@@ -69,6 +69,10 @@ export interface IntegrationEnv {
   HUSTLE_API_TOKEN?: string;
   HUSTLE_ORGANIZATION_ID?: string;
   HUSTLE_GROUP_ID?: string;
+
+  // Salsa Labs (Salsa Engage)
+  SALSA_API_TOKEN?: string;
+  SALSA_HOST?: string;
 }
 
 export interface IntegrationResult {

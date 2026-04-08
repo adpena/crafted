@@ -24,6 +24,7 @@ import { pushToSendGrid } from "./sendgrid.ts";
 import { pushToConstantContact } from "./constantcontact.ts";
 import { pushToNgpVan } from "./ngpvan.ts";
 import { pushToHustle } from "./hustle.ts";
+import { pushToSalsa } from "./salsa.ts";
 import type { IntegrationSubmission, IntegrationEnv, IntegrationResult } from "./types.ts";
 
 export type { IntegrationSubmission, IntegrationEnv, IntegrationResult };
@@ -40,6 +41,7 @@ export interface IntegrationsSummary {
   constantcontact?: boolean;
   ngpvan?: boolean;
   hustle?: boolean;
+  salsa?: boolean;
 }
 
 interface AdapterDef {
@@ -62,6 +64,7 @@ const ADAPTERS: AdapterDef[] = [
   { key: "constantcontact", fn: pushToConstantContact },
   { key: "ngpvan", fn: pushToNgpVan },
   { key: "hustle", fn: pushToHustle },
+  { key: "salsa", fn: pushToSalsa },
 ];
 
 export interface DispatchContext {
