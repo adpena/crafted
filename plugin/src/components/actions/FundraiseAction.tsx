@@ -11,10 +11,12 @@ export interface FundraiseActionProps {
   actblue_url: string;
   refcode?: string;
   suggested?: number;
+  /** Enable recurring/monthly donation option */
+  allow_recurring?: boolean;
   progress?: ProgressConfig;
   turnstileSiteKey?: string;
   locale?: Locale;
-  onComplete: (data: { type: "donation_click"; amount: number }) => void;
+  onComplete: (data: { type: "donation_click"; amount: number; recurring?: boolean }) => void;
   pageId?: string;
   visitorId?: string;
   variant?: string;
@@ -26,6 +28,7 @@ export function FundraiseAction({
   actblue_url,
   refcode,
   suggested,
+  allow_recurring = false,
   progress,
   turnstileSiteKey,
   locale: localeProp,
@@ -37,6 +40,7 @@ export function FundraiseAction({
 }: FundraiseActionProps & { submitUrl?: string }): ReactNode {
   const locale = getLocale(localeProp);
   void locale;
+  const [recurring, setRecurring] = useState(false);
   const { count: liveCount } = useActionCount(
     progress?.enabled ? pageId : undefined,
     progress?.countUrl,
@@ -63,6 +67,8 @@ export function FundraiseAction({
       if (url.protocol !== "https:") return "#";
       url.searchParams.set("amount", String(amount));
       if (refcode) url.searchParams.set("refcode", refcode);
+      // ActBlue recurring parameter — enables monthly donations
+      if (recurring) url.searchParams.set("recurring", "1");
       return url.toString();
     } catch {
       return "#";
@@ -93,7 +99,7 @@ export function FundraiseAction({
       // Non-blocking — navigate to ActBlue even if tracking fails
     }
 
-    onComplete({ type: "donation_click", amount: activeAmount });
+    onComplete({ type: "donation_click", amount: activeAmount, recurring });
     window.location.href = buildUrl(activeAmount);
   }
 
@@ -204,6 +210,43 @@ export function FundraiseAction({
           }}
         />
       </div>
+
+      {/* Recurring donation toggle */}
+      {allow_recurring && (
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.625rem",
+            marginBottom: "1.25rem",
+            cursor: "pointer",
+            minHeight: "44px",
+            padding: "0.25rem 0",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={recurring}
+            onChange={(e) => setRecurring(e.target.checked)}
+            style={{
+              width: "1.125rem",
+              height: "1.125rem",
+              accentColor: s.accent,
+              flexShrink: 0,
+            }}
+          />
+          <span
+            style={{
+              fontFamily: s.serif,
+              fontSize: "1rem",
+              color: s.text,
+              lineHeight: 1.45,
+            }}
+          >
+            Make this a monthly donation
+          </span>
+        </label>
+      )}
 
       {/* Turnstile bot protection */}
       {turnstileSiteKey && (

@@ -29,6 +29,10 @@ import { FundraiseAction } from "../../plugin/src/components/actions/FundraiseAc
 import { PetitionAction } from "../../plugin/src/components/actions/PetitionAction.tsx";
 import { GOTVAction } from "../../plugin/src/components/actions/GOTVAction.tsx";
 import { SignupAction } from "../../plugin/src/components/actions/SignupAction.tsx";
+import { LetterAction } from "../../plugin/src/components/actions/LetterAction.tsx";
+import { EventRsvpAction } from "../../plugin/src/components/actions/EventRsvpAction.tsx";
+import { CallAction } from "../../plugin/src/components/actions/CallAction.tsx";
+import { StepAction } from "../../plugin/src/components/actions/StepAction.tsx";
 
 // Register templates into the renderer's registry
 if (!templates.has("hero-simple")) {
@@ -45,6 +49,10 @@ if (!actions.has("fundraise")) {
   actions.register("petition", PetitionAction as unknown as ActionComponent);
   actions.register("gotv", GOTVAction as unknown as ActionComponent);
   actions.register("signup", SignupAction as unknown as ActionComponent);
+  actions.register("letter", LetterAction as unknown as ActionComponent);
+  actions.register("event", EventRsvpAction as unknown as ActionComponent);
+  actions.register("call", CallAction as unknown as ActionComponent);
+  actions.register("step", StepAction as unknown as ActionComponent);
 }
 
 export default function ActionPageIsland(props: ActionPageRendererProps) {

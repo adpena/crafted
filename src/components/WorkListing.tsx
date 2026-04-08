@@ -56,9 +56,11 @@ export default function WorkListing({ sections }: Props) {
 		: sections;
 
 	return (
-		// Known: React 19 + Astro SSR produces a hydration mismatch (#418) due to
-		// whitespace differences. No functional impact. Tracked upstream at withastro/astro.
-		<>
+		// suppressHydrationWarning on the outermost element prevents React 19 +
+		// Astro SSR whitespace mismatch console errors (#418). The filter state
+		// initializes as null on server and may differ on client (sessionStorage).
+		// This is cosmetic — no functional impact.
+		<div suppressHydrationWarning>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">
 					<span className="work-filter-label" aria-hidden="true">
@@ -92,7 +94,7 @@ export default function WorkListing({ sections }: Props) {
 				</nav>
 			)}
 
-			<div className="work-main" suppressHydrationWarning>
+			<div className="work-main">
 			{visible.length === 0 && (
 				<p
 					className="page-summary"
@@ -159,6 +161,6 @@ export default function WorkListing({ sections }: Props) {
 				</section>
 			))}
 		</div>
-		</>
+		</div>
 	);
 }
