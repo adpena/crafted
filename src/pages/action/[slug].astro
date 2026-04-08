@@ -64,6 +64,17 @@ const actionConfig = {
 };
 
 const title = pageData.template_props?.headline ?? pageData.title ?? "Action Page";
+const ogDescription = (
+  pageData.template_props?.subhead ??
+  (pageData.template_props?.body ?? "").slice(0, 160) ??
+  ""
+).replace(/<[^>]*>/g, "").trim();
+const canonicalUrl = `https://adpena.com/action/${slug}`;
+const ogImage =
+  pageData.template_props?.media_url ??
+  pageData.template_props?.background_image ??
+  pageData.template_props?.image_url ??
+  "https://adpena.com/og-default.png";
 
 // Resolve theme server-side — each page gets its own visual identity
 const THEMES: Record<string, Record<string, string>> = {
@@ -87,6 +98,15 @@ import ActionPageIsland from "../../components/ActionPageIsland.tsx";
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={ogDescription} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={ogDescription} />
   <style is:global>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

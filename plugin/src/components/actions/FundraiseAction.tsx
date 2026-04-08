@@ -13,6 +13,8 @@ export interface FundraiseActionProps {
   suggested?: number;
   /** Enable recurring/monthly donation option */
   allow_recurring?: boolean;
+  /** "redirect" navigates to ActBlue; "iframe" embeds ActBlue inline */
+  embed_mode?: "redirect" | "iframe";
   progress?: ProgressConfig;
   turnstileSiteKey?: string;
   locale?: Locale;
@@ -29,6 +31,7 @@ export function FundraiseAction({
   refcode,
   suggested,
   allow_recurring = false,
+  embed_mode = "redirect",
   progress,
   turnstileSiteKey,
   locale: localeProp,
@@ -56,10 +59,11 @@ export function FundraiseAction({
   const [selected, setSelected] = useState<number | null>(suggested ?? null);
   const [custom, setCustom] = useState("");
   const [isCustom, setIsCustom] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
 
   const activeAmount = isCustom ? parseFloat(custom) || 0 : selected ?? 0;
 
-  function buildUrl(amount: number): string {
+  function buildUrl(amount: number, forEmbed = false): string {
     if (!actblue_url) return "#";
     try {
       const url = new URL(actblue_url);
@@ -69,6 +73,7 @@ export function FundraiseAction({
       if (refcode) url.searchParams.set("refcode", refcode);
       // ActBlue recurring parameter — enables monthly donations
       if (recurring) url.searchParams.set("recurring", "1");
+      if (forEmbed) url.searchParams.set("embed", "1");
       return url.toString();
     } catch {
       return "#";
@@ -100,7 +105,12 @@ export function FundraiseAction({
     }
 
     onComplete({ type: "donation_click", amount: activeAmount, recurring });
-    window.location.href = buildUrl(activeAmount);
+
+    if (embed_mode === "iframe") {
+      setIframeSrc(buildUrl(activeAmount, true));
+    } else {
+      window.location.href = buildUrl(activeAmount);
+    }
   }
 
   return (
@@ -279,6 +289,22 @@ export function FundraiseAction({
       >
         {activeAmount > 0 ? `Donate $${activeAmount}` : "Select an amount"}
       </button>
+
+      {/* ActBlue embedded iframe */}
+      {embed_mode === "iframe" && iframeSrc && (
+        <iframe
+          src={iframeSrc}
+          title="Complete your donation on ActBlue"
+          sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+          style={{
+            width: "100%",
+            minHeight: "500px",
+            border: "none",
+            borderRadius: s.radius,
+            marginTop: "1.25rem",
+          }}
+        />
+      )}
     </div>
   );
 }

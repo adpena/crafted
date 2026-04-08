@@ -61,6 +61,7 @@ interface ActionProps {
   amounts: string;
   actblue_url: string;
   refcode: string;
+  embed_mode: "redirect" | "iframe";
   // petition
   target: string;
   goal: string;
@@ -109,6 +110,7 @@ const EMPTY_ACTION_PROPS: ActionProps = {
   amounts: "25, 50, 100, 250",
   actblue_url: "",
   refcode: "",
+  embed_mode: "redirect",
   // petition
   target: "",
   goal: "",
@@ -243,6 +245,7 @@ function buildActionPropsConfig(
         amounts: parseAmounts(props.amounts),
         actblue_url: props.actblue_url.trim(),
         refcode: props.refcode.trim() || undefined,
+        embed_mode: props.embed_mode !== "redirect" ? props.embed_mode : undefined,
       };
     }
     if (kind === "petition") {
@@ -736,6 +739,7 @@ export function PageBuilder({
           amounts: parseAmounts(props.amounts),
           actblue_url: props.actblue_url.trim(),
           refcode: props.refcode.trim() || undefined,
+          embed_mode: props.embed_mode !== "redirect" ? props.embed_mode : undefined,
         };
       }
       if (kind === "petition") {
@@ -1133,6 +1137,23 @@ export function PageBuilder({
                 onChange={(ev) => setProps({ ...props, refcode: ev.target.value })}
                 style={inputStyle()}
               />
+            </Field>
+            <Field
+              label="Embed mode"
+              htmlFor={`${prefix}_embed_mode`}
+              helper="Redirect sends the visitor to ActBlue. Iframe embeds ActBlue inline."
+            >
+              <select
+                id={`${prefix}_embed_mode`}
+                value={props.embed_mode}
+                onChange={(ev) =>
+                  setProps({ ...props, embed_mode: ev.target.value as "redirect" | "iframe" })
+                }
+                style={inputStyle()}
+              >
+                <option value="redirect">Redirect (default)</option>
+                <option value="iframe">Embedded iframe</option>
+              </select>
             </Field>
           </>
         )}

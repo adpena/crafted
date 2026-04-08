@@ -2,9 +2,9 @@
 import Base from "../layouts/Base.astro";
 
 const stats = [
-	{ value: "875+", label: "Tests passing" },
+	{ value: "1,677", label: "Tests passing" },
 	{ value: "8", label: "Action types" },
-	{ value: "7", label: "Platform integrations" },
+	{ value: "9", label: "Platform integrations" },
 	{ value: "8", label: "Languages (i18n)" },
 	{ value: "$0", label: "On Cloudflare free tier" },
 ];
@@ -258,18 +258,46 @@ const comparison = [
 			</div>
 		</section>
 
+		<!-- Case study -->
+		<section class="ap-section">
+			<h2 class="ap-section-title">How it was built</h2>
+			<div class="ap-case-study">
+				<h3 class="ap-case-title">Building Action Network on Cloudflare's free tier</h3>
+				<p class="ap-case-desc">
+					How I built a production-hardened campaign action pages platform with 1,677 tests, 8 action types, 9 integrations, and AI-generated pages — all running for $0/month.
+				</p>
+				<p class="ap-case-topics">
+					Architecture &middot; Security (5 audit passes) &middot; Browser compatibility &middot; The AI layer &middot; Integration layer &middot; Testing discipline &middot; Cost breakdown
+				</p>
+				<a
+					href="/work/writing/building-action-network-on-cloudflare"
+					class="btn ap-btn-secondary"
+				>
+					Read the case study →
+				</a>
+			</div>
+		</section>
+
 		<section class="ap-footer-cta">
 			<h2 class="ap-footer-title">Deploy your own in minutes.</h2>
 			<p class="ap-footer-sub">
 				Clone the repo, set a handful of env vars, and ship to Cloudflare's free tier.
 			</p>
-			<a
-				href="https://github.com/adpena/action-pages"
-				class="btn ap-btn-primary"
-				rel="noopener"
-			>
-				Get it on GitHub →
-			</a>
+			<div class="ap-footer-btns">
+				<a
+					href="https://github.com/adpena/action-pages"
+					class="btn ap-btn-primary"
+					rel="noopener"
+				>
+					Get it on GitHub →
+				</a>
+				<a
+					href="/action-pages/embed/"
+					class="btn ap-btn-secondary"
+				>
+					Embed playground →
+				</a>
+			</div>
 		</section>
 	</main>
 </Base>
@@ -604,6 +632,43 @@ const comparison = [
 		max-width: 32rem;
 		margin: 0 auto var(--spacing-xl);
 		line-height: 1.6;
+	}
+
+	/* ── Case study ──────────────────────────── */
+	.ap-case-study {
+		padding: var(--spacing-xl);
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+	}
+
+	.ap-case-title {
+		font-family: var(--font-serif);
+		font-size: var(--font-size-xl);
+		font-weight: 400;
+		margin: 0 0 var(--spacing-sm);
+		line-height: 1.3;
+	}
+
+	.ap-case-desc {
+		font-family: var(--font-serif);
+		color: var(--color-secondary);
+		line-height: 1.6;
+		margin: 0 0 var(--spacing-sm);
+	}
+
+	.ap-case-topics {
+		font-family: var(--font-mono);
+		font-size: var(--font-size-xs);
+		color: var(--color-secondary);
+		letter-spacing: 0.03em;
+		margin: 0 0 var(--spacing-lg);
+	}
+
+	.ap-footer-btns {
+		display: flex;
+		justify-content: center;
+		gap: var(--spacing-md);
+		flex-wrap: wrap;
 	}
 
 	/* ── Responsive ───────────────────────────── */
