@@ -211,6 +211,52 @@ const embedMode = embedParam === "1" ? "embed"
     @media (max-width: 480px) {
       .status { flex-wrap: wrap; gap: 0.25rem; font-size: 0.55rem; }
     }
+
+    /* ------------------------------------------------------------------
+     * Embed modes
+     *
+     * "embed"   — canvas-only iframe. Chrome, code pane, status hidden;
+     *              canvas fills the full iframe.
+     * "stacked" — canvas + code iframe for the work detail page. Canvas
+     *              has a fixed 24rem height at the top, code pane fills
+     *              the remaining iframe height and is scrollable.
+     *
+     * These rules were previously removed; restoring the original
+     * layout contract from commit 92eb925 so /demo/molt?embed=stacked
+     * renders with the Replit-style canvas-over-code arrangement the
+     * work detail iframe expects.
+     * ------------------------------------------------------------------ */
+    body.embed header,
+    body.embed .status {
+      display: none !important;
+    }
+    body.embed .demo-layout {
+      grid-template-rows: 1fr !important;
+    }
+
+    body.embed-stacked header,
+    body.embed-stacked .status {
+      display: none !important;
+    }
+    body.embed-stacked .demo-layout {
+      display: flex !important;
+      flex-direction: column;
+      flex: 1;
+    }
+    body.embed-stacked .canvas-wrap {
+      height: 24rem;
+      flex-shrink: 0;
+      padding: 0.75rem;
+    }
+    body.embed-stacked canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    body.embed-stacked .pane-left {
+      flex: 1;
+      min-height: 0;
+    }
   </style>
 </head>
 <body class={embedMode === "embed" ? "embed" : embedMode === "stacked" ? "embed-stacked" : ""}>

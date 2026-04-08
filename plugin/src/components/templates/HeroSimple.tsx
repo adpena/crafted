@@ -21,8 +21,12 @@ export function HeroSimple({
       style={{
         textAlign: align,
         padding: "2.5rem 1.5rem 2rem",
-        maxWidth: "42em",
-        marginInline: align === "center" ? "auto" : undefined,
+        maxWidth: "42rem",
+        // Always center the header block on the page. textAlign controls
+        // text flow inside the block; the block itself is always centered
+        // so it lines up with the action form below (which uses the same
+        // 42rem centered container in ActionPageRenderer).
+        marginInline: "auto",
       }}
     >
       {image_url && (

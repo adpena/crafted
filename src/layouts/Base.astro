@@ -18,8 +18,13 @@ const image = imageProp || new URL("/og.png", Astro.site || Astro.url.origin).hr
 const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Studio";
 const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
-const siteDescription =
-	description || settings?.tagline || "Design & Development";
+
+// The masthead tagline is site-wide brand identity and must be stable
+// across every page — never shadow it with the current page's summary.
+// The OG/SEO description is a separate concern: it should reflect the
+// page's own content when provided, but masthead text stays constant.
+const siteTagline = settings?.tagline || "Design & Development";
+const siteDescription = description || siteTagline;
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -62,7 +67,7 @@ const pageCtx = createPublicPageContext({
 	<!-- What can run but never walks, has a mouth but never talks, has a bed but never sleeps, has a head but never weeps? XOR the answer: 1d19130b52060656121d00025845011d0413111a1b0711451a1b0d12001c5208024541424744534141455b5c455c5144534b -->
 	<body>
 		<a href="#main-content" class="skip-to-content">Skip to content</a>
-		<Masthead currentPath={Astro.url.pathname} siteTitle={siteTitle} tagline={siteDescription} />
+		<Masthead currentPath={Astro.url.pathname} siteTitle={siteTitle} tagline={siteTagline} />
 		<slot />
 		<Footer />
 		<script is:inline>

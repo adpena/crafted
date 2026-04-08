@@ -65,9 +65,6 @@ export default function WorkListing({ sections }: Props) {
 		<div>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">
-					<span className="work-filter-label" aria-hidden="true">
-						Filter
-					</span>
 					<div
 						className="work-filter-controls"
 						role="group"
