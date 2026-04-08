@@ -69,8 +69,9 @@ warm (editorial), bold (dark), clean (minimal) + brand extraction (URL → 4 aut
 ### Admin panels (10)
 PageBuilder, SubmissionsViewer, NotificationConfig, TemplateGallery, BrandExtractor, AIPageGenerator, EmailBlastComposer, CsvImportWizard, WebhookInboxViewer, AuditLogViewer
 
-### Integrations (9)
+### Integrations (11 — 9 push + 2 read-back)
 Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0), SendGrid, Constant Contact
+Read-back webhooks: ActBlue (Basic auth), Action Network (HMAC-SHA256)
 
 ### i18n (8 locales)
 en, es, zh, vi, ko, tl, fr, ar
@@ -87,6 +88,8 @@ en, es, zh, vi, ko, tl, fr, ar
 - `GET /api/action/reps?zip=X` — rep lookup (ProPublica Congress API)
 - `GET /api/unsubscribe` — HMAC-verified email unsubscribe
 - `POST /api/webhooks/:source` — incoming webhook receiver (rate-limited)
+- `POST /api/webhooks/actblue` — ActBlue donation webhook (Basic auth, attribution tracking)
+- `POST /api/webhooks/actionnetwork` — Action Network webhook (HMAC-SHA256, attribution tracking)
 - `GET /api/media/action-pages/...` — R2 image server (MIME allowlist)
 
 ### Authenticated (Bearer MCP_ADMIN_TOKEN)
@@ -105,6 +108,15 @@ en, es, zh, vi, ko, tl, fr, ar
 - `POST /api/admin/contacts/import` — CSV contact import
 - `GET /api/admin/audit-log` — admin audit trail
 - `GET /api/admin/webhook-inbox` — incoming webhook log
+- `GET /api/admin/attribution?slug=X` — attribution summary (petition->donation conversion)
+- `GET /api/admin/attribution?contact=email` — contact attribution journey
+
+## Attribution Tracking
+
+Webhook receivers close the feedback loop: after pushing supporters to ActBlue/Action Network,
+we track what happened next. Events stored in D1 (`_plugin_storage`, collection='attribution_events')
+with SHA-256 hashed emails. `src/lib/attribution.ts` provides query functions for per-page summaries
+(petition->donation conversion rates) and per-contact journey views.
 
 ## Post-Submit Pipeline (async via waitUntil)
 

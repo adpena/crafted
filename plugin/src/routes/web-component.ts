@@ -65,6 +65,14 @@ const SCRIPT = `(function () {
     return (typeof window !== "undefined" && window.location) ? window.location.origin : "";
   };
 
+  // Click attribution params to forward from parent page into the iframe.
+  // Without this, fbclid/gclid/UTM params on the WordPress page are invisible
+  // to the embedded action page, breaking ad conversion tracking.
+  var FORWARD_PARAMS = [
+    "fbclid", "gclid", "ttclid", "twclid", "li_fat_id", "rdt_cid", "scid", "msclkid",
+    "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"
+  ];
+
   ActionPageElement.prototype._buildSrc = function () {
     var slug = this.getAttribute("slug");
     if (!slug || !SLUG_RE.test(slug)) return null;
@@ -74,6 +82,20 @@ const SCRIPT = `(function () {
     var origin = this._getOrigin();
     var path = campaign ? "/action/" + campaign + "/" + slug : "/action/" + slug;
     var qs = "?embed=1" + (theme ? "&theme=" + encodeURIComponent(theme) : "");
+
+    // Forward click attribution params from the parent page URL into the iframe.
+    // This ensures fbclid, gclid, UTM params from Facebook/Google ads are captured
+    // by the embedded action page even when it's in an iframe on a WordPress site.
+    if (typeof window !== "undefined" && window.location && window.location.search) {
+      try {
+        var parentParams = new URLSearchParams(window.location.search);
+        for (var i = 0; i < FORWARD_PARAMS.length; i++) {
+          var val = parentParams.get(FORWARD_PARAMS[i]);
+          if (val) qs += "&" + FORWARD_PARAMS[i] + "=" + encodeURIComponent(val);
+        }
+      } catch (_) { /* older browsers without URLSearchParams — params won't forward */ }
+    }
+
     return (origin || "") + path + qs;
   };
 
