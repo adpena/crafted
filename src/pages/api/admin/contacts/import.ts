@@ -24,6 +24,10 @@ import { env } from "cloudflare:workers";
 import { upsertContact, sanitizeTag, MAX_TAGS_PER_CONTACT, type ContactsD1 } from "../../../../lib/contacts.ts";
 import { logAudit, type AuditD1 } from "../../../../lib/audit.ts";
 import { verifyBearer } from "../../../../lib/auth.ts";
+import {
+  dispatchIntegrations,
+  type IntegrationEnv,
+} from "../../../../lib/integrations/index.ts";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 // Cap to 5,000 rows per import to stay within Worker CPU time limits.
@@ -203,6 +207,79 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
+  // --- Optional: sync imported contacts to campaign platform integrations ---
+  // Only fires when the admin explicitly opts in via sync_to_platforms=true.
+  // Dispatches in batches of 50 with Promise.allSettled to avoid overwhelming
+  // external APIs on large imports.
+  const syncToPlatforms = formData.get("sync_to_platforms") === "true";
+  let syncedCount = 0;
+  let syncErrors = 0;
+
+  if (syncToPlatforms && result.imported + result.updated > 0) {
+    const e = env as Record<string, unknown>;
+    const integrationEnv: IntegrationEnv = {
+      ACTION_NETWORK_API_KEY: e.ACTION_NETWORK_API_KEY as string | undefined,
+      MAILCHIMP_API_KEY: e.MAILCHIMP_API_KEY as string | undefined,
+      MAILCHIMP_LIST_ID: e.MAILCHIMP_LIST_ID as string | undefined,
+      MAILCHIMP_DC: e.MAILCHIMP_DC as string | undefined,
+      NATIONBUILDER_NATION_SLUG: e.NATIONBUILDER_NATION_SLUG as string | undefined,
+      NATIONBUILDER_API_TOKEN: e.NATIONBUILDER_API_TOKEN as string | undefined,
+      EVERYACTION_API_KEY: e.EVERYACTION_API_KEY as string | undefined,
+      EVERYACTION_APP_NAME: e.EVERYACTION_APP_NAME as string | undefined,
+      MOBILIZE_API_TOKEN: e.MOBILIZE_API_TOKEN as string | undefined,
+      MOBILIZE_ORGANIZATION_ID: e.MOBILIZE_ORGANIZATION_ID as string | undefined,
+      MOBILIZE_EVENT_ID: e.MOBILIZE_EVENT_ID as string | undefined,
+      MOBILIZE_TIMESLOT_ID: e.MOBILIZE_TIMESLOT_ID as string | undefined,
+      MOBILIZE_ACTIVIST_CODE: e.MOBILIZE_ACTIVIST_CODE as string | undefined,
+      EVENTBRITE_API_TOKEN: e.EVENTBRITE_API_TOKEN as string | undefined,
+      EVENTBRITE_ORGANIZATION_ID: e.EVENTBRITE_ORGANIZATION_ID as string | undefined,
+      FACEBOOK_ACCESS_TOKEN: e.FACEBOOK_ACCESS_TOKEN as string | undefined,
+      SENDGRID_API_KEY: e.SENDGRID_API_KEY as string | undefined,
+      SENDGRID_LIST_ID: e.SENDGRID_LIST_ID as string | undefined,
+      CONSTANT_CONTACT_API_KEY: e.CONSTANT_CONTACT_API_KEY as string | undefined,
+      CONSTANT_CONTACT_LIST_ID: e.CONSTANT_CONTACT_LIST_ID as string | undefined,
+    };
+
+    // Collect all imported contacts for syncing (re-parse CSV to get emails/names)
+    // We batch 50 at a time with Promise.allSettled to limit concurrency.
+    const SYNC_BATCH = 50;
+    const syncContacts: Array<{ email: string; firstName?: string; lastName?: string; zip?: string }> = [];
+
+    for (const row of dataRows) {
+      const emailRaw = (row[headerIdx.email!] ?? "").trim();
+      if (!emailRaw || !EMAIL_RE.test(emailRaw)) continue;
+      syncContacts.push({
+        email: emailRaw,
+        firstName: sliceField(row, headerIdx.first_name, 100) || undefined,
+        lastName: sliceField(row, headerIdx.last_name, 100) || undefined,
+        zip: sliceField(row, headerIdx.zip, 10) || undefined,
+      });
+    }
+
+    for (let i = 0; i < syncContacts.length; i += SYNC_BATCH) {
+      const batch = syncContacts.slice(i, i + SYNC_BATCH);
+      const results = await Promise.allSettled(
+        batch.map((contact) =>
+          dispatchIntegrations({
+            submission: {
+              type: "signup",
+              slug: "csv-import",
+              email: contact.email,
+              firstName: contact.firstName,
+              lastName: contact.lastName,
+              postalCode: contact.zip,
+            },
+            env: integrationEnv,
+          }),
+        ),
+      );
+      for (const r of results) {
+        if (r.status === "fulfilled") syncedCount++;
+        else syncErrors++;
+      }
+    }
+  }
+
   // Audit log — no PII, only counts
   if (db) {
     await logAudit(db as AuditD1, {
@@ -215,16 +292,23 @@ export const POST: APIRoute = async ({ request }) => {
         updated: result.updated,
         skipped: result.skipped,
         errors: result.errors.length,
+        sync_to_platforms: syncToPlatforms,
+        synced: syncedCount,
+        sync_errors: syncErrors,
       },
       request,
     }).catch(() => {});
   }
 
-  console.log(
-    `[contacts/import] total=${result.total_rows} imported=${result.imported} updated=${result.updated} skipped=${result.skipped}`,
+  console.info(
+    `[contacts/import] total=${result.total_rows} imported=${result.imported} updated=${result.updated} skipped=${result.skipped}` +
+    (syncToPlatforms ? ` synced=${syncedCount} sync_errors=${syncErrors}` : ""),
   );
 
-  return json(200, result);
+  return json(200, {
+    ...result,
+    ...(syncToPlatforms ? { synced: syncedCount, sync_errors: syncErrors } : {}),
+  });
 };
 
 function sliceField(row: string[], idx: number | undefined, maxLen: number): string {

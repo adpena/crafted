@@ -33,8 +33,10 @@ const STORAGE_KEY = "work-filter";
 
 export default function WorkListing({ sections }: Props) {
 	const [activeFilter, setActiveFilter] = useState<string | null>(null);
+	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
+		setMounted(true);
 		try {
 			const saved = sessionStorage.getItem(STORAGE_KEY);
 			if (saved && sections.some((s) => s.slug === saved)) {
@@ -51,16 +53,16 @@ export default function WorkListing({ sections }: Props) {
 		} catch {}
 	}, []);
 
-	const visible = activeFilter
-		? sections.filter((s) => s.slug === activeFilter)
+	// Use activeFilter only after mount — ensures server and client render
+	// identically on first pass, then update from sessionStorage after hydration.
+	const effectiveFilter = mounted ? activeFilter : null;
+
+	const visible = effectiveFilter
+		? sections.filter((s) => s.slug === effectiveFilter)
 		: sections;
 
 	return (
-		// suppressHydrationWarning on the outermost element prevents React 19 +
-		// Astro SSR whitespace mismatch console errors (#418). The filter state
-		// initializes as null on server and may differ on client (sessionStorage).
-		// This is cosmetic — no functional impact.
-		<div suppressHydrationWarning>
+		<div>
 			{sections.length > 1 && (
 				<nav className="work-filter" aria-label="Filter by collection">
 					<span className="work-filter-label" aria-hidden="true">
@@ -73,9 +75,9 @@ export default function WorkListing({ sections }: Props) {
 					>
 						<button
 							type="button"
-							className={`work-filter-btn${activeFilter === null ? " work-filter-btn--active" : ""}`}
+							className={`work-filter-btn${effectiveFilter === null ? " work-filter-btn--active" : ""}`}
 							onClick={() => handleFilter(null)}
-							aria-pressed={activeFilter === null}
+							aria-pressed={effectiveFilter === null}
 						>
 							All
 						</button>
@@ -83,9 +85,9 @@ export default function WorkListing({ sections }: Props) {
 							<button
 								key={s.slug}
 								type="button"
-								className={`work-filter-btn${activeFilter === s.slug ? " work-filter-btn--active" : ""}`}
+								className={`work-filter-btn${effectiveFilter === s.slug ? " work-filter-btn--active" : ""}`}
 								onClick={() => handleFilter(s.slug)}
-								aria-pressed={activeFilter === s.slug}
+								aria-pressed={effectiveFilter === s.slug}
 							>
 								{s.label}
 							</button>

@@ -58,6 +58,10 @@ export type SubmissionData =
       zip: string;
       rep_names: string[];
       calls_completed: number;
+    }
+  | {
+      type: "step_form";
+      [key: string]: unknown;
     };
 
 /** An action component accepts its own props merged with ActionComponentProps. */

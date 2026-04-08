@@ -3,8 +3,11 @@
  *
  * GET /api/action/qr?slug=fund-public-schools&size=300
  *
- * Proxies through Google Charts QR API for v1.
+ * Proxies through goqr.me API (free, no API key, stable 10+ years).
  * Returns a PNG image with aggressive caching.
+ *
+ * NOTE: Google Charts QR API was deprecated and returns 404 as of 2025.
+ * Replaced with goqr.me (api.qrserver.com) which serves the same purpose.
  */
 
 import type { APIRoute } from "astro";
@@ -21,8 +24,8 @@ export const GET: APIRoute = async ({ url }) => {
 
   const pageUrl = `https://adpena.com/action/${slug}`;
 
-  // Proxy through Google Charts QR API (reliable, free, no API key)
-  const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(pageUrl)}&choe=UTF-8`;
+  // goqr.me API — free, no API key, stable since ~2012
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(pageUrl)}&format=png&margin=8`;
 
   try {
     const res = await fetch(qrUrl, { signal: AbortSignal.timeout(5_000) });

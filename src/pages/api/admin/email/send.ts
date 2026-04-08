@@ -201,7 +201,7 @@ export const POST: APIRoute = async ({ request }) => {
     // there are no '@' characters in any error string before returning.
     const safeErrors = result.errors.map((e) => e.replace(/[\w.+-]+@[\w.-]+/g, "[redacted]"));
 
-    console.log(
+    console.info(
       `[admin/email/send] sent=${result.sent} failed=${result.failed} skipped=${result.skipped}`,
     );
 

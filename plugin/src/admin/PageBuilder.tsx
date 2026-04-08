@@ -15,6 +15,7 @@ import {
 } from "./components/ActionPicker";
 import { ThemeSwatch, type ThemeId } from "./components/ThemeSwatch";
 import { LivePagePreview, type LivePagePreviewConfig } from "./LivePagePreview";
+import type { BrandKit, BrandThemeVariant } from "./BrandExtractor";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -553,6 +554,56 @@ export function PageBuilder({
 
   /* ---------- Section 4: style & compliance ---------- */
   const [theme, setTheme] = useState<ThemeId>(settings.default_theme ?? "warm");
+  const [customTheme, setCustomTheme] = useState<Record<string, string> | null>(null);
+
+  /* ---------- Brand extractor (inline in Section 4) ---------- */
+  const [brandUrl, setBrandUrl] = useState("");
+  const [brandLoading, setBrandLoading] = useState(false);
+  const [brandError, setBrandError] = useState("");
+  const [brandVariants, setBrandVariants] = useState<BrandThemeVariant[]>([]);
+  const [brandOpen, setBrandOpen] = useState(false);
+
+  const handleBrandExtract = useCallback(async () => {
+    if (!brandUrl || !brandUrl.startsWith("https://")) {
+      setBrandError("URL must start with https://");
+      return;
+    }
+    setBrandLoading(true);
+    setBrandError("");
+    setBrandVariants([]);
+    try {
+      const adminToken =
+        typeof window !== "undefined"
+          ? localStorage.getItem("action_pages_admin_token") ?? ""
+          : "";
+      const res = await fetch("/api/admin/brand-extract", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({ url: brandUrl }),
+      });
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || `HTTP ${res.status}`);
+      }
+      const data = (await res.json()) as { brand: BrandKit; variants: BrandThemeVariant[] };
+      setBrandVariants(data.variants ?? []);
+    } catch (err) {
+      setBrandError(err instanceof Error ? err.message : "Extract failed");
+    } finally {
+      setBrandLoading(false);
+    }
+  }, [brandUrl]);
+
+  const handleBrandVariantSelect = useCallback((variant: BrandThemeVariant) => {
+    if (variant.theme && typeof variant.theme === "object") {
+      setCustomTheme(variant.theme as Record<string, string>);
+      // Set theme to "warm" as base — customTheme overrides it
+      setTheme("warm");
+    }
+  }, []);
   const [committeeName, setCommitteeName] = useState(
     settings.default_committee_name ?? "",
   );
@@ -835,7 +886,7 @@ export function PageBuilder({
         committee_name: committeeName.trim(),
         treasurer_name: treasurerName.trim() || undefined,
       },
-      theme,
+      theme: customTheme ?? theme,
       status,
     };
   };
@@ -1700,8 +1751,100 @@ export function PageBuilder({
         title="Style & compliance"
         description="Pick a look and confirm your disclaimer info."
       >
-        <Field label="Theme" helper="Drives colors and typography on the page.">
-          <ThemeSwatch value={theme} onChange={setTheme} />
+        {/* --- Inline brand extractor --- */}
+        <div style={{ marginBottom: "1.5rem" }}>
+          <button
+            type="button"
+            onClick={() => setBrandOpen(!brandOpen)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "var(--page-font-mono, 'SF Mono', monospace)",
+              fontSize: "0.75rem",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+              color: "var(--page-text, #1a1a1a)",
+              padding: "0.25rem 0",
+            }}
+          >
+            {brandOpen ? "- Hide" : "+ Extract from URL"} brand colors
+          </button>
+          {brandOpen && (
+            <div style={{ marginTop: "0.75rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end" }}>
+                <input
+                  type="url"
+                  placeholder="https://example.com"
+                  value={brandUrl}
+                  onChange={(e) => setBrandUrl(e.target.value)}
+                  style={{ ...inputStyle(), flex: 1 }}
+                />
+                <button
+                  type="button"
+                  onClick={handleBrandExtract}
+                  disabled={brandLoading}
+                  style={{
+                    ...inputStyle(),
+                    cursor: brandLoading ? "wait" : "pointer",
+                    whiteSpace: "nowrap" as const,
+                    padding: "0.5rem 1rem",
+                  }}
+                >
+                  {brandLoading ? "Extracting..." : "Extract"}
+                </button>
+              </div>
+              {brandError && (
+                <p style={{ color: "#dc2626", fontSize: "0.85rem", marginTop: "0.5rem" }}>{brandError}</p>
+              )}
+              {brandVariants.length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "0.5rem", marginTop: "0.75rem" }}>
+                  {brandVariants.map((v) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => handleBrandVariantSelect(v)}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column" as const,
+                        gap: "0.25rem",
+                        padding: "0.75rem",
+                        border: `1px solid var(--page-border, #d4d4c8)`,
+                        background: v.preview?.background ?? "#fff",
+                        color: v.preview?.text ?? "#1a1a1a",
+                        cursor: "pointer",
+                        textAlign: "left" as const,
+                        fontFamily: "var(--page-font-mono, monospace)",
+                        fontSize: "0.7rem",
+                      }}
+                    >
+                      <span style={{ fontWeight: 600 }}>{v.name}</span>
+                      {v.preview?.accent && (
+                        <span style={{ display: "inline-block", width: 16, height: 16, background: v.preview.accent, border: "1px solid rgba(0,0,0,0.1)" }} />
+                      )}
+                      {v.description && <span style={{ opacity: 0.7 }}>{v.description}</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {customTheme && (
+                <p style={{ fontSize: "0.8rem", color: "var(--page-secondary, #6b6b6b)", marginTop: "0.5rem" }}>
+                  Brand theme applied.{" "}
+                  <button
+                    type="button"
+                    onClick={() => setCustomTheme(null)}
+                    style={{ background: "none", border: "none", textDecoration: "underline", cursor: "pointer", color: "inherit", fontSize: "inherit", fontFamily: "inherit" }}
+                  >
+                    Reset to preset
+                  </button>
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        <Field label="Theme" helper={customTheme ? "Overridden by brand theme above." : "Drives colors and typography on the page."}>
+          <ThemeSwatch value={theme} onChange={(t) => { setTheme(t); setCustomTheme(null); }} />
         </Field>
 
         <Field

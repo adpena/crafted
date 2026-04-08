@@ -26,6 +26,9 @@ Live at https://adpena.com (also https://crafted.adpena.workers.dev)
 - Dark mode: prefers-color-scheme + manual toggle in masthead
 - KV edge cache: 193ms LCP on home page (vs 633ms without)
 - JSON-RPC 2.0 MCP tools at /api/mcp/actions and /api/mcp/demo
+- QR code endpoint: /api/action/qr (uses goqr.me API — Google Charts deprecated)
+- ActBlue iframe embed mode (fundraise action supports redirect or inline iframe)
+- OG meta tags on action pages via page:metadata hook
 - FOUC prevention: inline critical link styles with is:inline
 - View Transitions: ready for Safari 26.2 (parked)
 
@@ -110,6 +113,10 @@ en, es, zh, vi, ko, tl, fr, ar
 3. Meta CAPI + Google Ads conversion tracking (v25.0)
 4. Campaign platform integrations (9 adapters fire in parallel)
 5. Contact upsert (D1 dedup by email)
+
+## Case Study
+
+Action Pages case study: /action-pages (src/pages/action-pages.astro)
 
 ## Known platform issues
 

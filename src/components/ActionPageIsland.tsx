@@ -6,6 +6,15 @@
  * Side-effect imports from the template/action/theme index modules
  * populate their local registries, but the renderer has separate ones.
  * We bridge the gap by registering into the renderer's registries here.
+ *
+ * PERFORMANCE NOTE: This island eagerly imports all 8 action components +
+ * 5 template components + the full admin BrandExtractor/PageBuilder tree
+ * into a single chunk (>500KB after minification). Code-splitting via
+ * React.lazy() + dynamic import() for each action/template would reduce
+ * initial bundle size significantly, but requires Vite config changes
+ * (e.g. build.rollupOptions.output.manualChunks) and careful handling of
+ * the registry pattern. Parked for now — the current bundle loads fine on
+ * edge (Cloudflare Workers) but worth revisiting if client-side perf degrades.
  */
 
 import {

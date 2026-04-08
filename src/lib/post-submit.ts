@@ -189,7 +189,7 @@ export async function runPostSubmitPipeline(
     ? integrationKeys.map((k) => `${k}=${result.integrations[k]}`).join(" ")
     : "integrations=n/a";
 
-  console.log(
+  console.info(
     `[post-submit] ${ctx.submission.slug}/${ctx.submission.type}: ` +
     `kv=${result.kvCache} email=${result.email} ` +
     `meta=${result.conversions.meta ?? "n/a"} google=${result.conversions.google ?? "n/a"} ` +

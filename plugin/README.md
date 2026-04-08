@@ -1,29 +1,21 @@
 # @crafted/action-pages
 
-Campaign action page engine for [emdash CMS](https://emdashcms.com). Build donation, petition, and GOTV pledge pages with FEC/state disclaimer compliance, geo-personalization, deterministic A/B testing, and embeddable widgets -- all running inside emdash's plugin sandbox.
+Campaign action page engine for [emdash CMS](https://emdashcms.com). Build fundraise, petition, GOTV, signup, letter, event, call, and multi-step form pages with FEC/state disclaimer compliance, geo-personalization, deterministic A/B testing, brand extraction, AI page generation, and 9 campaign platform integrations -- all running on Cloudflare Workers.
 
-## Features
-
-- **Campaign-scoped pages** -- group action pages under campaigns with independent slugs
-- **FEC + state disclaimer compliance** -- built-in dataset covering federal rules (11 CFR 110.11) and 10 state jurisdictions (CA, CO, DC, FL, GA, MD, NY, PA, TX, VA), including AI disclosure requirements
-- **Geo-personalization** -- resolve visitor jurisdiction from request geo headers; adjust donation amounts by region
-- **Deterministic A/B testing** -- hash-based variant assignment (no cookies, no state) with conversion tracking
-- **Embeddable widgets** -- generate a `<script>` tag that renders an action page in a Shadow DOM iframe on any site
-- **Rate limiting + Turnstile** -- per-IP rate limiting with optional Cloudflare Turnstile bot protection
-- **Submission validation** -- type-safe input validation and sanitization for donation clicks, petition signatures, and GOTV pledges
-- **OG metadata injection** -- automatic Open Graph tags for action page URLs via the `page:metadata` hook
-
-## Installation
-
-### As a trusted plugin (config-based)
-
-Install the package:
+## Quick start
 
 ```bash
+# Install
 npm install @crafted/action-pages
+
+# Run tests
+cd plugin && npm test
+
+# Seed demo pages (requires MCP_ADMIN_TOKEN)
+MCP_ADMIN_TOKEN=xxx BASE_URL=https://adpena.com tsx scripts/seed-demo-pages.ts
 ```
 
-Register the plugin in your emdash site's Astro config:
+Register in your Astro config:
 
 ```typescript
 // astro.config.mjs
@@ -40,204 +32,119 @@ export default defineConfig({
 });
 ```
 
-### From the emdash Marketplace
+## Action types (8)
 
-Once the plugin is published to the marketplace, install it from the admin dashboard under **Plugins > Marketplace**. Marketplace plugins run in the sandbox automatically.
+| Action | Submission type | Description |
+|--------|----------------|-------------|
+| **Fundraise** | `donation_click` | Amount buttons + ActBlue redirect or iframe embed |
+| **Petition** | `petition_sign` | Name, email, zip, optional comment with progress bar |
+| **GOTV** | `gotv_pledge` | Pledge-to-vote with election day reminders |
+| **Signup** | `signup` | Email + optional name, lightweight list capture |
+| **Letter** | `letter_sent` | Letter to Congress with zip-based rep lookup + editable merge fields |
+| **Event** | `event_rsvp` | RSVP with .ics calendar export + multi-platform sync (Mobilize/Eventbrite/Facebook) |
+| **Call** | `call_made` | Click-to-dial with rep lookup, script, and talking points |
+| **Step** | `step_form` | Multi-step branching form with conditional logic |
 
-## Configuration
+## Templates (5)
 
-The plugin registers itself with ID `crafted-action-pages` and requests these capabilities:
+- **hero-simple** -- headline, subhead, configurable alignment
+- **hero-media** -- full-bleed image/video with overlay
+- **hero-story** -- editorial layout with body text and pull quote
+- **hero-layered** -- composited background (image/video/gradient) with positioned content
+- **hero-split** -- side-by-side media and content with configurable ratio
 
-| Capability | Purpose |
-|---|---|
-| `read:content` | Read action page and campaign data |
-| `write:content` | Create demo campaign on install |
-| `email:send` | Future: submission confirmation emails |
-| `network:fetch` | Turnstile verification |
-| `page:inject` | OG metadata for action page URLs |
+## Themes (3 + brand extraction)
 
-### Plugin storage collections
+- **warm** -- editorial serif, neutral tones
+- **bold** -- dark background, high contrast
+- **clean** -- minimal, system fonts
 
-| Collection | Indexes | Purpose |
-|---|---|---|
-| `campaigns` | `slug` | Campaign groupings |
-| `action_pages` | `slug`, `status`, `campaign_id` | Individual action pages |
-| `submissions` | `page_id`, `campaign_id`, `created_at` | Form submissions |
-| `ab_variants` | `page_id` | A/B test variant stats |
+**Brand extraction**: POST a URL to `/api/admin/brand-extract` to auto-generate 4 theme variants from any website's colors and fonts. Integrated directly in PageBuilder.
 
-## Usage
+## Admin panels (10)
 
-### Creating campaigns and pages
+1. **PageBuilder** -- WYSIWYG page creation with live preview, inline brand extraction
+2. **SubmissionsViewer** -- browse and search submissions per page
+3. **NotificationConfig** -- configure email/webhook notifications
+4. **TemplateGallery** -- pre-built campaign page templates
+5. **BrandExtractor** -- standalone URL-to-brand-kit tool
+6. **AIPageGenerator** -- generate complete action pages from a prompt (Anthropic API)
+7. **EmailBlastComposer** -- bulk email via Resend with template variables
+8. **CsvImportWizard** -- CSV contact import with tag merging + optional platform sync
+9. **WebhookInboxViewer** -- incoming webhook event log
+10. **AuditLogViewer** -- admin action audit trail
 
-On first activation, the plugin seeds a demo campaign (`demo`) with a sample donation page (`demo-donate`). Create additional campaigns and pages through the admin UI or by writing directly to plugin storage.
+## Integrations (9)
 
-### Rendering action pages
+All integrations fire in parallel after each submission via `dispatchIntegrations`:
 
-The plugin provides a JSON API via its routes. Your site needs a page template to render the data. A minimal Astro example:
+1. **Action Network** -- person signup/petition via OSDI API
+2. **Mailchimp** -- list member upsert via Marketing API
+3. **NationBuilder** -- person push via v2 API
+4. **EveryAction / NGP VAN** -- contact upsert via VAN API
+5. **Mobilize America** -- event attendance via API
+6. **Eventbrite** -- attendee creation via API
+7. **Facebook Events** -- RSVP via Graph API (CAPI v25.0)
+8. **SendGrid** -- Marketing Contacts upsert
+9. **Constant Contact** -- contact list upsert
 
-```astro
----
-// src/pages/action/[slug].astro
-// This file lives in YOUR site, not in the plugin.
-const pageData = await fetch(`${Astro.url.origin}/_emdash/api/plugins/crafted-action-pages/page?slug=${Astro.params.slug}`);
-const { data } = await pageData.json();
----
-<html>
-  <body>
-    <h1>{data.title}</h1>
-    <p>{data.body}</p>
-    <p class="disclaimer">{data.disclaimer.combined}</p>
-  </body>
-</html>
-```
+CSV imports can optionally sync to all configured platforms via `sync_to_platforms=true`.
 
-This separation is intentional -- the plugin handles data, compliance, and A/B logic; the site controls presentation.
+## i18n (8 locales)
 
-### Embedding on external sites
+en, es, zh, vi, ko, tl, fr, ar
 
-Generate an embed script for any action page:
+## Compliance
 
-```
-GET /_emdash/api/plugins/crafted-action-pages/embed?slug=demo-donate
-```
+- **FEC disclaimers** -- built-in dataset covering 11 CFR 110.11 (digital, print, broadcast)
+- **State disclaimers** -- 10 jurisdictions (CA, CO, DC, FL, GA, MD, NY, PA, TX, VA)
+- **AI disclosure** -- per-jurisdiction AI-generated content disclosure requirements
+- Dataset in `data/disclaimers/` with JSON schema, legal notes, and verification methodology
 
-Include the returned `<script>` tag on any HTML page. It creates a Shadow DOM container with an iframe pointing to your action page.
+**This is not legal advice.** See `data/disclaimers/LEGAL_NOTES.md`.
 
-## API Reference
+## Features
 
-All routes are under `/_emdash/api/plugins/crafted-action-pages/`.
-
-### `GET /page`
-
-Returns action page data with resolved disclaimer, A/B variant, and geo context.
-
-**Query parameters:**
-- `slug` (required) -- action page slug
-- `campaign` (optional) -- campaign slug to scope the lookup
-
-**Response (200):**
-```json
-{
-  "data": {
-    "title": "Support the Cause",
-    "type": "fundraise",
-    "body": "Your contribution makes a difference.",
-    "actblue_url": "https://secure.actblue.com/donate/example",
-    "refcode": "crafted-demo",
-    "amounts": [10, 25, 50, 100, 250],
-    "variant": "control",
-    "disclaimer": {
-      "federal": { "text": "Paid for by Friends of Progress", "statute_citation": "11 CFR 110.11", "ai_disclosure_required": false, "ai_disclosure_text": null },
-      "state": null,
-      "combined": "Paid for by Friends of Progress"
-    },
-    "jurisdiction": "US-CA",
-    "campaign": "demo"
-  }
-}
-```
-
-### `POST /submit`
-
-Records a submission (donation click, petition signature, or GOTV pledge).
-
-**Request body:**
-```json
-{
-  "page_id": "uuid",
-  "campaign_id": "uuid",
-  "type": "donation_click",
-  "data": {},
-  "visitor_id": "uuid",
-  "variant": "control",
-  "turnstile_token": "..."
-}
-```
-
-**Submission types and required fields:**
-- `donation_click` -- no required fields
-- `petition_sign` -- `first_name`, `last_name`, `email`, `zip`
-- `gotv_pledge` -- `first_name`, `zip`
-
-**Response (200):** `{ "data": { "ok": true } }`
-
-### `GET /embed`
-
-Returns a JavaScript snippet that embeds an action page via Shadow DOM iframe.
-
-**Query parameters:**
-- `slug` (required) -- action page slug
-- `campaign` (optional) -- campaign slug
-
-**Response:** `application/javascript` content
-
-### `GET /stats` (authenticated)
-
-Returns A/B variant statistics for a page.
-
-**Query parameters:**
-- `page_id` (required) -- action page ID
-- `campaign` (optional) -- campaign slug
-
-**Response (200):**
-```json
-{
-  "data": {
-    "page_id": "...",
-    "campaign": null,
-    "variants": [
-      { "variant": "control", "impressions": 100, "conversions": 12, "conversion_rate": 0.12 },
-      { "variant": "urgency", "impressions": 98, "conversions": 18, "conversion_rate": 0.1837 }
-    ]
-  }
-}
-```
-
-## Compliance Dataset
-
-The `data/disclaimers/` directory contains structured JSON files with political advertisement disclaimer requirements:
-
-- `federal.json` -- FEC rules under 11 CFR 110.11 (digital, print, broadcast)
-- `states/*.json` -- 10 state jurisdictions (CA, CO, DC, FL, GA, MD, NY, PA, TX, VA)
-- `schema.json` -- JSON schema for disclaimer records
-- `LEGAL_NOTES.md` -- scope, limitations, and legal disclaimers about the dataset
-- `VERIFICATION.md` -- verification methodology and source citations
-
-Each record includes:
-- `jurisdiction`, `type` (digital/print/broadcast/sms/email), `context` (general/candidate_authorized/independent_expenditure/pac)
-- `required_text` with `{variable}` interpolation
-- `ai_disclosure_required`, `ai_disclosure_text`, `ai_disclosure_statute`
-- `statute_citation`, `effective_date`, `last_verified`, `source_url`
-
-**This is not legal advice.** See `data/disclaimers/LEGAL_NOTES.md` for full caveats. Always consult qualified election law counsel.
-
-### Contributing to the dataset
-
-Add a new state by creating `data/disclaimers/states/{state_code}.json` following the schema in `schema.json`. Include `source_url` and `last_verified` for every record.
+- **Campaign-scoped pages** -- group action pages under campaigns with independent slugs
+- **Geo-personalization** -- whitelist/blacklist by country, adjustable per page
+- **Deterministic A/B testing** -- hash-based variant assignment with z-test significance
+- **Embeddable widgets** -- Shadow DOM iframe embed for external sites
+- **Rate limiting + Turnstile** -- per-IP KV rate limiting with optional Cloudflare Turnstile
+- **Email dedup** -- SHA-256 hash per email+slug prevents duplicate submissions
+- **OG metadata injection** -- automatic Open Graph tags for action page URLs
+- **QR codes** -- `/api/action/qr?slug=X&size=300` generates PNG QR codes (goqr.me API)
+- **Conversion tracking** -- Meta CAPI + Google Ads with click attribution forwarding
+- **WYSIWYG preview** -- live side-by-side preview in PageBuilder
 
 ## Architecture
 
 The plugin follows emdash's two-entrypoint pattern:
 
-- **`src/index.ts`** -- `PluginDescriptor` factory (runs at build time in Vite). Declares ID, version, capabilities, storage collections, and admin pages.
-- **`src/sandbox-entry.ts`** -- `definePlugin()` with runtime hooks and routes (runs at request time in the sandbox).
+- **`src/index.ts`** -- `PluginDescriptor` factory (build time)
+- **`src/sandbox-entry.ts`** -- `definePlugin()` with runtime hooks and routes
 
 ### Pure modules (`src/modules/`)
 
-All business logic lives in pure, framework-free modules with no emdash imports:
-
 | Module | Purpose |
-|---|---|
+|--------|---------|
 | `ab-assign.ts` | Deterministic hash-based A/B variant assignment |
-| `disclaimers.ts` | Disclaimer resolution with jurisdiction layering and variable interpolation |
+| `disclaimers.ts` | Disclaimer resolution with jurisdiction layering |
 | `geo-ask.ts` | Jurisdiction resolution from geo context |
 | `validate.ts` | Submission input validation and sanitization |
 
-These modules have 100% unit test coverage and can be tested without emdash.
+### Component registries
 
-### Site-level rendering
+- Templates: `src/components/templates/` (5 components)
+- Actions: `src/components/actions/` (8 components)
+- Admin: `src/admin/` (10 panels + components)
 
-The Astro page at `src/pages/action/[slug].astro` is **not part of this plugin** -- it is a site-level template that calls the plugin's API routes and renders the response. Each site controls its own presentation. The plugin only provides data and compliance logic.
+## Tests
+
+1,677 tests across 28 files:
+
+```bash
+cd plugin && npm test
+```
 
 ## License
 
