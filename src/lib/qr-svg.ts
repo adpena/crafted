@@ -352,7 +352,8 @@ export function renderQRSvg(
   const logoScale = options?.logoScale ?? 0.2;
   const logoMargin = options?.logoMargin ?? 1;
   const logoBgShape = options?.logoBackgroundShape ?? "square";
-  const logoBgColor = options?.logoBackgroundColor ?? (bg === "transparent" ? "#ffffff" : bg);
+  const logoBgColorRaw = options?.logoBackgroundColor ?? (bg === "transparent" ? "#ffffff" : bg);
+  const logoBgColor = escapeXml(logoBgColorRaw);
   const outerShape = options?.outerShape ?? "square";
   const gradient = options?.gradient;
 
@@ -380,18 +381,21 @@ export function renderQRSvg(
 
   // ── Build gradient defs ────────────────────────────────────────
 
-  let fgFill = fg;
+  // Defense-in-depth: escape all color values before SVG injection.
+  // The API route validates hex-only, but renderQRSvg is a public function
+  // that could be called from other code paths in the future.
+  let fgFill = escapeXml(fg);
   if (gradient && gradient.colorStops.length >= 2) {
     defs.push(renderGradientDef("qr-fg-grad", gradient));
     fgFill = "url(#qr-fg-grad)";
   }
 
-  let eyeOuterFill = eyeGradient ? "url(#qr-eye-grad)" : eyeOuterColor;
+  let eyeOuterFill = eyeGradient ? "url(#qr-eye-grad)" : escapeXml(eyeOuterColor);
   if (eyeGradient && eyeGradient.colorStops.length >= 2) {
     defs.push(renderGradientDef("qr-eye-grad", eyeGradient));
   }
 
-  let eyeInnerFill = eyeInnerGradient ? "url(#qr-eye-inner-grad)" : eyeInnerColor;
+  let eyeInnerFill = eyeInnerGradient ? "url(#qr-eye-inner-grad)" : escapeXml(eyeInnerColor);
   if (eyeInnerGradient && eyeInnerGradient.colorStops.length >= 2) {
     defs.push(renderGradientDef("qr-eye-inner-grad", eyeInnerGradient));
   }
@@ -418,7 +422,7 @@ export function renderQRSvg(
 
   // Background
   if (bg !== "transparent") {
-    parts.push(`<rect width="${size}" height="${size}" fill="${bg}"/>`);
+    parts.push(`<rect width="${size}" height="${size}" fill="${escapeXml(bg)}"/>`);
   }
 
   // ── Render data modules (non-finder) ───────────────────────────
@@ -467,7 +471,7 @@ export function renderQRSvg(
 
   // ── Render finder patterns (eyes) ──────────────────────────────
 
-  const bgForHole = bg === "transparent" ? "#ffffff" : bg;
+  const bgForHole = bg === "transparent" ? "#ffffff" : escapeXml(bg);
   const regions = getFinderRegions(count);
 
   for (const region of regions) {

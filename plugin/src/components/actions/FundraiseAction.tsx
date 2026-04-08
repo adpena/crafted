@@ -86,6 +86,8 @@ export function FundraiseAction({
 
     // POST to server before navigating — ensures D1 write, KV cache,
     // conversion tracking, and webhook dispatch all fire.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
       await fetch(submitUrl, {
         method: "POST",
@@ -98,9 +100,11 @@ export function FundraiseAction({
           turnstile_token: turnstile.token ?? undefined,
           data: { amount: activeAmount },
         }),
-        signal: AbortSignal.timeout(15_000),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
     } catch {
+      clearTimeout(timeoutId);
       // Non-blocking — navigate to ActBlue even if tracking fails
     }
 

@@ -103,6 +103,8 @@ export function EventRsvpAction({
     setLoading(true);
     setServerError("");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
       const res = await fetch(submitUrl, {
         method: "POST",
@@ -122,8 +124,9 @@ export function EventRsvpAction({
             notes: notes.trim() || undefined,
           },
         }),
-        signal: AbortSignal.timeout(15_000),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) throw new Error(`Server error (${res.status})`);
 
@@ -137,6 +140,7 @@ export function EventRsvpAction({
         notes: notes.trim() || undefined,
       });
     } catch (err) {
+      clearTimeout(timeoutId);
       const isTimeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
       setServerError(isTimeout ? "Request timed out. Please try again." : (err instanceof Error ? err.message : "Something went wrong"));
     } finally {

@@ -22,6 +22,20 @@ export interface RateLimitResult {
 
 const DEFAULT_CONFIG: RateLimitConfig = { max: 5, windowSec: 60 };
 
+/**
+ * RACE-2: KV race condition — read-modify-write is not atomic.
+ *
+ * Under burst concurrency, N simultaneous requests can all read the same
+ * counter value, pass the check, and then each write count+1. This means
+ * the effective limit can be exceeded by up to N-1 extra requests.
+ *
+ * This is acceptable for abuse deterrence (not hard enforcement):
+ *  - The fixed-window key (`rl:submit:{hash}:{window}`) ensures the counter
+ *    self-corrects within windowSec — the next window starts fresh.
+ *  - Real-world burst concurrency from a single IP is rare for form submissions.
+ *  - Durable Objects would provide truly atomic counters but require the
+ *    Cloudflare paid tier.
+ */
 export async function checkRateLimit(
   kv: KVNamespace,
   ip: string,

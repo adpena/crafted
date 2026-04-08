@@ -81,10 +81,13 @@ export function CallAction({
     let cancelled = false;
     setRepsLoading(true);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
     fetch(`${repsUrl}?zip=${encodeURIComponent(zip)}`, {
-      signal: AbortSignal.timeout(15_000),
+      signal: controller.signal,
     })
-      .then((r) => r.json() as Promise<{ representatives: Representative[] }>)
+      .then((r) => { clearTimeout(timeoutId); return r.json() as Promise<{ representatives: Representative[] }>; })
       .then((data) => {
         if (cancelled) return;
         const filtered = (data.representatives ?? []).filter((r) => {
@@ -95,10 +98,10 @@ export function CallAction({
         });
         setReps(filtered);
       })
-      .catch(() => { if (!cancelled) setReps([]); })
+      .catch(() => { clearTimeout(timeoutId); if (!cancelled) setReps([]); })
       .finally(() => { if (!cancelled) setRepsLoading(false); });
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; controller.abort(); clearTimeout(timeoutId); };
   }, [zip, rep_level, repsUrl]);
 
   function markCalled(repName: string) {
@@ -134,6 +137,8 @@ export function CallAction({
     setLoading(true);
     setServerError("");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
       const res = await fetch(submitUrl, {
         method: "POST",
@@ -153,8 +158,9 @@ export function CallAction({
             calls_completed: completedCalls.size,
           },
         }),
-        signal: AbortSignal.timeout(15_000),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!res.ok) throw new Error(`Server error (${res.status})`);
 
@@ -168,6 +174,7 @@ export function CallAction({
         calls_completed: completedCalls.size,
       });
     } catch (err) {
+      clearTimeout(timeoutId);
       const isTimeout = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
       setServerError(isTimeout ? "Request timed out. Please try again." : (err instanceof Error ? err.message : "Something went wrong"));
     } finally {

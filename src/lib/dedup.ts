@@ -14,6 +14,16 @@ export interface DedupResult {
 /**
  * Check if this email has already submitted to this page.
  * If not, marks it as submitted (with 30-day TTL).
+ *
+ * RACE-3: KV race condition — check-then-set is not atomic.
+ *
+ * Two simultaneous submissions from the same email+slug can both read
+ * "no existing key" and both pass the dedup check. This is mitigated by:
+ *  - The contacts upsert layer provides a second dedup gate via
+ *    last-write-wins merge on the email+slug composite key in D1.
+ *  - The confirmation email may fire twice under extreme concurrency —
+ *    this is acceptable (idempotent side-effect).
+ *  - KV dedup is best-effort, not a hard guarantee.
  */
 export async function checkDedup(
   kv: KVNamespace,

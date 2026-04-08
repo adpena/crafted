@@ -215,7 +215,12 @@ export const POST: APIRoute = async ({ request }) => {
   let syncedCount = 0;
   let syncErrors = 0;
 
-  if (syncToPlatforms && result.imported + result.updated > 0) {
+  const MAX_SYNC_CONTACTS = 500;
+  let syncSkipped: string | undefined;
+
+  if (syncToPlatforms && result.imported + result.updated > MAX_SYNC_CONTACTS) {
+    syncSkipped = `Too many contacts for synchronous sync (max ${MAX_SYNC_CONTACTS}). Import succeeded. Run sync separately for larger imports.`;
+  } else if (syncToPlatforms && result.imported + result.updated > 0) {
     const e = env as Record<string, unknown>;
     const integrationEnv: IntegrationEnv = {
       ACTION_NETWORK_API_KEY: e.ACTION_NETWORK_API_KEY as string | undefined,
@@ -308,6 +313,7 @@ export const POST: APIRoute = async ({ request }) => {
   return json(200, {
     ...result,
     ...(syncToPlatforms ? { synced: syncedCount, sync_errors: syncErrors } : {}),
+    ...(syncSkipped ? { sync_skipped: syncSkipped } : {}),
   });
 };
 
