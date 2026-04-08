@@ -24,7 +24,7 @@ export function createPlugin() {
   // before PluginDefinition (with id). Explicit cast selects the native overload.
   return definePlugin({
     id: "action-pages",
-    version: "0.2.0",
+    version: "0.3.0",
     capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
     allowedHosts: ["secure.actblue.com", "*.cloudflareinsights.com"],
     storage: {

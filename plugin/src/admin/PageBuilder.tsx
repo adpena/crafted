@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { SLUG_RE } from "../lib/slug.ts";
 import { Section } from "./components/Section";
@@ -14,6 +14,7 @@ import {
   type ActionId,
 } from "./components/ActionPicker";
 import { ThemeSwatch, type ThemeId } from "./components/ThemeSwatch";
+import { LivePagePreview, type LivePagePreviewConfig } from "./LivePagePreview";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -182,6 +183,166 @@ function parseAmounts(amounts: string): number[] {
     .split(",")
     .map((s) => Number(s.trim()))
     .filter((n) => Number.isFinite(n) && n > 0);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Pure config builder (for live preview — no validation, never throws) */
+/* ------------------------------------------------------------------ */
+
+function buildTemplatePropsConfig(
+  template: TemplateId | null,
+  templateProps: TemplateProps,
+  pageTitle: string,
+): Record<string, unknown> {
+  try {
+    const headline = templateProps.headline.trim() || pageTitle.trim();
+    if (template === "hero-simple") {
+      return { headline, subhead: templateProps.subhead, align: templateProps.align };
+    }
+    if (template === "hero-media") {
+      return {
+        headline, subhead: templateProps.subhead,
+        media_url: templateProps.media_url, overlay_opacity: templateProps.overlay_opacity,
+      };
+    }
+    if (template === "hero-story") {
+      return {
+        headline, subhead: templateProps.subhead,
+        body: templateProps.body, pull_quote: templateProps.pull_quote,
+        image_url: templateProps.media_url || undefined,
+      };
+    }
+    if (template === "hero-layered") {
+      return {
+        headline, subhead: templateProps.subhead,
+        background_type: "image", background_image: templateProps.media_url || undefined,
+        overlay: "dark", overlay_opacity: templateProps.overlay_opacity,
+        content_position: "bottom-left", content_color: "#ffffff",
+      };
+    }
+    if (template === "hero-split") {
+      return {
+        headline, subhead: templateProps.subhead, body: templateProps.body,
+        media_type: "image", media_url: templateProps.media_url || undefined,
+        media_side: templateProps.align === "center" ? "right" : templateProps.align,
+        ratio: "1/1",
+      };
+    }
+    return {};
+  } catch { return {}; }
+}
+
+function buildActionPropsConfig(
+  kind: ActionId | FollowupId | null,
+  props: ActionProps,
+): Record<string, unknown> {
+  try {
+    if (!kind) return {};
+    if (kind === "fundraise") {
+      return {
+        amounts: parseAmounts(props.amounts),
+        actblue_url: props.actblue_url.trim(),
+        refcode: props.refcode.trim() || undefined,
+      };
+    }
+    if (kind === "petition") {
+      return {
+        target: props.target.trim() || undefined,
+        goal: props.goal ? Number(props.goal) : undefined,
+        show_count: props.show_count,
+      };
+    }
+    if (kind === "gotv") {
+      return {
+        pledge_text: props.pledge_text.trim() || undefined,
+        election_date: props.election_date,
+      };
+    }
+    if (kind === "signup") {
+      return { list_name: props.list_name.trim(), cta_text: props.cta_text.trim() };
+    }
+    if (kind === "letter") {
+      const talkingPoints = props.talking_points.split("\n").map((l) => l.trim()).filter(Boolean);
+      return {
+        subject: props.letter_subject.trim(), letter_template: props.letter_template,
+        rep_level: props.rep_level,
+        talking_points: talkingPoints.length > 0 ? talkingPoints : undefined,
+      };
+    }
+    if (kind === "event") {
+      const eventIds: Record<string, string> = {};
+      if (props.mobilize_event_id.trim()) eventIds.mobilize = props.mobilize_event_id.trim();
+      if (props.eventbrite_event_id.trim()) eventIds.eventbrite = props.eventbrite_event_id.trim();
+      if (props.facebook_event_id.trim()) eventIds.facebook = props.facebook_event_id.trim();
+      return {
+        event_name: props.event_name.trim(), event_date: props.event_date,
+        event_location: props.event_location.trim(),
+        event_description: props.event_description.trim() || undefined,
+        allow_guests: props.allow_guests, offer_calendar: props.offer_calendar,
+        event_ids: Object.keys(eventIds).length > 0 ? eventIds : undefined,
+      };
+    }
+    if (kind === "call") {
+      const talkingPoints = props.talking_points.split("\n").map((l) => l.trim()).filter(Boolean);
+      return {
+        target: props.target.trim() || undefined, script: props.script,
+        rep_level: props.rep_level,
+        talking_points: talkingPoints.length > 0 ? talkingPoints : undefined,
+      };
+    }
+    if (kind === "step") {
+      let steps: unknown = [];
+      try { steps = JSON.parse(props.steps_json || "[]"); } catch { steps = []; }
+      return { steps: Array.isArray(steps) ? steps : [], submit_label: props.submit_label.trim() || "Submit" };
+    }
+    return {};
+  } catch { return {}; }
+}
+
+/**
+ * Build the current page config from form state without validation.
+ * Returns null if minimum fields are not set (no template or action selected).
+ * Never throws.
+ */
+export function buildCurrentConfig(
+  slug: string,
+  pageTitle: string,
+  template: TemplateId | null,
+  templateProps: TemplateProps,
+  action: ActionId | null,
+  actionProps: ActionProps,
+  hasFollowup: boolean,
+  followup: FollowupId | null,
+  followupProps: ActionProps,
+  followupMessage: string,
+  theme: ThemeId,
+  committeeName: string,
+  treasurerName: string,
+): LivePagePreviewConfig | null {
+  try {
+    // Need at least a template or action selected to show anything useful
+    if (!template && !action) return null;
+
+    return {
+      slug: slug || "preview",
+      template: template ?? "hero-simple",
+      template_props: buildTemplatePropsConfig(template, templateProps, pageTitle),
+      action: action ?? "petition",
+      action_props: action ? buildActionPropsConfig(action, actionProps) : {},
+      followup: hasFollowup && followup ? followup : undefined,
+      followup_props: hasFollowup && followup
+        ? buildActionPropsConfig(followup, followupProps)
+        : undefined,
+      followup_message: hasFollowup && followupMessage.trim() ? followupMessage : undefined,
+      disclaimer: {
+        committee_name: committeeName.trim() || "Preview Mode",
+        treasurer_name: treasurerName.trim() || undefined,
+      },
+      theme,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -396,6 +557,11 @@ export function PageBuilder({
     settings.default_treasurer_name ?? "",
   );
 
+  /* ---------- Preview state ---------- */
+  const [showPreview, setShowPreview] = useState(false); // mobile toggle
+  const [previewConfig, setPreviewConfig] = useState<LivePagePreviewConfig | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   /* ---------- Errors / submission state ---------- */
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -408,6 +574,26 @@ export function PageBuilder({
       setSlug(slugifyTitle(pageTitle));
     }
   }, [pageTitle, slugAuto]);
+
+  /* ---------- Debounced preview config (500ms) ---------- */
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const cfg = buildCurrentConfig(
+        slug, pageTitle, template, templateProps,
+        action, actionProps, hasFollowup, followup,
+        followupProps, followupMessage, theme,
+        committeeName, treasurerName,
+      );
+      setPreviewConfig(cfg);
+    }, 500);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [
+    slug, pageTitle, template, templateProps,
+    action, actionProps, hasFollowup, followup,
+    followupProps, followupMessage, theme,
+    committeeName, treasurerName,
+  ]);
 
   /* ---------- Validation (computed) ---------- */
   const validationErrors = useMemo<FieldErrors>(() => {
@@ -694,11 +880,32 @@ export function PageBuilder({
     }
   };
 
-  const handlePreview = () => {
-    if (!slug) return;
-    const url = `/action/${slug}?preview=1`;
-    if (typeof window !== "undefined") window.open(url, "_blank");
-  };
+  const handlePreview = useCallback(() => {
+    const cfg = buildCurrentConfig(
+      slug, pageTitle, template, templateProps,
+      action, actionProps, hasFollowup, followup,
+      followupProps, followupMessage, theme,
+      committeeName, treasurerName,
+    );
+    if (!cfg) return;
+    try {
+      const json = JSON.stringify(cfg);
+      const bytes = new TextEncoder().encode(json);
+      let bin = "";
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]!);
+      const encoded = btoa(bin);
+      const url = `/action/preview?preview=1&config=${encodeURIComponent(encoded)}`;
+      if (typeof window !== "undefined") window.open(url, "_blank");
+    } catch {
+      // fallback — open without config
+      if (typeof window !== "undefined") window.open(`/action/${slug}?preview=1`, "_blank");
+    }
+  }, [
+    slug, pageTitle, template, templateProps,
+    action, actionProps, hasFollowup, followup,
+    followupProps, followupMessage, theme,
+    committeeName, treasurerName,
+  ]);
 
   /* ---------- Helpers for blur-based error display ---------- */
   const showError = (key: string): string | undefined => errors[key];
@@ -1261,6 +1468,255 @@ export function PageBuilder({
 
   /* ---------- Render ---------- */
 
+  const formContent = (
+    <>
+      <p style={eyebrowStyle}>Action Pages</p>
+      <h1 style={titleStyle}>New action page</h1>
+      <p style={leadStyle}>
+        Pick a template, configure the ask, and publish. You can save a draft
+        at any time and come back to it.
+      </p>
+
+      {submitError && <div style={errorBannerStyle}>{submitError}</div>}
+
+      {/* ---------- Section 1 ---------- */}
+      <Section
+        step={1}
+        title="Basics"
+        description="The page name, the URL, and (optionally) the campaign it belongs to."
+      >
+        <Field
+          label="Page title"
+          htmlFor="page_title"
+          required
+          helper="Used as the default headline. You can override it in the template fields."
+          error={showError("pageTitle")}
+        >
+          <input
+            id="page_title"
+            type="text"
+            value={pageTitle}
+            onChange={(e) => setPageTitle(e.target.value)}
+            onBlur={onBlurValidate("pageTitle")}
+            style={inputStyle(!!showError("pageTitle"))}
+            placeholder="e.g. Stand with us on Election Day"
+          />
+        </Field>
+
+        <Field
+          label="Slug"
+          htmlFor="slug"
+          required
+          helper={
+            slugAuto
+              ? "Auto-generated from the page title. Click to edit."
+              : "Lowercase letters, numbers, and hyphens only."
+          }
+          error={slugTouched ? showError("slug") : undefined}
+          rightLabel={
+            !slugAuto && (
+              <button
+                type="button"
+                onClick={() => setSlugAuto(true)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--page-font-mono)",
+                  fontSize: "0.7rem",
+                  color: "var(--page-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Reset to auto
+              </button>
+            )
+          }
+        >
+          <input
+            id="slug"
+            type="text"
+            value={slug}
+            onChange={(e) => {
+              setSlugAuto(false);
+              setSlug(e.target.value);
+            }}
+            onBlur={() => {
+              setSlugTouched(true);
+              onBlurValidate("slug")();
+            }}
+            style={inputStyle(slugTouched && !!showError("slug"))}
+          />
+          <div style={previewBoxStyle}>
+            /action/<strong>{slug || "your-slug"}</strong>
+          </div>
+        </Field>
+
+        {campaigns.length > 0 && (
+          <Field
+            label="Campaign"
+            htmlFor="campaign_id"
+            helper="Optional. Group this page under an existing campaign."
+          >
+            <select
+              id="campaign_id"
+              value={campaignId}
+              onChange={(e) => setCampaignId(e.target.value)}
+              style={inputStyle()}
+            >
+              <option value="">— None —</option>
+              {campaigns.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+        )}
+      </Section>
+
+      {/* ---------- Section 2 ---------- */}
+      <Section
+        step={2}
+        title="Template"
+        description="The story. How the page introduces itself."
+      >
+        <TemplatePicker value={template} onChange={setTemplate} />
+        {showError("template") && (
+          <p
+            style={{
+              fontFamily: "var(--page-font-mono)",
+              fontSize: "0.75rem",
+              color: "#b91c1c",
+              margin: 0,
+            }}
+          >
+            {showError("template")}
+          </p>
+        )}
+        {renderTemplateFields()}
+      </Section>
+
+      {/* ---------- Section 3 ---------- */}
+      <Section
+        step={3}
+        title="Action"
+        description="The ask. What you want the visitor to do."
+      >
+        <ActionPicker value={action} onChange={setAction} />
+        {showError("action") && (
+          <p
+            style={{
+              fontFamily: "var(--page-font-mono)",
+              fontSize: "0.75rem",
+              color: "#b91c1c",
+              margin: 0,
+            }}
+          >
+            {showError("action")}
+          </p>
+        )}
+        {action &&
+          renderActionFields(action, actionProps, setActionProps, "ap")}
+
+        <label style={checkboxRowStyle}>
+          <input
+            type="checkbox"
+            checked={hasFollowup}
+            onChange={(e) => setHasFollowup(e.target.checked)}
+            style={{ width: "1.1rem", height: "1.1rem" }}
+          />
+          Add a follow-up action
+        </label>
+
+        {hasFollowup && (
+          <>
+            <ActionPicker
+              value={followup}
+              onChange={(id) => setFollowup(id as FollowupId)}
+              allowed={["fundraise", "signup"]}
+            />
+            {showError("followup") && (
+              <p
+                style={{
+                  fontFamily: "var(--page-font-mono)",
+                  fontSize: "0.75rem",
+                  color: "#b91c1c",
+                  margin: 0,
+                }}
+              >
+                {showError("followup")}
+              </p>
+            )}
+            {followup &&
+              renderActionFields(
+                followup,
+                followupProps,
+                setFollowupProps,
+                "fu",
+              )}
+            <Field
+              label="Follow-up message"
+              htmlFor="followup_message"
+              helper="Shown right after the primary action completes."
+            >
+              <input
+                id="followup_message"
+                type="text"
+                value={followupMessage}
+                onChange={(e) => setFollowupMessage(e.target.value)}
+                style={inputStyle()}
+              />
+            </Field>
+          </>
+        )}
+      </Section>
+
+      {/* ---------- Section 4 ---------- */}
+      <Section
+        step={4}
+        title="Style & compliance"
+        description="Pick a look and confirm your disclaimer info."
+      >
+        <Field label="Theme" helper="Drives colors and typography on the page.">
+          <ThemeSwatch value={theme} onChange={setTheme} />
+        </Field>
+
+        <Field
+          label="Committee name"
+          htmlFor="committee_name"
+          required
+          helper="Required for FEC disclaimers (e.g. 'Peña for Congress')."
+          error={showError("committeeName")}
+        >
+          <input
+            id="committee_name"
+            type="text"
+            value={committeeName}
+            onChange={(e) => setCommitteeName(e.target.value)}
+            onBlur={onBlurValidate("committeeName")}
+            style={inputStyle(!!showError("committeeName"))}
+          />
+        </Field>
+
+        <Field
+          label="Treasurer name"
+          htmlFor="treasurer_name"
+          helper="Optional. Appears in the disclaimer line if provided."
+        >
+          <input
+            id="treasurer_name"
+            type="text"
+            value={treasurerName}
+            onChange={(e) => setTreasurerName(e.target.value)}
+            style={inputStyle()}
+          />
+        </Field>
+      </Section>
+    </>
+  );
+
   return (
     <div style={pageStyle}>
       <style>{`
@@ -1272,253 +1728,82 @@ export function PageBuilder({
         .crafted-pb input:focus,
         .crafted-pb textarea:focus,
         .crafted-pb select:focus { border-bottom-color: var(--page-text); }
+        @media (min-width: 1024px) {
+          .crafted-pb-split { display: flex !important; flex-direction: row !important; }
+          .crafted-pb-form-pane { flex: 0 0 55% !important; max-width: 55% !important; overflow-y: auto !important; max-height: 100vh !important; }
+          .crafted-pb-preview-pane { flex: 0 0 45% !important; max-width: 45% !important; position: sticky !important; top: 0 !important; height: 100vh !important; overflow-y: auto !important; }
+          .crafted-pb-mobile-toggle { display: none !important; }
+        }
+        @media (max-width: 1023px) {
+          .crafted-pb-split { display: block !important; }
+          .crafted-pb-form-pane { max-width: 100% !important; }
+          .crafted-pb-preview-pane { max-width: 100% !important; }
+        }
       `}</style>
 
-      <div className="crafted-pb" style={containerStyle}>
-        <p style={eyebrowStyle}>Action Pages</p>
-        <h1 style={titleStyle}>New action page</h1>
-        <p style={leadStyle}>
-          Pick a template, configure the ask, and publish. You can save a draft
-          at any time and come back to it.
-        </p>
-
-        {submitError && <div style={errorBannerStyle}>{submitError}</div>}
-
-        {/* ---------- Section 1 ---------- */}
-        <Section
-          step={1}
-          title="Basics"
-          description="The page name, the URL, and (optionally) the campaign it belongs to."
+      <div className="crafted-pb-split" style={{ display: "flex" }}>
+        {/* ---------- LEFT: Form pane ---------- */}
+        <div
+          className="crafted-pb-form-pane"
+          style={{ flex: "0 0 55%", maxWidth: "55%" }}
         >
-          <Field
-            label="Page title"
-            htmlFor="page_title"
-            required
-            helper="Used as the default headline. You can override it in the template fields."
-            error={showError("pageTitle")}
-          >
-            <input
-              id="page_title"
-              type="text"
-              value={pageTitle}
-              onChange={(e) => setPageTitle(e.target.value)}
-              onBlur={onBlurValidate("pageTitle")}
-              style={inputStyle(!!showError("pageTitle"))}
-              placeholder="e.g. Stand with us on Election Day"
-            />
-          </Field>
+          <div className="crafted-pb" style={containerStyle}>
+            {formContent}
+          </div>
+        </div>
 
-          <Field
-            label="Slug"
-            htmlFor="slug"
-            required
-            helper={
-              slugAuto
-                ? "Auto-generated from the page title. Click to edit."
-                : "Lowercase letters, numbers, and hyphens only."
-            }
-            error={slugTouched ? showError("slug") : undefined}
-            rightLabel={
-              !slugAuto && (
-                <button
-                  type="button"
-                  onClick={() => setSlugAuto(true)}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "var(--page-font-mono)",
-                    fontSize: "0.7rem",
-                    color: "var(--page-secondary)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  Reset to auto
-                </button>
-              )
-            }
-          >
-            <input
-              id="slug"
-              type="text"
-              value={slug}
-              onChange={(e) => {
-                setSlugAuto(false);
-                setSlug(e.target.value);
-              }}
-              onBlur={() => {
-                setSlugTouched(true);
-                onBlurValidate("slug")();
-              }}
-              style={inputStyle(slugTouched && !!showError("slug"))}
-            />
-            <div style={previewBoxStyle}>
-              /action/<strong>{slug || "your-slug"}</strong>
-            </div>
-          </Field>
-
-          {campaigns.length > 0 && (
-            <Field
-              label="Campaign"
-              htmlFor="campaign_id"
-              helper="Optional. Group this page under an existing campaign."
-            >
-              <select
-                id="campaign_id"
-                value={campaignId}
-                onChange={(e) => setCampaignId(e.target.value)}
-                style={inputStyle()}
-              >
-                <option value="">— None —</option>
-                {campaigns.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          )}
-        </Section>
-
-        {/* ---------- Section 2 ---------- */}
-        <Section
-          step={2}
-          title="Template"
-          description="The story. How the page introduces itself."
+        {/* ---------- RIGHT: Preview pane ---------- */}
+        <div
+          className="crafted-pb-preview-pane"
+          style={{
+            flex: "0 0 45%",
+            maxWidth: "45%",
+            borderLeft: "1px solid var(--page-border)",
+            boxShadow: "-2px 0 8px rgba(0,0,0,0.04)",
+            background: "#f9fafb",
+            padding: "1rem",
+          }}
         >
-          <TemplatePicker value={template} onChange={setTemplate} />
-          {showError("template") && (
-            <p
+          {/* Mobile toggle button */}
+          <div
+            className="crafted-pb-mobile-toggle"
+            style={{
+              marginBottom: "0.75rem",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setShowPreview((p) => !p)}
               style={{
-                fontFamily: "var(--page-font-mono)",
-                fontSize: "0.75rem",
-                color: "#b91c1c",
-                margin: 0,
+                ...buttonStyle("ghost"),
+                width: "100%",
+                textAlign: "center",
               }}
             >
-              {showError("template")}
-            </p>
-          )}
-          {renderTemplateFields()}
-        </Section>
+              {showPreview ? "Hide preview" : "Show preview"}
+            </button>
+          </div>
 
-        {/* ---------- Section 3 ---------- */}
-        <Section
-          step={3}
-          title="Action"
-          description="The ask. What you want the visitor to do."
-        >
-          <ActionPicker value={action} onChange={setAction} />
-          {showError("action") && (
-            <p
-              style={{
-                fontFamily: "var(--page-font-mono)",
-                fontSize: "0.75rem",
-                color: "#b91c1c",
-                margin: 0,
-              }}
-            >
-              {showError("action")}
-            </p>
-          )}
-          {action &&
-            renderActionFields(action, actionProps, setActionProps, "ap")}
-
-          <label style={checkboxRowStyle}>
-            <input
-              type="checkbox"
-              checked={hasFollowup}
-              onChange={(e) => setHasFollowup(e.target.checked)}
-              style={{ width: "1.1rem", height: "1.1rem" }}
-            />
-            Add a follow-up action
-          </label>
-
-          {hasFollowup && (
-            <>
-              <ActionPicker
-                value={followup}
-                onChange={(id) => setFollowup(id as FollowupId)}
-                allowed={["fundraise", "signup"]}
-              />
-              {showError("followup") && (
-                <p
-                  style={{
-                    fontFamily: "var(--page-font-mono)",
-                    fontSize: "0.75rem",
-                    color: "#b91c1c",
-                    margin: 0,
-                  }}
-                >
-                  {showError("followup")}
-                </p>
-              )}
-              {followup &&
-                renderActionFields(
-                  followup,
-                  followupProps,
-                  setFollowupProps,
-                  "fu",
-                )}
-              <Field
-                label="Follow-up message"
-                htmlFor="followup_message"
-                helper="Shown right after the primary action completes."
-              >
-                <input
-                  id="followup_message"
-                  type="text"
-                  value={followupMessage}
-                  onChange={(e) => setFollowupMessage(e.target.value)}
-                  style={inputStyle()}
-                />
-              </Field>
-            </>
-          )}
-        </Section>
-
-        {/* ---------- Section 4 ---------- */}
-        <Section
-          step={4}
-          title="Style & compliance"
-          description="Pick a look and confirm your disclaimer info."
-        >
-          <Field label="Theme" helper="Drives colors and typography on the page.">
-            <ThemeSwatch value={theme} onChange={setTheme} />
-          </Field>
-
-          <Field
-            label="Committee name"
-            htmlFor="committee_name"
-            required
-            helper="Required for FEC disclaimers (e.g. 'Peña for Congress')."
-            error={showError("committeeName")}
+          {/* On mobile, only show when toggled; on desktop, always show (CSS handles it) */}
+          <div
+            style={{
+              display: showPreview ? "block" : undefined,
+            }}
+            className={showPreview ? "" : "crafted-pb-preview-content"}
           >
-            <input
-              id="committee_name"
-              type="text"
-              value={committeeName}
-              onChange={(e) => setCommitteeName(e.target.value)}
-              onBlur={onBlurValidate("committeeName")}
-              style={inputStyle(!!showError("committeeName"))}
-            />
-          </Field>
-
-          <Field
-            label="Treasurer name"
-            htmlFor="treasurer_name"
-            helper="Optional. Appears in the disclaimer line if provided."
-          >
-            <input
-              id="treasurer_name"
-              type="text"
-              value={treasurerName}
-              onChange={(e) => setTreasurerName(e.target.value)}
-              style={inputStyle()}
-            />
-          </Field>
-        </Section>
+            <style>{`
+              @media (max-width: 1023px) {
+                .crafted-pb-preview-content { display: none; }
+              }
+              @media (min-width: 1024px) {
+                .crafted-pb-preview-content { display: block !important; }
+              }
+            `}</style>
+            <LivePagePreview config={previewConfig} />
+          </div>
+        </div>
       </div>
 
       {/* ---------- Sticky actions bar ---------- */}
@@ -1527,10 +1812,10 @@ export function PageBuilder({
           <button
             type="button"
             onClick={handlePreview}
-            disabled={!slug || !!validationErrors.slug}
-            style={buttonStyle("ghost", !slug || !!validationErrors.slug)}
+            disabled={!previewConfig}
+            style={buttonStyle("ghost", !previewConfig)}
           >
-            Preview
+            Full preview
           </button>
           <button
             type="button"
@@ -1538,7 +1823,7 @@ export function PageBuilder({
             disabled={savingDraft || publishing}
             style={buttonStyle("secondary", savingDraft || publishing)}
           >
-            {savingDraft ? "Saving…" : "Save draft"}
+            {savingDraft ? "Saving..." : "Save draft"}
           </button>
           <button
             type="button"
@@ -1549,7 +1834,7 @@ export function PageBuilder({
               !isValid || savingDraft || publishing,
             )}
           >
-            {publishing ? "Publishing…" : "Publish"}
+            {publishing ? "Publishing..." : "Publish"}
           </button>
         </div>
       </div>

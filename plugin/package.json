@@ -1,7 +1,7 @@
 {
   "name": "@adpena/action-pages",
-  "version": "0.2.0",
-  "description": "Campaign action page engine for emdash CMS with FEC/state disclaimer compliance, geo-personalization, A/B testing, and embeddable widgets.",
+  "version": "0.3.0",
+  "description": "Open-source Action Network alternative — 8 action types, 9 platform integrations, AI page generation, brand extraction, full CRM. Edge-native on Cloudflare Workers.",
   "type": "module",
   "license": "MIT",
   "repository": {

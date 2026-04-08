@@ -66,8 +66,8 @@ warm (editorial), bold (dark), clean (minimal) + brand extraction (URL → 4 aut
 ### Admin panels (10)
 PageBuilder, SubmissionsViewer, NotificationConfig, TemplateGallery, BrandExtractor, AIPageGenerator, EmailBlastComposer, CsvImportWizard, WebhookInboxViewer, AuditLogViewer
 
-### Integrations (7)
-Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0)
+### Integrations (9)
+Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0), SendGrid, Constant Contact
 
 ### i18n (8 locales)
 en, es, zh, vi, ko, tl, fr, ar
@@ -108,7 +108,7 @@ en, es, zh, vi, ko, tl, fr, ar
 1. KV count cache increment
 2. Confirmation email via Resend (HTML templates per action type)
 3. Meta CAPI + Google Ads conversion tracking (v25.0)
-4. Campaign platform integrations (7 adapters fire in parallel)
+4. Campaign platform integrations (9 adapters fire in parallel)
 5. Contact upsert (D1 dedup by email)
 
 ## Known platform issues

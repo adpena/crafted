@@ -1,16 +1,23 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
 /**
  * Live page preview iframe.
  *
  * Renders the current PageBuilder config in an iframe pointed at
- *   /action/{slug}?preview=1&config={base64-encoded-config}
+ *   /action/preview?config={base64-encoded-config}
  *
- * The backend preview route is TBD — this component only handles the
- * client-side scaffolding: building the URL, the iframe, a device-width
- * toggle (desktop / tablet / mobile), and a reload button.
+ * Features:
+ *   - Device-width toggle (desktop / tablet / mobile)
+ *   - Reload button
+ *   - Loading spinner while iframe loads
+ *   - Error state if config is too large (32 KB limit)
+ *   - "Open in new tab" button
+ *   - Placeholder when no config is available yet
  */
+
+/** Max base64-encoded config size (matches preview.astro MAX_CONFIG_BYTES) */
+const MAX_CONFIG_BYTES = 32_768;
 
 export interface LivePagePreviewConfig {
 	slug?: string;
@@ -18,7 +25,7 @@ export interface LivePagePreviewConfig {
 }
 
 export interface LivePagePreviewProps {
-	config: LivePagePreviewConfig;
+	config: LivePagePreviewConfig | null;
 	/** Override the preview base path. Defaults to "/action". */
 	basePath?: string;
 	/** Override the default initial device. */
@@ -49,19 +56,107 @@ function encodeConfig(config: LivePagePreviewConfig): string {
 	}
 }
 
+const toolbarBtnStyle = (active = false): CSSProperties => ({
+	minHeight: "36px",
+	padding: "0.35rem 0.75rem",
+	background: active ? "#1f2937" : "#fff",
+	color: active ? "#fff" : "#374151",
+	border: "1px solid #d1d5db",
+	borderRadius: "0.375rem",
+	cursor: "pointer",
+	fontSize: "0.8rem",
+	fontWeight: 500,
+});
+
 export function LivePagePreview({ config, basePath = "/action", initialDevice = "desktop" }: LivePagePreviewProps) {
 	const [device, setDevice] = useState<DeviceId>(initialDevice);
 	const [reloadKey, setReloadKey] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const iframeRef = useRef<HTMLIFrameElement>(null);
 
-	const slug = (typeof config.slug === "string" && config.slug) || "draft";
-	const previewUrl = useMemo(() => {
+	const slug = (config && typeof config.slug === "string" && config.slug) || "preview";
+
+	const { previewUrl, encodedSize, tooLarge } = useMemo(() => {
+		if (!config) return { previewUrl: null, encodedSize: 0, tooLarge: false };
 		const encoded = encodeConfig(config);
+		const size = encoded.length;
+		if (size > MAX_CONFIG_BYTES) {
+			return { previewUrl: null, encodedSize: size, tooLarge: true };
+		}
 		const params = new URLSearchParams({ preview: "1" });
 		if (encoded) params.set("config", encoded);
-		return `${basePath}/${encodeURIComponent(slug)}?${params.toString()}`;
-	}, [config, basePath, slug]);
+		return {
+			previewUrl: `${basePath}/preview?${params.toString()}`,
+			encodedSize: size,
+			tooLarge: false,
+		};
+	}, [config, basePath]);
+
+	const handleIframeLoad = useCallback(() => {
+		setLoading(false);
+	}, []);
+
+	const handleOpenNewTab = useCallback(() => {
+		if (previewUrl && typeof window !== "undefined") {
+			window.open(previewUrl, "_blank");
+		}
+	}, [previewUrl]);
 
 	const d = DEVICES[device];
+
+	// No config yet — placeholder
+	if (!config) {
+		return (
+			<div style={{ padding: "1rem", background: "#f3f4f6", borderRadius: "0.5rem" }}>
+				<div style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					minHeight: "400px",
+					background: "#fff",
+					borderRadius: "0.375rem",
+					border: "1px dashed #d1d5db",
+					color: "#9ca3af",
+					fontFamily: "'SF Mono', 'Fira Code', monospace",
+					fontSize: "0.85rem",
+					textAlign: "center",
+					padding: "2rem",
+				}}>
+					Preview will appear here once you<br />select a template and action.
+				</div>
+			</div>
+		);
+	}
+
+	// Config too large
+	if (tooLarge) {
+		return (
+			<div style={{ padding: "1rem", background: "#f3f4f6", borderRadius: "0.5rem" }}>
+				<div style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+					alignItems: "center",
+					minHeight: "200px",
+					background: "#fef2f2",
+					borderRadius: "0.375rem",
+					border: "1px solid #fecaca",
+					color: "#991b1b",
+					fontFamily: "'SF Mono', 'Fira Code', monospace",
+					fontSize: "0.85rem",
+					textAlign: "center",
+					padding: "2rem",
+					gap: "0.5rem",
+				}}>
+					<strong>Preview config too large</strong>
+					<span>{Math.round(encodedSize / 1024)}KB / {Math.round(MAX_CONFIG_BYTES / 1024)}KB max</span>
+					<span style={{ fontSize: "0.75rem", color: "#b91c1c" }}>
+						Reduce content length or remove large fields to enable preview.
+					</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div style={{ padding: "1rem", background: "#f3f4f6", borderRadius: "0.5rem" }}>
@@ -82,18 +177,11 @@ export function LivePagePreview({ config, basePath = "/action", initialDevice = 
 							type="button"
 							role="radio"
 							aria-checked={device === id}
-							onClick={() => setDevice(id)}
-							style={{
-								minHeight: "36px",
-								padding: "0.35rem 0.75rem",
-								background: device === id ? "#1f2937" : "#fff",
-								color: device === id ? "#fff" : "#374151",
-								border: "1px solid #d1d5db",
-								borderRadius: "0.375rem",
-								cursor: "pointer",
-								fontSize: "0.8rem",
-								fontWeight: 500,
+							onClick={() => {
+								setDevice(id);
+								setLoading(true);
 							}}
+							style={toolbarBtnStyle(device === id)}
 						>
 							{DEVICES[id].label}
 						</button>
@@ -103,27 +191,30 @@ export function LivePagePreview({ config, basePath = "/action", initialDevice = 
 					<code style={{ fontSize: "0.7rem", color: "#6b7280" }}>{slug}</code>
 					<button
 						type="button"
-						onClick={() => setReloadKey((k) => k + 1)}
-						aria-label="Reload preview"
-						style={{
-							minHeight: "36px",
-							padding: "0.35rem 0.75rem",
-							background: "#fff",
-							color: "#374151",
-							border: "1px solid #d1d5db",
-							borderRadius: "0.375rem",
-							cursor: "pointer",
-							fontSize: "0.8rem",
-							fontWeight: 500,
+						onClick={() => {
+							setReloadKey((k) => k + 1);
+							setLoading(true);
 						}}
+						aria-label="Reload preview"
+						style={toolbarBtnStyle()}
 					>
-						↻ Reload
+						&#8635; Reload
+					</button>
+					<button
+						type="button"
+						onClick={handleOpenNewTab}
+						aria-label="Open preview in new tab"
+						title="Open full preview in new tab"
+						style={toolbarBtnStyle()}
+					>
+						&#8599; Full
 					</button>
 				</div>
 			</div>
 
 			<div
 				style={{
+					position: "relative",
 					display: "flex",
 					justifyContent: "center",
 					background: "#fff",
@@ -133,10 +224,29 @@ export function LivePagePreview({ config, basePath = "/action", initialDevice = 
 					overflow: "auto",
 				}}
 			>
+				{loading && (
+					<div style={{
+						position: "absolute",
+						inset: 0,
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						background: "rgba(255,255,255,0.8)",
+						zIndex: 2,
+						borderRadius: "0.375rem",
+						fontFamily: "'SF Mono', 'Fira Code', monospace",
+						fontSize: "0.8rem",
+						color: "#6b7280",
+					}}>
+						Loading preview...
+					</div>
+				)}
 				<iframe
-					key={reloadKey}
-					src={previewUrl}
+					ref={iframeRef}
+					key={`${reloadKey}-${previewUrl}`}
+					src={previewUrl ?? "about:blank"}
 					title={`Preview: ${slug}`}
+					onLoad={handleIframeLoad}
 					style={{
 						width: d.width,
 						height: d.height,
