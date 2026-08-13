@@ -15,29 +15,86 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 8
     steps:
-      - name: Download and render exact Wix-hosted report
+      - name: Recover and render exact three-page 2024 report
         shell: bash
         run: |
           set -euxo pipefail
           mkdir -p out
-          PDF_URL="https://www.texasaft.org/_files/ugd/7d2bef_26361683a175403a992893470484390b.pdf"
-          printf '%s\n' "$PDF_URL" > out/resolved-url.txt
-          printf '%s\n' "Texas AFT Wix document upload identified from the live legislative-agenda page" > out/resolved-source.txt
-          timeout 70s curl --fail --location --connect-timeout 10 --max-time 65 \
-            --retry 3 --retry-all-errors --user-agent "Mozilla/5.0" \
-            "$PDF_URL" --output original.pdf
-          test "$(head -c 4 original.pdf)" = "%PDF"
+          OLD_URL="https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf"
+          UA="Mozilla/5.0"
+
+          try_pdf() {
+            local url="$1"
+            local label="$2"
+            echo "$url" >> out/attempted-urls.txt
+            rm -f candidate.pdf
+            if timeout 45s curl --fail --location --connect-timeout 10 --max-time 40 \
+                --retry 1 --retry-all-errors --user-agent "$UA" \
+                "$url" --output candidate.pdf; then
+              if [[ "$(head -c 4 candidate.pdf || true)" == "%PDF" ]]; then
+                mv candidate.pdf original.pdf
+                printf '%s\n' "$url" > out/resolved-url.txt
+                printf '%s\n' "$label" > out/resolved-source.txt
+                return 0
+              fi
+            fi
+            return 1
+          }
+
+          # Direct publisher URL, then Wayback's latest-byte replay and dated fallbacks.
+          try_pdf "$OLD_URL" "live publisher URL" || true
+          if [[ ! -f original.pdf ]]; then try_pdf "https://web.archive.org/web/2id_/$OLD_URL" "Internet Archive latest snapshot" || true; fi
+          if [[ ! -f original.pdf ]]; then try_pdf "https://web.archive.org/web/20240531id_/$OLD_URL" "Internet Archive May 2024 snapshot" || true; fi
+          if [[ ! -f original.pdf ]]; then try_pdf "https://web.archive.org/web/20240630id_/$OLD_URL" "Internet Archive June 2024 snapshot" || true; fi
+          if [[ ! -f original.pdf ]]; then try_pdf "https://web.archive.org/web/20241231id_/$OLD_URL" "Internet Archive 2024 snapshot" || true; fi
+
+          # Availability API identifies the closest archived capture.
+          if [[ ! -f original.pdf ]]; then
+            ENCODED="$(python -c 'import urllib.parse; print(urllib.parse.quote("https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf", safe=""))')"
+            for TS in 20240515 20240531 20240630 20241231 20251231; do
+              API="https://archive.org/wayback/available?url=${ENCODED}&timestamp=${TS}"
+              timeout 35s curl --fail --location --connect-timeout 10 --max-time 30 \
+                --user-agent "$UA" "$API" --output "out/wayback-${TS}.json" || true
+              SNAP="$(jq -r '.archived_snapshots.closest.url // empty' "out/wayback-${TS}.json" 2>/dev/null || true)"
+              if [[ -n "$SNAP" ]]; then
+                SNAP="${SNAP/http:\/\/web.archive.org/https:\/\/web.archive.org}"
+                if [[ "$SNAP" =~ ^https://web\.archive\.org/web/([0-9]+)/(.+)$ ]]; then
+                  SNAP="https://web.archive.org/web/${BASH_REMATCH[1]}id_/${BASH_REMATCH[2]}"
+                fi
+                try_pdf "$SNAP" "Internet Archive availability snapshot near ${TS}" || true
+              fi
+              if [[ -f original.pdf ]]; then break; fi
+            done
+          fi
+
+          # CDX index fallback.
+          if [[ ! -f original.pdf ]]; then
+            CDX="https://web.archive.org/cdx/search/cdx?url=www.texasaft.org%2Fwp-content%2Fuploads%2F2024%2F05%2FThe-Lost-Decade-and-a-half-2.pdf&output=json&filter=statuscode%3A200&fl=timestamp%2Coriginal%2Cmimetype%2Clength&from=2024&to=2026"
+            timeout 40s curl --fail --location --connect-timeout 10 --max-time 35 \
+              --user-agent "$UA" "$CDX" --output out/cdx.json || true
+            if jq -e 'length > 1' out/cdx.json >/dev/null 2>&1; then
+              jq -c '.[0] as $h | .[1:] | map([ $h, . ] | transpose | map({(.[0]): .[1]}) | add) | sort_by(.timestamp) | reverse' out/cdx.json > out/cdx-records.json
+              while IFS=$'\t' read -r stamp original mime; do
+                URL="https://web.archive.org/web/${stamp}id_/${original}"
+                try_pdf "$URL" "Internet Archive CDX ${stamp} (${mime})" || true
+                if [[ -f original.pdf ]]; then break; fi
+              done < <(jq -r '.[] | [.timestamp, .original, (.mimetype // "")] | @tsv' out/cdx-records.json)
+            fi
+          fi
+
+          test -f original.pdf
           sudo apt-get update
           sudo apt-get install -y poppler-utils
           pdfinfo original.pdf | tee out/pdfinfo.txt
-          test "$(pdfinfo original.pdf | awk '/^Pages:/ {print $2}')" = "3"
+          PAGES="$(pdfinfo original.pdf | awk '/^Pages:/ {print $2}')"
+          test "$PAGES" = "3"
           pdftoppm -png -r 300 original.pdf out/page
           cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
           sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
 
-      - name: Upload exact source and rendered pages
+      - name: Upload exact source, rendered pages, and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
