@@ -5,19 +5,22 @@ on:
     branches:
       - tmp/lost-decade-original-pages-20260813
 
+concurrency:
+  group: render-lost-decade-original-pages
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - name: Install PDF and HTML tools
+      - name: Install PDF tools
         run: |
           sudo apt-get update
           sudo apt-get install -y poppler-utils
-          python -m pip install --disable-pip-version-check beautifulsoup4
 
       - name: Resolve live publisher PDF, download, and render
         shell: bash
@@ -25,62 +28,95 @@ jobs:
           set -euxo pipefail
           mkdir -p out
           REPORTS_PAGE="https://www.texasaft.org/our-priorities/legislative-agenda"
-          google-chrome --headless --no-sandbox --disable-gpu \
-            --virtual-time-budget=15000 --dump-dom "$REPORTS_PAGE" > out/reports-page.html
+          curl --fail --location --retry 3 --user-agent "Mozilla/5.0" \
+            "$REPORTS_PAGE" --output out/reports-page-source.html
 
           python - <<'PY'
-          from bs4 import BeautifulSoup
           from html import unescape
           from pathlib import Path
           from urllib.parse import urljoin
           import json, re
 
           page_url = "https://www.texasaft.org/our-priorities/legislative-agenda"
-          html = Path("out/reports-page.html").read_text(errors="replace")
-          soup = BeautifulSoup(html, "html.parser")
-          rows = []
-          for a in soup.find_all("a", href=True):
-              text = " ".join(a.stripped_strings)
-              href = unescape(a.get("href", ""))
-              rows.append({"text": text, "href": urljoin(page_url, href)})
-          Path("out/all-links.json").write_text(json.dumps(rows, indent=2))
+          raw = Path("out/reports-page-source.html").read_text(errors="replace")
+          decoded = unescape(raw)
+          for old, new in [(r"\u002F", "/"), (r"\/", "/"), (r"\u003A", ":"), (r"\u0026", "&")]:
+              decoded = decoded.replace(old, new)
+          Path("out/reports-page-decoded.html").write_text(decoded)
 
-          candidates = []
-          for row in rows:
-              hay = (row["text"] + " " + row["href"]).lower()
-              if "lost decade" in hay or "lost-decade" in hay:
-                  candidates.append(row)
-          Path("out/lost-decade-links.json").write_text(json.dumps(candidates, indent=2))
-
-          # Prefer the link whose visible label is the report filename, then any PDF-like URL.
-          selected = None
-          for row in candidates:
-              if "report.pdf" in row["text"].lower() or row["href"].lower().endswith(".pdf"):
-                  selected = row["href"]
+          # Preserve useful diagnostic windows around every Lost Decade mention.
+          windows = []
+          low = decoded.lower()
+          start = 0
+          while True:
+              i = low.find("lost decade", start)
+              if i < 0:
                   break
-          if not selected:
-              # Wix occasionally stores document URLs in serialized page data rather than anchors.
-              decoded = unescape(html).replace(r"\u002F", "/").replace(r"\/", "/")
-              urls = re.findall(r'https?://[^"\'<>\\ ]+', decoded)
-              for url in urls:
-                  low = url.lower()
-                  if ("lost" in low and "decade" in low) or ("_files/ugd/" in low and ".pdf" in low):
-                      selected = url.rstrip('),;')
-                      break
-          if not selected:
-              raise SystemExit("Could not resolve the live Lost Decade PDF URL; diagnostics were saved.")
-          Path("out/resolved-url.txt").write_text(selected + "\n")
-          print(selected)
+              windows.append(decoded[max(0, i-5000):i+8000])
+              start = i + 11
+          Path("out/lost-decade-windows.txt").write_text("\n\n===== WINDOW =====\n\n".join(windows))
+
+          # Collect absolute HTTP(S), Wix document, and relative document candidates.
+          candidates = []
+          patterns = [
+              r'https?://[^"\'<>\\\s]+',
+              r'wix:document://[^"\'<>\\\s]+',
+              r'/_files/ugd/[^"\'<>\\\s]+',
+              r'static\.wixstatic\.com/[^"\'<>\\\s]+',
+          ]
+          for pattern in patterns:
+              candidates.extend(re.findall(pattern, decoded, flags=re.I))
+          cleaned = []
+          for value in candidates:
+              value = value.rstrip('),;]}')
+              if value.startswith('/_files/'):
+                  value = urljoin(page_url, value)
+              elif value.startswith('static.wixstatic.com/'):
+                  value = 'https://' + value
+              if value not in cleaned:
+                  cleaned.append(value)
+          Path("out/url-candidates.json").write_text(json.dumps(cleaned, indent=2))
+
+          # Rank URLs by evidence that they belong to the Lost Decade report.
+          scored = []
+          for value in cleaned:
+              vlow = value.lower()
+              score = 0
+              if '.pdf' in vlow: score += 20
+              if '_files/ugd/' in vlow or 'wixstatic.com' in vlow: score += 10
+              if 'lost' in vlow: score += 25
+              if 'decade' in vlow: score += 25
+              # Give candidates appearing inside a Lost Decade context window a large boost.
+              if any(value in window for window in windows): score += 50
+              if score:
+                  scored.append((score, value))
+          scored.sort(reverse=True)
+          Path("out/ranked-candidates.json").write_text(json.dumps(scored, indent=2))
+
+          selected = None
+          for score, value in scored:
+              if value.startswith('http') and ('.pdf' in value.lower() or '_files/ugd/' in value.lower()):
+                  selected = value
+                  break
+          if selected:
+              Path("out/resolved-url.txt").write_text(selected + "\n")
+              print(selected)
+          else:
+              print("No candidate selected; inspect diagnostics.")
           PY
 
-          PDF_URL="$(cat out/resolved-url.txt)"
-          curl --fail --location --retry 5 --retry-all-errors \
-            --user-agent "Mozilla/5.0" "$PDF_URL" --output original.pdf
-          test "$(head -c 4 original.pdf)" = "%PDF"
-          pdfinfo original.pdf | tee out/pdfinfo.txt
-          pdftoppm -png -r 300 original.pdf out/page
-          cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
-          sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
+          if [[ -s out/resolved-url.txt ]]; then
+            PDF_URL="$(cat out/resolved-url.txt)"
+            curl --fail --location --retry 5 --retry-all-errors \
+              --user-agent "Mozilla/5.0" "$PDF_URL" --output original.pdf
+            test "$(head -c 4 original.pdf)" = "%PDF"
+            pdfinfo original.pdf | tee out/pdfinfo.txt
+            pdftoppm -png -r 300 original.pdf out/page
+            cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
+            sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
+          else
+            exit 2
+          fi
 
       - name: Upload exact source, rendered pages, and diagnostics
         if: always()
