@@ -1,0 +1,42 @@
+name: Render original Lost Decade report pages
+
+on:
+  push:
+    branches:
+      - tmp/lost-decade-original-pages-20260813
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install PDF tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - name: Download and render publisher PDF
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p out
+          curl --fail --location --retry 5 --retry-all-errors \
+            --user-agent "Mozilla/5.0" \
+            "https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf" \
+            --output original.pdf
+          test "$(head -c 4 original.pdf)" = "%PDF"
+          pdfinfo original.pdf | tee out/pdfinfo.txt
+          pdftoppm -png -r 300 original.pdf out/page
+          cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
+          sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
+
+      - name: Upload exact source and rendered pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: lost-decade-original-pages
+          path: out/
+          if-no-files-found: error
+          retention-days: 1
