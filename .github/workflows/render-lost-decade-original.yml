@@ -15,106 +15,129 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 6
     steps:
-      - name: Install PDF tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y poppler-utils
-
-      - name: Resolve live publisher PDF, download, and render
+      - name: Recover exact publisher PDF from live or archived source
         shell: bash
         run: |
           set -euxo pipefail
           mkdir -p out
-          REPORTS_PAGE="https://www.texasaft.org/our-priorities/legislative-agenda"
-          timeout 40s curl --fail --location --connect-timeout 10 --max-time 35 \
-            --retry 1 --user-agent "Mozilla/5.0" \
-            "$REPORTS_PAGE" --output out/reports-page-source.html
+          OLD_URL="https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf"
 
-          python - <<'PY'
-          from html import unescape
-          from pathlib import Path
-          from urllib.parse import urljoin
-          import json, re
+          try_pdf() {
+            local url="$1"
+            local label="$2"
+            echo "$url" >> out/attempted-urls.txt
+            rm -f candidate.pdf
+            if timeout 35s curl --fail --location --connect-timeout 8 --max-time 30 \
+                --retry 1 --retry-all-errors --user-agent "Mozilla/5.0" \
+                "$url" --output candidate.pdf; then
+              if [[ "$(head -c 4 candidate.pdf || true)" == "%PDF" ]]; then
+                mv candidate.pdf original.pdf
+                printf '%s\n' "$url" > out/resolved-url.txt
+                printf '%s\n' "$label" > out/resolved-source.txt
+                return 0
+              fi
+            fi
+            return 1
+          }
 
-          page_url = "https://www.texasaft.org/our-priorities/legislative-agenda"
-          raw = Path("out/reports-page-source.html").read_text(errors="replace")
-          decoded = unescape(raw)
-          for old, new in [(r"\u002F", "/"), (r"\/", "/"), (r"\u003A", ":"), (r"\u0026", "&")]:
-              decoded = decoded.replace(old, new)
-          Path("out/reports-page-decoded.html").write_text(decoded)
+          # The live publisher URL is authoritative when available.
+          try_pdf "$OLD_URL" "live publisher URL" || true
 
-          windows = []
-          low = decoded.lower()
-          start = 0
-          while True:
-              i = low.find("lost decade", start)
-              if i < 0:
-                  break
-              windows.append(decoded[max(0, i-7000):i+10000])
-              start = i + 11
-          Path("out/lost-decade-windows.txt").write_text("\n\n===== WINDOW =====\n\n".join(windows))
-
-          candidates = []
-          patterns = [
-              r'https?://[^"\'<>\\\s]+',
-              r'wix:document://[^"\'<>\\\s]+',
-              r'/_files/ugd/[^"\'<>\\\s]+',
-              r'static\.wixstatic\.com/[^"\'<>\\\s]+',
-          ]
-          for pattern in patterns:
-              candidates.extend(re.findall(pattern, decoded, flags=re.I))
-          cleaned = []
-          for value in candidates:
-              value = value.rstrip('),;]}')
-              if value.startswith('/_files/'):
-                  value = urljoin(page_url, value)
-              elif value.startswith('static.wixstatic.com/'):
-                  value = 'https://' + value
-              if value not in cleaned:
-                  cleaned.append(value)
-          Path("out/url-candidates.json").write_text(json.dumps(cleaned, indent=2))
-
-          scored = []
-          for value in cleaned:
-              vlow = value.lower()
-              score = 0
-              if '.pdf' in vlow: score += 20
-              if '_files/ugd/' in vlow or 'wixstatic.com' in vlow: score += 10
-              if 'lost' in vlow: score += 25
-              if 'decade' in vlow: score += 25
-              if any(value in window for window in windows): score += 50
-              if score:
-                  scored.append((score, value))
-          scored.sort(reverse=True)
-          Path("out/ranked-candidates.json").write_text(json.dumps(scored, indent=2))
-
-          selected = None
-          for score, value in scored:
-              if value.startswith('http') and ('.pdf' in value.lower() or '_files/ugd/' in value.lower()):
-                  selected = value
-                  break
-          if selected:
-              Path("out/resolved-url.txt").write_text(selected + "\n")
-              print(selected)
-          else:
-              print("No candidate selected; inspect diagnostics.")
-          PY
-
-          if [[ -s out/resolved-url.txt ]]; then
-            PDF_URL="$(cat out/resolved-url.txt)"
-            timeout 60s curl --fail --location --connect-timeout 10 --max-time 55 \
-              --retry 2 --retry-all-errors --user-agent "Mozilla/5.0" \
-              "$PDF_URL" --output original.pdf
-            test "$(head -c 4 original.pdf)" = "%PDF"
-            pdfinfo original.pdf | tee out/pdfinfo.txt
-            pdftoppm -png -r 300 original.pdf out/page
-            cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
-            sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
-          else
-            exit 2
+          # Ask the Internet Archive availability API for the closest saved copy.
+          if [[ ! -f original.pdf ]]; then
+            ENCODED="$(python -c 'import urllib.parse; print(urllib.parse.quote("https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf", safe=""))')"
+            AVAIL="https://archive.org/wayback/available?url=${ENCODED}&timestamp=20240531"
+            timeout 30s curl --fail --location --connect-timeout 8 --max-time 25 \
+              --user-agent "Mozilla/5.0" "$AVAIL" --output out/wayback-available.json || true
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            p = Path('out/wayback-available.json')
+            if p.exists():
+                try:
+                    data = json.loads(p.read_text())
+                    closest = data.get('archived_snapshots', {}).get('closest', {})
+                    url = closest.get('url')
+                    if url:
+                        url = url.replace('http://web.archive.org/', 'https://web.archive.org/')
+                        # id_ returns the original bytes without rewriting.
+                        if '/web/' in url and 'id_/' not in url:
+                            prefix, rest = url.split('/web/', 1)
+                            stamp, original = rest.split('/', 1)
+                            url = f'{prefix}/web/{stamp}id_/{original}'
+                        Path('out/wayback-url.txt').write_text(url + '\n')
+                except Exception as exc:
+                    Path('out/wayback-parse-error.txt').write_text(repr(exc))
+            PY
+            if [[ -s out/wayback-url.txt ]]; then
+              try_pdf "$(cat out/wayback-url.txt)" "Internet Archive availability snapshot" || true
+            fi
           fi
+
+          # Query the CDX index directly and use the newest successful PDF capture.
+          if [[ ! -f original.pdf ]]; then
+            CDX="https://web.archive.org/cdx/search/cdx?url=www.texasaft.org%2Fwp-content%2Fuploads%2F2024%2F05%2FThe-Lost-Decade-and-a-half-2.pdf&output=json&filter=statuscode%3A200&filter=mimetype%3Aapplication%2Fpdf&fl=timestamp%2Coriginal%2Cdigest%2Clength&collapse=digest&from=2024&to=2026"
+            timeout 35s curl --fail --location --connect-timeout 8 --max-time 30 \
+              --user-agent "Mozilla/5.0" "$CDX" --output out/cdx.json || true
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            p = Path('out/cdx.json')
+            if p.exists():
+                try:
+                    rows = json.loads(p.read_text())
+                    if len(rows) > 1:
+                        header = rows[0]
+                        records = [dict(zip(header, row)) for row in rows[1:]]
+                        records.sort(key=lambda r: r['timestamp'], reverse=True)
+                        r = records[0]
+                        url = f"https://web.archive.org/web/{r['timestamp']}id_/{r['original']}"
+                        Path('out/cdx-records.json').write_text(json.dumps(records, indent=2))
+                        Path('out/cdx-url.txt').write_text(url + '\n')
+                except Exception as exc:
+                    Path('out/cdx-parse-error.txt').write_text(repr(exc))
+            PY
+            if [[ -s out/cdx-url.txt ]]; then
+              try_pdf "$(cat out/cdx-url.txt)" "Internet Archive CDX snapshot" || true
+            fi
+          fi
+
+          # Arquivo.pt is a second independent web archive.
+          if [[ ! -f original.pdf ]]; then
+            TEXTSEARCH="https://arquivo.pt/textsearch?versionHistory=${OLD_URL}&maxItems=50"
+            timeout 35s curl --fail --location --connect-timeout 8 --max-time 30 \
+              --user-agent "Mozilla/5.0" "$TEXTSEARCH" --output out/arquivo.json || true
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            p = Path('out/arquivo.json')
+            if p.exists():
+                try:
+                    data = json.loads(p.read_text())
+                    responses = data.get('response_items') or data.get('results') or []
+                    Path('out/arquivo-records.json').write_text(json.dumps(responses, indent=2))
+                    for row in responses:
+                        url = row.get('linkToArchive') or row.get('linkToOriginalFile') or row.get('url')
+                        if url:
+                            Path('out/arquivo-url.txt').write_text(url + '\n')
+                            break
+                except Exception as exc:
+                    Path('out/arquivo-parse-error.txt').write_text(repr(exc))
+            PY
+            if [[ -s out/arquivo-url.txt ]]; then
+              try_pdf "$(cat out/arquivo-url.txt)" "Arquivo.pt snapshot" || true
+            fi
+          fi
+
+          test -f original.pdf
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          pdfinfo original.pdf | tee out/pdfinfo.txt
+          pdftoppm -png -r 300 original.pdf out/page
+          cp original.pdf out/The-Lost-Decade-and-a-half-original.pdf
+          sha256sum original.pdf out/page-*.png | tee out/SHA256SUMS.txt
 
       - name: Upload exact source, rendered pages, and diagnostics
         if: always()
