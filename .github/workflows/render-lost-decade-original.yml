@@ -15,7 +15,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8
     steps:
       - name: Install PDF tools
         run: |
@@ -28,7 +28,8 @@ jobs:
           set -euxo pipefail
           mkdir -p out
           REPORTS_PAGE="https://www.texasaft.org/our-priorities/legislative-agenda"
-          curl --fail --location --retry 3 --user-agent "Mozilla/5.0" \
+          timeout 40s curl --fail --location --connect-timeout 10 --max-time 35 \
+            --retry 1 --user-agent "Mozilla/5.0" \
             "$REPORTS_PAGE" --output out/reports-page-source.html
 
           python - <<'PY'
@@ -44,7 +45,6 @@ jobs:
               decoded = decoded.replace(old, new)
           Path("out/reports-page-decoded.html").write_text(decoded)
 
-          # Preserve useful diagnostic windows around every Lost Decade mention.
           windows = []
           low = decoded.lower()
           start = 0
@@ -52,11 +52,10 @@ jobs:
               i = low.find("lost decade", start)
               if i < 0:
                   break
-              windows.append(decoded[max(0, i-5000):i+8000])
+              windows.append(decoded[max(0, i-7000):i+10000])
               start = i + 11
           Path("out/lost-decade-windows.txt").write_text("\n\n===== WINDOW =====\n\n".join(windows))
 
-          # Collect absolute HTTP(S), Wix document, and relative document candidates.
           candidates = []
           patterns = [
               r'https?://[^"\'<>\\\s]+',
@@ -77,7 +76,6 @@ jobs:
                   cleaned.append(value)
           Path("out/url-candidates.json").write_text(json.dumps(cleaned, indent=2))
 
-          # Rank URLs by evidence that they belong to the Lost Decade report.
           scored = []
           for value in cleaned:
               vlow = value.lower()
@@ -86,7 +84,6 @@ jobs:
               if '_files/ugd/' in vlow or 'wixstatic.com' in vlow: score += 10
               if 'lost' in vlow: score += 25
               if 'decade' in vlow: score += 25
-              # Give candidates appearing inside a Lost Decade context window a large boost.
               if any(value in window for window in windows): score += 50
               if score:
                   scored.append((score, value))
@@ -107,8 +104,9 @@ jobs:
 
           if [[ -s out/resolved-url.txt ]]; then
             PDF_URL="$(cat out/resolved-url.txt)"
-            curl --fail --location --retry 5 --retry-all-errors \
-              --user-agent "Mozilla/5.0" "$PDF_URL" --output original.pdf
+            timeout 60s curl --fail --location --connect-timeout 10 --max-time 55 \
+              --retry 2 --retry-all-errors --user-agent "Mozilla/5.0" \
+              "$PDF_URL" --output original.pdf
             test "$(head -c 4 original.pdf)" = "%PDF"
             pdfinfo original.pdf | tee out/pdfinfo.txt
             pdftoppm -png -r 300 original.pdf out/page
