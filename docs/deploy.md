@@ -4,7 +4,7 @@ This workflow maintains the existing `crafted` Worker at https://adpena.com. It 
 
 ## Fresh local preview
 
-Use Node 22 from `.nvmrc` and Python 3.10 or newer. Install with the lockfile. The repository disables dependency install scripts; rebuild only the native SQLite dependency needed by the EmDash CLI.
+Use Node 22 from `.nvmrc` and Python 3.10 or newer. Install with the lockfile. The repository disables dependency install scripts and npm pre/post hooks; type checking explicitly generates Worker declarations. Rebuild only the native SQLite dependency needed by the EmDash CLI.
 
 ```sh
 npm ci
@@ -47,7 +47,7 @@ npm run lighthouse
 
 Lighthouse starts the built Worker on port 4322 and audits Home, About, Software Resume, and CharterCostTracker in desktop/mobile modes. It saves local reports in `.lighthouseci/`. CI uses the same seeded portfolio checks. The historical Action Pages suite remains available through `test:e2e:all`, separately from this gate; these portfolio results do not establish that its unfinished fixtures, authenticated admin flows, or external integrations work.
 
-After reviewing and committing all intended files:
+Stop the development server before type checking, building, or shipping; Astro commands share a Vite dependency cache. After reviewing and committing all intended files:
 
 ```sh
 npm run release:prepare
