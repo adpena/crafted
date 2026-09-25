@@ -12,7 +12,7 @@ This completes the implementation of roadmap items 1 and 2. The previously publi
 - Backups preserve application tables and CMS-referenced media, rebuild FTS, and verify restoration. A separate D1-compatible restore file was imported successfully into a fresh local D1 state; all 46 table counts, SQLite integrity, and zero foreign-key violations were verified.
 - Both database repairs are in Wrangler’s migration journal. Fifteen legacy orphan metadata rows were archived before removal. Exact before/after comparisons found all five content collections, every revision, and all settings unchanged.
 - Publication now guards the committed tree, CMS rows/settings/revisions, backup, and public artifacts; checks the build; clears the work cache; and verifies live pages and deployed artifact hashes.
-- CI seeds the real portfolio before browser checks and audits a built Worker with Lighthouse. Historical Action Pages browser tests remain a separate suite, rather than serving as a misleading portfolio gate.
+- CI seeds the real portfolio and runs browser checks against the built Worker. Lighthouse uses three samples per page/mode, gates on their median, and retains every report. Historical Action Pages browser tests remain a separate suite, rather than serving as a misleading portfolio gate.
 - Global content fades are removed. Demo inputs remain disabled until their React handlers are ready, preventing an early interaction from being lost during hydration.
 
 ## Validation before publication
@@ -28,3 +28,5 @@ This completes the implementation of roadmap items 1 and 2. The previously publi
 Working, but Uncovered remains excluded. Action Pages remains unfinished. The pending Molt revision remains unpublished and unchanged. No contact or campaign messages were sent. The full historical Action Pages suite, authenticated admin flows, and live third-party integrations are not covered by these results. Roadmap items 3–6 remain follow-up work.
 
 See [the runbook](deploy.md), [resume maintenance](resumes.md), and [the roadmap](portfolio-roadmap-2026-09-25.md).
+
+Clean-checkout CI follow-through also corrected the plugin lockfile reference, made Worker type generation explicit despite disabled npm lifecycle hooks, and prebundled EmDash runtime imports to prevent a first-request React failure in the development server. The fix was checked from an empty Vite cache; all 30 browser checks also passed against the production build.

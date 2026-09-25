@@ -31,19 +31,24 @@ try {
   mkdirSync('.lighthouseci', { recursive: true });
   let failed = false;
   for (const device of ['desktop', 'mobile'] as const) for (const path of paths) {
-    const result = await lighthouse(origin + path, {
-      port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: Object.keys(thresholds),
-      ...(device === 'desktop' ? { preset: 'desktop' as const } : {}),
-    });
-    if (!result?.lhr || result.lhr.runtimeError) throw new Error(`Audit failed: ${device} ${path}`);
-    const lhr = result.lhr;
-    writeFileSync(`.lighthouseci/${device}-${path.replaceAll('/', '_') || 'home'}.json`, JSON.stringify(lhr));
+    const samples: Record<string, number>[] = [];
+    for (let sample = 1; sample <= 3; sample++) {
+      const result = await lighthouse(origin + path, {
+        port: chrome.port, output: 'json', logLevel: 'error', onlyCategories: Object.keys(thresholds),
+        ...(device === 'desktop' ? { preset: 'desktop' as const } : {}),
+      });
+      if (!result?.lhr || result.lhr.runtimeError) throw new Error(`Audit failed: ${device} ${path}`);
+      const lhr = result.lhr;
+      writeFileSync(`.lighthouseci/${device}-${path.replaceAll('/', '_') || 'home'}-${sample}.json`, JSON.stringify(lhr));
+      samples.push(Object.fromEntries(Object.keys(thresholds).map((category) => [category, lhr.categories[category]?.score ?? 0])));
+      console.log(`${device} ${path} run ${sample}: LCP=${Math.round(lhr.audits['largest-contentful-paint'].numericValue ?? 0)}ms, TBT=${Math.round(lhr.audits['total-blocking-time'].numericValue ?? 0)}ms, CLS=${lhr.audits['cumulative-layout-shift'].numericValue}, performance=${Math.round(samples.at(-1)!.performance * 100)}`);
+    }
     const scores = Object.entries(thresholds).map(([category, minimum]) => {
-      const score = lhr.categories[category]?.score ?? 0;
+      const score = samples.map((s) => s[category]).sort((a, b) => a - b)[1];
       if (score < minimum) failed = true;
       return `${category}=${Math.round(score * 100)}${score < minimum ? ' FAIL' : ''}`;
     });
-    console.log(`${device} ${path}: ${scores.join(', ')}`);
+    console.log(`${device} ${path} median of 3: ${scores.join(', ')}`);
   }
   if (failed) process.exitCode = 1;
 } catch (error) {

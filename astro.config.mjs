@@ -28,6 +28,19 @@ export default defineConfig({
 	adapter: cloudflare({ persistState: process.env.PORTFOLIO_TEST_STATE ? { path: process.env.PORTFOLIO_TEST_STATE } : true }),
 	vite: {
 		optimizeDeps: { include: ["react", "react-dom/client", "@adpena/notifications"] },
+		// Prebundle the dependencies otherwise discovered during the first request.
+		// A late optimizer reload can split React and react-dom across module graphs.
+		ssr: {
+			optimizeDeps: {
+				include: [
+					"@adpena/notifications", "@astrojs/cloudflare/entrypoints/server",
+					"@emdash-cms/cloudflare/sandbox", "@emdash-cms/cloudflare/db/d1", "@emdash-cms/cloudflare/storage/r2",
+					"emdash", "emdash/page", "emdash/ui", "emdash/runtime", "emdash/media/local-runtime",
+					"emdash/middleware", "emdash/middleware/redirect", "emdash/middleware/setup",
+					"emdash/middleware/auth", "emdash/middleware/request-context", "astro/zod",
+				],
+			},
+		},
 		resolve: {
 			dedupe: ["react", "react-dom"],
 			alias: {

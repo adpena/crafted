@@ -45,7 +45,7 @@ npm run build
 npm run lighthouse
 ```
 
-Lighthouse starts the built Worker on port 4322 and audits Home, About, Software Resume, and CharterCostTracker in desktop/mobile modes. It saves local reports in `.lighthouseci/`. CI uses the same seeded portfolio checks. The historical Action Pages suite remains available through `test:e2e:all`, separately from this gate; these portfolio results do not establish that its unfinished fixtures, authenticated admin flows, or external integrations work.
+Lighthouse starts the built Worker on port 4322 and audits Home, About, Software Resume, and CharterCostTracker in desktop/mobile modes, using the median of three runs per page and mode. It saves local reports in `.lighthouseci/`. CI runs the same seeded portfolio checks against a built Worker; set `PORTFOLIO_BUILT_PREVIEW=1` to use that mode locally after building. Without it, Playwright starts the development server. Set `BASE_URL` to test an already running server. The historical Action Pages suite remains available through `test:e2e:all`, separately from this gate; these portfolio results do not establish that its unfinished fixtures, authenticated admin flows, or external integrations work.
 
 Stop the development server before type checking, building, or shipping; Astro commands share a Vite dependency cache. After reviewing and committing all intended files:
 
