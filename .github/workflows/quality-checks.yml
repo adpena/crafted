@@ -16,13 +16,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: plugin/package-lock.json
-      - name: Install plugin deps
-        working-directory: plugin
+          cache-dependency-path: package-lock.json
+      - name: Install locked repository dependencies
         run: npm ci
       - name: Run plugin tests
-        working-directory: plugin
-        run: npm test
+        run: npx vitest run plugin/tests
 
   site-build:
     name: Site build
