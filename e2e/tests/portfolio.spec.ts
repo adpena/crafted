@@ -44,8 +44,11 @@ test('audience links and About work without JavaScript', async ({ browser, baseU
   await page.goto('/?focus=software#work');
   await expect(page.locator('.work-index [data-collection="dev"]')).toBeVisible();
   await expect(page.locator('.work-index [data-collection="policy"]')).toHaveCount(0);
-  // The disabled-JS context cannot run Playwright's animation-frame stability check.
-  await page.getByRole('navigation', { name: 'Filter work' }).getByRole('link', { name: 'Research', exact: true }).click({ force: true });
+  // Use native keyboard activation: disabled JS prevents frame-based click waiting.
+  const research = page.getByRole('navigation', { name: 'Filter work' }).getByRole('link', { name: 'Research', exact: true });
+  await research.focus();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/focus=research/);
   await expect(page.locator('.work-index [data-collection="policy"]')).toBeVisible();
   expect((await page.goto('/about'))?.status()).toBe(200);
   await expect(page.locator('#about-body')).toContainText('full-stack engineer');
