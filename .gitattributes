@@ -1,0 +1,5 @@
+# CSV snapshots retain their original CRLF bytes and recorded hashes.
+public/portfolio/*.csv -text whitespace=cr-at-eol
+
+# PDF cross-reference offsets require byte-preserving storage.
+*.pdf binary

@@ -1,3 +1,4 @@
+import { isPublicPortfolioSlug } from "../lib/portfolio-content";
 import type { APIRoute } from "astro";
 import { getEmDashCollection, getSiteSettings } from "emdash";
 import { publicationDate, contentText } from "../lib/content-metadata";
@@ -21,7 +22,7 @@ export const GET: APIRoute = async ({ site, url }) => {
 		COLLECTIONS.map(async (col) => {
 			try {
 				const { entries } = await getEmDashCollection(col.slug);
-				return entries.map((e) => ({ ...e, _prefix: col.prefix }));
+				return entries.filter((e) => isPublicPortfolioSlug(e.id)).map((e) => ({ ...e, _prefix: col.prefix }));
 			} catch {
 				return [];
 			}

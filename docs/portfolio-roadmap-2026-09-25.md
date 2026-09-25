@@ -6,7 +6,7 @@ Support engineering applications and research/consulting work equally. Keep one 
 
 The next pass should deepen the strongest work and make the site easier to maintain. Preserve the existing visual character. A broad redesign, a large new project catalog, and a commitment to regular articles are not priorities.
 
-This is a proposed roadmap, not a record of additional implementation or publication.
+Items 1 and 2 were approved for implementation. See `portfolio-release-2026-09-25.md` for their release record; items 3–6 remain proposals. The numbered descriptions below preserve the starting conditions and acceptance criteria.
 
 ## Already complete
 

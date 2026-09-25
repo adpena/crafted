@@ -47,3 +47,9 @@ output/pdf/
 # Private database/content backups and release preparation
 backups/
 .portfolio-release/
+
+# Python helper caches
+__pycache__/
+
+# Local performance reports
+.lighthouseci/

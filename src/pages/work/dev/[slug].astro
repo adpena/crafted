@@ -1,4 +1,5 @@
 ---
+import { isPublicPortfolioSlug } from "../../../lib/portfolio-content";
 import { getEmDashEntry, type MediaValue } from "emdash";
 import { PortableText, Image } from "emdash/ui";
 import CompiledMoltDemo from "../../../components/CompiledMoltDemo";
@@ -6,7 +7,7 @@ import ProjectArtifacts from "../../../components/ProjectArtifacts.astro";
 import Base from "../../../layouts/Base.astro";
 
 const { slug } = Astro.params;
-if (!slug) return Astro.redirect("/404");
+if (!slug || !isPublicPortfolioSlug(slug)) return new Response("Not found", { status: 404 });
 
 // The Action Pages project has a full case-study landing page at
 // /action-pages that's the canonical long-form writeup. Redirect the

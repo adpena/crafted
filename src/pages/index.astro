@@ -3,12 +3,14 @@ import { getEmDashCollection } from "emdash";
 import { env } from "cloudflare:workers";
 import Base from "../layouts/Base.astro";
 import WorkListing from "../components/WorkListing.tsx";
-import type { WorkSection, WorkEntry } from "../components/WorkListing.tsx";
+import WorkWithMe from "../components/WorkWithMe.astro";
+import { isPublicPortfolioSlug, parseWorkFilter } from "../lib/portfolio-content";
+import type { WorkSection } from "../components/WorkListing.tsx";
 
 const collectionDefs = [
-	{ slug: "dev", label: "Development" },
+	{ slug: "dev", label: "Software" },
+	{ slug: "policy", label: "Research & policy" },
 	{ slug: "design", label: "Design" },
-	{ slug: "policy", label: "Policy" },
 	{ slug: "writing", label: "Writing" },
 ];
 
@@ -28,7 +30,7 @@ function entryTime(e: { data: Record<string, any> }): number {
 
 function serializeEntries(entries: any[], slug: string, label: string): WorkSection | null {
 	if (!entries?.length) return null;
-	const sorted = [...entries].sort((a, b) => {
+	const sorted = entries.filter((e) => isPublicPortfolioSlug(e.id)).sort((a, b) => {
 		const pa = PIN[a.id] ?? Infinity;
 		const pb = PIN[b.id] ?? Infinity;
 		if (pa !== pb) return pa - pb;
@@ -61,19 +63,26 @@ function serializeEntries(entries: any[], slug: string, label: string): WorkSect
 
 // KV edge cache: serve sections from the nearest PoP (~20ms) instead
 // of querying D1 (~584ms). TTL keeps content fresh within 60 seconds.
-const CACHE_KEY = "work-sections-v1";
+const CACHE_KEY = "work-sections-v2";
 const CACHE_TTL = 60;
 
 let sections: WorkSection[] = [];
-const kv = (env as any).CACHE as KVNamespace | undefined;
+const kv = env.CACHE;
 
 // Try KV cache first
 let cached: string | null = null;
 try { cached = kv ? await kv.get(CACHE_KEY) : null; } catch {}
 
 if (cached) {
-	sections = JSON.parse(cached);
-} else {
+	try {
+		const value = JSON.parse(cached);
+		if (!Array.isArray(value) || value.length !== collectionDefs.length || value.some((s, i) =>
+			s.slug !== collectionDefs[i].slug || !Array.isArray(s.entries) || s.entries.some((e: any) => typeof e.id !== "string" || typeof e.data?.title !== "string")
+		)) throw new Error("Invalid work cache");
+		sections = value;
+	} catch { cached = null; }
+}
+if (!cached) {
 	// Cache miss — query D1 in parallel
 	const results = await Promise.all(
 		collectionDefs.map(async (def) => {
@@ -91,52 +100,53 @@ if (cached) {
 	sections = results.filter((s): s is WorkSection => s !== null);
 
 	// Store in KV for subsequent requests
-	if (kv && sections.length > 0) {
+	if (kv && sections.length === collectionDefs.length) {
 		try { await kv.put(CACHE_KEY, JSON.stringify(sections), { expirationTtl: CACHE_TTL }); } catch {}
 	}
 }
 
-const highlights = [
-	{ title: "Molt", desc: "Python-to-Wasm compiler", href: "/work/dev/molt", tag: "Featured" },
-	{ title: "comma.ai Challenge", desc: "Three leaderboard submissions", href: "/work/dev/comma-lab", tag: "Research" },
-	{ title: "Lost Decade", desc: "Texas educator pay and purchasing power", href: "/work/policy/the-lost-decade-and-a-half", tag: "Research" },
-	{ title: "CharterCostTracker", desc: "From state records to district revenue estimates", href: "/work/policy/fiscal-impact-of-charter-school-expansion", tag: "Research" },
-	{ title: "Data for Public Education", desc: "Research, data tools, and public school profiles", href: "/work/dev/data-for-public-education", tag: "Featured" },
+// Apply exclusions after cached reads too.
+sections = sections.map((s) => ({ ...s, entries: s.entries.filter((e) => isPublicPortfolioSlug(e.id)) }));
+const initialFilter = parseWorkFilter(Astro.url.searchParams.get("focus"));
+const selected = [
+  { label: "Software", href: "/?focus=software#work", projects: [
+    { title: "Molt", href: "/work/dev/molt", description: "I’m building a compiler that turns Python into native binaries and WebAssembly.", detail: "Compiler development · Python & Rust" },
+    { title: "comma.ai compression", href: "/work/dev/comma-lab", description: "I work on lossy video compression. Three of my submissions have appeared on the challenge leaderboard.", detail: "Ongoing research · PRs 107, 110 & 140" },
+  ] },
+  { label: "Research", href: "/?focus=research#work", projects: [
+    { title: "The Lost Decade (and a Half)", href: "/work/policy/the-lost-decade-and-a-half", description: "I wrote the 2024 report on educator pay, did the analysis, and built the responsive district tables.", detail: "Research, writing & web development" },
+    { title: "CharterCostTracker", href: "/work/policy/fiscal-impact-of-charter-school-expansion", description: "I built the data collection and reporting system for estimating how charter transfers affect district revenue.", detail: "Data engineering & school finance" },
+  ] },
 ];
 ---
 
 <Base>
-	<main id="main-content" class="work-layout">
-		<WorkListing sections={sections} client:load />
-
-		<aside class="work-sidebar" aria-label="Highlighted projects">
-			<h2 class="section-label">Highlights</h2>
-			<nav class="highlights">
-				{highlights.map((h) => (
-					<a href={h.href} class="highlight">
-						<span class="highlight-tag">{h.tag}</span>
-						<span class="highlight-title">{h.title}</span>
-						<span class="highlight-desc">{h.desc}</span>
-					</a>
-				))}
-			</nav>
-		</aside>
-	</main>
+  <main id="main-content" class="portfolio-home">
+    <h1 class="visually-hidden">Selected software and research by Alejandro Peña</h1>
+    <div class="selected-work" aria-label="Selected work">
+      {selected.map((group) => (
+        <section class="selected-group" aria-label={group.label}>
+          <h2 class="section-label"><a href={group.href}>{group.label} <span aria-hidden="true">↗</span></a></h2>
+          {group.projects.map((project) => (
+            <article class="selected-project">
+              <h3><a href={project.href}>{project.title}</a></h3>
+              <p>{project.description}</p>
+              <p class="selected-detail">{project.detail}</p>
+            </article>
+          ))}
+        </section>
+      ))}
+    </div>
+    <section class="practice-feature" aria-labelledby="practice-title">
+      <p class="section-label">Software + research</p>
+      <h2 id="practice-title"><a href="/work/dev/data-for-public-education">Data for Public Education</a></h2>
+      <p>I lead a research and software practice focused on Texas public schools. I build the data tools, conduct the analysis, and work with clients on reports and public-facing applications.</p>
+      <div class="artifact-links"><a href="/work/dev/data-for-public-education">About the practice</a><a href="/work/policy/facing-facts">An example: Facing Facts</a></div>
+    </section>
+    <WorkWithMe />
+    <section id="work" class="all-work" aria-labelledby="all-work-title">
+      <h2 id="all-work-title">Work index</h2>
+      <WorkListing sections={sections} initialFilter={initialFilter} client:load />
+    </section>
+  </main>
 </Base>
-
-<script>
-	// Defer scroll-fade init until after React island hydrates
-	requestAnimationFrame(() => {
-		const sidebar = document.querySelector('.work-sidebar');
-		const scroller = document.querySelector('.highlights');
-		if (sidebar && scroller) {
-			const update = () => {
-				const { scrollLeft, scrollWidth, clientWidth } = scroller;
-				sidebar.classList.toggle('scrolled-start', scrollLeft > 4);
-				sidebar.classList.toggle('scrolled-end', scrollLeft + clientWidth >= scrollWidth - 4);
-			};
-			scroller.addEventListener('scroll', update, { passive: true });
-			update();
-		}
-	});
-</script>

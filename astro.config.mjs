@@ -25,9 +25,11 @@ cms.hooks["astro:config:setup"] = (options) => setupCms?.({
 
 export default defineConfig({
 	output: "server",
-	adapter: cloudflare(),
+	adapter: cloudflare({ persistState: process.env.PORTFOLIO_TEST_STATE ? { path: process.env.PORTFOLIO_TEST_STATE } : true }),
 	vite: {
+		optimizeDeps: { include: ["react", "react-dom/client", "@adpena/notifications"] },
 		resolve: {
+			dedupe: ["react", "react-dom"],
 			alias: {
 				"@adpena/action-pages/sandbox": fileURLToPath(new URL("./plugin/src/sandbox-entry.ts", import.meta.url)),
 				"@adpena/action-pages/admin": fileURLToPath(new URL("./plugin/src/admin/index.tsx", import.meta.url)),

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notifyAll, type NotifyResult } from "@adpena/notifications";
 
 import { CHANNELS, mockAdapters, type Outcome } from "../lib/notification-demo";
 
 export default function NotificationsDemo() {
+	const [ready, setReady] = useState(false);
+	useEffect(() => setReady(true), []);
 	const [subject, setSubject] = useState("The report is ready");
 	const [body, setBody] = useState("The district analysis is ready for review.");
 	const [outcomes, setOutcomes] = useState<Record<string, Outcome>>({ Email: "success", Slack: "success", Discord: "skip" });
@@ -32,18 +34,18 @@ export default function NotificationsDemo() {
 		<h2>One message, three channels</h2>
 		<p>This runs the library’s dispatcher with local mock adapters. No messages leave your browser. Change a channel’s outcome to see how the others continue.</p>
 		<div className="demo-fields">
-			<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} maxLength={160} disabled={running} /></label>
-			<label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} maxLength={1000} disabled={running} rows={3} /></label>
+			<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} maxLength={160} disabled={!ready || running} /></label>
+			<label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} maxLength={1000} disabled={!ready || running} rows={3} /></label>
 		</div>
 		<div className="demo-channel-grid">
 			{CHANNELS.map((name) => <label key={name}>{name}
-				<select aria-label={name} value={outcomes[name]} disabled={running} onChange={(event) => setOutcomes({ ...outcomes, [name]: event.target.value as Outcome })}>
+				<select aria-label={name} value={outcomes[name]} disabled={!ready || running} onChange={(event) => setOutcomes({ ...outcomes, [name]: event.target.value as Outcome })}>
 					<option value="success">Deliver locally</option><option value="failure">Simulate failure</option><option value="timeout">Simulate timeout</option><option value="skip">Not configured</option>
 				</select>
 				<span className="demo-status">{progress[name] ?? (outcomes[name] === "skip" ? "Will be skipped" : "Ready")}</span>
 			</label>)}
 		</div>
-		<button className="demo-button" disabled={running || !subject.trim() || !body.trim()} onClick={run}>{running ? "Running…" : "Run local dispatch"}</button>
+		<button className="demo-button" disabled={!ready || running || !subject.trim() || !body.trim()} onClick={run}>{running ? "Running…" : "Run local dispatch"}</button>
 		<div role="status" aria-live="polite">{result && <p>Finished in {(elapsed / 1000).toFixed(1)} seconds. {result.sent.length} simulated deliveries, {result.failed.length} failures, {result.skipped.length} skipped.</p>}</div>
 		<details><summary>Inspect the message and result</summary>
 			<pre>{JSON.stringify({ message: { subject, body }, result }, null, 2)}</pre>

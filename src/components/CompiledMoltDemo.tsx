@@ -7,8 +7,10 @@ export default function CompiledMoltDemo() {
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState("Ready to run");
   const [running, setRunning] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    setReady(true);
     const controller = new AbortController();
     fetch("/molt-compiled/mandelbrot.py", { signal: controller.signal }).then((response) => {
       if (!response.ok) throw new Error("Source unavailable");
@@ -40,7 +42,7 @@ export default function CompiledMoltDemo() {
     <p className="eyebrow">Python → Molt → WebAssembly</p>
     <h2>A small program, running in your browser</h2>
     <p>I compiled this Python Mandelbrot program with Molt. The button runs the resulting WebAssembly in a browser worker and displays its standard output.</p>
-    <button className="demo-button" disabled={running} onClick={run}>{running ? "Running…" : "Run compiled Python"}</button>
+    <button className="demo-button" disabled={!ready || running} onClick={run}>{running ? "Running…" : "Run compiled Python"}</button>
     <p className="source-note" role="status" aria-live="polite">{status}</p>
     {output && <pre className="terminal-snapshot molt-output" tabIndex={0} aria-label="Mandelbrot output from the compiled Python program">{output}</pre>}
     <details><summary>Python source</summary>{source ? <pre tabIndex={0}>{source}</pre> : <p><a href="/molt-compiled/mandelbrot.py">Open the source file</a></p>}</details>

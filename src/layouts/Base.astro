@@ -14,7 +14,8 @@ interface Props {
 }
 
 const { title, description, image: imageProp, type = "website" } = Astro.props;
-const image = imageProp || new URL("/og.png", Astro.site || Astro.url.origin).href;
+const image = new URL(imageProp || "/og.png", Astro.site || Astro.url.origin).href;
+const canonical = new URL(Astro.url.pathname, Astro.site || Astro.url.origin).href;
 const settings = await getSiteSettings();
 const siteTitle = settings?.title || "Studio";
 const fullTitle = title ? `${title} — ${siteTitle}` : siteTitle;
@@ -32,7 +33,7 @@ const pageCtx = createPublicPageContext({
 	pageType: type,
 	title: fullTitle,
 	description: siteDescription,
-	canonical: Astro.url.href,
+	canonical,
 	image,
 	seo: { ogImage: image },
 	siteName: siteTitle,

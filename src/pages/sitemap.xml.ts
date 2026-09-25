@@ -1,3 +1,4 @@
+import { isPublicPortfolioSlug } from "../lib/portfolio-content";
 import type { APIRoute } from "astro";
 import { getEmDashCollection } from "emdash";
 import { contentDate } from "../lib/content-metadata";
@@ -16,6 +17,8 @@ const STATIC_PAGES = [
 	{ path: "/action-pages", priority: "0.8" },
 	{ path: "/about", priority: "0.8" },
 	{ path: "/contact", priority: "0.8" },
+	{ path: "/resume/software", priority: "0.7" },
+	{ path: "/resume/research", priority: "0.7" },
 	{ path: "/demo/molt", priority: "0.6" },
 	{ path: "/demo/notifications", priority: "0.6" },
 	{ path: "/demo/inflation", priority: "0.6" },
@@ -29,7 +32,7 @@ export const GET: APIRoute = async ({ url }) => {
 		COLLECTIONS.map(async (col) => {
 			try {
 				const { entries } = await getEmDashCollection(col.slug);
-				return entries.map((e) => ({
+				return entries.filter((e) => isPublicPortfolioSlug(e.id)).map((e) => ({
 					loc: `${siteUrl}/${col.prefix}/${e.id}`,
 					lastmod: contentDate(e.data.updatedAt) ?? contentDate(e.data.date),
 				}));

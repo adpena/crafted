@@ -1,12 +1,14 @@
 ---
 import Base from "../layouts/Base.astro";
 
-const bio = [
-	"I’m a full-stack engineer working in Python, SQL, Django, React, and TypeScript. I build data pipelines, maps, and web applications.",
-	"Before that, I worked as a policy analyst at Texas AFT and a legislative director in the Texas House.",
-	"I now lead Data for Public Education, a research and software practice focused on Texas public schools. I’m also building Molt, a compiler that turns Python into native binaries and WebAssembly.",
-	"I continue to work on comma.ai’s lossy video compression challenge. My submissions, PRs #107, #110, and #140, have all appeared on the leaderboard.",
-];
+import { getEmDashEntry } from "emdash";
+import { PortableText } from "emdash/ui";
+import WorkWithMe from "../components/WorkWithMe.astro";
+
+const { entry, cacheHint } = await getEmDashEntry("pages", "about");
+if (!entry) return new Response("About is temporarily unavailable. Contact contact@adpena.com.", { status: 503 });
+try { Astro.cache.set(cacheHint); } catch {}
+const bio = entry.data as { content?: unknown };
 ---
 
 <Base title="About">
@@ -17,158 +19,30 @@ const bio = [
 			<div class="line" data-type="austin, tx">&nbsp;</div>
 		</div>
 
-		<p class="visually-hidden">Alejandro Peña — Austin, TX.</p>
+		<h1 class="visually-hidden">About Alejandro Peña — Austin, TX.</h1>
 
-		<div class="about-body" id="about-body">
-			{bio.map((line, i) => <p class="about-line">{line}{i === bio.length - 1 && <> <a href="/work/dev/comma-lab">Research and submissions.</a></>}</p>)}
-		</div>
-
-		<a href="/contact" class="btn about-btn" id="about-cta">Get in touch</a>
+		<div class="about-body prose" id="about-body"><PortableText value={bio.content} /></div>
+        <WorkWithMe />
 	</main>
 </Base>
 
-<style>
-	.about-page {
-		min-height: 60vh;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
 
-	.terminal {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-base);
-		line-height: 1.8;
-		margin-bottom: var(--spacing-xl);
-		animation: none;
-	}
-
-	.line {
-		white-space: pre-wrap;
-		word-break: break-word;
-		min-height: 1.8em;
-	}
-
-	.about-body {
-		max-width: 32rem;
-		margin-bottom: var(--spacing-xl);
-		animation: none;
-	}
-
-	.about-line {
-		font-family: var(--font-serif);
-		font-size: var(--font-size-sm);
-		color: var(--color-secondary);
-		line-height: 1.6;
-		margin-bottom: var(--spacing-sm);
-	}
-
-	.about-line a {
-		text-decoration: underline;
-		text-underline-offset: 3px;
-	}
-
-	.about-btn {
-		align-self: center;
-		font-size: var(--font-size-sm);
-		padding: 0.6rem var(--spacing-xl);
-	}
-
-	.cursor::after {
-		content: "_";
-		animation: blink 1s step-end infinite;
-	}
-
-	@keyframes blink {
-		50% { opacity: 0; }
-	}
-
-	@media (max-width: 480px) {
-		.about-page {
-			min-height: 40vh;
-		}
-
-		.terminal {
-			font-size: var(--font-size-sm);
-		}
-
-		.about-line {
-			font-size: var(--font-size-xs);
-		}
-
-		.about-btn {
-			min-height: 44px;
-			display: inline-flex;
-			align-items: center;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.cursor::after { animation: none; }
-		.about-line { opacity: 1; transform: none; transition: none; }
-	}
-</style>
 
 <script>
-	const lines = Array.from(document.querySelectorAll('[data-type]'));
-	const aboutLines = Array.from(document.querySelectorAll('.about-line'));
-	const cta = document.getElementById('about-cta');
-
-	function showCta() {
-		if (!cta) return;
-		cta.style.visibility = 'visible';
-		cta.style.opacity = '1';
-	}
-
-	function revealBio() {
-		aboutLines.forEach((el, i) => {
-			setTimeout(() => el.classList.add('visible'), i * 400);
-		});
-		setTimeout(() => {
-			showCta();
-			try { sessionStorage.setItem('about-seen', '1'); } catch {}
-		}, aboutLines.length * 400 + 300);
-	}
-
-	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	let seenBefore = false;
-	try { seenBefore = !!sessionStorage.getItem('about-seen'); } catch {}
-
-	// Show static version on reduced motion or return visits
-	if (reducedMotion || seenBefore) {
-		lines.forEach(el => { el.textContent = el.getAttribute('data-type') || ''; });
-		aboutLines.forEach(el => el.classList.add('visible'));
-		showCta();
-	} else {
-		const charDelay = 35;
-		const lineGap = 250;
-		let lineIndex = 0;
-
-		function typeLine() {
-			if (lineIndex >= lines.length) { revealBio(); return; }
-
-			const el = lines[lineIndex];
-			const text = el.getAttribute('data-type') || '';
-			let ci = 0;
-
-			el.textContent = '';
-			el.classList.add('cursor');
-
-			function typeChar() {
-				if (ci < text.length) {
-					el.textContent = text.slice(0, ci + 1);
-					ci++;
-					setTimeout(typeChar, charDelay);
-				} else {
-					el.classList.remove('cursor');
-					lineIndex++;
-					setTimeout(typeLine, lineGap);
-				}
-			}
-
-			typeChar();
-		}
-
-		setTimeout(typeLine, 600);
-	}
+  const lines = Array.from(document.querySelectorAll<HTMLElement>('[data-type]'));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seenBefore = false;
+  try { seenBefore = !!sessionStorage.getItem('about-seen'); sessionStorage.setItem('about-seen', '1'); } catch {}
+  if (reducedMotion || seenBefore) {
+    lines.forEach(el => { el.textContent = el.dataset.type || ''; });
+  } else {
+    let delay = 0;
+    lines.forEach(el => {
+      const text = el.dataset.type || '';
+      for (let i = 1; i <= text.length; i++) {
+        setTimeout(() => { el.textContent = text.slice(0, i); }, delay + i * 35);
+      }
+      delay += text.length * 35 + 250;
+    });
+  }
 </script>
