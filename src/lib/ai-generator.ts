@@ -15,6 +15,8 @@
 
 import type { ActionPageConfig } from "../../plugin/src/components/ActionPageRenderer.tsx";
 
+export type GeneratedActionPageConfig = ActionPageConfig & { _disclaimer_note: string };
+
 export const KNOWN_TEMPLATES = [
 	"hero-simple",
 	"hero-media",
@@ -107,7 +109,7 @@ Return ONLY the JSON object. No prose. No code fences.`;
  */
 export async function generateActionPage(
 	options: GenerateActionPageOptions,
-): Promise<ActionPageConfig> {
+): Promise<GeneratedActionPageConfig> {
 	const {
 		description,
 		brandUrl,
@@ -248,7 +250,7 @@ function parseModelJson(text: string): Record<string, unknown> {
 	}
 }
 
-function validateConfig(raw: Record<string, unknown>): ActionPageConfig {
+function validateConfig(raw: Record<string, unknown>): GeneratedActionPageConfig {
 	const slugRaw = typeof raw.slug === "string" ? raw.slug : "";
 	const slug = slugRaw
 		.toLowerCase()

@@ -8,19 +8,19 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { baseSubmission } from "./integrations-helpers.js";
-import type { IntegrationEnv } from "../../src/lib/integrations/types.js";
+import type { IntegrationEnv, IntegrationResult } from "../../src/lib/integrations/types.js";
 
 // Hoisted mock factories — must be defined before the module import.
 const mocks = vi.hoisted(() => ({
-	actionnetwork: vi.fn(async () => undefined),
-	mailchimp: vi.fn(async () => undefined),
-	nationbuilder: vi.fn(async () => undefined),
-	everyaction: vi.fn(async () => undefined),
-	mobilize: vi.fn(async () => undefined),
-	eventbrite: vi.fn(async () => undefined),
-	facebook: vi.fn(async () => undefined),
-	sendgrid: vi.fn(async () => undefined),
-	constantcontact: vi.fn(async () => undefined),
+	actionnetwork: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	mailchimp: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	nationbuilder: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	everyaction: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	mobilize: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	eventbrite: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	facebook: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	sendgrid: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
+	constantcontact: vi.fn<() => Promise<IntegrationResult | undefined>>(async () => undefined),
 }));
 
 vi.mock("../../src/lib/integrations/actionnetwork.ts", () => ({

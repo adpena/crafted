@@ -30,7 +30,7 @@ interface KVNamespace {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
 
   const token = e.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {

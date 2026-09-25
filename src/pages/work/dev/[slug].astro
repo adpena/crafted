@@ -1,6 +1,8 @@
 ---
-import { getEmDashEntry } from "emdash";
+import { getEmDashEntry, type MediaValue } from "emdash";
 import { PortableText, Image } from "emdash/ui";
+import CompiledMoltDemo from "../../../components/CompiledMoltDemo";
+import ProjectArtifacts from "../../../components/ProjectArtifacts.astro";
 import Base from "../../../layouts/Base.astro";
 
 const { slug } = Astro.params;
@@ -28,12 +30,13 @@ const d = entry.data as {
 	project_status?: string;
 	repo_url?: string;
 	live_url?: string;
-	featured_image?: unknown;
+	featured_image?: MediaValue | string | null;
 	content?: unknown;
 };
 const hasMoltDemo = slug === "molt";
 const hasActionDemo = slug === "action-pages";
-const ogImage = `/og/${slug}.png`;
+const cards = import.meta.glob("/public/og/*.png");
+const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png";
 ---
 
 <Base title={d.title} description={d.summary} image={ogImage}>
@@ -50,18 +53,10 @@ const ogImage = `/og/${slug}.png`;
 			{d.year && <><dt>Year</dt><dd>{d.year}</dd></>}
 			{d.project_status && <><dt>Status</dt><dd>{d.project_status}</dd></>}
 			{d.repo_url && <><dt>Repo</dt><dd><a href={d.repo_url} target="_blank" rel="noopener noreferrer">{d.repo_url.replace("https://github.com/", "")}</a></dd></>}
-			{d.live_url && <><dt>Demo</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">Live</a></dd></>}
+			{d.live_url && <><dt>{slug === "comma-lab" ? "Challenge" : "Demo"}</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">{slug === "comma-lab" ? "Leaderboard" : "Live"}</a></dd></>}
 		</dl>
 
-		{hasMoltDemo && (
-			<section class="demo-embed" aria-label="Live demo">
-				<iframe
-					src="/demo/molt?embed=stacked"
-					title="Molt Mandelbrot demo — Python compiled to WebAssembly"
-					loading="lazy"
-				></iframe>
-			</section>
-		)}
+		{hasMoltDemo && <CompiledMoltDemo client:load />}
 
 		{hasActionDemo && (
 			<section class="demo-embed" aria-label="Live demo">
@@ -79,6 +74,7 @@ const ogImage = `/og/${slug}.png`;
 		)}
 
 		<div class="prose"><PortableText value={d.content} /></div>
+		<ProjectArtifacts slug={slug} />
 	</main>
 </Base>
 

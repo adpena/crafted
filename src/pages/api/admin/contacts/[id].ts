@@ -30,7 +30,7 @@ interface D1Like {
 }
 
 async function authed(request: Request): Promise<boolean> {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   return verifyBearer(request.headers.get("Authorization"), token);
 }
 
@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ params, request }) => {
   const id = String(params.id ?? "");
   if (!id || !ID_RE.test(id)) return json(400, { error: "Invalid id" });
 
-  const db = (env as Record<string, unknown>).DB as D1Like;
+  const db = env.DB as D1Like;
 
   try {
     const row = await db
@@ -99,7 +99,7 @@ export const PATCH: APIRoute = async ({ params, request }) => {
     return json(400, { error: "No valid tag changes provided" });
   }
 
-  const db = (env as Record<string, unknown>).DB as D1Like;
+  const db = env.DB as D1Like;
 
   try {
     const row = await db
@@ -153,8 +153,8 @@ export const DELETE: APIRoute = async ({ params, request }) => {
   const id = String(params.id ?? "");
   if (!id || !ID_RE.test(id)) return json(400, { error: "Invalid id" });
 
-  const db = (env as Record<string, unknown>).DB as D1Like;
-  const kv = (env as Record<string, unknown>).CACHE as import("../../../../lib/cf-types.ts").KVNamespace | undefined;
+  const db = env.DB as D1Like;
+  const kv = env.CACHE as import("../../../../lib/cf-types.ts").KVNamespace | undefined;
 
   try {
     // 1. Fetch the contact to get their email for submission anonymization

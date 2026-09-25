@@ -1,0 +1,43 @@
+---
+import DistrictResearch from "./DistrictResearch";
+import InflationDemo from "./InflationDemo";
+import NotificationsDemo from "./NotificationsDemo";
+import CompressionExhibit from "./CompressionExhibit";
+import FMToolsExample from "./FMToolsExample";
+import pay from "../data/portfolio/pay-history.json";
+import paths from "../data/portfolio/district-map.json";
+import charter from "../data/portfolio/charter-cost.json";
+import hb2 from "../data/portfolio/hb2.json";
+import cpi from "../data/portfolio/texas-cpi.json";
+import examples from "../data/portfolio/fmtools-examples.json";
+import reproq from "../data/portfolio/reproq-snapshot.txt?raw";
+const { slug } = Astro.props;
+---
+<div id="project-artifacts">
+{slug === "notifications" && <NotificationsDemo client:load />}
+{slug === "fmtools" && <FMToolsExample examples={examples} client:load />}
+{slug === "comma-lab" && <CompressionExhibit client:load />}
+{(slug === "respect-campaign-map" || slug === "the-lost-decade-and-a-half") && <>
+	<DistrictResearch kind="pay" rows={pay} paths={slug === "respect-campaign-map" ? paths : []} client:load />
+	<p class="source-note">Source: <a href="https://github.com/adpena/RespectCampaignMap">Respect Campaign Map</a>, historical district-pay dataset. <a href="/portfolio/pay-history.csv">Download the comparison data</a>.</p>
+</>}
+{slug === "texas-inflation-calculator" && <>
+	<InflationDemo periods={cpi} client:load />
+	<p class="source-note">Source: <a href="https://github.com/adpena/TexasInflationCalculator">the original calculator</a>, using the <a href="https://comptroller.texas.gov/economy/key-indicators/">Texas Comptroller’s Key Economic Indicators</a>. Snapshot ends May 2023.</p>
+</>}
+{slug === "fiscal-impact-of-charter-school-expansion" && <>
+	<DistrictResearch kind="charter" rows={charter} client:load />
+	<div class="artifact-links"><a href="/portfolio/charter-cost-austin-workbook-excerpt.pdf">Austin ISD workbook excerpt (PDF)</a><a href="/portfolio/charter-cost-2023-24.csv">Download the exhibit data</a><a href="https://github.com/adpena/CharterCostTracker/blob/main/Charter_School_Fiscal_Impact_Summaries.html">Original generated report index</a><a href="https://github.com/adpena/CharterCostTracker">Code and source exports</a></div>
+</>}
+{slug === "hb2-support-staff-raises" && <>
+	<DistrictResearch kind="hb2" rows={hb2} client:load />
+	<div class="artifact-links"><a href="/portfolio/hb2-aldine-workbook-excerpt.pdf">Aldine ISD workbook excerpt (PDF)</a><a href="/portfolio/hb2-2025-26.csv">Download the exhibit data</a><a href="https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/edit">Statewide comparison workbook</a></div>
+</>}
+{slug === "facing-facts" && <section class="artifact-panel">
+	<p class="eyebrow">2022–23 operating expenditures · report page 5</p><h2>Central administration’s share of spending</h2><p>One of the report’s comparisons: the share of total annual operating expenditures spent on central administration.</p>
+	{[{name:"Public school districts",value:6.8},{name:"Charter schools",value:10.3}].map((row) => <div class="score-row"><span>{row.name}</span><div class="score-track"><span style={`width:${row.value / 12 * 100}%`} /></div><strong>{row.value}%</strong></div>)}
+	<p class="source-note">Statewide aggregates from <a href="https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf#page=5">Facing Facts, February 2025</a>. These are expenditure shares, not per-student amounts. The report documents its TEA sources and methods in the notes.</p>
+</section>}
+{slug === "reproq" && <section class="artifact-panel"><p class="eyebrow">Reproq TUI · recorded test fixture</p><h2>The queue from the terminal</h2><p>The dashboard brings queue depth, failures, worker health, and events into one terminal view. This snapshot comes from the project’s automated UI test and contains sample metrics.</p><pre class="terminal-snapshot" tabindex="0" aria-label="Scrollable Reproq TUI dashboard snapshot">{reproq}</pre><p class="source-note"><a href="https://github.com/adpena/reproq-tui/blob/main/internal/ui/testdata/dashboard.golden">Snapshot source</a> · <a href="https://github.com/adpena/reproq-tui#demo-mode">Run the local demo</a></p></section>}
+
+</div>

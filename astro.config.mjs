@@ -6,6 +6,23 @@ import { fileURLToPath } from "node:url";
 import emdash from "emdash/astro";
 import { actionPages } from "./plugin/src/index.ts";
 
+const cms = emdash({
+	database: d1({ binding: "DB", session: "auto" }),
+	storage: r2({ binding: "MEDIA" }),
+	// Switch to sandboxed: [actionPages()] for Worker isolate sandboxing (requires Workers Paid)
+	plugins: [actionPages()],
+});
+
+// EmDash 0.1.0 unconditionally injects a sitemap even when the site supplies one.
+// Keep our sitemap's static pages and work URLs without registering the route twice.
+const setupCms = cms.hooks["astro:config:setup"];
+cms.hooks["astro:config:setup"] = (options) => setupCms?.({
+	...options,
+	injectRoute(route) {
+		if (route.pattern !== "/sitemap.xml") options.injectRoute(route);
+	},
+});
+
 export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
@@ -24,12 +41,7 @@ export default defineConfig({
 	},
 	integrations: [
 		react(),
-		emdash({
-			database: d1({ binding: "DB", session: "auto" }),
-			storage: r2({ binding: "MEDIA" }),
-			// Switch to sandboxed: [actionPages()] for Worker isolate sandboxing (requires Workers Paid)
-			plugins: [actionPages()],
-		}),
+		cms,
 	],
 	devToolbar: { enabled: false },
 });

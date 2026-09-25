@@ -1,3 +1,4 @@
+import { PORTFOLIO_DEMOS } from "../../../lib/portfolio-demos";
 /**
  * Action page form submission endpoint.
  *
@@ -23,6 +24,7 @@ import { SLUG_RE } from "../../../lib/slug.ts";
 // multi-file refactor; both are kept in sync.
 import { incrementWindow, detectSpike, isAlreadyNotified, markNotified } from "../../../lib/spike-detector.ts";
 import { notifyAll as dispatch, type NotifyEnv } from "@adpena/notifications";
+import type { KVNamespace } from "../../../lib/cf-types.ts";
 
 const PLUGIN_ID = "action-pages";
 const ALLOWED_TYPES = new Set([
@@ -36,12 +38,10 @@ const ALLOWED_TYPES = new Set([
   "step_form",
 ]);
 
-type Env = Record<string, unknown>;
-
 export const POST: APIRoute = async (context) => {
   const { request } = context;
-  const e = env as Env;
-  const kv = e.CACHE as KV | undefined;
+  const e = env;
+  const kv = e.CACHE as KVNamespace | undefined;
   const db = e.DB as D1;
 
   // --- 0a. Content-Type check (CSRF prevention — forces CORS preflight) ---
@@ -65,6 +65,8 @@ export const POST: APIRoute = async (context) => {
     return error(400, "INVALID_JSON", "Request body must be valid JSON.");
   }
 
+  if (!body || typeof body !== "object" || Array.isArray(body)) return error(400, "INVALID_JSON", "Request body must be an object.");
+
   const type = body.type as string;
   if (!type || !ALLOWED_TYPES.has(type)) {
     return error(400, "INVALID_TYPE", `Unknown type: ${String(type).slice(0, 32)}`);
@@ -74,6 +76,9 @@ export const POST: APIRoute = async (context) => {
   if (!slug || !SLUG_RE.test(slug)) {
     return error(400, "INVALID_SLUG", "page_id must be lowercase alphanumeric with hyphens");
   }
+
+  // Older clients may still POST these reserved sample slugs. Do not persist or dispatch.
+  if (PORTFOLIO_DEMOS.has(slug)) return ok({ ok: true, id: "demo", demo: true });
 
   const rawData = (body.data ?? {}) as Record<string, unknown>;
   // Allowlist data fields — only store known keys, never arbitrary client payloads
@@ -278,7 +283,7 @@ export const POST: APIRoute = async (context) => {
 
   // Astro v6 on Cloudflare: execution context is at context.locals.cfContext
   // (Astro v5 used context.locals.runtime.ctx — removed in v6)
-  const cfContext = (context.locals as Record<string, unknown>)?.cfContext as
+  const cfContext = context.locals.cfContext as
     | { waitUntil?: (p: Promise<unknown>) => void }
     | undefined;
   if (typeof cfContext?.waitUntil === "function") {
@@ -383,10 +388,6 @@ function error(
 }
 
 // Minimal type stubs for Cloudflare bindings
-interface KV {
-  get(key: string): Promise<string | null>;
-  put(key: string, value: string, opts?: { expirationTtl?: number }): Promise<void>;
-}
 interface D1 {
   prepare(sql: string): {
     bind(...args: unknown[]): {

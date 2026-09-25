@@ -60,7 +60,7 @@ export const POST: APIRoute = async ({ params, request }) => {
     ?? "0.0.0.0";
   const ipHash = (await sha256Hex(ip)).slice(0, 32);
 
-  const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+  const kv = env.CACHE as KVNamespace | undefined;
   if (kv) {
     const window = Math.floor(Date.now() / 1000 / RATE_WINDOW_SEC);
     const rlKey = `rl:webhook:${ipHash}:${window}`;
@@ -92,7 +92,7 @@ export const POST: APIRoute = async ({ params, request }) => {
     return json(400, { error: "Invalid JSON" });
   }
 
-  const db = (env as Record<string, unknown>).DB as D1Like | undefined;
+  const db = env.DB as D1Like | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }

@@ -1,3 +1,4 @@
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, useEffect, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle as label, errorStyle as err, submitButtonStyle } from "./form-styles.ts";
@@ -63,6 +64,7 @@ export function LetterAction({
   repsUrl = "/api/action/reps",
   locale: localeProp,
 }: LetterActionProps): ReactNode {
+  const request = useActionRequest();
   const locale = getLocale(localeProp);
   const turnstile = useTurnstile(turnstileSiteKey);
 
@@ -91,7 +93,7 @@ export function LetterAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
 
-    fetch(`${repsUrl}?zip=${encodeURIComponent(zip)}`, {
+    request(`${repsUrl}?zip=${encodeURIComponent(zip)}`, {
       signal: controller.signal,
     })
       .then((r) => { clearTimeout(timeoutId); return r.json() as Promise<{ representatives: Representative[] }>; })
@@ -118,7 +120,7 @@ export function LetterAction({
       .finally(() => { if (!cancelled) setRepsLoading(false); });
 
     return () => { cancelled = true; controller.abort(); clearTimeout(timeoutId); };
-  }, [zip, letter_template, rep_level, repsUrl]);
+  }, [zip, letter_template, rep_level, repsUrl, request]);
 
   function validate(): Record<string, string> {
     const e: Record<string, string> = {};
@@ -150,7 +152,7 @@ export function LetterAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

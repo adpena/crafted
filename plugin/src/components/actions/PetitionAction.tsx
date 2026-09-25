@@ -1,3 +1,4 @@
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle, inputStyle, errorStyle, submitButtonStyle } from "./form-styles.ts";
@@ -56,6 +57,7 @@ export function PetitionAction({
   submitUrl = "/api/action/submit",
   locale: localeProp,
 }: PetitionActionProps): ReactNode {
+  const request = useActionRequest();
   const locale = getLocale(localeProp);
   const progressGoal = progress?.goal ?? goal ?? 0;
   const { count: liveCount } = useActionCount(
@@ -115,7 +117,7 @@ export function PetitionAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

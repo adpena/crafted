@@ -14,7 +14,7 @@ export interface CapturedCall {
 }
 
 export function makeFetchStub(
-	response: Partial<Response> & {
+	response: {
 		ok: boolean;
 		status?: number;
 		body?: string;

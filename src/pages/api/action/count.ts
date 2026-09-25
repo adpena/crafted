@@ -20,12 +20,12 @@ export const GET: APIRoute = async ({ url }) => {
 		);
 	}
 
-	const kv = (env as Record<string, unknown>).CACHE as {
+	const kv = env.CACHE as {
 		get: (key: string) => Promise<string | null>;
 		put: (key: string, value: string, opts?: { expirationTtl?: number }) => Promise<void>;
 	} | undefined;
 
-	const db = (env as Record<string, unknown>).DB as {
+	const db = env.DB as {
 		prepare: (sql: string) => { bind: (...args: unknown[]) => { first: () => Promise<Record<string, unknown> | null> } };
 	};
 

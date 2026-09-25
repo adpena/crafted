@@ -6,9 +6,11 @@
  * All hashing uses Web Crypto API (no Node crypto — Workers compatible).
  */
 
+import type { ActionType } from "./email-templates.ts";
+
 export interface ConversionData {
   /** Action type maps to conversion event name */
-  type: "petition_sign" | "gotv_pledge" | "signup" | "donation_click";
+  type: ActionType;
   /** Hashed or raw email (will be hashed before sending) */
   email?: string;
   /** Client IP for event dedup */

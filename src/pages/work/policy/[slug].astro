@@ -1,6 +1,7 @@
 ---
 import { getEmDashEntry } from "emdash";
 import { PortableText } from "emdash/ui";
+import ProjectArtifacts from "../../../components/ProjectArtifacts.astro";
 import Base from "../../../layouts/Base.astro";
 
 const { slug } = Astro.params;
@@ -24,8 +25,9 @@ const d = entry.data as {
 	pdf_url?: string;
 	content?: unknown;
 };
-const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : null;
-const ogImage = `/og/${slug}.png`;
+const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "numeric", month: "long", timeZone: "UTC" }) : null;
+const cards = import.meta.glob("/public/og/*.png");
+const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png";
 ---
 
 <Base title={d.title} description={d.summary} image={ogImage}>
@@ -47,5 +49,6 @@ const ogImage = `/og/${slug}.png`;
 		</dl>
 
 		<div class="prose"><PortableText value={d.content} /></div>
+		<ProjectArtifacts slug={slug} />
 	</main>
 </Base>

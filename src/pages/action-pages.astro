@@ -1,54 +1,46 @@
 ---
 import Base from "../layouts/Base.astro";
 
-const stats = [
-	{ value: "1,709", label: "Tests passing" },
-	{ value: "8", label: "Action types" },
-	{ value: "12", label: "Platform integrations" },
-	{ value: "8", label: "Languages (i18n)" },
-	{ value: "$5/mo", label: "Production cost" },
-];
-
 const actionTypes = [
 	{
 		icon: "✍",
 		name: "Petition",
-		desc: "Editorial long-form with photo, body, and pull quote.",
+		desc: "Collect signatures with a campaign description and photos.",
 	},
 	{
 		icon: "◈",
 		name: "Fundraise",
-		desc: "ActBlue integration with thermometer progress.",
+		desc: "Link to ActBlue and show fundraising progress.",
 	},
 	{
 		icon: "✉",
 		name: "Letter to Congress",
-		desc: "Zip-based rep lookup with editable merge fields.",
+		desc: "Draft a message using an editable letter template.",
 	},
 	{
 		icon: "☏",
 		name: "Call Your Rep",
-		desc: "Click-to-dial with scripts and talking points.",
+		desc: "Show a phone number, call script, and talking points.",
 	},
 	{
 		icon: "◴",
 		name: "Event RSVP",
-		desc: "Calendar export, multi-platform sync (Mobilize/Eventbrite/Facebook).",
+		desc: "Collect RSVPs and offer a calendar download.",
 	},
 	{
 		icon: "✦",
 		name: "GOTV Pledge",
-		desc: "Election countdown with urgency colors.",
+		desc: "Collect voting pledges and show an election countdown.",
 	},
 	{
 		icon: "✱",
 		name: "Newsletter Signup",
-		desc: "Minimal email capture.",
+		desc: "Collect newsletter subscriptions.",
 	},
 	{
 		icon: "⌘",
 		name: "Multi-Step Form",
-		desc: "Generic branching form with conditional logic.",
+		desc: "Show different questions based on earlier answers.",
 	},
 ];
 
@@ -113,48 +105,31 @@ const integrations = [
 ];
 
 const builtWith = [
-	{ name: "Cloudflare Workers + D1 + KV + R2", note: "Edge runtime and storage" },
-	{ name: "Astro 6 + React 19 islands", note: "Static-first with hydration" },
+	{ name: "Cloudflare Workers + D1 + KV + R2", note: "Request handling and storage" },
+	{ name: "Astro 6 + React 19 islands", note: "HTML pages with interactive forms" },
 	{ name: "emdash CMS", note: "Content authoring" },
 	{ name: "@adpena/action-pages", note: "npm package (this engine)" },
 	{ name: "Anthropic Claude", note: "AI page generator + copy variants" },
 	{ name: "Resend", note: "Transactional email" },
 	{ name: "Turnstile", note: "Bot protection" },
-	{ name: "Google Civic Information API", note: "Rep lookup by zip" },
 ];
 
-const comparison = [
-	{ feature: "Free tier", crafted: "$0 demos / $5 production", an: "500 contacts max" },
-	{ feature: "Monthly cost", crafted: "$5–85", an: "$59 – $1,500" },
-	{ feature: "Edge latency", crafted: "<100ms global", an: "US-centric" },
-	{ feature: "Petition pages", crafted: "yes", an: "yes" },
-	{ feature: "Letter to Congress", crafted: "yes", an: "yes" },
-	{ feature: "Event RSVPs", crafted: "yes + multi-platform sync", an: "yes" },
-	{ feature: "Click-to-call", crafted: "yes", an: "yes" },
-	{ feature: "AI page generator", crafted: "yes", an: "no" },
-	{ feature: "Brand extraction from URL", crafted: "yes", an: "no" },
-	{ feature: "Real-time SSE progress", crafted: "yes", an: "polling" },
-	{ feature: "8-language i18n", crafted: "yes", an: "manual" },
-	{ feature: "MCP server for AI agents", crafted: "yes", an: "no" },
-	{ feature: "Self-hostable", crafted: "yes", an: "no" },
-	{ feature: "Open source", crafted: "yes", an: "no" },
-];
 ---
 
 <Base
 	title="Crafted Action Pages"
-	description="The open-source alternative to Action Network. Edge-native. Starts at $5/month. Production-hardened."
+	description="An unfinished experiment in campaign forms, page editing, and integrations."
 >
 	<main id="main-content" class="ap-page">
 		<section class="ap-hero">
-			<p class="ap-eyebrow">Open source · Edge-native · From $5/mo</p>
+			<p class="ap-eyebrow">Open source · Unfinished experiment</p>
 			<h1 class="ap-title">Crafted Action Pages</h1>
 			<p class="ap-subhead">
-				The open-source alternative to Action Network. Edge-native. Starts at $5/month.
-				Production-hardened.
+				I built an EmDash plugin for petitions, signup forms, fundraising pages, and
+				event RSVPs. The project remains unfinished; some forms and integrations are incomplete.
 			</p>
 			<div class="ap-cta-row">
-				<a href="#demos" class="btn ap-btn-primary">View live demos</a>
+				<a href="#demos" class="btn ap-btn-primary">View example pages</a>
 				<a
 					href="https://github.com/adpena/action-pages"
 					class="btn"
@@ -165,18 +140,9 @@ const comparison = [
 			</div>
 		</section>
 
-		<section class="ap-stats" aria-label="Platform statistics">
-			{stats.map((s) => (
-				<div class="ap-stat">
-					<div class="ap-stat-value">{s.value}</div>
-					<div class="ap-stat-label">{s.label}</div>
-				</div>
-			))}
-		</section>
-
 		<section class="ap-section">
 			<h2 class="ap-section-label">Action types</h2>
-			<h3 class="ap-section-title">Eight page patterns, one engine.</h3>
+			<h3 class="ap-section-title">Forms for common campaign tasks</h3>
 			<div class="ap-grid ap-grid-actions">
 				{actionTypes.map((a) => (
 					<article class="ap-card">
@@ -189,8 +155,9 @@ const comparison = [
 		</section>
 
 		<section class="ap-section" id="demos">
-			<h2 class="ap-section-label">Live demos</h2>
-			<h3 class="ap-section-title">Running in production on this site.</h3>
+			<h2 class="ap-section-label">Example pages</h2>
+			<h3 class="ap-section-title">Explore the example pages</h3>
+			<p class="ap-subhead">These pages use fictional campaign content and run forms locally. The letter and call examples use fictional representatives; nothing is sent, saved, or charged.</p>
 			<div class="ap-grid ap-grid-demos">
 				{demos.map((d) => (
 					<a href={d.slug} class="ap-demo-card">
@@ -213,7 +180,8 @@ const comparison = [
 
 		<section class="ap-section">
 			<h2 class="ap-section-label">Integrations</h2>
-			<h3 class="ap-section-title">Send data anywhere campaigns work.</h3>
+			<h3 class="ap-section-title">Connections to campaign tools</h3>
+			<p class="ap-subhead">The plugin includes adapters for these services. Each deployment needs its own credentials and configuration.</p>
 			<ul class="ap-integrations">
 				{integrations.map((i) => (
 					<li class="ap-integration">{i}</li>
@@ -223,7 +191,7 @@ const comparison = [
 
 		<section class="ap-section">
 			<h2 class="ap-section-label">Built with</h2>
-			<h3 class="ap-section-title">Modern platform, boring choices where it matters.</h3>
+			<h3 class="ap-section-title">The application stack</h3>
 			<dl class="ap-builtwith">
 				{builtWith.map((b) => (
 					<div class="ap-builtwith-row">
@@ -234,45 +202,16 @@ const comparison = [
 			</dl>
 		</section>
 
-		<section class="ap-section">
-			<h2 class="ap-section-label">Comparison</h2>
-			<h3 class="ap-section-title">Crafted vs. Action Network</h3>
-			<div class="ap-table-wrap">
-				<table class="ap-table">
-					<thead>
-						<tr>
-							<th scope="col">Feature</th>
-							<th scope="col">Crafted</th>
-							<th scope="col">Action Network</th>
-						</tr>
-					</thead>
-					<tbody>
-						{comparison.map((c) => (
-							<tr>
-								<th scope="row">{c.feature}</th>
-								<td class={c.crafted === "no" ? "ap-cell-no" : "ap-cell-yes"}>
-									{c.crafted === "yes" ? "✓" : c.crafted === "no" ? "✗" : c.crafted}
-								</td>
-								<td class={c.an === "no" ? "ap-cell-no" : "ap-cell-neutral"}>
-									{c.an === "yes" ? "✓" : c.an === "no" ? "✗" : c.an}
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</section>
-
 		<!-- Case study -->
 		<section class="ap-section">
 			<h2 class="ap-section-title">How it was built</h2>
 			<div class="ap-case-study">
-				<h3 class="ap-case-title">Building an open-source Action Network alternative</h3>
+				<h3 class="ap-case-title">Building campaign action pages on Cloudflare</h3>
 				<p class="ap-case-desc">
-					How I built a production-hardened campaign action pages platform with 1,709 tests, 8 action types, 12 integrations, and AI-generated pages — starting at $5/month on Cloudflare Workers.
+					How the page editor, forms, database, and background integrations fit together.
 				</p>
 				<p class="ap-case-topics">
-					Architecture &middot; Security (5 audit passes) &middot; Browser compatibility &middot; The AI layer &middot; Integration layer &middot; Testing discipline &middot; Cost breakdown
+					Rendering &middot; Submission storage &middot; Background work
 				</p>
 				<a
 					href="/work/writing/building-action-network-on-cloudflare"
@@ -284,9 +223,9 @@ const comparison = [
 		</section>
 
 		<section class="ap-footer-cta">
-			<h2 class="ap-footer-title">Deploy your own in minutes.</h2>
+			<h2 class="ap-footer-title">Source code and setup notes</h2>
 			<p class="ap-footer-sub">
-				Clone the repo, set a handful of env vars, and ship to Cloudflare Workers.
+				The repository documents the experiment and its setup. The examples show the work so far.
 			</p>
 			<div class="ap-footer-btns">
 				<a
@@ -294,7 +233,7 @@ const comparison = [
 					class="btn ap-btn-primary"
 					rel="noopener"
 				>
-					Get it on GitHub →
+					Browse the source →
 				</a>
 				<a
 					href="/action-pages/embed/"
@@ -360,33 +299,6 @@ const comparison = [
 	.ap-btn-primary:hover {
 		background: transparent;
 		color: var(--color-text);
-	}
-
-	/* ── Stats ────────────────────────────────── */
-	.ap-stats {
-		display: grid;
-		grid-template-columns: repeat(5, 1fr);
-		gap: var(--spacing-lg);
-		padding: var(--spacing-xl) 0;
-		border-bottom: 1px solid var(--color-border);
-		margin-bottom: var(--spacing-3xl);
-	}
-
-	.ap-stat-value {
-		font-family: var(--font-serif);
-		font-size: var(--font-size-3xl);
-		font-weight: 400;
-		line-height: 1.1;
-		color: var(--color-text);
-	}
-
-	.ap-stat-label {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-xs);
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-secondary);
-		margin-top: var(--spacing-xs);
 	}
 
 	/* ── Sections ─────────────────────────────── */
@@ -568,55 +480,6 @@ const comparison = [
 		margin: 0;
 	}
 
-	/* ── Comparison table ─────────────────────── */
-	.ap-table-wrap {
-		overflow-x: auto;
-	}
-
-	.ap-table {
-		width: 100%;
-		border-collapse: collapse;
-		font-family: var(--font-serif);
-		font-size: var(--font-size-sm);
-	}
-
-	.ap-table th,
-	.ap-table td {
-		padding: var(--spacing-sm) var(--spacing-md);
-		text-align: left;
-		border-bottom: 1px solid var(--color-border);
-		vertical-align: top;
-	}
-
-	.ap-table thead th {
-		font-family: var(--font-mono);
-		font-size: var(--font-size-xs);
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--color-secondary);
-		font-weight: 400;
-		border-bottom: 1px solid var(--color-text);
-	}
-
-	.ap-table tbody th {
-		font-weight: 400;
-		color: var(--color-text);
-		width: 40%;
-	}
-
-	.ap-table tbody td {
-		color: var(--color-secondary);
-	}
-
-	.ap-cell-yes {
-		color: var(--color-accent) !important;
-		font-weight: 500;
-	}
-
-	.ap-cell-no {
-		color: var(--color-error) !important;
-	}
-
 	/* ── Footer CTA ───────────────────────────── */
 	.ap-footer-cta {
 		text-align: center;
@@ -686,10 +549,6 @@ const comparison = [
 			grid-template-columns: repeat(2, 1fr);
 		}
 
-		.ap-stats {
-			grid-template-columns: repeat(3, 1fr);
-		}
-
 		.ap-integrations {
 			grid-template-columns: repeat(2, 1fr);
 		}
@@ -714,10 +573,6 @@ const comparison = [
 			grid-template-columns: 1fr;
 		}
 
-		.ap-stats {
-			grid-template-columns: 1fr 1fr;
-		}
-
 		.ap-integrations {
 			grid-template-columns: 1fr;
 		}
@@ -727,9 +582,5 @@ const comparison = [
 			text-align: center;
 		}
 
-		.ap-table th,
-		.ap-table td {
-			padding: var(--spacing-xs) var(--spacing-sm);
-		}
 	}
 </style>

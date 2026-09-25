@@ -19,7 +19,7 @@ export const GET: APIRoute = async ({ params }) => {
 		return new Response("Not found", { status: 404 });
 	}
 
-	const r2 = (env as Record<string, unknown>).MEDIA as R2Bucket | undefined;
+	const r2 = env.MEDIA as R2Bucket | undefined;
 	if (!r2) {
 		return new Response("Storage not available", { status: 503 });
 	}

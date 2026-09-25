@@ -44,7 +44,7 @@ export const GET: APIRoute = async ({ url }) => {
 		return json(400, { error: "Invalid zip" });
 	}
 
-	const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+	const kv = env.CACHE as KVNamespace | undefined;
 	const cacheKey = `reps:${zip}`;
 
 	if (kv) {
@@ -134,7 +134,7 @@ async function fetchProPublicaMembers(
 	// ProPublica members endpoint — current Congress
 	const url = `https://api.propublica.org/congress/v1/members/${chamber}/${state}/current.json`;
 
-	const apiKey = (env as Record<string, unknown>).PROPUBLICA_API_KEY as string | undefined;
+	const apiKey = env.PROPUBLICA_API_KEY as string | undefined;
 	if (!apiKey) {
 		// No API key configured — return empty rather than hitting ProPublica with
 		// an invalid key on every request. The letter/call actions gracefully handle

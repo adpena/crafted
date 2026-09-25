@@ -1,5 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
+
+const bio = [
+	"I’m a full-stack engineer working in Python, SQL, Django, React, and TypeScript. I build data pipelines, maps, and web applications.",
+	"Before that, I worked as a policy analyst at Texas AFT and a legislative director in the Texas House.",
+	"I now lead Data for Public Education, a research and software practice focused on Texas public schools. I’m also building Molt, a compiler that turns Python into native binaries and WebAssembly.",
+	"I continue to work on comma.ai’s lossy video compression challenge. My submissions, PRs #107, #110, and #140, have all appeared on the leaderboard.",
+];
 ---
 
 <Base title="About">
@@ -10,15 +17,13 @@ import Base from "../layouts/Base.astro";
 			<div class="line" data-type="austin, tx">&nbsp;</div>
 		</div>
 
-		<div class="about-body" id="about-body" aria-hidden="true">
-			<p class="about-line">Full-stack engineer. Django, Python, React, Rust, TypeScript.</p>
-			<p class="about-line">Previously at Texas AFT, where a data analysis led to an 11% raise for 350,000 educators.</p>
-			<p class="about-line">Currently building Molt, an AOT Python-to-WebAssembly compiler, and tools for progressive campaigns on Cloudflare Workers.</p>
+		<p class="visually-hidden">Alejandro Peña — Austin, TX.</p>
+
+		<div class="about-body" id="about-body">
+			{bio.map((line, i) => <p class="about-line">{line}{i === bio.length - 1 && <> <a href="/work/dev/comma-lab">Research and submissions.</a></>}</p>)}
 		</div>
 
-		<p class="visually-hidden">Alejandro Peña — Austin, TX. Full-stack engineer. Django, Python, React, Rust, TypeScript. Previously at Texas AFT, where a data analysis led to an 11% raise for 350,000 educators. Currently building Molt, an AOT Python-to-WebAssembly compiler, and tools for progressive campaigns on Cloudflare Workers.</p>
-
-		<a href="/contact" class="btn about-btn" id="about-cta" style="opacity:0;visibility:hidden;transition:opacity 600ms ease,visibility 0s linear 0s;animation:none">Get in touch</a>
+		<a href="/contact" class="btn about-btn" id="about-cta">Get in touch</a>
 	</main>
 </Base>
 
@@ -56,14 +61,11 @@ import Base from "../layouts/Base.astro";
 		color: var(--color-secondary);
 		line-height: 1.6;
 		margin-bottom: var(--spacing-sm);
-		opacity: 0;
-		transform: translateY(6px);
-		transition: opacity 500ms ease, transform 500ms ease;
 	}
 
-	.about-line.visible {
-		opacity: 1;
-		transform: translateY(0);
+	.about-line a {
+		text-decoration: underline;
+		text-underline-offset: 3px;
 	}
 
 	.about-btn {
@@ -112,16 +114,10 @@ import Base from "../layouts/Base.astro";
 	const aboutLines = Array.from(document.querySelectorAll('.about-line'));
 	const cta = document.getElementById('about-cta');
 
-	const aboutBody = document.getElementById('about-body');
-	const srFallback = document.querySelector('.visually-hidden');
-
 	function showCta() {
 		if (!cta) return;
 		cta.style.visibility = 'visible';
 		cta.style.opacity = '1';
-		// Toggle accessibility: reveal the real content, hide the fallback
-		if (aboutBody) aboutBody.setAttribute('aria-hidden', 'false');
-		if (srFallback) srFallback.setAttribute('aria-hidden', 'true');
 	}
 
 	function revealBio() {

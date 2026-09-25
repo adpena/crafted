@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { DemoMode } from "../DemoMode.ts";
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, useEffect, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle as label, errorStyle as err, submitButtonStyle } from "./form-styles.ts";
@@ -56,6 +59,8 @@ export function CallAction({
   repsUrl = "/api/action/reps",
   locale: localeProp,
 }: CallActionProps): ReactNode {
+  const request = useActionRequest();
+  const demo = useContext(DemoMode);
   const locale = getLocale(localeProp);
   const turnstile = useTurnstile(turnstileSiteKey);
 
@@ -84,7 +89,7 @@ export function CallAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
 
-    fetch(`${repsUrl}?zip=${encodeURIComponent(zip)}`, {
+    request(`${repsUrl}?zip=${encodeURIComponent(zip)}`, {
       signal: controller.signal,
     })
       .then((r) => { clearTimeout(timeoutId); return r.json() as Promise<{ representatives: Representative[] }>; })
@@ -102,7 +107,7 @@ export function CallAction({
       .finally(() => { if (!cancelled) setRepsLoading(false); });
 
     return () => { cancelled = true; controller.abort(); clearTimeout(timeoutId); };
-  }, [zip, rep_level, repsUrl]);
+  }, [zip, rep_level, repsUrl, request]);
 
   function markCalled(repName: string) {
     setCompletedCalls((prev) => {
@@ -140,7 +145,7 @@ export function CallAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -341,7 +346,10 @@ export function CallAction({
                     <div style={{ fontSize: "0.78rem", color: s.text, fontFamily: s.mono, marginTop: "0.2rem" }}>{phone}</div>
                   </div>
                   <a
-                    href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                    href={demo ? undefined : `tel:${phone.replace(/[^\d+]/g, "")}`}
+                    role={demo ? "button" : undefined}
+                    tabIndex={demo ? 0 : undefined}
+                    onKeyDown={(event) => { if (demo && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); markCalled(r.name); } }}
                     onClick={() => markCalled(r.name)}
                     style={{
                       padding: "0.625rem 1rem",
@@ -359,7 +367,7 @@ export function CallAction({
                       alignItems: "center",
                     }}
                   >
-                    {called ? "✓ Called" : "Call"}
+                    {called ? (demo ? "✓ Simulated" : "✓ Called") : (demo ? "Simulate call" : "Call")}
                   </a>
                 </div>
               );

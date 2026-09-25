@@ -1,0 +1,10 @@
+---
+import Base from "../../layouts/Base.astro";
+import NotificationsDemo from "../../components/NotificationsDemo";
+---
+<Base title="Notifications demo" description="Try parallel dispatch, failures, and timeouts without sending a message.">
+	<main id="main-content" class="page page-artifacts">
+		<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/work/dev/notifications">Notifications</a> / Demo</nav>
+		<NotificationsDemo client:load />
+	</main>
+</Base>

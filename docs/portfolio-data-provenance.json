@@ -1,0 +1,259 @@
+{
+  "as_of": "2026-09-25",
+  "description": "Historical portfolio exhibits. Source and output hashes describe the inspected snapshots, not current datasets.",
+  "sources": [
+    {
+      "repository": "RespectCampaignMap",
+      "path": "DistrictsData.js",
+      "tree_sha": "631e140bf0443b480d6bb6ffc80e5794f10341aa",
+      "blob_sha": "a653c1d9cb08672134793858bbb9c2596a392701",
+      "sha256": "df0f53bd8f6bd768d652795134b0a3d1745245ef7e01646cdfc3ca046e146f19",
+      "source_url": "https://github.com/adpena/RespectCampaignMap/blob/main/DistrictsData.js",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/RespectCampaignMap/git/blobs/a653c1d9cb08672134793858bbb9c2596a392701"
+    },
+    {
+      "repository": "RespectCampaignMap",
+      "path": "Districts2020to2021.js",
+      "tree_sha": "631e140bf0443b480d6bb6ffc80e5794f10341aa",
+      "blob_sha": "77bcc0b43f6a2a5a44bc9db23e2dea1020714b75",
+      "sha256": "810a3a90d24eb6534318d9ff79a7d804a73198e3a830a730500354979a2f4c81",
+      "source_url": "https://github.com/adpena/RespectCampaignMap/blob/main/Districts2020to2021.js",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/RespectCampaignMap/git/blobs/77bcc0b43f6a2a5a44bc9db23e2dea1020714b75"
+    },
+    {
+      "repository": "TexasInflationCalculator",
+      "path": "Key_Economic_Indicators.csv",
+      "tree_sha": "c9d756a6c4f791c8ca38086324dbbab4c250f408",
+      "blob_sha": "4bcbb23cc0e4424fa3d674d59857d1936903ffd3",
+      "sha256": "c77efb764bb94f3bac7ec5235fa3c6d307d546b8c09ccc389c8522e25023109e",
+      "source_url": "https://github.com/adpena/TexasInflationCalculator/blob/main/Key_Economic_Indicators.csv",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/TexasInflationCalculator/git/blobs/4bcbb23cc0e4424fa3d674d59857d1936903ffd3"
+    },
+    {
+      "repository": "CharterCostTracker",
+      "path": "2023-2024 Estimated Revenue Loss to Charters_statewide by district_6.21.24.csv",
+      "tree_sha": "b9123138fcbd2e3f3e51fffd0ed64ff688cd206e",
+      "blob_sha": "7e7597908a33f29c60b543bf95e4567ab0eca2b3",
+      "sha256": "9a656d2dfb4db784d7d4793fb577b9a4c71323612cfa7b5d91d4e70e800a3224",
+      "source_url": "https://github.com/adpena/CharterCostTracker/blob/main/2023-2024%20Estimated%20Revenue%20Loss%20to%20Charters_statewide%20by%20district_6.21.24.csv",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/CharterCostTracker/git/blobs/7e7597908a33f29c60b543bf95e4567ab0eca2b3"
+    },
+    {
+      "repository": "fmtools",
+      "path": "datasets/evals/support_tickets/dev.jsonl",
+      "tree_sha": "c9e755539da22df8aee6c5c22fa6653253456a4f",
+      "blob_sha": "995166b124c3a75868883e7bfcab10539a0833fe",
+      "sha256": "99c0d0395fa5695beee80b01391894a54db93eca0e47a26e295c2302ec15397c",
+      "source_url": "https://github.com/adpena/fmtools/blob/main/datasets/evals/support_tickets/dev.jsonl",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/fmtools/git/blobs/995166b124c3a75868883e7bfcab10539a0833fe"
+    },
+    {
+      "repository": "reproq-tui",
+      "path": "internal/ui/testdata/dashboard.golden",
+      "tree_sha": "1c898aa19e021d7a3f9fc2bfed0097476243635a",
+      "blob_sha": "3a94e8b5e5ea4cf0c3a75473bb88451fee4d2481",
+      "sha256": "593ba4366ed9bc5594e3fb5996a96191a8a8aae71e9ebf343a73a9cf3761dedf",
+      "source_url": "https://github.com/adpena/reproq-tui/blob/main/internal/ui/testdata/dashboard.golden",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/reproq-tui/git/blobs/3a94e8b5e5ea4cf0c3a75473bb88451fee4d2481"
+    },
+    {
+      "repository": "witness-machine",
+      "path": "artifacts/v12_public/v12_real_frame_display.npz",
+      "tree_sha": "84ce1981fc4389e72ddb662a776fecef5972676f",
+      "blob_sha": "e77c425609d4960392d8432f91fd45df48268372",
+      "sha256": "21cde16b6639c211ee433f7ab1280d38541dd006caad3488b33f30bceea32744",
+      "source_url": "https://github.com/adpena/witness-machine/blob/main/artifacts/v12_public/v12_real_frame_display.npz",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/witness-machine/git/blobs/e77c425609d4960392d8432f91fd45df48268372"
+    },
+    {
+      "repository": "witness-machine",
+      "path": "artifacts/v12_public/v12_real_frozen_scorer_display.npz",
+      "tree_sha": "84ce1981fc4389e72ddb662a776fecef5972676f",
+      "blob_sha": "20387316f4020c7dafa356821c33e099214f12e3",
+      "sha256": "8e41072f44b45d315fc6d97974e409460e7663ef653c53a1e0d414ec6ae2f0fa",
+      "source_url": "https://github.com/adpena/witness-machine/blob/main/artifacts/v12_public/v12_real_frozen_scorer_display.npz",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/witness-machine/git/blobs/20387316f4020c7dafa356821c33e099214f12e3"
+    },
+    {
+      "repository": "witness-machine",
+      "path": "artifacts/v12_public/v12_real_frame_display.manifest.json",
+      "tree_sha": "84ce1981fc4389e72ddb662a776fecef5972676f",
+      "blob_sha": "7b9d5783bc059b1050f80da8f2f2660341d30556",
+      "sha256": "18238602e9aba3c09d5f827560af52af0669e68fe069b1776d46dbd134006cc7",
+      "source_url": "https://github.com/adpena/witness-machine/blob/main/artifacts/v12_public/v12_real_frame_display.manifest.json",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/witness-machine/git/blobs/7b9d5783bc059b1050f80da8f2f2660341d30556"
+    },
+    {
+      "repository": "witness-machine",
+      "path": "artifacts/v12_public/v12_real_frozen_scorer_display.manifest.json",
+      "tree_sha": "84ce1981fc4389e72ddb662a776fecef5972676f",
+      "blob_sha": "54c5985d76a183ec1198d9e7d0c8a959ef10ff55",
+      "sha256": "44e04ad472491a2afc0894262248fd82af6f223211aa1f76108c18d0c4456d01",
+      "source_url": "https://github.com/adpena/witness-machine/blob/main/artifacts/v12_public/v12_real_frozen_scorer_display.manifest.json",
+      "pinned_blob_api": "https://api.github.com/repos/adpena/witness-machine/git/blobs/54c5985d76a183ec1198d9e7d0c8a959ef10ff55"
+    },
+    {
+      "path": "hb2-charter-advantage.csv",
+      "sha256": "fb2595ca90492a8b0ffd86c288cabc6bc9499ce5451447a8d3ac4f79cacb41eb",
+      "source_url": "https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/export?format=csv&gid=116426734"
+    },
+    {
+      "path": "hb2-2097724087.csv",
+      "sha256": "c5482bc8229985c728152d302b5bfdd41239779e974e28b09242101e225a6b4b",
+      "source_url": "https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/export?format=csv&gid=2097724087"
+    },
+    {
+      "path": "hb2-1934027888.csv",
+      "sha256": "b1576fc34e0348e815a8b783973323eac6cc59a2bbd59371e3e77a166f11c24d",
+      "source_url": "https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/export?format=csv&gid=1934027888"
+    },
+    {
+      "path": "facing-facts.pdf",
+      "sha256": "bd84b42d98000da209e03519c870ac141f85e955740b6d75202c8120033857bb",
+      "source_url": "https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf",
+      "figure": "Page 5: public school districts 6.8%, charter schools 10.3%; central administration share of 2022-23 operating expenditures. Visually verified."
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "src/data/portfolio/charter-cost.json",
+      "bytes": 204762,
+      "sha256": "5b3c23e92152dbda08866663abc1f9ebbb777ccdc9d302210c9444dd38f38b72",
+      "sources": [
+        "CharterCostTracker/2023-2024 Estimated Revenue Loss to Charters_statewide by district_6.21.24.csv"
+      ],
+      "transformation": "Select district number/name, estimated revenue, refined ADA, enrollment, charter transfers, estimated revenue loss, SOF date and payment cycle. Currency separators removed; masked enrollment and transfer strings preserved. 1,020 rows from June 21, 2024 export."
+    },
+    {
+      "path": "src/data/portfolio/district-map.json",
+      "bytes": 371821,
+      "sha256": "cbb7d6fe9f40f2f20bd59ad226b263b0a898e74346d9fbda77b2a210c22c0e51",
+      "sources": [
+        "RespectCampaignMap/Districts2020to2021.js",
+        "RespectCampaignMap/DistrictsData.js"
+      ],
+      "transformation": "Keep the 1,019 geometry records matched to pay IDs. Shapely simplify tolerance 0.008 degrees, preserve_topology=True; SVG x=(longitude+107)*65, y=(37-latitude)*76, coordinates rounded to one decimal. Historical boundaries, display only."
+    },
+    {
+      "path": "src/data/portfolio/fmtools-examples.json",
+      "bytes": 1351,
+      "sha256": "a666f4acaeb40abc8765a499bd709e8d828c0af705f7f353b2fa41f6897ca9b5",
+      "sources": [
+        "fmtools/datasets/evals/support_tickets/dev.jsonl"
+      ],
+      "transformation": "Select the three public input tickets and their expected structured output. Reference evaluation fixtures, not generated model results."
+    },
+    {
+      "path": "src/data/portfolio/hb2.json",
+      "bytes": 124197,
+      "sha256": "0588b08309ecb7bb85761f9df79607b0cf0a5e5a023fc9879127d365c1b9b2d8",
+      "sources": [
+        "hb2-charter-advantage.csv",
+        "hb2-2097724087.csv",
+        "hb2-1934027888.csv"
+      ],
+      "transformation": "Combine the three workbook tabs. Strip leading apostrophe from district number, retain six-digit IDs, parse currencies and numeric cells; select estimated SSRA, bonus SSRA, sparsity-adjusted regular program ADA, Para FTE Used. Deduplicate identical IDs and assert values agree. 1,180 rows yield 1,179 school systems. Funding estimates; not observed raises."
+    },
+    {
+      "path": "src/data/portfolio/pay-history.json",
+      "bytes": 89857,
+      "sha256": "e739605bdce703ccbfadfc88e42611f33b8aaa68b5d6837ac5803df522ed4464",
+      "sources": [
+        "RespectCampaignMap/DistrictsData.js"
+      ],
+      "transformation": "Select NUMBER, NAME, PercentChangeTeacherPay, PercentChangeBeginningTeacherPay, PercentChangeSupportStaffPay; preserve percentages and leading-zero identifiers; N/A becomes null; sort by district name. 1,019 districts. 2009-10 to 2020-21, 2021 dollars."
+    },
+    {
+      "path": "src/data/portfolio/reproq-snapshot.txt",
+      "bytes": 3014,
+      "sha256": "593ba4366ed9bc5594e3fb5996a96191a8a8aae71e9ebf343a73a9cf3761dedf",
+      "sources": [
+        "reproq-tui/internal/ui/testdata/dashboard.golden"
+      ],
+      "transformation": "Verbatim golden dashboard fixture with sample metrics; not a live queue."
+    },
+    {
+      "path": "src/data/portfolio/texas-cpi.json",
+      "bytes": 6875,
+      "sha256": "5f3b8ddcb4123a58ac7645e40bc665f43c9b960933d227879293d7582b519730",
+      "sources": [
+        "TexasInflationCalculator/Key_Economic_Indicators.csv"
+      ],
+      "transformation": "Select Consumer Price Index TX; deduplicate identical period/value pairs; assert duplicates agree; sort chronologically. 394 source rows yield 197 months, January 2007 to May 2023. Do not extrapolate."
+    },
+    {
+      "path": "public/portfolio/charter-cost-2023-24.csv",
+      "bytes": 113180,
+      "sha256": "e62e490f75df9ee51d73856e744cbc0c620780b47b54e6c06f2ce30888cc12c1",
+      "sources": [
+        "CharterCostTracker/2023-2024 Estimated Revenue Loss to Charters_statewide by district_6.21.24.csv"
+      ],
+      "transformation": "Select district number/name, estimated revenue, refined ADA, enrollment, charter transfers, estimated revenue loss, SOF date and payment cycle. Currency separators removed; masked enrollment and transfer strings preserved. 1,020 rows from June 21, 2024 export."
+    },
+    {
+      "path": "public/portfolio/compression-reference-0.webp",
+      "bytes": 233160,
+      "sha256": "1c74c5b61d11d3bea848196524b9430b9c393d0fd39facfd654482757bc6cf3e",
+      "sources": [
+        "witness-machine/artifacts/v12_public/v12_real_frame_display.npz"
+      ],
+      "transformation": "frames_rgb_u8[0] and [1] saved as lossless WebP. Public diagnostic pair 196; source frames 392 and 393. Images are already resized display artifacts, not reconstructed PR outputs."
+    },
+    {
+      "path": "public/portfolio/compression-reference-1.webp",
+      "bytes": 232190,
+      "sha256": "abe98dfed6bbc403c147400ee8233b279b552fc46a9e152b58ae671515014e3e",
+      "sources": [
+        "witness-machine/artifacts/v12_public/v12_real_frame_display.npz"
+      ],
+      "transformation": "frames_rgb_u8[0] and [1] saved as lossless WebP. Public diagnostic pair 196; source frames 392 and 393. Images are already resized display artifacts, not reconstructed PR outputs."
+    },
+    {
+      "path": "public/portfolio/compression-segmentation.webp",
+      "bytes": 482,
+      "sha256": "381b3a4853f63abed45062a883935b05982b6afc7e17a5cc935fd06d8d3f51a8",
+      "sources": [
+        "witness-machine/artifacts/v12_public/v12_real_frozen_scorer_display.npz"
+      ],
+      "transformation": "argmax_mode_u8 classes 0-4 mapped to a display palette and saved as lossless WebP. Frame 393; macOS-CPU advisory snapshot, not an official score."
+    },
+    {
+      "path": "public/portfolio/hb2-2025-26.csv",
+      "bytes": 67636,
+      "sha256": "146aeeae96e12602c68ca706bc9c8d87c4af266e615a64a3b9132ab4a3df225f",
+      "sources": [
+        "hb2-charter-advantage.csv",
+        "hb2-2097724087.csv",
+        "hb2-1934027888.csv"
+      ],
+      "transformation": "Combine the three workbook tabs. Strip leading apostrophe from district number, retain six-digit IDs, parse currencies and numeric cells; select estimated SSRA, bonus SSRA, sparsity-adjusted regular program ADA, Para FTE Used. Deduplicate identical IDs and assert values agree. 1,180 rows yield 1,179 school systems. Funding estimates; not observed raises."
+    },
+    {
+      "path": "public/portfolio/pay-history.csv",
+      "bytes": 38856,
+      "sha256": "144bfe52cc4508e7008f949e1d5975196fa1fa0ce80c93bc9f756a6c0fcf4248",
+      "sources": [
+        "RespectCampaignMap/DistrictsData.js"
+      ],
+      "transformation": "Select NUMBER, NAME, PercentChangeTeacherPay, PercentChangeBeginningTeacherPay, PercentChangeSupportStaffPay; preserve percentages and leading-zero identifiers; N/A becomes null; sort by district name. 1,019 districts. 2009-10 to 2020-21, 2021 dollars."
+    },
+    {
+      "path": "public/portfolio/hb2-aldine-workbook-excerpt.pdf",
+      "bytes": 3016,
+      "sha256": "8394d5c8b524b7153306e1606cf134c1a387cac20233b8a11be01b3315530098",
+      "sources": [
+        "src/data/portfolio/hb2.json"
+      ],
+      "transformation": "New one-page workbook excerpt generated by scripts/build-portfolio-excerpts.py. Explicitly distinguished from original client reports; no recalculation."
+    },
+    {
+      "path": "public/portfolio/charter-cost-austin-workbook-excerpt.pdf",
+      "bytes": 3124,
+      "sha256": "8bbac30081220f3c8161879126073655ad4a969d07d33e71d5ac9e23eb670697",
+      "sources": [
+        "src/data/portfolio/charter-cost.json"
+      ],
+      "transformation": "New one-page workbook excerpt generated by scripts/build-portfolio-excerpts.py. Explicitly distinguished from original client reports; no recalculation."
+    }
+  ]
+}

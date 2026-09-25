@@ -1,0 +1,64 @@
+{
+  "built_at": "2026-09-25",
+  "molt_checkout_head": "7c82badf37973ea11db74bfd7e92b2271281706b",
+  "checkout_note": "Built with the local development checkout, which has uncommitted work. File hashes identify the shipped artifact and browser host; HEAD alone does not reproduce the build.",
+  "command": "WASI_SDK_PATH=<wasi-sdk-34.0-arm64-macos> molt build mandelbrot.py --target wasm --profile browser --out-dir <output> --json",
+  "wasi_sdk": "https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-34",
+  "host_adjustments": [
+    "Export MoltVfs as an ES module.",
+    "Forward linked molt_isolate_import to the instance export, matching the existing Molt Node host."
+  ],
+  "scope": "Fixed 72 by 28 ASCII Mandelbrot, compiled ahead of time. Browser worker displays stdout; it does not compute the fractal in JavaScript.",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 11314,
+      "sha256": "9722853c68e63ca7573c26f2a10473cdcc1651ff4da4336f10a03e8a4d253693"
+    },
+    {
+      "path": "browser_gpu_dispatch.js",
+      "bytes": 9225,
+      "sha256": "225efdc5d1ac43320dee13124aa999d3c231c9eba3f8d131834c6f9eaf194cd1"
+    },
+    {
+      "path": "browser_host.js",
+      "bytes": 130504,
+      "sha256": "85f6f8ce6f338438ab0d3f150782205126473e10b044f33da9b7bcfffd327c77"
+    },
+    {
+      "path": "browser_target_features.js",
+      "bytes": 1988,
+      "sha256": "a0d6db98b64228e6cbfd4031d0cab7e83cbf93f6c19b73a1c9ae6970fe8643ab"
+    },
+    {
+      "path": "loader_bridge.js",
+      "bytes": 37399,
+      "sha256": "6036560d19c07d8bb8f747eabfc8e7f3285e1aff4818e2bd4e05037c1e35688e"
+    },
+    {
+      "path": "mandelbrot.py",
+      "bytes": 806,
+      "sha256": "40713b70f7a1e8411d0b6e3f6684187d164859997f3844e841f5936e6f75fa89"
+    },
+    {
+      "path": "mandelbrot.wasm",
+      "bytes": 3319126,
+      "sha256": "05ad4366060d310618bc814376254e9678a5ad74baf60fc20bd0a4ac5e9ce3c7"
+    },
+    {
+      "path": "molt_vfs_browser.js",
+      "bytes": 7771,
+      "sha256": "3a95e09940dc372966ce3ddc9a18ba5957c2f2640e94e010e0430241145b29ad"
+    },
+    {
+      "path": "target_feature_constants.generated.js",
+      "bytes": 326,
+      "sha256": "17b8774f553fdb69c82c581cb591d489e2a0809d1aaec096fb9a8f9df7861e5c"
+    },
+    {
+      "path": "worker.js",
+      "bytes": 777,
+      "sha256": "d5cbbf1f4f907d0cce1757cda32524c1a662e0ab28009b301cbac90a7984d78a"
+    }
+  ]
+}

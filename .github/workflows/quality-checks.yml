@@ -35,6 +35,10 @@ jobs:
           cache: npm
       - name: Install deps
         run: npm ci
+      - name: Check site and plugin types
+        run: npm run typecheck
+      - name: Run site and plugin unit tests
+        run: npm test
       - name: Build site
         run: npm run build
 
