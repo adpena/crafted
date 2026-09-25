@@ -49,7 +49,7 @@ const RATE_MAX = 100;
 const RATE_WINDOW_SEC = 60;
 
 export const GET: APIRoute = async ({ request }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
   const secret = e.MAILCHIMP_WEBHOOK_SECRET as string | undefined;
   if (!secret) return json(503, { error: "Webhook not configured" });
   const provided = new URL(request.url).searchParams.get("key") ?? "";
@@ -61,7 +61,7 @@ export const GET: APIRoute = async ({ request }) => {
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
 
   // --- Auth: shared-secret query param ---
   const secret = e.MAILCHIMP_WEBHOOK_SECRET as string | undefined;

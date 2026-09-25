@@ -13,8 +13,10 @@
  *   - X-Frame-Options: SAMEORIGIN (only loadable from admin)
  *   - Robots: noindex, nofollow
  *   - Slug defaults to "preview" and cannot be used to POST submissions
- *   - Submit endpoint is overridden to /api/action/preview-submit (no-op)
+ *   - Actions use local mock responses; no submissions leave the browser
  */
+
+import { getLocale } from "../../../plugin/src/lib/i18n.ts";
 
 const MAX_CONFIG_BYTES = 32_768;
 const KNOWN_TEMPLATES = new Set([
@@ -79,6 +81,7 @@ const URL_FIELDS = ["media_url", "background_image", "background_video", "splash
 const ACTION_URL_FIELDS = ["actblue_url"];
 
 const previewConfig = {
+  demo: true,
   slug: "preview",
   template,
   template_props: (config.template_props && typeof config.template_props === "object")
@@ -100,7 +103,7 @@ const previewConfig = {
   disclaimer: (config.disclaimer && typeof config.disclaimer === "object")
     ? config.disclaimer
     : { committee_name: "Preview Mode" },
-  locale: typeof config.locale === "string" ? config.locale : "en",
+  locale: getLocale(typeof config.locale === "string" ? config.locale : undefined),
   consent: config.consent,
   sharing: config.sharing,
   theme: config.theme ?? "warm",
@@ -123,12 +126,11 @@ const SAFE_CSS_VALUE_RE = /^[^;<>"']{0,200}$/;
 const resolvedTheme: Record<string, string> = typeof previewConfig.theme === "object" && previewConfig.theme !== null
   ? Object.fromEntries(
       Object.entries(previewConfig.theme as Record<string, unknown>)
-        .filter(([k, v]): v is string =>
-          typeof k === "string" &&
-          ALLOWED_CSS_VAR_RE.test(k) &&
-          typeof v === "string" &&
-          SAFE_CSS_VALUE_RE.test(v)
-        )
+        .filter((entry): entry is [string, string] => {
+          const [k, v] = entry;
+          return ALLOWED_CSS_VAR_RE.test(k) &&
+            typeof v === "string" && SAFE_CSS_VALUE_RE.test(v);
+        })
     )
   : (THEMES[previewConfig.theme as string] ?? THEMES.warm!);
 

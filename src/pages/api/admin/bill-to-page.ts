@@ -21,7 +21,7 @@ const OUTER_TIMEOUT_MS = 30_000;
 
 export const POST: APIRoute = async ({ request }) => {
   // Auth — timing-safe
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
@@ -52,15 +52,15 @@ export const POST: APIRoute = async ({ request }) => {
     return json(400, { error: "'action' must be 'letter' or 'call'" });
   }
 
-  const anthropicApiKey = (env as Record<string, unknown>).ANTHROPIC_API_KEY as string | undefined;
+  const anthropicApiKey = env.ANTHROPIC_API_KEY as string | undefined;
   if (!anthropicApiKey) {
     return json(503, { error: "AI generator not configured" });
   }
 
-  const congressApiKey = (env as Record<string, unknown>).CONGRESS_API_KEY as string | undefined;
+  const congressApiKey = env.CONGRESS_API_KEY as string | undefined;
 
   // KV cache — 24 hours by bill + action type
-  const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+  const kv = env.CACHE as KVNamespace | undefined;
   const cacheKey = `bill-page:${await sha256(`${bill}|${actionType}`)}`;
   if (kv) {
     try {

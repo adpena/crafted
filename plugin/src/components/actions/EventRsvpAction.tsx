@@ -1,3 +1,4 @@
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle as label, errorStyle as err, submitButtonStyle } from "./form-styles.ts";
@@ -6,6 +7,7 @@ import { useTurnstile } from "../hooks/useTurnstile.ts";
 
 export interface EventRsvpActionProps {
   event_name: string;
+  event_timezone?: string;
   event_date: string; // ISO string
   event_location: string;
   event_description?: string;
@@ -56,6 +58,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function EventRsvpAction({
   event_name,
   event_date,
+  event_timezone,
   event_location,
   event_description,
   allow_guests = false,
@@ -70,6 +73,7 @@ export function EventRsvpAction({
   submitUrl = "/api/action/submit",
   locale: localeProp,
 }: EventRsvpActionProps): ReactNode {
+  const request = useActionRequest();
   const locale = getLocale(localeProp);
   const turnstile = useTurnstile(turnstileSiteKey);
 
@@ -106,7 +110,7 @@ export function EventRsvpAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -253,6 +257,8 @@ export function EventRsvpAction({
         </div>
         <div style={{ fontFamily: s.serif, fontSize: "0.95rem", color: s.secondary, lineHeight: 1.5 }}>
           {new Date(event_date).toLocaleString("en-US", {
+            timeZone: event_timezone ?? "America/Chicago",
+            timeZoneName: "short",
             weekday: "long",
             year: "numeric",
             month: "long",

@@ -5,6 +5,8 @@ if (!slug || !/^[a-z0-9][a-z0-9-]*$/.test(slug)) {
 }
 
 const isEmbed = Astro.url.searchParams.get("embed") === "1";
+import { PORTFOLIO_DEMOS, preparePortfolioDemo } from "../../lib/portfolio-demos";
+const isPortfolioDemo = PORTFOLIO_DEMOS.has(slug);
 
 import { env } from "cloudflare:workers";
 const db = env.DB;
@@ -25,6 +27,8 @@ if (!pageData) {
   return new Response("Action page not found", { status: 404 });
 }
 
+pageData = preparePortfolioDemo(slug, pageData);
+
 // Validate ActBlue URL
 let actblueUrl = "";
 try {
@@ -39,6 +43,7 @@ try {
 
 const actionType = pageData.action ?? pageData.type ?? "fundraise";
 const actionConfig = {
+  demo: isPortfolioDemo,
   slug,
   template: pageData.template ?? "hero-simple",
   template_props: pageData.template_props ?? {
@@ -74,7 +79,7 @@ const ogImage =
   pageData.template_props?.media_url ??
   pageData.template_props?.background_image ??
   pageData.template_props?.image_url ??
-  "https://adpena.com/og-default.png";
+  "https://adpena.com/og.png";
 
 // Resolve theme server-side — each page gets its own visual identity
 const THEMES: Record<string, Record<string, string>> = {
@@ -126,12 +131,25 @@ const customCss = sanitizeCustomCss(
     /* Hero templates render full-width; action forms are centered */
     main { width: 100%; }
     astro-island { display: contents; }
+
+    .demo-notice {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--page-border);
+      font: 0.8rem/1.5 system-ui, sans-serif;
+      text-align: center;
+    }
+    .demo-notice a { color: inherit; text-underline-offset: 3px; }
   </style>
   {customCss.css && (
     <style is:global set:html={customCss.css} />
   )}
 </head>
 <body style={cssVarString}>
+  {isPortfolioDemo && (
+    <aside class="demo-notice" aria-label="Demo information">
+      Fictional portfolio demo. Forms run locally; nothing is sent, saved, or charged. <a href="/action-pages">About Action Pages</a>
+    </aside>
+  )}
   <main id="main-content">
     <ActionPageIsland page={actionConfig} client:load />
   </main>
@@ -142,7 +160,7 @@ const customCss = sanitizeCustomCss(
         if (window === window.parent) return;
         var MSG = "crafted:resize";
         var last = 0;
-        var timer = null;
+        var timer: ReturnType<typeof setTimeout> | undefined;
         function report() {
           var h = document.documentElement.scrollHeight;
           if (h !== last) {

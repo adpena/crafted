@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { DemoMode } from "../DemoMode.ts";
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, type ReactNode } from "react";
 import { tokens as s } from "./tokens.ts";
 import { getLocale, type Locale } from "../../lib/i18n.ts";
@@ -41,6 +44,8 @@ export function FundraiseAction({
   variant,
   submitUrl = "/api/action/submit",
 }: FundraiseActionProps & { submitUrl?: string }): ReactNode {
+  const request = useActionRequest();
+  const demo = useContext(DemoMode);
   const locale = getLocale(localeProp);
   void locale;
   const [recurring, setRecurring] = useState(false);
@@ -89,7 +94,7 @@ export function FundraiseAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      await fetch(submitUrl, {
+      await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -109,6 +114,8 @@ export function FundraiseAction({
     }
 
     onComplete({ type: "donation_click", amount: activeAmount, recurring });
+
+    if (demo) return;
 
     if (embed_mode === "iframe") {
       setIframeSrc(buildUrl(activeAmount, true));

@@ -21,7 +21,7 @@ import { verifyBearer } from "../../../lib/auth.ts";
 
 export const POST: APIRoute = async ({ request }) => {
 	// Auth — timing-safe
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+	const token = env.MCP_ADMIN_TOKEN as string | undefined;
 	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
 		return json(401, { error: "Unauthorized" });
 	}
@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	// KV cache (24 hour TTL) to avoid hammering external sites
-	const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+	const kv = env.CACHE as KVNamespace | undefined;
 	const cacheKey = `brand:${body.url}`;
 	if (kv) {
 		try {
@@ -77,7 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		}
 
-		const db = (env as Record<string, unknown>).DB as Parameters<typeof logAudit>[0];
+		const db = env.DB as Parameters<typeof logAudit>[0];
 		if (db) await logAudit(db, { action: "brand_extract", target: body.url.slice(0, 500), actor: "admin", metadata: { variants: variants.length }, request }).catch(() => {});
 
 		return new Response(responseBody, {

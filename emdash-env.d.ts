@@ -3,9 +3,102 @@
 
 /// <reference types="emdash/locals" />
 
-import type { ContentBylineCredit } from "emdash";
+import type { ContentBylineCredit, PortableTextBlock } from "emdash";
+
+export interface DesignProject {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  summary?: string;
+  content?: PortableTextBlock[];
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  gallery?: unknown;
+  client?: string;
+  medium?: string;
+  year?: string;
+  live_url?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface Project {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  summary?: string;
+  content?: PortableTextBlock[];
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  repo_url?: string;
+  live_url?: string;
+  stack?: string;
+  language?: string;
+  year?: string;
+  project_status?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface Page {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  content?: PortableTextBlock[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface PolicyWork {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  summary?: string;
+  content?: PortableTextBlock[];
+  publication?: string;
+  date?: string;
+  topic?: string;
+  link?: string;
+  pdf_url?: string;
+  coauthors?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface Article {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  summary?: string;
+  content?: PortableTextBlock[];
+  publication?: string;
+  date?: string;
+  topic?: string;
+  link?: string;
+  excerpt?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
 
 declare module "emdash" {
   interface EmDashCollections {
+    design: DesignProject;
+    dev: Project;
+    pages: Page;
+    policy: PolicyWork;
+    writing: Article;
   }
 }

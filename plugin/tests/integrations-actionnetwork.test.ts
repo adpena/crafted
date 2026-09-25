@@ -59,12 +59,12 @@ describe("pushToActionNetwork", () => {
 		vi.stubGlobal("fetch", fn);
 
 		await pushToActionNetwork(
-			baseSubmission({ type: "email_signup" }),
+			baseSubmission({ type: "signup" }),
 			baseEnv({ ACTION_NETWORK_API_KEY: "an-key" }),
 		);
 
 		const body = JSON.parse(calls[0]!.init.body as string);
-		expect(body.add_tags).toContain("crafted:email_signup");
+		expect(body.add_tags).toContain("crafted:signup");
 	});
 
 	it("returns undefined when ACTION_NETWORK_API_KEY is missing", async () => {

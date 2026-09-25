@@ -1,248 +1,2758 @@
 {
-	"$schema": "https://emdashcms.com/seed.schema.json",
-	"version": "1",
-	"meta": {
-		"name": "Crafted Portfolio",
-		"description": "Personal portfolio with domain-specific collections",
-		"author": "Alejandro Peña"
-	},
-
-	"settings": {
-		"title": "Alejandro Peña",
-		"tagline": "Development, design, policy, and politics"
-	},
-
-	"collections": [
-		{
-			"slug": "dev",
-			"label": "Development",
-			"labelSingular": "Project",
-			"supports": ["drafts", "revisions", "search", "seo"],
-			"fields": [
-				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
-				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
-				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
-				{ "slug": "featured_image", "label": "Featured Image", "type": "image" },
-				{ "slug": "repo_url", "label": "Repository URL", "type": "string" },
-				{ "slug": "live_url", "label": "Live Demo URL", "type": "string" },
-				{ "slug": "stack", "label": "Tech Stack", "type": "string" },
-				{ "slug": "language", "label": "Primary Language", "type": "string" },
-				{ "slug": "year", "label": "Year", "type": "string" },
-				{ "slug": "project_status", "label": "Project Status", "type": "string" }
-			]
-		},
-		{
-			"slug": "design",
-			"label": "Design",
-			"labelSingular": "Design Project",
-			"supports": ["drafts", "revisions", "search", "seo"],
-			"fields": [
-				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
-				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
-				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
-				{ "slug": "featured_image", "label": "Featured Image", "type": "image" },
-				{ "slug": "gallery", "label": "Gallery", "type": "json" },
-				{ "slug": "client", "label": "Client", "type": "string" },
-				{ "slug": "medium", "label": "Medium", "type": "string" },
-				{ "slug": "year", "label": "Year", "type": "string" },
-				{ "slug": "live_url", "label": "Live URL", "type": "string" }
-			]
-		},
-		{
-			"slug": "policy",
-			"label": "Policy",
-			"labelSingular": "Policy Work",
-			"supports": ["drafts", "revisions", "search", "seo"],
-			"fields": [
-				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
-				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
-				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
-				{ "slug": "publication", "label": "Publication / Organization", "type": "string" },
-				{ "slug": "date", "label": "Date", "type": "datetime" },
-				{ "slug": "topic", "label": "Topic", "type": "string" },
-				{ "slug": "link", "label": "External Link", "type": "string" },
-				{ "slug": "pdf_url", "label": "PDF URL", "type": "string" },
-				{ "slug": "coauthors", "label": "Co-authors", "type": "string" }
-			]
-		},
-		{
-			"slug": "writing",
-			"label": "Writing",
-			"labelSingular": "Article",
-			"supports": ["drafts", "revisions", "search", "seo"],
-			"fields": [
-				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
-				{ "slug": "summary", "label": "Summary", "type": "text", "searchable": true },
-				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
-				{ "slug": "publication", "label": "Publication", "type": "string" },
-				{ "slug": "date", "label": "Date", "type": "datetime" },
-				{ "slug": "topic", "label": "Topic", "type": "string" },
-				{ "slug": "link", "label": "External Link", "type": "string" },
-				{ "slug": "excerpt", "label": "Excerpt", "type": "text" }
-			]
-		},
-		{
-			"slug": "pages",
-			"label": "Pages",
-			"labelSingular": "Page",
-			"supports": ["drafts", "revisions", "search"],
-			"fields": [
-				{ "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
-				{ "slug": "content", "label": "Content", "type": "portableText", "searchable": true }
-			]
-		}
-	],
-
-	"menus": [
-		{
-			"name": "primary",
-			"label": "Primary Navigation",
-			"items": [
-				{ "type": "custom", "label": "Work", "url": "/work" },
-				{ "type": "custom", "label": "About", "url": "/about" },
-				{ "type": "custom", "label": "Contact", "url": "/contact" }
-			]
-		}
-	],
-
-	"content": {
-		"pages": [
-			{
-				"id": "about",
-				"slug": "about",
-				"status": "published",
-				"data": {
-					"title": "About",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Systems engineer and compiler author. I build infrastructure that makes other things work better. Currently focused on Python-to-Wasm compilation and campaign technology for progressive causes. Previously: Django, WordPress, frontend web development."
-								}
-							]
-						}
-					]
-				}
-			}
-		],
-		"writing": [
-			{
-				"id": "building-action-network-on-cloudflare",
-				"slug": "building-action-network-on-cloudflare",
-				"status": "published",
-				"data": {
-					"title": "Building Action Network on Cloudflare's free tier",
-					"summary": "How I built a production-hardened campaign action pages platform with 956 tests, 8 action types, 7 integrations, and AI-generated pages — all running for $0/month",
-					"excerpt": "How I built a production-hardened campaign action pages platform with 956 tests, 8 action types, 7 integrations, and AI-generated pages — all running for $0/month",
-					"publication": "self-published",
-					"date": "2026-04-07T00:00:00.000Z",
-					"topic": "Campaign technology",
-					"content": [
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The problem" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Action Network starts at $59 a month and climbs past $1500 for anything that looks like a real campaign. It is closed source, US-centric, and the reporting lags real time by enough that it is never quite the source of truth you want during a launch. On top of the subscription, campaign engineers routinely burn thousands of dollars of billable time wiring up petition pages to the CRM, then wiring the CRM to the ad platforms, then wiring the ad platforms to the email vendor. Most of that glue work is the same job, done again, per client." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "I wanted to see whether I could build the whole thing — the petitions, the letters, the event RSVPs, the email blasts, the platform integrations, the admin surface, the AI assist — for free, on Cloudflare's edge, end to end. Not a demo. A platform I would be willing to put a paying client on." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "This is a writeup of how that went." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The architecture" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The platform runs entirely on Cloudflare's free tier primitives: Workers for compute, D1 (SQLite) for submissions and page configs, KV for rate limiting and the edge cache, R2 for uploaded media and exported CSVs, and Turnstile for bot protection." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The frontend is Astro 6 with React 19 islands. Only the action forms themselves are interactive — the rest of the page is static HTML streamed from the edge. Templates and themes are composed in an emdash CMS plugin so a non-engineer can build a page without touching code." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The hot path has zero external dependencies. No Redis. No managed queue. No Postgres. No third-party API waits before the user sees a thank-you state. Everything happens either inside the Worker or inside " }, { "_type": "span", "text": "waitUntil()", "marks": ["code"] }, { "_type": "span", "text": " after the response has already shipped." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The hot path" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "When a supporter signs a petition, the Worker runs a six-step pipeline before it sends the response: rate limit check (fixed-window KV counter hashed by IP + slug), Turnstile verification (fail-closed), geo filter (cf-ipcountry against per-page whitelist/blacklist), email deduplication (SHA-256 hash scoped to the slug), D1 write (single prepared-statement insert), and response sent. That is everything the user waits for. In production the p50 for that path is under 80ms from the edge city nearest the supporter." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Everything else — the KV counter update for the public progress bar, the Resend thank-you email, the Meta CAPI event, the Google Ads conversion, the seven campaign-platform syncs, the contact-record upsert — runs inside ctx.waitUntil() after the response has already been sent. All of the async tasks fire in parallel through a single Promise.allSettled, so a slow third-party integration cannot block a fast one, and a broken one cannot break the rest." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The security story" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "I ran three security audit passes against the platform plus a senior engineer review, each one trying to break what the previous one had built. The audits turned up twenty-plus real issues. All of them are fixed. A few worth calling out because they are the kind of thing I see constantly in campaign tooling:" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Centralized, timing-safe Bearer auth.", "marks": ["strong"] }, { "_type": "span", "text": " Every admin route goes through a single verifyBearer() helper that does a constant-time comparison against an HMAC derived from the admin token, not against the token itself. Early versions compared a bare string against a constant module export. That is a timing side channel and it is trivial to exploit with a stopwatch and a loop." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "SSRF-safe brand extraction.", "marks": ["strong"] }, { "_type": "span", "text": " The brand extractor fetches arbitrary URLs to pull logos and colors out of a campaign site. The fetcher rejects private IPv4 ranges, IPv6 link-local, loopback, and the AWS metadata endpoint before it dials, and it re-validates every hop in the redirect chain instead of trusting the final resolved URL." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "CRLF injection in ICS files.", "marks": ["strong"] }, { "_type": "span", "text": " Calendar files for events are generated server-side. A naive implementation interpolates the event title into a SUMMARY: line. If the title contains carriage returns, an attacker can inject arbitrary ICS properties — including phishing URLs that calendar clients will happily render. The generator strips and escapes control characters before any interpolation." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Payload size enforced by reading bytes.", "marks": ["strong"] }, { "_type": "span", "text": " Content-Length is a hint, not a promise. The Worker reads the request body into a bounded buffer and rejects the request the moment it exceeds the limit. Trusting the header would let a malicious client announce 1KB and stream 50MB." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Fixed-window rate limits, not sliding.", "marks": ["strong"] }, { "_type": "span", "text": " Sliding-window rate limits are elegant but they can be beaten by an attacker who paces requests to straddle the window edge. Fixed windows are less theoretically clean but much harder to game in practice." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Browser compatibility" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "All eight action components — petition, letter-to-rep, event RSVP, donation, volunteer signup, survey, pledge, and multi-step form — work on Chrome, Safari, Firefox, and Edge across desktop and mobile. That took more work than the security pass did. Every client fetch has a 15-second AbortController timeout with explicit TimeoutError handling. iOS Safari does not honor the download attribute on an anchor for .ics files, so the event RSVP component detects iOS and opens the ICS in a new window instead. Every interactive target is at least 44 by 44 pixels. I removed every outline: none from the action component styles and restored focus rings for keyboard users. Every input has a paired htmlFor and id, and every error message uses role=\"alert\" so screen readers announce it." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The AI layer" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "There are three places the platform uses AI, and none of them are in the supporter's hot path. Brand extraction takes a URL, fetches the page, walks the stylesheets, and extracts primary and secondary colors, typography, and the logo, then generates four theme variants (on-brand, elevated, contrast, minimal). The AI page generator accepts a plain-English description like \"three-week petition to stop the Austin highway expansion, collect email and zip, target Texas only, progress bar to 10k signatures\" and emits a complete validated ActionPageConfig via the Anthropic API, typical cost about a cent per generated page. AI headline variants lets an admin ask for five headline variations for a page and run them through the edge A/B test without leaving the admin UI." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The integration layer" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "This is the killer feature, and it is the part that is normally the most expensive to build and maintain in-house. Seven campaign-platform adapters fire in parallel on every submission: Action Network, Mailchimp, NationBuilder, EveryAction / NGP VAN, Mobilize America (with per-page event ID support for RSVP syncs), Eventbrite, and Facebook Events via the Conversions API Lead event." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "One signature on a petition fans out to every platform the organization uses, simultaneously, in a single Promise.allSettled. The digital director does not reconcile spreadsheets on Monday morning. The field director sees the new volunteer in NationBuilder before the supporter has closed the browser tab. The ad buyer sees the conversion in Meta Ads Manager within the hour. Adding a new platform is roughly a day of work plus a test suite." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Testing discipline" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "956 tests across 25 files. The breakdown: unit tests for every utility (rate limiting, geo filter, deduplication, email template rendering, ICS generation, URL validation, HMAC comparison), 675 property-based fuzz tests using randomized Unicode, SQL injection strings, XSS payloads, CRLF sequences, and multi-megabyte blobs, component tests for progress bars and action components, template tests, web component embed tests, and 67 tests covering the seven platform integration adapters plus the dispatcher orchestration layer." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The property-based fuzz tests caught real bugs that example-based tests missed. A URL encoder that threw an exception on lone Unicode surrogates. A regex that ReDoS'd on a specific combining-mark sequence. A progress-bar prop validator that crashed when the current count was a BigInt. None of those would have come up through hand-written examples. All of them would have come up in production eventually." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Cost breakdown" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Workers free tier: 100,000 requests per day, enough headroom for roughly three million supporter actions per month. D1 is 5 million reads per day free, 100,000 writes per day free. KV is 100,000 reads per day free, 1,000 writes per day free. R2 is 10GB storage free, 1 million Class A operations per month free. Turnstile is unlimited, free, forever. Resend is 3,000 emails per month free, $20 per month for 50,000 after that. The Anthropic API is pay-per-use, roughly a cent per AI-generated page, zero cost when not used." }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Fixed monthly cost to run this platform for a small-to-mid campaign: $0. The only variable cost is transactional email past 3,000 sends, and even that tops out at $20. A comparable Action Network plan for the same feature set is somewhere between $250 and $1,500 a month." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "What I would do differently" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Durable Objects from day one for atomic counters — I am currently using a KV read-modify-write for the public progress bar counter and documenting the eventual-consistency window. A typed ORM over raw D1 prepare and bind — I started with raw prepared statements because I wanted to understand the D1 shape and I now understand it fine. Ship Storybook stories for the admin UI earlier — the admin surface ended up with three different date pickers in three different places before I caught it. Write the case study as I went, not at the end." }] },
-
-						{ "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "What's next" }] },
-						{ "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Admin UI polish. Deploy the live demos to adpena.com/action/*. Open-source the plugin under @adpena/action-pages. Write the docs site. Talk to campaigns. If you run a campaign and you want to stop paying $1,500 a month for a platform that emails you your own data twelve hours late, get in touch." }] }
-					]
-				}
-			}
-		],
-		"dev": [
-			{
-				"id": "molt",
-				"slug": "molt",
-				"status": "published",
-				"data": {
-					"title": "Molt",
-					"year": "2026",
-					"summary": "An ahead-of-time Python-to-WebAssembly compiler with aggressive tree shaking and deforestation.",
-					"repo_url": "https://github.com/adpena/molt",
-					"stack": "Rust, Python, Wasm",
-					"language": "Rust",
-					"project_status": "Active",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [{ "_type": "span", "text": "Molt is an ahead-of-time compiler that takes Python source and emits WebAssembly. The goal is not to run arbitrary Python in the browser -- Molt targets a narrower problem: take the Python you actually wrote, strip everything you did not use, and produce a small, fast Wasm module that can run on Cloudflare Workers or any other edge runtime." }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [{ "_type": "span", "text": "The compiler parses Python into an AST, runs type inference, then applies aggressive tree shaking and deforestation to eliminate dead code and intermediate data structures. The output is Wasm bytecode linked against libmolt, a small C ABI runtime. The result is a binary measured in kilobytes, not megabytes." }]
-						}
-					]
-				}
-			},
-			{
-				"id": "crafted-action-pages",
-				"slug": "crafted-action-pages",
-				"status": "published",
-				"data": {
-					"title": "Crafted Action Pages",
-					"year": "2026",
-					"summary": "Campaign action page engine with FEC/state disclaimer compliance, geo-personalized donation asks, and edge A/B testing.",
-					"repo_url": "https://github.com/adpena/crafted",
-					"stack": "TypeScript, Astro, Cloudflare Workers, D1",
-					"language": "TypeScript",
-					"project_status": "Active",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [{ "_type": "span", "text": "Progressive campaigns need action pages -- donation forms, petition signatures, volunteer sign-ups -- and they need them fast. Crafted Action Pages is an emdash plugin that renders action pages at the edge on Cloudflare with the correct FEC and state-level disclaimer for the visitor's jurisdiction." }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [{ "_type": "span", "text": "The plugin ships with an open-source compliance dataset covering federal rules and 10 state-specific disclaimer requirements. Donation asks are geo-personalized, pages support edge A/B testing, spam protection uses Cloudflare Turnstile, and donation flows deep-link into ActBlue." }]
-						}
-					]
-				}
-			}
-		]
-	}
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "Crafted Portfolio",
+    "description": "Personal portfolio with domain-specific collections",
+    "author": "Alejandro Peña"
+  },
+  "settings": {
+    "title": "Alejandro Peña",
+    "tagline": "Software, data, design & public policy"
+  },
+  "collections": [
+    {
+      "slug": "dev",
+      "label": "Development",
+      "labelSingular": "Project",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "summary",
+          "label": "Summary",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured Image",
+          "type": "image"
+        },
+        {
+          "slug": "repo_url",
+          "label": "Repository URL",
+          "type": "string"
+        },
+        {
+          "slug": "live_url",
+          "label": "Live Demo URL",
+          "type": "string"
+        },
+        {
+          "slug": "stack",
+          "label": "Tech Stack",
+          "type": "string"
+        },
+        {
+          "slug": "language",
+          "label": "Primary Language",
+          "type": "string"
+        },
+        {
+          "slug": "year",
+          "label": "Year",
+          "type": "string"
+        },
+        {
+          "slug": "project_status",
+          "label": "Project Status",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "design",
+      "label": "Design",
+      "labelSingular": "Design Project",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "summary",
+          "label": "Summary",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured Image",
+          "type": "image"
+        },
+        {
+          "slug": "gallery",
+          "label": "Gallery",
+          "type": "json"
+        },
+        {
+          "slug": "client",
+          "label": "Client",
+          "type": "string"
+        },
+        {
+          "slug": "medium",
+          "label": "Medium",
+          "type": "string"
+        },
+        {
+          "slug": "year",
+          "label": "Year",
+          "type": "string"
+        },
+        {
+          "slug": "live_url",
+          "label": "Live URL",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "policy",
+      "label": "Policy",
+      "labelSingular": "Policy Work",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "summary",
+          "label": "Summary",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "publication",
+          "label": "Publication / Organization",
+          "type": "string"
+        },
+        {
+          "slug": "date",
+          "label": "Date",
+          "type": "datetime"
+        },
+        {
+          "slug": "topic",
+          "label": "Topic",
+          "type": "string"
+        },
+        {
+          "slug": "link",
+          "label": "External Link",
+          "type": "string"
+        },
+        {
+          "slug": "pdf_url",
+          "label": "PDF URL",
+          "type": "string"
+        },
+        {
+          "slug": "coauthors",
+          "label": "Co-authors",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "writing",
+      "label": "Writing",
+      "labelSingular": "Article",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "summary",
+          "label": "Summary",
+          "type": "text",
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        },
+        {
+          "slug": "publication",
+          "label": "Publication",
+          "type": "string"
+        },
+        {
+          "slug": "date",
+          "label": "Date",
+          "type": "datetime"
+        },
+        {
+          "slug": "topic",
+          "label": "Topic",
+          "type": "string"
+        },
+        {
+          "slug": "link",
+          "label": "External Link",
+          "type": "string"
+        },
+        {
+          "slug": "excerpt",
+          "label": "Excerpt",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Pages",
+      "labelSingular": "Page",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText",
+          "searchable": true
+        }
+      ]
+    }
+  ],
+  "menus": [
+    {
+      "name": "primary",
+      "label": "Primary Navigation",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Work",
+          "url": "/work"
+        },
+        {
+          "type": "custom",
+          "label": "About",
+          "url": "/about"
+        },
+        {
+          "type": "custom",
+          "label": "Contact",
+          "url": "/contact"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "pages": [
+      {
+        "id": "about",
+        "slug": "about",
+        "status": "published",
+        "data": {
+          "title": "About",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k0",
+                  "text": "I’m a full-stack engineer working in Python, SQL, Django, React, and TypeScript. I build data pipelines, maps, and web applications.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2",
+                  "text": "Before that, I worked as a policy analyst at Texas AFT and a legislative director in the Texas House.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4",
+                  "text": "I now lead Data for Public Education, a research and software practice focused on Texas public schools. I’m also building Molt, a compiler that turns Python into native binaries and WebAssembly.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k7",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6",
+                  "text": "I continue to work on comma.ai’s lossy video compression challenge. My submissions, PRs #107, #110, and #140, have all appeared on the leaderboard.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "writing": [
+      {
+        "id": "building-action-network-on-cloudflare",
+        "slug": "building-action-network-on-cloudflare",
+        "status": "published",
+        "data": {
+          "title": "Building campaign action pages on Cloudflare",
+          "summary": "Notes on an unfinished campaign-software experiment: forms, storage, and integrations on Cloudflare Workers.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k6a",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k69",
+                  "text": "Campaign forms often need the same pieces: a page editor, submission storage, exports, confirmation messages, and connections to other tools. I explored putting those pieces in an EmDash plugin called Action Pages. The project remains unfinished; these notes describe the implementation so far.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6c",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6b",
+                  "text": "Rendering and storage",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6e",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6d",
+                  "text": "Astro renders the page around a React form. EmDash stores the content and configuration, and Cloudflare Workers handles requests. D1 stores submissions, KV holds counters and cached data, and R2 stores uploaded media. The plugin provides templates and an editor for configuring pages without changing the site’s source code.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6g",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6f",
+                  "text": "Handling a submission",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6i",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6h",
+                  "text": "The submission route validates the request, applies rate limits and geographic filters, checks for duplicate email addresses, and writes accepted records to D1. Turnstile verification is an external request when a token and secret are present; the current route does not require a token for every page.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6k",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6j",
+                  "text": "After the database write, the Worker schedules the notification and integration work with waitUntil. This includes confirmation email, campaign-platform updates, and contact records. A successful form response means the submission was stored; it does not guarantee that every downstream service accepted its update.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6m",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6l",
+                  "text": "Keeping that work out of the response path avoids making the form wait for every integration. It also leaves an operational problem worth handling explicitly: failures after a submission is accepted need monitoring and a retry strategy.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6o",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6n",
+                  "text": "Trying it",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k6z",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k6q",
+                  "_type": "link",
+                  "href": "/action-pages"
+                },
+                {
+                  "_key": "k6t",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/action-pages"
+                },
+                {
+                  "_key": "k6w",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/crafted"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k6p",
+                  "text": "The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6r",
+                  "text": "project page",
+                  "marks": [
+                    "k6q"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6s",
+                  "text": " links to example forms and the embed generator. The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6u",
+                  "text": "source",
+                  "marks": [
+                    "k6t"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6v",
+                  "text": " contains the plugin; ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6x",
+                  "text": "this site’s repository",
+                  "marks": [
+                    "k6w"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k6y",
+                  "text": " shows how it is integrated.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k71",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k70",
+                  "text": "Hosting costs depend on traffic, storage, email, and the services configured for a deployment.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "publication": "self-published",
+          "date": "2026-04-07T00:00:00.000Z",
+          "topic": "Campaign technology",
+          "excerpt": "The architecture behind Action Pages: an EmDash editor, React forms, D1 storage, and background integrations."
+        }
+      }
+    ],
+    "design": [
+      {
+        "id": "respect-campaign-map",
+        "slug": "respect-campaign-map",
+        "status": "published",
+        "data": {
+          "title": "Respect Campaign Map",
+          "summary": "A district map connecting Texas educators with local pay research and campaign resources.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k3t",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3s",
+                  "text": "I built this map for Texas AFT’s Respect Campaign so educators and organizers could find research for their own districts. Selecting a district connects the statewide map to local data, reports, and campaign resources.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3v",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3u",
+                  "text": "I prepared the geographic layers in Python, matched district records, converted boundaries to GeoJSON, and built the JavaScript interface. The result is a static web page backed by precomputed data.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k43",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k3x",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/RespectCampaignMap"
+                },
+                {
+                  "_key": "k40",
+                  "_type": "link",
+                  "href": "/work/policy/the-lost-decade-and-a-half"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3w",
+                  "text": "The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3y",
+                  "text": "repository",
+                  "marks": [
+                    "k3x"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3z",
+                  "text": " contains the map and preparation scripts. The related ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k41",
+                  "text": "Lost Decade research",
+                  "marks": [
+                    "k40"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k42",
+                  "text": " covers educator pay, with reports and district-level analyses.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "client": "Texas AFT",
+          "medium": "Interactive web, JavaScript, data visualization",
+          "year": "2022",
+          "live_url": "https://adpena.com/demo/respect-map"
+        }
+      }
+    ],
+    "policy": [
+      {
+        "id": "facing-facts",
+        "slug": "facing-facts",
+        "status": "published",
+        "data": {
+          "title": "Facing Facts: Charter Schools in Texas",
+          "summary": "The quantitative research behind a 2025 report on Texas charter-school spending, staffing, and oversight.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "portfolio-1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-1",
+                  "text": "I did all the quantitative research and analysis for Facing Facts, a report published by Our Schools Our Democracy in February 2025 through my work at Data for Public Education.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-2",
+                  "text": "I assembled and matched the source records, checked fiscal totals, and kept a record of where the numbers came from. During review, I also caught incorrect units and estimates that needed to be labeled as estimates.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-3",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-3",
+                  "text": "The report compares charter schools and school districts on spending, staffing, and other measures. My contribution was the data and analysis; the report’s writing, design, and publication were a broader team effort.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-4",
+                  "text": "The figure below reproduces one comparison from page 5. It shows the share of operating expenditures spent on central administration, using 2022–23 data.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-5",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-5",
+                  "href": "https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-5",
+                  "text": "Read the published report",
+                  "marks": [
+                    "link-5"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-6",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-6",
+                  "href": "/work/dev/data-for-public-education"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-6",
+                  "text": "More work at Data for Public Education",
+                  "marks": [
+                    "link-6"
+                  ]
+                }
+              ]
+            }
+          ],
+          "publication": "Our Schools Our Democracy",
+          "date": "2025-02-26",
+          "topic": "School finance, charter schools",
+          "link": "https://osod.org/facing-facts-charter-schools-in-texas/",
+          "pdf_url": "https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf"
+        }
+      },
+      {
+        "id": "fiscal-impact-of-charter-school-expansion",
+        "slug": "fiscal-impact-of-charter-school-expansion",
+        "status": "published",
+        "data": {
+          "title": "CharterCostTracker",
+          "summary": "A Python system for estimating charter transfers’ effects on district revenue, covering 1,023 Texas districts over five years.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k5g",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5f",
+                  "text": "I built CharterCostTracker to collect Texas education data, estimate how charter transfers affect district revenue, and generate reports for Texas AFT and public education advocates. I handled all the programming and engineering, expanding a manual district-by-district process into a five-year dataset covering 1,023 districts.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5i",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5h",
+                  "text": "The project began with constituent concerns about a proposed charter campus while I was a legislative director. A longtime advocate and mentor had developed an estimation method and statement-of-impact template with school finance experts. I translated that method into code and reviewed the calculations with her as we expanded the analysis statewide.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5k",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5j",
+                  "text": "Data and calculations",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5m",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5l",
+                  "text": "I collected TEA directory, enrollment, transfer, finance, accountability, and recapture records. Selenium scripts located reports in TEA’s interactive report builder; an asynchronous downloader retrieved them with retries and checks for missing or incomplete files. I retained source URLs, report dates, run IDs, and payment cycles.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5o",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5n",
+                  "text": "The parsers handle changing spreadsheet layouts, restore leading zeros in district IDs, and reconcile district and charter names. The calculations combine transfer counts with funding, attendance, and enrollment data, accounting for changes in formulas and report formats across years.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5q",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5p",
+                  "text": "The reports keep observed transfers separate from estimates for masked counts. One later scenario assumes five transfers per receiving charter entity with a masked count and reports that estimate separately.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5s",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5r",
+                  "text": "Reports and publication",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5u",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5t",
+                  "text": "I automated statewide spreadsheets, district breakdowns, Word and PDF reports, maps, and charts. I also generated responsive HTML tables linking to district reports for Texas AFT’s website.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5z",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k5w",
+                  "_type": "link",
+                  "href": "https://web.archive.org/web/20241213163109/https://www.texasaft.org/government/tea/the-growing-financial-strain-of-charter-school-expansion-on-texas-public-schools/"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5v",
+                  "text": "I wrote the entire June 27, 2024 Texas AFT article, ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k5x",
+                  "text": "“The Growing Financial Strain of Charter School Expansion on Texas Public Schools”",
+                  "marks": [
+                    "k5w"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k5y",
+                  "text": ", presenting the findings and their implications. The link opens an archived copy because the original URL is no longer available.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k64",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k61",
+                  "_type": "link",
+                  "href": "/work/dev/data-for-public-education"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k60",
+                  "text": "I continue to prepare analyses for hearings, town halls, and discussions about school closures and budget cuts. This work also supported research for Our Schools, Our Democracy and informed the data-collection tools in ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k62",
+                  "text": "Data for Public Education",
+                  "marks": [
+                    "k61"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k63",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k68",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k65",
+                  "_type": "link",
+                  "href": "https://dataforpubliceducation.com/research/"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k66",
+                  "text": "Browse the statewide and longitudinal datasets",
+                  "marks": [
+                    "k65"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k67",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "publication": "Texas AFT",
+          "date": "2024-06-27",
+          "topic": "Data engineering, school finance, charter transfers, automated reporting",
+          "link": "https://web.archive.org/web/20241213163109/https://www.texasaft.org/government/tea/the-growing-financial-strain-of-charter-school-expansion-on-texas-public-schools/"
+        }
+      },
+      {
+        "id": "hb2-support-staff-raises",
+        "slug": "hb2-support-staff-raises",
+        "status": "published",
+        "data": {
+          "title": "HB 2 Support-Staff Raise Analysis",
+          "summary": "Statewide funding models and local organizing materials to help Texas AFT explain what HB 2 could mean for school support staff.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "portfolio-7",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-7",
+                  "text": "After Texas passed HB 2 in 2025, I modeled the funding available for support-staff raises across 1,179 school systems. I did this work for Texas AFT through Data for Public Education.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-8",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-8",
+                  "text": "I checked the allocation formulas, matched staffing records, and documented fallback rules where a district’s data was missing or inconsistent. The deliverables included statewide analyses, audit workbooks, one-pagers, and 35 customized PDFs for local leaders. I also corrected graphics and reports as the review progressed.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-9",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-9",
+                  "text": "The public workbook below examines the Support Staff Retention Allotment, including how adjusted attendance affects the allocation. It is one part of the project. Its paraprofessional staffing counts differ from the broader support-staff counts used for the newsletter’s raise examples.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-10",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-10",
+                  "text": "These are estimates under stated assumptions. A funding allocation is not a guarantee that an employee received a particular raise.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-11",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-11",
+                  "href": "https://www.texasaft.org/post/maximizing-house-bill-2-s-promise-support-staff-raises-new-texas-aft-analysis"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-11",
+                  "text": "Read Texas AFT’s support-staff analysis",
+                  "marks": [
+                    "link-11"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-12",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-12",
+                  "href": "https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/edit"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-12",
+                  "text": "Open the statewide comparison workbook",
+                  "marks": [
+                    "link-12"
+                  ]
+                }
+              ]
+            }
+          ],
+          "publication": "Texas AFT",
+          "date": "2025-09-26",
+          "topic": "School finance, staff pay",
+          "link": "https://www.texasaft.org/post/maximizing-house-bill-2-s-promise-support-staff-raises-new-texas-aft-analysis"
+        }
+      },
+      {
+        "id": "sb-9-teacher-pay-analysis",
+        "slug": "sb-9-teacher-pay-analysis",
+        "status": "published",
+        "data": {
+          "title": "SB 9 Teacher Pay Analysis",
+          "summary": "District-level estimates of the costs and effects of teacher-pay proposals in the 2023 Texas legislative session.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k45",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k44",
+                  "text": "I analyzed SB 9 and related teacher-retention proposals during the 2023 Texas legislative session. The question was how each funding design would affect districts and what it would cost statewide.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k47",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k46",
+                  "text": "I joined district directory records with staffing and full-time-equivalent data, calculated the scenarios, and exported workbooks for review. I also mapped the share of teachers with six or more years of experience using district boundaries and staffing records.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4c",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k49",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/SB9Analysis"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k48",
+                  "text": "The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4a",
+                  "text": "repository",
+                  "marks": [
+                    "k49"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4b",
+                  "text": " contains dated workbooks, scripts, notebooks, and maps. Those outputs reflect the proposals and source data available during that session.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "publication": "Texas AFT",
+          "date": "2023-06-01",
+          "topic": "Education policy, teacher compensation",
+          "link": "https://github.com/adpena/SB9Analysis"
+        }
+      },
+      {
+        "id": "texas-efa-vendor-analysis",
+        "slug": "texas-efa-vendor-analysis",
+        "status": "published",
+        "data": {
+          "title": "Texas EFA Vendor Analysis",
+          "summary": "Python scripts and a research workbook for examining Texas Education Freedom Account school listings.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k4e",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4d",
+                  "text": "I built this pipeline to examine the Texas Education Freedom Account school-finder data outside its search interface. It collects the Comptroller’s vendor feed and supporting metadata, normalizes the records, and adds county, school-district, and education-service-center geography.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4g",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4f",
+                  "text": "The outputs include vendor-level CSVs and an Excel workbook with filterable tables for services, specialties, and vendor types. Cached source files and geographic inputs document how the records were collected and joined.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4l",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k4i",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/TEFAAnalysis"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4h",
+                  "text": "The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4j",
+                  "text": "repository",
+                  "marks": [
+                    "k4i"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4k",
+                  "text": " includes the code and output files for reviewing which schools and services are listed and where they are located.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "publication": "Texas AFT",
+          "date": "2026-01-01",
+          "topic": "Education policy, school choice, public education funding",
+          "link": "https://github.com/adpena/TEFAAnalysis"
+        }
+      },
+      {
+        "id": "the-lost-decade-and-a-half",
+        "slug": "the-lost-decade-and-a-half",
+        "status": "published",
+        "data": {
+          "title": "The Lost Decade (and a Half)",
+          "summary": "Texas educator-pay research: I wrote the 2024 report, performed all the analysis, and built its responsive web tables.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k4n",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4m",
+                  "text": "I wrote all of Texas AFT’s 2024 report, The Lost Decade (and a Half), and performed all of its analysis. I also created the responsive HTML tables for the website, which connected readers to their districts’ results.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4p",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4o",
+                  "text": "The report followed educator pay over time and adjusted it for inflation. It found that average Texas teacher pay had lost more than 9% of its purchasing power between the 2009–2010 and 2023–2024 school years. The district analyses showed how much that experience varied across the state.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4u",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k4r",
+                  "_type": "link",
+                  "href": "/work/design/respect-campaign-map"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4q",
+                  "text": "I built the salary datasets, district analyses, spreadsheets, and web tables so readers could check the local figures behind the statewide findings. The related ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4s",
+                  "text": "Respect Campaign Map",
+                  "marks": [
+                    "k4r"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4t",
+                  "text": " gave educators and organizers another way to find district research.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k4w",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4v",
+                  "text": "Reports and published work",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k50",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [
+                {
+                  "_key": "k4x",
+                  "_type": "link",
+                  "href": "https://web.archive.org/web/20240516045549/https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k4y",
+                  "text": "The Lost Decade (and a Half), May 2024 report — archived PDF",
+                  "marks": [
+                    "k4x"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k4z",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k54",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [
+                {
+                  "_key": "k51",
+                  "_type": "link",
+                  "href": "https://web.archive.org/web/20250123212800/https://www.texasaft.org/lost-decade-and-a-half/"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k52",
+                  "text": "Texas AFT’s 2024 article and district tables — archived page",
+                  "marks": [
+                    "k51"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k53",
+                  "text": ". The page preserves the wide-screen and mobile table layouts I built.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k58",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [
+                {
+                  "_key": "k55",
+                  "_type": "link",
+                  "href": "https://everytexan.org/wp-content/uploads/2022/04/The-Lost-Decade-final.pdf"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k56",
+                  "text": "The Lost Decade, April 2022 report",
+                  "marks": [
+                    "k55"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k57",
+                  "text": ", published jointly by Texas AFT and Every Texan.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5c",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [
+                {
+                  "_key": "k59",
+                  "_type": "link",
+                  "href": "https://everytexan.org/2022/04/19/new-joint-report-by-texas-aft-and-every-texan-highlights-declining-teacher-salaries/"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5a",
+                  "text": "Every Texan’s announcement of the original report",
+                  "marks": [
+                    "k59"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k5b",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k5e",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k5d",
+                  "text": "The 2024 links use archived copies because the original Texas AFT URLs are no longer available. My full authorship credit above refers to the 2024 update; the 2022 report was a joint project.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "publication": "Texas AFT",
+          "date": "2024-05-01",
+          "topic": "Teacher compensation, public education funding, inflation analysis",
+          "link": "https://web.archive.org/web/20250123212800/https://www.texasaft.org/lost-decade-and-a-half/",
+          "pdf_url": "https://web.archive.org/web/20240516045549/https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf"
+        }
+      }
+    ],
+    "dev": [
+      {
+        "id": "action-pages",
+        "slug": "action-pages",
+        "status": "published",
+        "data": {
+          "title": "Action Pages",
+          "summary": "An unfinished experiment in campaign forms, page editing, and integrations.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "kn",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "km",
+                  "text": "Action Pages is an unfinished experiment. I built it so campaign staff could publish forms and connect submissions to their existing tools. It runs as an EmDash plugin on Cloudflare Workers, with React forms and D1 storage.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "ks",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "kp",
+                  "_type": "link",
+                  "href": "/action-pages"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ko",
+                  "text": "The project includes page templates, an editor, submission exports, notification adapters, and partial connections to campaign platforms. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kq",
+                  "text": "Explore the project and example pages",
+                  "marks": [
+                    "kp"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "kr",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/action-pages",
+          "stack": "TypeScript, Astro, Cloudflare Workers, D1",
+          "language": "TypeScript",
+          "year": "2026",
+          "project_status": "Unfinished experiment"
+        }
+      },
+      {
+        "id": "comma-lab",
+        "slug": "comma-lab",
+        "status": "published",
+        "data": {
+          "title": "comma.ai Video Compression Challenge",
+          "summary": "Ongoing video-compression research, with three submissions that have appeared on comma.ai’s leaderboard.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k2o",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2n",
+                  "text": "I’m working on comma.ai’s lossy video compression challenge: making a driving video smaller while preserving what the challenge’s segmentation and motion-estimation models see. That means testing both the file size and the effect of compression on those models.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2w",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k2q",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/comma-lab"
+                },
+                {
+                  "_key": "k2t",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/tac"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2p",
+                  "text": "I use ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2r",
+                  "text": "comma-lab",
+                  "marks": [
+                    "k2q"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2s",
+                  "text": " for experiments, decoders, evaluation tools, and research records. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2u",
+                  "text": "tac",
+                  "marks": [
+                    "k2t"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2v",
+                  "text": " contains reusable training, compression, and validation code. I develop across Apple Silicon and Linux GPU environments and check submission archives with the challenge’s evaluator.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2y",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2x",
+                  "text": "Leaderboard submissions",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3c",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k30",
+                  "_type": "link",
+                  "href": "https://github.com/commaai/comma_video_compression_challenge/pull/107"
+                },
+                {
+                  "_key": "k33",
+                  "_type": "link",
+                  "href": "https://github.com/commaai/comma_video_compression_challenge/pull/110"
+                },
+                {
+                  "_key": "k36",
+                  "_type": "link",
+                  "href": "https://github.com/commaai/comma_video_compression_challenge/pull/140"
+                },
+                {
+                  "_key": "k39",
+                  "_type": "link",
+                  "href": "https://comma.ai/leaderboard"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2z",
+                  "text": "My submissions ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k31",
+                  "text": "#107",
+                  "marks": [
+                    "k30"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k32",
+                  "text": ", ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k34",
+                  "text": "#110",
+                  "marks": [
+                    "k33"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k35",
+                  "text": ", and ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k37",
+                  "text": "#140",
+                  "marks": [
+                    "k36"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k38",
+                  "text": " have all appeared on the ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3a",
+                  "text": "official leaderboard",
+                  "marks": [
+                    "k39"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3b",
+                  "text": ":",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3e",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3d",
+                  "text": "#107, Apogee: an HNeRV-based representation with a deterministic decoder.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3g",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3f",
+                  "text": "#110: per-frame-pair corrections selected against both segmentation and pose distortion, stored with fixed Huffman coding.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3i",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3h",
+                  "text": "#140: semantic edits and pose compensation, combined with improvements to lossless coding and the archive format.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3k",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3j",
+                  "text": "These submissions build on credited public work. #110 uses #101’s HNeRV representation; #140 builds on the learned renderer and pose components in #130 and #135, including #133’s contributions. The pull requests describe my optimization, selection, coding, and validation work.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3p",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k3m",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/witness-machine"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3l",
+                  "text": "For a more visual introduction to related research, ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3n",
+                  "text": "The Witness Machine",
+                  "marks": [
+                    "k3m"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k3o",
+                  "text": " is an interactive notebook about allocating compression error around what a perception model needs. Its demonstrations are separate from official challenge scores.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k3r",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k3q",
+                  "text": "The research is ongoing. These leaderboard results apply to the challenge’s fixed video and evaluators.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/comma-lab",
+          "live_url": "https://comma.ai/leaderboard",
+          "stack": "Python, PyTorch, MLX, CUDA, entropy coding",
+          "language": "Python",
+          "year": "2026",
+          "project_status": "Active research"
+        }
+      },
+      {
+        "id": "data-for-public-education",
+        "slug": "data-for-public-education",
+        "status": "published",
+        "data": {
+          "title": "Data for Public Education",
+          "summary": "Research, data tools, and web applications for Texas public education.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "ku",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kt",
+                  "text": "I founded Data for Public Education in 2024. I work with Texas AFT, Our Schools, Our Democracy, and other nonprofit clients on school finance, staffing, enrollment, and school closures. I handle the research, data collection, analysis, and software development.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "kz",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "kw",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/teadata"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kv",
+                  "text": "Much of that work starts with ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kx",
+                  "text": "teadata",
+                  "marks": [
+                    "kw"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "ky",
+                  "text": ", my open-source Python library for Texas education data. It brings district and campus records together across sources and school years, so each project can reuse the collection, matching, and validation work.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k16",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k10",
+                  "_type": "link",
+                  "href": "https://dataforpubliceducation.com"
+                },
+                {
+                  "_key": "k13",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/teadata-mcp"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k11",
+                  "text": "DataForPublicEducation.com",
+                  "marks": [
+                    "k10"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k12",
+                  "text": " uses Django and PostgreSQL to provide district profiles, maps, research workspaces, and exports. ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k14",
+                  "text": "teadata-mcp",
+                  "marks": [
+                    "k13"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k15",
+                  "text": " makes the same data available through tools for assistants and a React interface.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k1h",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k18",
+                  "_type": "link",
+                  "href": "https://osod.org/facing-facts-charter-schools-in-texas/"
+                },
+                {
+                  "_key": "k1b",
+                  "_type": "link",
+                  "href": "/work/policy/fiscal-impact-of-charter-school-expansion"
+                },
+                {
+                  "_key": "k1e",
+                  "_type": "link",
+                  "href": "https://www.texasaft.org/post/maximizing-house-bill-2-s-promise-support-staff-raises-new-texas-aft-analysis"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k17",
+                  "text": "Recent work includes the quantitative analysis for ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k19",
+                  "text": "Facing Facts: Charter Schools in Texas",
+                  "marks": [
+                    "k18"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1a",
+                  "text": ", ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1c",
+                  "text": "CharterCostTracker",
+                  "marks": [
+                    "k1b"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1d",
+                  "text": ", and ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1f",
+                  "text": "HB 2 support-staff raise scenarios",
+                  "marks": [
+                    "k1e"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1g",
+                  "text": " for 1,179 Texas school systems. For the pay analysis, I also produced 35 customized PDFs for local union leaders.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k1l",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k1i",
+                  "_type": "link",
+                  "href": "https://dataforpubliceducation.com/research/"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1j",
+                  "text": "Browse the research and datasets",
+                  "marks": [
+                    "k1i"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1k",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-26",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-26",
+                  "href": "/work/policy/facing-facts"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-26",
+                  "text": "Facing Facts: quantitative research and a report figure",
+                  "marks": [
+                    "link-26"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-27",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-27",
+                  "href": "/work/policy/hb2-support-staff-raises"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-27",
+                  "text": "HB 2: support-staff funding models and organizing materials",
+                  "marks": [
+                    "link-27"
+                  ]
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/teadata",
+          "live_url": "https://dataforpubliceducation.com",
+          "stack": "Django, Python, React, TypeScript, MCP, PostgreSQL",
+          "language": "Python",
+          "year": "2024–present",
+          "project_status": "Active"
+        }
+      },
+      {
+        "id": "fmtools",
+        "slug": "fmtools",
+        "status": "published",
+        "data": {
+          "title": "FMTools & FMRuntime",
+          "summary": "Python tools, a Swift runtime, and a local chat interface for working with Apple’s on-device language models.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "portfolio-17",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-17",
+                  "text": "I built FMTools to use Apple’s on-device language models from Python. FMRuntime supplies the Swift runtime and foreign-function interface; FMTools provides the Python API and command-line tools.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-18",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-18",
+                  "text": "The repository also includes FMChat, a separate chat application under standalone/fmchat. It is one way to use the runtime, alongside scripts and structured-generation workflows.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-19",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-19",
+                  "text": "The example below comes from the project’s public support-ticket evaluation fixture. It shows the expected structured output for a short ticket. This website is displaying that reference data; it is not running a model in your browser.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-20",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-20",
+                  "href": "https://github.com/adpena/fmtools"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-20",
+                  "text": "Explore FMTools, FMRuntime, and FMChat",
+                  "marks": [
+                    "link-20"
+                  ]
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-21",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-21",
+                  "href": "https://github.com/adpena/fmtools/blob/main/datasets/evals/support_tickets/dev.jsonl"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-21",
+                  "text": "Inspect the evaluation inputs and expected outputs",
+                  "marks": [
+                    "link-21"
+                  ]
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/fmtools",
+          "stack": "Python, Swift, FFI, Apple Foundation Models",
+          "year": "2026"
+        }
+      },
+      {
+        "id": "molt",
+        "slug": "molt",
+        "status": "published",
+        "data": {
+          "title": "Molt",
+          "summary": "A compiler for turning a supported subset of Python into standalone native binaries and WebAssembly.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k9",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k8",
+                  "text": "I’m building Molt to ship Python applications without requiring a Python installation on the machine that runs them. The compiler targets CPython 3.12+ behavior for the subset of the language it supports.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "kb",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "ka",
+                  "text": "Molt analyzes the whole program, infers types, and removes unused code before generating a binary. The backend is written in Rust. Native compilation and WebAssembly have separate output paths, and differential tests compare supported behavior with CPython.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "kj",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "kd",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/molt/blob/main/docs/spec/STATUS.md"
+                },
+                {
+                  "_key": "kg",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/molt/blob/main/docs/getting-started.md"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kc",
+                  "text": "The project is still in development. Compatibility varies by application and target; WebAssembly parity is incomplete. Unrestricted runtime code execution and monkeypatching are outside the compiled-language design. The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "ke",
+                  "text": "current status",
+                  "marks": [
+                    "kd"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "kf",
+                  "text": " and ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "kh",
+                  "text": "getting-started guide",
+                  "marks": [
+                    "kg"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "ki",
+                  "text": " cover what works and how to try it.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "kl",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "kk",
+                  "text": "The example on this page runs a Python Mandelbrot program that I compiled with Molt. It executes WebAssembly in your browser and shows the program’s standard output. The Python source, compiled binary, and build record are available alongside it.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/molt",
+          "live_url": "https://adpena.com/demo/molt",
+          "stack": "Rust, Python, Wasm, LLVM",
+          "language": "Rust",
+          "year": "2026",
+          "project_status": "Active"
+        }
+      },
+      {
+        "id": "notifications",
+        "slug": "notifications",
+        "status": "published",
+        "data": {
+          "title": "Notifications",
+          "summary": "A TypeScript library for sending one message through multiple services and reporting what succeeded, failed, or was skipped.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "portfolio-13",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-13",
+                  "text": "I built Notifications to keep delivery code out of the rest of an application. A caller supplies one message; adapters handle the details for email, chat, and other services.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-14",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-14",
+                  "text": "Configured adapters run in parallel, each with its own timeout. A failed service does not prevent the others from finishing, and the caller gets a result listing deliveries, failures, and skipped channels.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-15",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-15",
+                  "text": "The demo runs the actual dispatcher with local mock adapters. Try making one channel fail or time out while another succeeds. It does not send messages or require credentials.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "portfolio-16",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "link-16",
+                  "href": "https://github.com/adpena/notifications"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "span-16",
+                  "text": "Source and adapter documentation",
+                  "marks": [
+                    "link-16"
+                  ]
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/notifications",
+          "live_url": "https://adpena.com/demo/notifications",
+          "stack": "TypeScript, Cloudflare Workers",
+          "year": "2026"
+        }
+      },
+      {
+        "id": "reproq",
+        "slug": "reproq",
+        "status": "published",
+        "data": {
+          "title": "Reproq",
+          "summary": "Background tasks for Django and PostgreSQL, with a Go worker and a terminal dashboard.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k26",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k20",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/reproq-django"
+                },
+                {
+                  "_key": "k23",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/reproq-worker"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1z",
+                  "text": "I built Reproq for Django applications that already use PostgreSQL and need background jobs. The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k21",
+                  "text": "Django package",
+                  "marks": [
+                    "k20"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k22",
+                  "text": " handles task definitions, scheduling, and results. A separate ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k24",
+                  "text": "Go worker",
+                  "marks": [
+                    "k23"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k25",
+                  "text": " claims and executes jobs.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k28",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k27",
+                  "text": "Workers use PostgreSQL’s SKIP LOCKED mechanism to claim available tasks. The system supports delayed and periodic jobs, priorities, deduplication, and concurrency limits. Management commands cover cancellation, logs, configuration checks, and worker upgrades.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2d",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k2a",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/reproq-tui"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k29",
+                  "text": "I also built ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2b",
+                  "text": "Reproq TUI",
+                  "marks": [
+                    "k2a"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2c",
+                  "text": ", a terminal dashboard for queue depth, throughput, failures, and worker health. It connects to worker metrics and can include Django-side statistics.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2f",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2e",
+                  "text": "Reproq is in alpha. The setup guide documents deployment requirements, including running one scheduler per database.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/reproq-django",
+          "stack": "Django, Python, Go, PostgreSQL",
+          "language": "Python",
+          "year": "2025",
+          "project_status": "Alpha"
+        }
+      },
+      {
+        "id": "tcdp-donor-identification",
+        "slug": "tcdp-donor-identification",
+        "status": "published",
+        "data": {
+          "title": "TCDP Donor Identification",
+          "summary": "An archived Flask application for matching donor records to voter-file records by phone number.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k2h",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2g",
+                  "text": "I built a small Flask and SQLite application to help match campaign donor records with voter-file information. It used phone numbers to identify possible matches and gave the task a dedicated web interface.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k2m",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k2j",
+                  "_type": "link",
+                  "href": "/work/dev/travis-county-voter-data-api"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k2i",
+                  "text": "This was an early record-linkage project. The later ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2k",
+                  "text": "Travis County voter-data application",
+                  "marks": [
+                    "k2j"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k2l",
+                  "text": " added broader search, mapping, and list-building tools.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "stack": "Flask, Python, SQLite",
+          "language": "Python",
+          "year": "2018",
+          "project_status": "Archive"
+        }
+      },
+      {
+        "id": "texas-inflation-calculator",
+        "slug": "texas-inflation-calculator",
+        "status": "published",
+        "data": {
+          "title": "Texas Inflation Calculator",
+          "summary": "A browser calculator for comparing purchasing power across years using CPI data published by the Texas Comptroller.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k1t",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1s",
+                  "text": "Enter a dollar amount and choose two periods to see how its purchasing power changes after inflation. I built the calculator as a static page with Vue, Papa Parse, and Chart.js; the chart shows the CPI values used in the calculation.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k1y",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_key": "k1v",
+                  "_type": "link",
+                  "href": "https://github.com/adpena/TexasInflationCalculator"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1u",
+                  "text": "The ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1w",
+                  "text": "source repository",
+                  "marks": [
+                    "k1v"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "k1x",
+                  "text": " includes the page and a CSV from the Texas Comptroller’s Key Economic Indicators dataset. Results use that saved data release, so the available periods depend on when the CSV was last updated. The app needs no server or build step.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/TexasInflationCalculator",
+          "live_url": "https://adpena.com/demo/inflation",
+          "stack": "Vue.js, Chart.js, HTML",
+          "language": "JavaScript",
+          "year": "2023",
+          "project_status": "Published tool"
+        }
+      },
+      {
+        "id": "travis-county-voter-data-api",
+        "slug": "travis-county-voter-data-api",
+        "status": "published",
+        "data": {
+          "title": "Travis County Voter Data",
+          "summary": "A voter-data application for searching registration and election history, mapping records, and building lists.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "k1n",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1m",
+                  "text": "I built a database and web application around Travis County’s public voter-registration and election-history files. Campaign researchers could search records, inspect voting history, build lists, draw organizing areas on a map, and export CSVs.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k1p",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1o",
+                  "text": "My work covered file ingestion, geocoding, record matching, and the search interface. I used Python, Go, Flask, PostgreSQL, and SQLite across the project, including SQLAlchemy filters and handwritten SQL for similarity ranking. I also replaced hardcoded election rules with mappings that could accommodate new county files.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "k1r",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "k1q",
+                  "text": "This is a historical project; the portfolio does not expose voter records or a live search service.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "stack": "Python, Go, Flask, SQLAlchemy, PostgreSQL, SQLite",
+          "language": "Python",
+          "year": "2019",
+          "project_status": "Archive"
+        }
+      }
+    ]
+  }
 }

@@ -13,7 +13,7 @@ export interface GeoFilterConfig {
   /** Filter mode */
   mode: "whitelist" | "blacklist" | "off";
   /** ISO 3166-1 alpha-2 country codes */
-  countries: string[];
+  countries: readonly string[];
   /**
    * When true, allow submissions from unknown countries (XX, T1, null)
    * even in whitelist mode. Default: false (strict FEC compliance).

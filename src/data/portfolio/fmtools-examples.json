@@ -1,0 +1,50 @@
+[
+  {
+    "ticket_id": "T-100",
+    "email_subject": "Cannot login",
+    "email_body": "I've been trying to reset my password but the link never arrives. Please help me access my account!",
+    "expected": {
+      "department": "IT",
+      "urgency": 4,
+      "summary": "Password reset email is not arriving and the customer cannot access their account."
+    },
+    "metadata": {
+      "slice": [
+        "account_access",
+        "auth"
+      ]
+    }
+  },
+  {
+    "ticket_id": "T-101",
+    "email_subject": "Billing issue",
+    "email_body": "I was charged twice this month for my premium subscription. I need a refund immediately.",
+    "expected": {
+      "department": "Billing",
+      "urgency": 5,
+      "summary": "Customer was double charged for a premium subscription and needs an urgent refund."
+    },
+    "metadata": {
+      "slice": [
+        "billing",
+        "refund"
+      ]
+    }
+  },
+  {
+    "ticket_id": "T-102",
+    "email_subject": "Feature request",
+    "email_body": "It would be great if we could export our dashboard data to a PDF format instead of just CSV.",
+    "expected": {
+      "department": "Other",
+      "urgency": 1,
+      "summary": "Customer is requesting PDF export support for dashboard data."
+    },
+    "metadata": {
+      "slice": [
+        "feature_request",
+        "product_feedback"
+      ]
+    }
+  }
+]

@@ -1,3 +1,4 @@
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, type ReactNode, type FormEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle, inputStyle, errorStyle as errStyle, submitButtonStyle } from "./form-styles.ts";
@@ -33,6 +34,7 @@ export function GOTVAction({
   submitUrl = "/api/action/submit",
   locale: localeProp,
 }: GOTVActionProps): ReactNode {
+  const request = useActionRequest();
   const locale = getLocale(localeProp);
   const { count: liveCount } = useActionCount(
     progress?.enabled ? pageId : undefined,
@@ -83,7 +85,7 @@ export function GOTVAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

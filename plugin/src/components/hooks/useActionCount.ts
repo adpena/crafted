@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { DemoMode } from "../DemoMode.ts";
 import { useState, useEffect } from "react";
 import { useSSECount } from "./useSSECount.ts";
 
@@ -15,6 +17,8 @@ export function useActionCount(
   refreshInterval?: number,
   sseUrl?: string,
 ): { count: number; raised: number; loading: boolean; live: boolean } {
+  const demo = useContext(DemoMode);
+  if (demo) { slug = undefined; sseUrl = undefined; }
   const [count, setCount] = useState(0);
   const [raised, setRaised] = useState(0);
   const [loading, setLoading] = useState(!!slug);
@@ -48,10 +52,11 @@ export function useActionCount(
       try {
         const res = await fetch(`${countUrl}?slug=${encodeURIComponent(slug!)}`);
         if (!res.ok) return;
-        const json = await res.json();
+        const json: unknown = await res.json();
+        if (!json || typeof json !== "object") return;
         if (!cancelled) {
-          setCount(json.count ?? 0);
-          setRaised(json.raised ?? 0);
+          setCount("count" in json && typeof json.count === "number" && Number.isFinite(json.count) && json.count >= 0 ? json.count : 0);
+          setRaised("raised" in json && typeof json.raised === "number" && Number.isFinite(json.raised) && json.raised >= 0 ? json.raised : 0);
         }
       } catch {
         // Silently fail — progress bar just shows 0

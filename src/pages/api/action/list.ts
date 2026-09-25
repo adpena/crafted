@@ -20,10 +20,10 @@ import {
 
 const PLUGIN_ID = "action-pages";
 const MAX_LIMIT = 200;
-const ALLOWED_FIELDS = ["first_name", "last_name", "email", "zip", "comment", "amount"];
+const ALLOWED_FIELDS = ["first_name", "last_name", "email", "zip", "comment", "amount"] as const;
 
 export const GET: APIRoute = async ({ url, request }) => {
-	const e = env as Record<string, unknown>;
+	const e = env;
 	const db = e.DB as TenancyD1 | undefined;
 	const kv = e.CACHE as TenancyKV | undefined;
 	const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
@@ -78,7 +78,7 @@ export const GET: APIRoute = async ({ url, request }) => {
 		let rows = results.map((r) => {
 			const d = JSON.parse(r.data as string);
 			const data = (d.data as Record<string, unknown>) ?? {};
-			const picked: Record<string, unknown> = {};
+			const picked: Partial<Record<(typeof ALLOWED_FIELDS)[number], unknown>> = {};
 			for (const k of ALLOWED_FIELDS) if (k in data) picked[k] = data[k];
 			return {
 				id: r.id as string,

@@ -25,7 +25,7 @@ interface CapturedCall {
 }
 
 function makeFetchStub(
-	response: Partial<Response> & { ok: boolean; status?: number; body?: string },
+	response: { ok: boolean; status?: number; body?: string },
 ) {
 	const calls: CapturedCall[] = [];
 	const fn = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {

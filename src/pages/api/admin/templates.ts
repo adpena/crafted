@@ -243,7 +243,7 @@ const TEMPLATES: PageTemplate[] = [
 ];
 
 export const GET: APIRoute = async ({ url, request }) => {
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+	const token = env.MCP_ADMIN_TOKEN as string | undefined;
 	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
 		return json(401, { error: "Unauthorized" });
 	}

@@ -6,11 +6,43 @@ import { fileURLToPath } from "node:url";
 import emdash from "emdash/astro";
 import { actionPages } from "./plugin/src/index.ts";
 
+const cms = emdash({
+	database: d1({ binding: "DB", session: "auto" }),
+	storage: r2({ binding: "MEDIA" }),
+	// Switch to sandboxed: [actionPages()] for Worker isolate sandboxing (requires Workers Paid)
+	plugins: [actionPages()],
+});
+
+// EmDash 0.1.0 unconditionally injects a sitemap even when the site supplies one.
+// Keep our sitemap's static pages and work URLs without registering the route twice.
+const setupCms = cms.hooks["astro:config:setup"];
+cms.hooks["astro:config:setup"] = (options) => setupCms?.({
+	...options,
+	injectRoute(route) {
+		if (route.pattern !== "/sitemap.xml") options.injectRoute(route);
+	},
+});
+
 export default defineConfig({
 	output: "server",
-	adapter: cloudflare(),
+	adapter: cloudflare({ persistState: process.env.PORTFOLIO_TEST_STATE ? { path: process.env.PORTFOLIO_TEST_STATE } : true }),
 	vite: {
+		optimizeDeps: { include: ["react", "react-dom/client", "@adpena/notifications"] },
+		// Prebundle the dependencies otherwise discovered during the first request.
+		// A late optimizer reload can split React and react-dom across module graphs.
+		ssr: {
+			optimizeDeps: {
+				include: [
+					"@adpena/notifications", "@astrojs/cloudflare/entrypoints/server",
+					"@emdash-cms/cloudflare/sandbox", "@emdash-cms/cloudflare/db/d1", "@emdash-cms/cloudflare/storage/r2",
+					"emdash", "emdash/page", "emdash/ui", "emdash/runtime", "emdash/media/local-runtime",
+					"emdash/middleware", "emdash/middleware/redirect", "emdash/middleware/setup",
+					"emdash/middleware/auth", "emdash/middleware/request-context", "astro/zod",
+				],
+			},
+		},
 		resolve: {
+			dedupe: ["react", "react-dom"],
 			alias: {
 				"@adpena/action-pages/sandbox": fileURLToPath(new URL("./plugin/src/sandbox-entry.ts", import.meta.url)),
 				"@adpena/action-pages/admin": fileURLToPath(new URL("./plugin/src/admin/index.tsx", import.meta.url)),
@@ -24,12 +56,7 @@ export default defineConfig({
 	},
 	integrations: [
 		react(),
-		emdash({
-			database: d1({ binding: "DB", session: "auto" }),
-			storage: r2({ binding: "MEDIA" }),
-			// Switch to sandboxed: [actionPages()] for Worker isolate sandboxing (requires Workers Paid)
-			plugins: [actionPages()],
-		}),
+		cms,
 	],
 	devToolbar: { enabled: false },
 });

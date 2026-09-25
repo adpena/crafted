@@ -1,0 +1,101 @@
+{
+  "name": "Alejandro Peña",
+  "location": "Austin, Texas",
+  "email": "contact@adpena.com",
+  "updated": "2026-09-25",
+  "education": [
+    "Rice University — B.A. in Political Science; Minor in Business, May 2013. Presidential Scholar.",
+    "PCAP — Certified Associate in Python Programming, 2019."
+  ],
+  "experience": [
+    {
+      "role": "Founder & Principal Consultant",
+      "organization": "Data for Public Education",
+      "dates": "October 2024–present",
+      "software": [
+        "Built teadata, an open-source Python engine for Texas education data, with SQLAlchemy/PostgreSQL persistence, validation, and versioned sources.",
+        "Built dataforpubliceducation.com with Django and PostgreSQL: district and campus profiles, maps, research workspaces, and controlled exports.",
+        "Automated statewide workbooks and 35 district PDFs for Texas AFT’s HB 2 analysis, documenting data anomalies and fallback rules."
+      ],
+      "research": [
+        "Lead nonprofit research across school finance, staffing, accountability, transfers, and closures for clients including Texas AFT and Our Schools, Our Democracy.",
+        "Conducted all quantitative research and analysis for Facing Facts: Charter Schools in Texas, maintaining source records and independently checking fiscal totals.",
+        "Analyzed HB 2 retention funding across 1,179 school systems; automated workbooks and 35 district PDFs with documented staffing assumptions and fallback rules."
+      ]
+    },
+    {
+      "role": "Government Relations Specialist & Policy Analyst",
+      "organization": "Texas AFT",
+      "dates": "November 2021–January 2025",
+      "software": [
+        "Built CharterCostTracker’s collection, reconciliation, and reporting pipeline with Python, Selenium, aiohttp, and automated spreadsheet/Word/PDF output.",
+        "Produced a fiscal dataset for 1,023 districts over five years with school-finance experts; preserved metadata and separated observed transfers from estimates.",
+        "Wrote the 2024 Lost Decade and a Half report, conducted its analysis, and built responsive district tables."
+      ],
+      "research": [
+        "Served as Texas AFT’s lead Texas House legislative agent; produced testimony, amendments, briefs, maps, and reports with policy, communications, and organizing colleagues.",
+        "Wrote the 2024 Lost Decade and a Half report, performed its analysis, and built responsive HTML tables. Wrote the June 2024 CharterCostTracker article.",
+        "Collaborated with Every Texan on education savings account fiscal models under explicit participation scenarios, producing summaries for all 150 House and 31 Senate districts."
+      ]
+    },
+    {
+      "role": "Legislative Director",
+      "organization": "Office of State Rep. Eddie Rodriguez",
+      "dates": "January 2017–November 2021",
+      "software": [
+        "Directed research, constituent services, communications, and stakeholder work; drafted legislation and managed aides and session deadlines."
+      ],
+      "research": [
+        "Directed research, constituent services, communications, and stakeholder work; drafted bills and amendments and managed legislative aides.",
+        "Principal drafter of HB 2108, whose cottage-food framework became law in SB 572 (86-R). Worked with Mobile Loaves & Fishes on HB 115 (87-R) to support Community First! Village’s expansion."
+      ]
+    },
+    {
+      "role": "Legislative Aide & Digital/Communications Director",
+      "organization": "Rep. Trey Martinez Fischer / Mexican American Legislative Caucus",
+      "dates": "2013–January 2017",
+      "software": [
+        "Advanced from intern to legislative and communications roles; managed websites and newsletters and supported policy research and constituent correspondence."
+      ],
+      "research": [
+        "Advanced from intern to legislative and caucus communications roles; supported research and correspondence and managed websites, newsletters, and public communications."
+      ]
+    }
+  ],
+  "versions": {
+    "software": {
+      "title": "Software engineering",
+      "summary": "I build data pipelines, research tools, and web applications. My work combines Python and SQL development, public data acquisition, and experience delivering research for policy teams.",
+      "skills": "Python, SQL, TypeScript, React, Django, Flask, PostgreSQL, SQLite, DuckDB, pandas, Polars, Selenium, aiohttp, Git and automated testing.",
+      "projects": [
+        {
+          "title": "Molt",
+          "href": "/work/dev/molt",
+          "text": "Developing a compiler for a supported subset of Python, with native and WebAssembly targets and a working compiled browser example."
+        },
+        {
+          "title": "comma.ai compression challenge",
+          "href": "/work/dev/comma-lab",
+          "text": "Ongoing lossy video compression work. Submissions PR 107, PR 110, and PR 140 have appeared on the leaderboard at different points."
+        },
+        {
+          "title": "Travis County Voter Data",
+          "href": "/work/dev/travis-county-voter-data-api",
+          "text": "Python/Go and SQL development for ingestion, matching, geocoding, search, maps, and exports over county voter-registration and election-history data."
+        }
+      ]
+    },
+    "research": {
+      "title": "Research & consulting",
+      "summary": "I research Texas public policy and build the software needed to investigate it. My work includes school-finance models, longitudinal analysis, public reports, data tools, and legislative research.",
+      "skills": "Policy and fiscal analysis, public data acquisition, source validation, record matching, geospatial analysis, Python, SQL, Excel and Google Sheets, automated reporting, responsive web tables, legislative drafting and stakeholder coordination.",
+      "projects": [
+        {
+          "title": "CharterCostTracker",
+          "href": "/work/policy/fiscal-impact-of-charter-school-expansion",
+          "text": "Built all engineering for statewide charter-transfer revenue estimates and automated district reports. Reviewed the estimation method with school-finance experts and disclosed inputs and assumptions."
+        }
+      ]
+    }
+  }
+}

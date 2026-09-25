@@ -21,9 +21,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ONE_YEAR_SEC = 86400 * 365;
 
 export const GET: APIRoute = async ({ url, request, clientAddress }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
   const secret = e.UNSUBSCRIBE_SECRET as string | undefined;
-  const kv = e.KV as KVNamespace | undefined;
+  const kv = e.CACHE as KVNamespace | undefined;
 
   if (!secret || !kv) {
     return htmlResponse(503, page("Unsubscribe unavailable", "This service is not configured. Please contact support."));

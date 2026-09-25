@@ -1,10 +1,11 @@
 ---
+import { isPublicPortfolioSlug } from "../../../lib/portfolio-content";
 import { getEmDashEntry } from "emdash";
 import { PortableText } from "emdash/ui";
 import Base from "../../../layouts/Base.astro";
 
 const { slug } = Astro.params;
-if (!slug) return Astro.redirect("/404");
+if (!slug || !isPublicPortfolioSlug(slug)) return new Response("Not found", { status: 404 });
 
 const { entry, cacheHint } = await getEmDashEntry("writing", slug);
 if (!entry) return Astro.redirect("/404");
@@ -21,7 +22,7 @@ const d = entry.data as {
 	excerpt?: string;
 	content?: unknown;
 };
-const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "numeric", month: "long" }) : null;
+const dateStr = d.date ? new Date(d.date).toLocaleDateString("en-US", { year: "numeric", month: "long", timeZone: "UTC" }) : null;
 const ogImage = `/og/${slug}.png`;
 ---
 

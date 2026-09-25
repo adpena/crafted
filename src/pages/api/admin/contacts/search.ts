@@ -34,7 +34,7 @@ interface SearchBody {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
   const db = e.DB as ContactsD1 | undefined;
   const kv = e.CACHE as TenancyKV | undefined;
   const mcpToken = e.MCP_ADMIN_TOKEN as string | undefined;
