@@ -4,6 +4,7 @@ import { WORK_FILTERS, parseWorkFilter, workFilterHref, type WorkFilter } from "
 export interface WorkEntry {
   id: string;
   slug: string;
+  href?: string;
   editRef?: string;
   data: {
     title: string;
@@ -61,7 +62,7 @@ export default function WorkListing({ sections, initialFilter = "all" }: {
                 const year = entry.data.year || (entry.data.date ? String(new Date(entry.data.date).getUTCFullYear()) : "");
                 return (
                   <li key={`${section.slug}-${entry.id}`} {...(entry.editRef ? { "data-emdash-ref": entry.editRef } : {})}>
-                    <a href={`/work/${section.slug}/${entry.id}`} className="compact-item">
+                    <a href={entry.href ?? `/work/${section.slug}/${entry.id}`} className="compact-item">
                       <span className="compact-title" {...(entry.fieldRefs?.title ? { "data-emdash-ref": entry.fieldRefs.title } : {})}>{entry.data.title}</span>
                       <span className="compact-year">{year}</span>
                     </a>

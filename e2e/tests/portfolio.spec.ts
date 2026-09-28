@@ -57,10 +57,30 @@ test('audience links and About work without JavaScript', async ({ browser, baseU
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/focus=research/);
   await expect(page.locator('.work-index [data-collection="policy"]')).toBeVisible();
+  await page.goto('/?focus=writing#work');
+  await expect(page.locator('.work-index [data-collection="writing"] .compact-item')).toHaveCount(2);
+  await expect(page.locator('.work-index a[href*="web.archive.org"]')).toHaveCount(2);
   expect((await page.goto('/about'))?.status()).toBe(200);
   await expect(page.locator('#about-body')).toContainText('full-stack engineer');
   await expect(page.locator('#about-body')).toBeVisible();
   await context.close();
+});
+
+test('writing lists published Texas AFT articles and hides the Action Pages article', async ({ page, request }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));
+  await page.getByRole('navigation', { name: 'Filter work' }).getByRole('link', { name: 'Writing', exact: true }).click();
+  const writing = page.locator('.work-index [data-collection="writing"]');
+  await expect(writing.getByRole('link', { name: /^The Lost Decade \(and a Half\)\s+2024$/ })).toHaveAttribute('href', /web\.archive\.org\/web\/\d+\/https:\/\/www\.texasaft\.org\/lost-decade-and-a-half\//);
+  await expect(writing.getByRole('link', { name: /The Growing Financial Strain/ })).toHaveAttribute('href', /web\.archive\.org.*the-growing-financial-strain/);
+  await expect(writing).not.toContainText('Action Pages');
+  for (const path of ['/', '/action-pages', '/rss.xml', '/sitemap.xml', '/sitemap-writing.xml']) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).not.toContain('building-action-network-on-cloudflare');
+  }
+  expect((await request.get('/work/writing/building-action-network-on-cloudflare')).status()).toBe(404);
+  expect((await request.get('/action-pages')).status()).toBe(200);
 });
 
 test('resumes and contact are reachable from the homepage', async ({ page, request }) => {

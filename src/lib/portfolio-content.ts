@@ -1,6 +1,7 @@
 /** Public exclusions apply even if a CMS row is accidentally published. */
 export const EXCLUDED_PORTFOLIO_SLUGS = new Set([
   "working-but-uncovered", "tx-working-but-uncovered",
+  "building-action-network-on-cloudflare",
 ]);
 
 export function isPublicPortfolioSlug(slug: string): boolean {

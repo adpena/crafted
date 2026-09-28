@@ -9,6 +9,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const wrangler = resolve(root, 'node_modules/.bin/wrangler');
 const collections = ['pages', 'dev', 'design', 'policy', 'writing'];
 const excluded = ['working-but-uncovered', 'tx-working-but-uncovered'];
+const excludedPaths = [...excluded.map((slug) => `/work/dev/${slug}`), '/work/writing/building-action-network-on-cloudflare'];
 const privateDir = resolve(root, '.portfolio-release');
 const statePath = resolve(privateDir, 'prepared.json');
 const command = process.argv[2];
@@ -65,7 +66,7 @@ function checkPrepared(state) {
   if (state.tree !== run('git', ['rev-parse', 'HEAD^{tree}']).trim()) throw new Error('Git tree changed since prepare. Prepare again.');
 }
 export async function verifyLive(origin = 'https://adpena.com') {
-  const paths = ['/', '/?focus=software', '/?focus=research', '/about', '/contact', '/resume/software', '/resume/research', '/sitemap.xml', '/rss.xml',
+  const paths = ['/', '/?focus=software', '/?focus=research', '/?focus=writing', '/action-pages', '/about', '/contact', '/resume/software', '/resume/research', '/sitemap.xml', '/sitemap-writing.xml', '/rss.xml',
     '/resumes/alejandro-pena-software.pdf', '/resumes/alejandro-pena-research.pdf'];
   const checked = [];
   for (const path of paths) {
@@ -75,16 +76,16 @@ export async function verifyLive(origin = 'https://adpena.com') {
     if (path.endsWith('.pdf')) {
       if (body.subarray(0, 5).toString() !== '%PDF-') throw new Error(`${path}: not a PDF`);
     } else {
-      if (excluded.some((slug) => body.includes(`/work/dev/${slug}`))) throw new Error(`${path}: excluded project exposed`);
+      if (excludedPaths.some((excludedPath) => body.includes(excludedPath))) throw new Error(`${path}: excluded project exposed`);
       if (path === '/' && (!body.includes('Selected work') || !body.includes('CharterCostTracker'))) throw new Error('Homepage is stale or incomplete');
       if (path === '/about' && !body.includes('full-stack engineer')) throw new Error('About content is missing');
     }
     checked.push(path);
   }
-  for (const slug of excluded) {
-    const response = await fetch(new URL(`/work/dev/${slug}`, origin), { signal: AbortSignal.timeout(30000) });
-    if (response.status !== 404) throw new Error(`${slug}: expected 404, received ${response.status}`);
-    checked.push(`/work/dev/${slug}`);
+  for (const path of excludedPaths) {
+    const response = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(30000) });
+    if (response.status !== 404) throw new Error(`${path}: expected 404, received ${response.status}`);
+    checked.push(path);
   }
   return checked;
 }
