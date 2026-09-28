@@ -8,9 +8,18 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('portfolio_backup', ROOT / 'scripts/backup-site.py')
 backup = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(backup)
+upgrade_spec = importlib.util.spec_from_file_location('emdash_upgrade', ROOT / 'scripts/verify-emdash-upgrade.py')
+upgrade = importlib.util.module_from_spec(upgrade_spec)
+upgrade_spec.loader.exec_module(upgrade)
 
 
 class BackupTests(unittest.TestCase):
+    def test_upgrade_allows_only_equivalent_date_formatting(self):
+        self.assertTrue(upgrade.compatible_value('ec_policy', 'date', '2024-06-27', '2024-06-27T00:00:00.000Z', {}))
+        self.assertFalse(upgrade.compatible_value('ec_policy', 'date', '2024-06-27', '2024-06-28T00:00:00.000Z', {}))
+        self.assertFalse(upgrade.compatible_value('ec_dev', 'draft_revision_id', 'protected', None, {}))
+        self.assertFalse(upgrade.compatible_value('revisions', 'data', '{"content":"original"}', '{"content":"changed"}', {'collection':'dev'}))
+
     def test_restore_rebuilds_search_without_copying_shadow_tables(self):
         source = sqlite3.connect(':memory:')
         source.row_factory = sqlite3.Row
@@ -38,6 +47,32 @@ class BackupTests(unittest.TestCase):
     def test_unknown_virtual_tables_fail_closed(self):
         with self.assertRaises(ValueError):
             backup.restoration_sql([{'name':'coordinates','type':'table','tbl_name':'coordinates','sql':'CREATE VIRTUAL TABLE coordinates USING rtree(id,min,max)'}], '')
+
+    def test_stored_fts_rebuilds_extracted_prose_and_keeps_triggers(self):
+        source = sqlite3.connect(':memory:')
+        source.row_factory = sqlite3.Row
+        source.executescript('''
+          CREATE TABLE ec_posts(id TEXT PRIMARY KEY, body TEXT, deleted_at TEXT);
+          CREATE VIRTUAL TABLE _emdash_fts_posts USING fts5(id UNINDEXED, body);
+          CREATE TRIGGER _emdash_fts_posts_insert AFTER INSERT ON ec_posts
+          WHEN NEW.deleted_at IS NULL BEGIN
+            INSERT INTO _emdash_fts_posts(rowid,id,body)
+            VALUES(NEW.rowid,NEW.id,json_extract(NEW.body,'$.text')); END;
+          CREATE TRIGGER _emdash_fts_posts_delete AFTER DELETE ON ec_posts BEGIN
+            DELETE FROM _emdash_fts_posts WHERE rowid=OLD.rowid; END;
+        ''')
+        schema = [dict(r) for r in source.execute('SELECT name,type,tbl_name,sql FROM sqlite_master WHERE sql IS NOT NULL')]
+        data = '''INSERT INTO ec_posts VALUES('p','{"text":"educator pay"}',NULL);
+                  INSERT INTO ec_posts VALUES('deleted','{"text":"hidden"}','2026');'''
+        sql, tables = backup.restoration_sql(schema, data)
+        self.assertEqual([t['name'] for t in tables], ['ec_posts'])
+        restored = sqlite3.connect(':memory:')
+        restored.executescript(sql)
+        self.assertEqual(restored.execute("SELECT body FROM _emdash_fts_posts WHERE _emdash_fts_posts MATCH 'educator'").fetchall(), [('educator pay',)])
+        self.assertEqual(restored.execute('SELECT COUNT(*) FROM _emdash_fts_posts').fetchone()[0], 1)
+        restored.execute("DELETE FROM ec_posts WHERE id='p'")
+        self.assertEqual(restored.execute('SELECT COUNT(*) FROM _emdash_fts_posts').fetchone()[0], 0)
+        restored.close(); source.close()
 
     def test_archive_preserves_data_and_removes_only_named_orphans(self):
         db = sqlite3.connect(':memory:')

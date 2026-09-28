@@ -89,7 +89,7 @@ if (!cached) {
 			try {
 				const result = await getEmDashCollection(def.slug);
 				if (result.cacheHint) {
-					try { Astro.cache.set(result.cacheHint); } catch {}
+					try { if (Astro.cache.enabled) Astro.cache.set(result.cacheHint); } catch {}
 				}
 				return serializeEntries(result.entries, def.slug, def.label);
 			} catch {}
@@ -112,10 +112,12 @@ const selected = [
   { label: "Software", href: "/?focus=software#work", projects: [
     { title: "Molt", href: "/work/dev/molt", description: "I’m building a compiler that turns Python into native binaries and WebAssembly.", detail: "Compiler development · Python & Rust" },
     { title: "comma.ai compression", href: "/work/dev/comma-lab", description: "I work on lossy video compression. Three of my submissions have appeared on the challenge leaderboard.", detail: "Ongoing research · PRs 107, 110 & 140" },
+    { title: "teadata", href: "https://github.com/adpena/teadata", description: "I built a Python toolkit for joining Texas school datasets and querying districts, campuses, and charter-school transfers.", detail: "Python · Data pipelines & geospatial queries" },
   ] },
   { label: "Research", href: "/?focus=research#work", projects: [
     { title: "The Lost Decade (and a Half)", href: "/work/policy/the-lost-decade-and-a-half", description: "I wrote the 2024 report on educator pay, did the analysis, and built the responsive district tables.", detail: "Research, writing & web development" },
     { title: "CharterCostTracker", href: "/work/policy/fiscal-impact-of-charter-school-expansion", description: "I built the data collection and reporting system for estimating how charter transfers affect district revenue.", detail: "Data engineering & school finance" },
+    { title: "Facing Facts", href: "/work/policy/facing-facts", description: "I did the quantitative research for this report on Texas charter-school spending, staffing, and oversight.", detail: "Research · Our Schools, Our Democracy" },
   ] },
 ];
 ---

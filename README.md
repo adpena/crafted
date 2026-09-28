@@ -10,7 +10,7 @@ Publishing, backups, and recovery: [docs/deploy.md](docs/deploy.md).
 
 ## What this is
 
-**The portfolio** is a newspaper-style editorial site running on Astro 6 + Cloudflare Workers. Content is managed through emdash's admin UI and MCP server.
+**The portfolio** is a newspaper-style editorial site running on Astro 7 + Cloudflare Workers. Content is managed through emdash's admin UI and MCP server.
 
 **The plugin** is an unfinished emdash experiment for campaign action pages. Its public samples do not send submissions. The source includes FEC and state disclaimer auto-generation, geo-personalized donation asks, ActBlue deep-linking, A/B testing at the edge, and Turnstile bot protection. Action pages are embeddable anywhere via a single `<script>` tag.
 

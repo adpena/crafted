@@ -1,6 +1,6 @@
 # Crafted — repository context
 
-Alejandro Peña’s portfolio at https://adpena.com, built with Astro 6, EmDash 0.1.0, React islands, and Cloudflare Workers/D1/R2/KV. Software and research have equal prominence. Write plainly, specifically, and in first person; use technical detail where it explains the work.
+Alejandro Peña’s portfolio at https://adpena.com, built with Astro 7, EmDash 1.0.1, React islands, and Cloudflare Workers/D1/R2/KV. Software and research have equal prominence. Write plainly, specifically, and in first person; use technical detail where it explains the work.
 
 ## Content and scope
 
@@ -15,7 +15,7 @@ Alejandro Peña’s portfolio at https://adpena.com, built with Astro 6, EmDash 
 
 ## Development and checks
 
-Use Node 22 (`.nvmrc`) and Python 3.10+. `.npmrc` disables install scripts; explicitly rebuild `better-sqlite3` for the current Node version before using the EmDash CLI. Newer Node releases are not a substitute for this tested runtime.
+Use Node 22.23.3 or newer in the Node 22 line (`.nvmrc`) and Python 3.10+. `.npmrc` disables install scripts; explicitly rebuild `better-sqlite3` for the current Node version before using the EmDash CLI. Use only the root install and lockfile; a nested `plugin/node_modules` can bundle an older CMS alongside the current one.
 
 ```sh
 npm ci
@@ -47,7 +47,7 @@ Backups and release receipts contain private CMS information and belong only in 
 - `src/components/ProjectArtifacts.astro`: source-backed project exhibits. Molt runs a precompiled Wasm program; Notifications uses the actual dispatcher with mock transports; the inflation calculator uses a dated CPI snapshot.
 - `plugin/`: Action Pages source and admin code. Maintained as an unfinished experiment, not a completed campaign product.
 - `src/lib/auth.ts`, API routes, and plugin tests describe the actual security/transport behavior. Do not infer verified delivery from an adapter’s existence.
-- EmDash 0.1.0 can generate faulty external-content FTS update/delete triggers. Read `migrations/README.md` before schema changes. Do not blindly upgrade or reseed to fix search.
-- Astro v6 request context uses `locals.cfContext.waitUntil()`. Inspect current types before assuming older runtime APIs.
+- EmDash 1 stores plain text in self-contained FTS tables. Backups rebuild these using the CMS insert triggers. Read `docs/deploy.md` before core upgrades; production checks migrations and never applies them on public requests.
+- Astro request context uses `locals.cfContext.waitUntil()`. Inspect current types before assuming older runtime APIs.
 - Prefer global CSS for shared components; earlier scoped assets with `@` in their names were served incorrectly by Workers.
 - Representative lookup in the unfinished Action Pages experiment is not a confirmed working integration. Do not reintroduce the obsolete ProPublica recommendation.

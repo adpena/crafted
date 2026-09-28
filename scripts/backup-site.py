@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import sqlite3
 import subprocess
@@ -26,8 +27,9 @@ def run_wrangler(args):
     return result.stdout
 
 
-def query(database, location, sql):
-    result = json.loads(run_wrangler(['d1', 'execute', database, location, '--command', sql, '--json']))
+def query(database, location, sql, persist_to=None):
+    persistence = ['--persist-to', str(persist_to)] if persist_to else []
+    result = json.loads(run_wrangler(['d1', 'execute', database, location, *persistence, '--command', sql, '--json']))
     if not result or any(not r.get('success') for r in result):
         raise RuntimeError('D1 query did not succeed')
     return [row for r in result for row in r['results']]
@@ -37,17 +39,41 @@ def restoration_sql(schema, data):
     virtual = [r for r in schema if r['type'] == 'table' and r['sql'] and
                r['sql'].upper().startswith('CREATE VIRTUAL TABLE')]
     for r in virtual:
-        if 'USING fts5' not in r['sql'] or 'content=' not in r['sql']:
+        if not re.search(r'\bUSING\s+fts5\b', r['sql'], re.I):
             raise ValueError(f"Unsupported virtual table: {r['name']}")
+        if re.search(r"\bcontent\s*=\s*['\"]\s*['\"]", r['sql'], re.I):
+            raise ValueError(f"Cannot restore contentless FTS: {r['name']}")
     excluded = lambda name: name.startswith(('sqlite_', '_cf_')) or any(
         name.startswith(r['name'] + '_') for r in virtual)
     tables = [r for r in schema if r['type'] == 'table' and r not in virtual and not excluded(r['name'])]
     other = [r for r in schema if r['type'] in ('index', 'trigger', 'view') and r['sql'] and
              not excluded(r['name']) and not excluded(r['tbl_name'])]
+    # EmDash 1 stores extracted prose in FTS instead of mirroring raw JSON.
+    # Let its own insert trigger rebuild those values from restored content.
+    # This also keeps FTS rowids aligned when an export reassigns base rowids.
+    stored = [r for r in virtual if not re.search(r'\bcontent\s*=', r['sql'], re.I)]
+    early_triggers = []
+    for r in stored:
+        base = 'ec_' + r['name'].removeprefix('_emdash_fts_')
+        triggers = [t for t in schema if t['type'] == 'trigger' and
+                    t['name'] == r['name'] + '_insert' and t['tbl_name'] == base and
+                    re.search(r'\bAFTER\s+INSERT\b', t['sql'], re.I)]
+        if not r['name'].startswith('_emdash_fts_') or len(triggers) != 1:
+            raise ValueError(f"Missing EmDash FTS insert trigger: {r['name']}")
+        early_triggers += triggers
+    # FTS triggers share the virtual table prefix; shadow-table exclusion must
+    # not remove the triggers that keep a restored index up to date.
+    fts_triggers = [r for r in schema if r['type'] == 'trigger' and r['sql'] and
+                    any(r['name'] == v['name'] + suffix for v in virtual
+                        for suffix in ('_insert', '_update', '_delete'))]
+    other = [r for r in other if r not in early_triggers]
+    other += [r for r in fts_triggers if r not in early_triggers and r not in other]
     sql = ['PRAGMA foreign_keys=OFF;', 'BEGIN;']
     sql += [r['sql'] + ';' for r in tables]
+    sql += [r['sql'] + ';' for r in stored]
+    sql += [r['sql'] + ';' for r in early_triggers]
     sql += [data]
-    sql += [r['sql'] + ';' for r in virtual]
+    sql += [r['sql'] + ';' for r in virtual if r not in stored]
     sql += [r['sql'] + ';' for r in other]
     for r in virtual:
         name = quote(r['name'])
@@ -61,8 +87,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--database', default='crafted')
     parser.add_argument('--local', action='store_true')
+    parser.add_argument('--persist-to', type=Path, help='Isolated state directory; requires --local')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
+    if args.persist_to and not args.local:
+        parser.error('--persist-to requires --local')
     os.umask(0o077)
     stamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%M-%SZ')
     directory = (args.output or ROOT / 'backups' / stamp).resolve()
@@ -70,19 +99,33 @@ def main():
         raise ValueError('Backups must never be written into public/')
     directory.mkdir(parents=True, exist_ok=False)
     location = '--local' if args.local else '--remote'
+    read = lambda sql: query(args.database, location, sql, args.persist_to)
     schema_sql = "SELECT name,type,tbl_name,sql FROM sqlite_master WHERE sql IS NOT NULL ORDER BY name"
-    schema = query(args.database, location, schema_sql)
+    schema = read(schema_sql)
     _, tables = restoration_sql(schema, '')
     counts_sql = '; '.join(f"SELECT '{r['name'].replace(chr(39), chr(39)*2)}' AS name, COUNT(*) AS count FROM {quote(r['name'])}" for r in tables)
-    before = query(args.database, location, counts_sql)
-    source_foreign_keys = query(args.database, location, 'PRAGMA foreign_key_check')
+    before = read(counts_sql)
+    source_foreign_keys = read('PRAGMA foreign_key_check')
     data_path = directory / 'data.sql'
     command = ['d1', 'export', args.database, location, '--no-schema', '--output', str(data_path)]
     for row in tables:
         command += ['--table', row['name']]
-    run_wrangler(command)
-    after = query(args.database, location, counts_sql)
-    if before != after or schema != query(args.database, location, schema_sql):
+    if args.persist_to:
+        # Wrangler export has no --persist-to option. Read the selected local
+        # state explicitly instead of accidentally exporting its default DB.
+        statements = []
+        for table in tables:
+            name = quote(table['name'])
+            columns = read(f'PRAGMA table_info({name})')
+            values = " || ',' || ".join(f'quote({quote(c["name"])})' for c in columns)
+            prefix = (f'INSERT INTO {name} VALUES (').replace("'", "''")
+            statements.append(f"SELECT '{prefix}' || {values} || ');' AS statement FROM {name}")
+        rows = read(';\n'.join(statements))
+        data_path.write_text('\n'.join(r['statement'] for r in rows))
+    else:
+        run_wrangler(command)
+    after = read(counts_sql)
+    if before != after or schema != read(schema_sql):
         raise RuntimeError('Database changed during backup; retry while editing is paused')
     sql, _ = restoration_sql(schema, data_path.read_text())
     restore_path = directory / 'restore.sql'

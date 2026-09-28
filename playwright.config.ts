@@ -33,7 +33,7 @@ export default defineConfig({
   ],
   webServer: process.env.BASE_URL ? undefined : {
     command: process.env.PORTFOLIO_BUILT_PREVIEW
-      ? "wrangler dev --local --port 4321 --persist-to .portfolio-release/test-state"
+      ? `wrangler dev --local --port 4321 --persist-to '${(process.env.PORTFOLIO_TEST_STATE ?? ".portfolio-release/test-state").replaceAll("'", "'\\''")}'`
       : "npm run dev",
     port: 4321,
     reuseExistingServer: !process.env.CI,

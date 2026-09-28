@@ -20,7 +20,7 @@ if (slug === "action-pages") {
 
 const { entry, cacheHint } = await getEmDashEntry("dev", slug);
 if (!entry) return Astro.redirect("/404");
-try { Astro.cache.set(cacheHint); } catch {}
+try { if (Astro.cache.enabled) Astro.cache.set(cacheHint); } catch {}
 
 // emdash returns entry.data as `unknown` — narrow here.
 const d = entry.data as {
