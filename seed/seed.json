@@ -801,7 +801,7 @@
             }
           ],
           "publication": "Our Schools Our Democracy",
-          "date": "2025-02-26",
+          "date": "2025-02-26T00:00:00.000Z",
           "topic": "School finance, charter schools",
           "link": "https://osod.org/facing-facts-charter-schools-in-texas/",
           "pdf_url": "https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf"
@@ -1025,7 +1025,7 @@
             }
           ],
           "publication": "Texas AFT",
-          "date": "2024-06-27",
+          "date": "2024-06-27T00:00:00.000Z",
           "topic": "Data engineering, school finance, charter transfers, automated reporting",
           "link": "https://web.archive.org/web/20241213163109/https://www.texasaft.org/government/tea/the-growing-financial-strain-of-charter-school-expansion-on-texas-public-schools/"
         }
@@ -1140,7 +1140,7 @@
             }
           ],
           "publication": "Texas AFT",
-          "date": "2025-09-26",
+          "date": "2025-09-26T00:00:00.000Z",
           "topic": "School finance, staff pay",
           "link": "https://www.texasaft.org/post/maximizing-house-bill-2-s-promise-support-staff-raises-new-texas-aft-analysis"
         }
@@ -1217,7 +1217,7 @@
             }
           ],
           "publication": "Texas AFT",
-          "date": "2023-06-01",
+          "date": "2023-06-01T00:00:00.000Z",
           "topic": "Education policy, teacher compensation",
           "link": "https://github.com/adpena/SB9Analysis"
         }
@@ -1294,7 +1294,7 @@
             }
           ],
           "publication": "Texas AFT",
-          "date": "2026-01-01",
+          "date": "2026-01-01T00:00:00.000Z",
           "topic": "Education policy, school choice, public education funding",
           "link": "https://github.com/adpena/TEFAAnalysis"
         }
@@ -1519,7 +1519,7 @@
             }
           ],
           "publication": "Texas AFT",
-          "date": "2024-05-01",
+          "date": "2024-05-01T00:00:00.000Z",
           "topic": "Teacher compensation, public education funding, inflation analysis",
           "link": "https://web.archive.org/web/20250123212800/https://www.texasaft.org/lost-decade-and-a-half/",
           "pdf_url": "https://web.archive.org/web/20240516045549/https://www.texasaft.org/wp-content/uploads/2024/05/The-Lost-Decade-and-a-half-2.pdf"
@@ -2629,6 +2629,134 @@
           "language": "Python",
           "year": "2018",
           "project_status": "Archive"
+        }
+      },
+      {
+        "id": "teadata",
+        "slug": "teadata",
+        "status": "published",
+        "data": {
+          "title": "teadata",
+          "summary": "A Python library for connecting Texas school data across sources and years, with district and campus models, a query language, and geographic analysis.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "teadata-0",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-0",
+                  "text": "A shared data model for Texas schools",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-1",
+                  "text": "Texas school research often starts with several exports that use different identifiers, reporting years, and layouts. I built teadata to bring those records into a common model, so each new question does not need a new set of joins.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-2",
+                  "text": "The library represents districts and campuses as Python objects with canonical TEA identifiers. Its query language lets me move from a district to its campuses, filter their attributes, and combine that work with transfer flows and geographic relationships.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-3",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-3",
+                  "text": "What I built",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-4",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-4",
+                  "text": "I designed the district and campus models, the composable query API, and the enrichment and persistence layers. The code includes support for TAPR and accountability records, PEIMS enrollment, transfer data, and geographic boundaries. PostgreSQL and SQLAlchemy support persistent data, while saved snapshots make a research dataset easier to reuse.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-5",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-5",
+                  "text": "This library is part of my work at Data for Public Education. It gives research scripts and web applications a shared way to refer to schools, rather than making every project interpret the raw exports again.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-6",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-6",
+                  "text": "A small example you can inspect",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "teadata-7",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "teadata-span-7",
+                  "text": "The example below uses a workbook published in the repository. I loaded its records into teadata, ran district and campus queries in Python, and exported the results for this page. The controls show how a research question becomes a short query and a table someone else can read.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "repo_url": "https://github.com/adpena/teadata",
+          "stack": "Python, SQLAlchemy, PostgreSQL, GeoPandas",
+          "language": "Python",
+          "year": "2026",
+          "project_status": "Active"
         }
       },
       {

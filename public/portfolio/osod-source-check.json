@@ -1,0 +1,31 @@
+{
+  "source": "https://rptsvr1.tea.texas.gov/perfreport/snapshot/download.html",
+  "snapshotYear": 2023,
+  "financialYear": "2021-22",
+  "retrievedAt": "2026-09-28",
+  "method": "Weighted mean of DZEXADMP using DPFEAOPFT; excludes rows with unavailable or nonpositive spending or unavailable percentage. Input percentages are rounded, so this is an approximate reconstruction, not exact central-administration dollars.",
+  "groups": [
+    {
+      "group": "Districts",
+      "sourceRows": 1021,
+      "usableRows": 1020,
+      "operatingExpenditure": 59944925722.0,
+      "weightedSharePercent": 6.834297714175754,
+      "publishedSharePercent": 6.8
+    },
+    {
+      "group": "Charters",
+      "sourceRows": 188,
+      "usableRows": 184,
+      "operatingExpenditure": 4564562618.0,
+      "weightedSharePercent": 10.288606898480278,
+      "publishedSharePercent": 10.3
+    }
+  ],
+  "sources": {
+    "tea-2023-district.dat": "e6b10ce25cbe200d4a7f6158c582e036ddb4fafdb8c9acad75656d2ea836f987",
+    "tea-2023-district.lyt": "fcd8806f2835a3deedb0a496d4a8c02af3648900b5280cb3540e4841a9d90416",
+    "tea-2023-summary.dat": "4df21a55901cb07b21a43f06dda9d84360734a8ee574200c0853abc555bce487",
+    "tea-2023-summary.lyt": "c8c229dbd11999a59198e57f774e95262f804d3fcfe0f9f783407f0d997af71a"
+  }
+}

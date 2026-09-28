@@ -1252,3 +1252,21 @@ astro-island {
 .resume-page .prose h3 { font-size: 1.05rem; margin-bottom: .4rem; }
 .resume-job { margin-bottom: 1.75rem; }
 .resume-updated { margin-top: 2rem; }
+/* Source-backed project exhibits. */
+.exhibit-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.exhibit-controls label { display: flex; flex-direction: column; gap: .5rem; }
+.exhibit-controls select { width: 100%; min-height: 44px; }
+.exhibit-table-scroll { overflow-x: auto; margin: 1.5rem 0; }
+.exhibit-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.exhibit-table th, .exhibit-table td { padding: .75rem .5rem; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: top; }
+.exhibit-table thead th { font-weight: 600; }
+.exhibit-table tbody th { font-weight: 400; }
+.original-table-frame { display: block; width: 100%; height: 30rem; border: 1px solid var(--color-border); background: white; margin: 1.5rem 0; }
+.example-picker { display: grid; gap: .5rem; max-width: 25rem; margin-block: 1.5rem; }
+fieldset.exhibit-controls { border: 0; padding: 0; min-width: 0; }
+.example-picker select { min-height: 44px; padding: .5rem; font: inherit; color: var(--color-text); background: var(--color-bg); }
+.report-preview { display: block; max-width: 27rem; margin-block: 1.5rem; }
+.report-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
+.exhibit-steps, .submission-timeline { padding-left: 1.5rem; }
+.exhibit-steps li, .submission-timeline li { margin-block: 1.5rem; }
+.submission-timeline h4 { margin-block: .5rem; }

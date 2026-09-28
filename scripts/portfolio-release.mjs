@@ -52,6 +52,7 @@ function publicFiles() {
   } }
   visit(resolve(root, 'public/portfolio'));
   visit(resolve(root, 'public/molt-compiled'));
+  visit(resolve(root, 'public/og'));
   if (existsSync(resolve(root, 'public/resumes'))) visit(resolve(root, 'public/resumes'));
   return files;
 }
@@ -67,7 +68,9 @@ function checkPrepared(state) {
 }
 export async function verifyLive(origin = 'https://adpena.com') {
   const paths = ['/', '/?focus=software', '/?focus=research', '/?focus=writing', '/action-pages', '/about', '/contact', '/resume/software', '/resume/research', '/sitemap.xml', '/sitemap-writing.xml', '/rss.xml',
-    '/resumes/alejandro-pena-software.pdf', '/resumes/alejandro-pena-research.pdf'];
+    '/resumes/alejandro-pena-software.pdf', '/resumes/alejandro-pena-research.pdf',
+    '/work/dev/teadata', '/work/dev/molt', '/work/dev/comma-lab',
+    '/work/policy/the-lost-decade-and-a-half', '/work/policy/fiscal-impact-of-charter-school-expansion', '/work/policy/facing-facts'];
   const checked = [];
   for (const path of paths) {
     const response = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(30000) });

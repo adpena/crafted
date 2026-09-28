@@ -34,7 +34,7 @@ const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png
 <Base title={d.title} description={d.summary} image={ogImage}>
 	<main id="main-content" class="page">
 		<nav class="breadcrumb" aria-label="Breadcrumb">
-			<a href="/work">Work</a> / Policy / {d.title}
+			<a href="/work">Work</a> / Research &amp; policy / {d.title}
 		</nav>
 
 		<h1 class="page-title">{d.title}</h1>
@@ -45,8 +45,8 @@ const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png
 			{dateStr && <><dt>Date</dt><dd>{dateStr}</dd></>}
 			{d.topic && <><dt>Topic</dt><dd>{d.topic}</dd></>}
 			{d.coauthors && <><dt>Co-authors</dt><dd>{d.coauthors}</dd></>}
-			{d.link && <><dt>Link</dt><dd><a href={d.link} target="_blank" rel="noopener noreferrer">Read</a></dd></>}
-			{d.pdf_url && <><dt>PDF</dt><dd><a href={d.pdf_url} target="_blank" rel="noopener noreferrer">Download</a></dd></>}
+			{d.link && <><dt>Publication</dt><dd><a href={d.link} target="_blank" rel="noopener noreferrer">Read the published article</a></dd></>}
+			{d.pdf_url && <><dt>Report</dt><dd><a href={d.pdf_url} target="_blank" rel="noopener noreferrer">Read the report (PDF)</a></dd></>}
 		</dl>
 
 		<div class="prose"><PortableText value={d.content} /></div>

@@ -1,0 +1,47 @@
+[
+  {
+    "pr": 107,
+    "created_at": "2026-05-04T12:10:42Z",
+    "archive": "https://github.com/adpena/comma_video_compression_challenge/releases/download/apogee-pr98-hnerv-adapter-20260504/archive.zip",
+    "bytes": 178392,
+    "sha256": "7ecb0df1c4627d55d88e03eff3d890b7a7a5b047c62515acff20232cf29310eb",
+    "members": [
+      {
+        "name": "0.bin",
+        "bytes": 178284
+      }
+    ],
+    "verified_at": "2026-09-28",
+    "verification": "Downloaded archive; checked SHA-256, size, and ZIP CRC. Evaluation reports are author-reported, not re-run for this exhibit."
+  },
+  {
+    "pr": 110,
+    "created_at": "2026-05-20T03:28:56Z",
+    "archive": "https://github.com/adpena/comma_video_compression_challenge/releases/download/fec6-frontier-submission-20260520/archive.zip",
+    "bytes": 178517,
+    "sha256": "6bae0201fb082457a02c69565531aba4c5942669c384fdc48e7d554f7b893fcf",
+    "members": [
+      {
+        "name": "x",
+        "bytes": 178417
+      }
+    ],
+    "verified_at": "2026-09-28",
+    "verification": "Downloaded archive; checked SHA-256, size, and ZIP CRC. Evaluation reports are author-reported, not re-run for this exhibit."
+  },
+  {
+    "pr": 140,
+    "created_at": "2026-09-03T16:07:43Z",
+    "archive": "https://github.com/adpena/comma_video_compression_challenge/releases/download/semantic_joint_ctxmix-afr1/archive.zip",
+    "bytes": 180002,
+    "sha256": "cbb8d928a8ccdd3f5103da1d4a8d38d0662a5e5615266b923b5f8350d405bf25",
+    "members": [
+      {
+        "name": "p",
+        "bytes": 179902
+      }
+    ],
+    "verified_at": "2026-09-28",
+    "verification": "Downloaded archive; checked SHA-256, size, and ZIP CRC. Evaluation reports are author-reported, not re-run for this exhibit."
+  }
+]
