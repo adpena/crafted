@@ -9,6 +9,8 @@ Alejandro Peña’s portfolio at https://adpena.com, built with Astro 7, EmDash 
 - Public resumes share `src/data/resumes/profile.json`. The accessible HTML pages and downloadable PDFs must agree. See `docs/resumes.md`.
 - Working, but Uncovered must remain absent from public listings, direct routes, RSS, and sitemap. Keep the exclusion in `src/lib/portfolio-content.ts` even if CMS state changes.
 - Action Pages is an unfinished experiment. Do not promise completion, describe every adapter as verified, or restore old price/performance claims. Public samples complete locally without external delivery.
+- The Action Pages writing article (`building-action-network-on-cloudflare`) is withdrawn from all public routes and listings. Preserve its CMS record. Published Texas AFT writing links are curated in `src/data/published-writing.ts` and point to archived originals.
+- The homepage label “Texas charter schools: 30 years” refers to OSOD’s Facing Facts report. Keep its formal title on the existing project page and credit Alejandro for the quantitative research and analysis.
 - Preserve the unpublished Molt revision. EmDash `content get` can return that draft; compare `--published` and default reads before any content update. Use the exact `_rev` token for a write. CLI updates publish automatically unless `--draft` is supplied.
 - Full authorship, analysis, and responsive HTML table work apply to the **2024** Lost Decade and a Half. The 2022 report was joint work, and the hosted 1,019-district exhibit is the older dataset. Alejandro wrote the June 2024 CharterCostTracker Texas AFT article.
 - Keep historical comma.ai leaderboard language and CPU/CUDA evaluations distinct. Portfolio reconstructions and fixtures must remain labeled.

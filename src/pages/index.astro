@@ -6,6 +6,7 @@ import WorkListing from "../components/WorkListing.tsx";
 import WorkWithMe from "../components/WorkWithMe.astro";
 import { isPublicPortfolioSlug, parseWorkFilter } from "../lib/portfolio-content";
 import type { WorkSection } from "../components/WorkListing.tsx";
+import { publishedWriting } from "../data/published-writing";
 
 const collectionDefs = [
 	{ slug: "dev", label: "Software" },
@@ -107,17 +108,21 @@ if (!cached) {
 
 // Apply exclusions after cached reads too.
 sections = sections.map((s) => ({ ...s, entries: s.entries.filter((e) => isPublicPortfolioSlug(e.id)) }));
+// Add off-site publications after the CMS cache so releases cannot retain stale links.
+const writing = sections.find((s) => s.slug === "writing");
+if (writing) writing.entries = [...publishedWriting, ...writing.entries];
+else sections.push({ slug: "writing", label: "Writing", entries: publishedWriting });
 const initialFilter = parseWorkFilter(Astro.url.searchParams.get("focus"));
 const selected = [
   { label: "Software", href: "/?focus=software#work", projects: [
     { title: "Molt", href: "/work/dev/molt", description: "I’m building a compiler that turns Python into native binaries and WebAssembly.", detail: "Compiler development · Python & Rust" },
-    { title: "comma.ai compression", href: "/work/dev/comma-lab", description: "I work on lossy video compression. Three of my submissions have appeared on the challenge leaderboard.", detail: "Ongoing research · PRs 107, 110 & 140" },
-    { title: "teadata", href: "https://github.com/adpena/teadata", description: "I built a Python toolkit for joining Texas school datasets and querying districts, campuses, and charter-school transfers.", detail: "Python · Data pipelines & geospatial queries" },
+    { title: "comma.ai compression", href: "/work/dev/comma-lab", description: "I’ve been working on comma.ai’s lossy video compression challenge. Three of my submissions have appeared on its leaderboard.", detail: "Ongoing research · PRs 107, 110 & 140" },
+    { title: "teadata", href: "https://github.com/adpena/teadata", description: "I built an open-source Python library that connects Texas school data across sources and years. Its data model and query language support research on districts, campuses, transfer flows, and geography.", detail: "Python · SQLAlchemy & PostgreSQL" },
   ] },
   { label: "Research", href: "/?focus=research#work", projects: [
     { title: "The Lost Decade (and a Half)", href: "/work/policy/the-lost-decade-and-a-half", description: "I wrote the 2024 report on educator pay, did the analysis, and built the responsive district tables.", detail: "Research, writing & web development" },
     { title: "CharterCostTracker", href: "/work/policy/fiscal-impact-of-charter-school-expansion", description: "I built the data collection and reporting system for estimating how charter transfers affect district revenue.", detail: "Data engineering & school finance" },
-    { title: "Facing Facts", href: "/work/policy/facing-facts", description: "I did the quantitative research for this report on Texas charter-school spending, staffing, and oversight.", detail: "Research · Our Schools, Our Democracy" },
+    { title: "Texas charter schools: 30 years", href: "/work/policy/facing-facts", description: "I did all the quantitative research and analysis for OSOD’s report on 30 years of charter schools in Texas, examining school finance, staffing, and accountability.", detail: "Research · Our Schools, Our Democracy" },
   ] },
 ];
 ---
@@ -143,7 +148,7 @@ const selected = [
       <p class="section-label">Software + research</p>
       <h2 id="practice-title"><a href="/work/dev/data-for-public-education">Data for Public Education</a></h2>
       <p>I lead a research and software practice focused on Texas public schools. I build the data tools, conduct the analysis, and work with clients on reports and public-facing applications.</p>
-      <div class="artifact-links"><a href="/work/dev/data-for-public-education">About the practice</a><a href="/work/policy/facing-facts">An example: Facing Facts</a></div>
+      <div class="artifact-links"><a href="/work/dev/data-for-public-education">About the practice</a><a href="/work/policy/facing-facts">OSOD’s 30-year charter report</a></div>
     </section>
     <WorkWithMe />
     <section id="work" class="all-work" aria-labelledby="all-work-title">
