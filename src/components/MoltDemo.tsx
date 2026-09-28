@@ -258,7 +258,7 @@ export default function MoltDemo({ embedMode = "standalone" }: MoltDemoProps) {
 			{!isEmbed && !isStacked && (
 				<header>
 					<span className="title"><a href="/work/dev/molt">Molt</a> — Mandelbrot</span>
-					<span className="note">Python → Wasm → Canvas</span>
+					<span className="note">JavaScript preview · Python compilation is not connected</span>
 				</header>
 			)}
 
@@ -278,9 +278,9 @@ export default function MoltDemo({ embedMode = "standalone" }: MoltDemoProps) {
 				{!isEmbed && (
 					<div className="pane pane-left">
 						<div className="pane-header">
-							<span>mandelbrot.py</span>
+							<span>mandelbrot.py · JavaScript preview</span>
 							<div style={{ display: "flex", gap: "0.3rem" }}>
-								<button className="btn primary" id="compile-btn" disabled title="Molt compilation coming soon">
+								<button className="btn primary" id="compile-btn" disabled title="Python compilation is not connected; parameter edits update the JavaScript preview">
 									Compile & Run
 								</button>
 							</div>

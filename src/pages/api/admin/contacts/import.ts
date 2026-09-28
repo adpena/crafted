@@ -52,7 +52,7 @@ interface ImportResult {
 
 export const POST: APIRoute = async ({ request }) => {
   // Auth
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
@@ -122,7 +122,7 @@ export const POST: APIRoute = async ({ request }) => {
     return json(413, { error: `Too many rows (max ${MAX_ROWS})` });
   }
 
-  const db = (env as Record<string, unknown>).DB as ContactsD1 | undefined;
+  const db = env.DB as ContactsD1 | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }

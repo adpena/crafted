@@ -1,155 +1,53 @@
-# Crafted — Claude Context
+# Crafted — repository context
 
-Personal portfolio for Alejandro Peña. Built on emdash CMS + Astro 6 + Cloudflare Workers.
-Live at https://adpena.com (also https://crafted.adpena.workers.dev)
+Alejandro Peña’s portfolio at https://adpena.com, built with Astro 6, EmDash 0.1.0, React islands, and Cloudflare Workers/D1/R2/KV. Software and research have equal prominence. Write plainly, specifically, and in first person; use technical detail where it explains the work.
 
-## Architecture
+## Content and scope
 
-- **Site**: Astro 6, emdash CMS integration, Cloudflare D1/R2/KV
-- **Plugin**: `plugin/` — Campaign Action Pages engine (dev copy of @adpena/action-pages)
-- **Notifications**: `@adpena/notifications` — published on npm, 17 adapters
-- **Data**: `data/disclaimers/` — FEC + 10 states political ad disclaimer dataset
-- **Styles**: `src/styles/global.css` — single source of truth for all shared CSS
+- Live D1 is authoritative for the About bio, shared site settings, and the `dev`, `policy`, `design`, and `writing` collections. The homepage’s selected examples and layout are maintained in code.
+- `seed/seed.json` is a published-content snapshot for fresh previews, not a production update mechanism. Never reseed live D1 to update copy.
+- Public resumes share `src/data/resumes/profile.json`. The accessible HTML pages and downloadable PDFs must agree. See `docs/resumes.md`.
+- Working, but Uncovered must remain absent from public listings, direct routes, RSS, and sitemap. Keep the exclusion in `src/lib/portfolio-content.ts` even if CMS state changes.
+- Action Pages is an unfinished experiment. Do not promise completion, describe every adapter as verified, or restore old price/performance claims. Public samples complete locally without external delivery.
+- Preserve the unpublished Molt revision. EmDash `content get` can return that draft; compare `--published` and default reads before any content update. Use the exact `_rev` token for a write. CLI updates publish automatically unless `--draft` is supplied.
+- Full authorship, analysis, and responsive HTML table work apply to the **2024** Lost Decade and a Half. The 2022 report was joint work, and the hosted 1,019-district exhibit is the older dataset. Alejandro wrote the June 2024 CharterCostTracker Texas AFT article.
+- Keep historical comma.ai leaderboard language and CPU/CUDA evaluations distinct. Portfolio reconstructions and fixtures must remain labeled.
 
-## Collections (four domains)
+## Development and checks
 
-| Collection | Slug | Key fields |
-|-----------|------|-----------|
-| Development | `dev` | title, summary, content, repo_url, live_url, stack, language, year, project_status |
-| Design | `design` | title, summary, content, featured_image, gallery, client, medium, year, live_url |
-| Policy | `policy` | title, summary, content, publication, date, topic, link, pdf_url, coauthors |
-| Writing | `writing` | title, summary, content, publication, date, topic, link, excerpt |
+Use Node 22 (`.nvmrc`) and Python 3.10+. `.npmrc` disables install scripts; explicitly rebuild `better-sqlite3` for the current Node version before using the EmDash CLI. Newer Node releases are not a substitute for this tested runtime.
 
-## Key Features
-
-- React islands: WorkListing (filter), MoltDemo (fractal), ActionPageIsland
-- Dark mode: prefers-color-scheme + manual toggle in masthead
-- KV edge cache: 193ms LCP on home page (vs 633ms without)
-- JSON-RPC 2.0 MCP tools at /api/mcp/actions and /api/mcp/demo
-- QR code endpoint: /api/action/qr (pure TypeScript Reed-Solomon, 8 shapes, 4 EC levels, zero deps)
-- ActBlue iframe embed mode (fundraise action supports redirect or inline iframe)
-- OG meta tags on action pages via page:metadata hook
-- FOUC prevention: inline critical link styles with is:inline
-- View Transitions: ready for Safari 26.2 (parked)
-
-## Security
-
-- HSTS, CSP (with object-src none, form-action self), X-Frame-Options
-- Scanner blocking: WAF rule + middleware (23 paths → 403)
-- MCP write tools require Bearer token (MCP_ADMIN_TOKEN, min 32 bytes)
-- Turnstile opt-in per page (verify token if present, skip if no site key)
-- Centralized timing-safe Bearer auth via `src/lib/auth.ts` (HMAC-SHA256 with token-derived key)
-- Rate limiting: KV fixed-window (5/min per hashed IP)
-- Geo whitelist/blacklist per page (cf-ipcountry)
-- Email dedup: SHA-256 hash per email+slug
-- Payload size enforced by reading bytes (not trusting Content-Length)
-- R2 media server: MIME allowlist + nosniff header
-- npm supply chain: ignore-scripts, save-exact, Dependabot
-- 5 security audit passes + 2 senior engineer reviews — 44+ issues found and fixed
-
-## Pricing Reality
-
-- Demo / low-volume (< 500 submissions/day): Cloudflare free tier ($0)
-- Production campaigns: Cloudflare Workers Paid ($5/month) required for KV write limits
-- With email confirmations: + Resend ($20/month for 50K emails)
-- Typical cost for 10 active campaigns: $25-85/month
-- Compare: Action Network $99-$1,500/month for equivalent features
-
-## Deploy
-
-```bash
-npm run build && wrangler deploy
+```sh
+npm ci
+npm rebuild better-sqlite3 --ignore-scripts=false
+npm run preview:seed
+PORTFOLIO_TEST_STATE=.portfolio-release/test-state npm run dev
 ```
 
-## Plugin (plugin/)
+The preview seed refuses to overwrite an existing state directory and never writes remote D1. To create another preview, choose a new `--state` directory. See `docs/deploy.md` for the complete publishing/restore workflow.
 
-Dev copy of @adpena/action-pages. Full campaign action pages platform.
+- `npm run typecheck` regenerates Worker types and checks site/plugin code.
+- `npm test` runs site/plugin unit tests. `npm run test:backup` exercises real SQLite restoration, FTS, and the metadata migration.
+- `npm run test:e2e:portfolio` covers the actual portfolio and three runnable demos in Chromium, WebKit, and mobile Safari. Use the isolated state environment variable above.
+- `npm run build && npm run lighthouse` audits the built Worker on port 4322 against the isolated seed, on desktop and mobile.
+- `npm run test:e2e:all` retains the historical Action Pages suite. It is separate from the portfolio release gate: unfinished product routes/fixtures and authenticated production integrations are not established as passing by portfolio checks.
 
-### Action types (8)
-petition, fundraise, gotv, signup, letter (Congress rep lookup), event (RSVP + .ics + multi-platform sync), call (click-to-dial), step (multi-step branching forms)
+Keep validation counts and deployment receipts in dated release notes, not in permanent product claims. The large bundle advisory needs measurement before optimization; do not suppress it to claim a warning-free build.
 
-### Templates (5)
-hero-simple, hero-media, hero-story, hero-layered, hero-split
+## Publication
 
-### Themes (3)
-warm (editorial), bold (dark), clean (minimal) + brand extraction (URL → 4 auto-generated variants)
+Commit the release, run `npm run release:prepare`, then `npm run ship`. Preparation creates a private verified backup and hashes live/draft content, settings, revisions, and public artifacts. Shipping refuses an uncommitted tree or changes since preparation; it checks types/tests/build, deploys, clears the work cache, and checks live routes. It does not edit CMS content or apply database migrations.
 
-### Admin panels (10)
-PageBuilder, SubmissionsViewer, NotificationConfig, TemplateGallery, BrandExtractor, AIPageGenerator, EmailBlastComposer, CsvImportWizard, WebhookInboxViewer, AuditLogViewer
+Backups and release receipts contain private CMS information and belong only in ignored `backups/` and `.portfolio-release/`. Never commit them or put them in `public/`. Public provenance lives in `docs/` and `public/portfolio/`.
 
-### Integrations (14 — 12 push + 2 read-back)
-Action Network, Mailchimp, NationBuilder (v2 API), EveryAction/NGP VAN, Mobilize America, Eventbrite, Facebook Events (CAPI v25.0), SendGrid, Constant Contact, NGP VAN (voter file), Hustle (P2P texting), Salsa Labs
-Read-back webhooks: ActBlue (Basic auth), Action Network (HMAC-SHA256)
+## Code map and platform details
 
-### i18n (8 locales)
-en, es, zh, vi, ko, tl, fr, ar
-
-### Tests
-1,709 tests across 32 files: `npm test`
-
-## API Endpoints
-
-### Public
-- `POST /api/action/submit` — form submissions (full pipeline: rate limit → Turnstile → geo → dedup → D1 → async email/tracking/integrations/contacts)
-- `GET /api/action/count?slug=X` — KV-cached submission count
-- `GET /api/action/stream?slug=X` — SSE live count updates
-- `GET /api/action/reps?zip=X` — rep lookup (ProPublica Congress API)
-- `GET /api/unsubscribe` — HMAC-verified email unsubscribe
-- `POST /api/webhooks/:source` — incoming webhook receiver (rate-limited)
-- `POST /api/webhooks/actblue` — ActBlue donation webhook (Basic auth, attribution tracking)
-- `POST /api/webhooks/actionnetwork` — Action Network webhook (HMAC-SHA256, attribution tracking)
-- `GET /api/media/action-pages/...` — R2 image server (MIME allowlist)
-
-### Authenticated (Bearer MCP_ADMIN_TOKEN)
-- `POST/GET /api/mcp/actions` — JSON-RPC 2.0 MCP tools (8 tools)
-- `GET /api/action/export?slug=X` — CSV/JSON submission export
-- `GET /api/action/stats?slug=X` — A/B variant stats with z-test significance
-- `GET /api/action/list?slug=X` — paginated submissions with search
-- `POST /api/admin/upload` — R2 image upload
-- `POST /api/admin/brand-extract` — URL → BrandKit + 4 theme variants
-- `POST /api/admin/generate-page` — AI page generator (Anthropic API)
-- `POST /api/admin/generate-variants` — AI A/B headline variants
-- `GET /api/admin/templates` — pre-built campaign template gallery
-- `POST /api/admin/email/send` — bulk email blast via Resend
-- `GET /api/admin/contacts` — contact list with search + tag filter
-- `GET/PATCH/DELETE /api/admin/contacts/:id` — contact detail, tag management, CCPA erasure
-- `POST /api/admin/contacts/delete-bulk` — bulk CCPA/GDPR erasure by email or IDs
-- `POST /api/admin/contacts/import` — CSV contact import
-- `GET /api/admin/audit-log` — admin audit trail
-- `GET /api/admin/webhook-inbox` — incoming webhook log
-- `GET /api/admin/attribution?slug=X` — attribution summary (petition->donation conversion)
-- `GET /api/admin/attribution?contact=email` — contact attribution journey
-- `GET /api/admin/snapshots?slug=X` — FEC audit trail: page config snapshots at each publish
-
-## Attribution Tracking
-
-Webhook receivers close the feedback loop: after pushing supporters to ActBlue/Action Network,
-we track what happened next. Events stored in D1 (`_plugin_storage`, collection='attribution_events')
-with SHA-256 hashed emails. `src/lib/attribution.ts` provides query functions for per-page summaries
-(petition->donation conversion rates) and per-contact journey views.
-
-## Post-Submit Pipeline (async via waitUntil)
-
-1. KV count cache increment
-2. Confirmation email via Resend (HTML templates per action type)
-3. Meta CAPI + Google Ads conversion tracking (v25.0)
-4. Campaign platform integrations (12 adapters fire in parallel)
-5. Contact upsert (D1 dedup by email)
-
-## Case Study
-
-Action Pages case study: /action-pages (src/pages/action-pages.astro)
-
-## Known platform issues
-
-### Cloudflare Workers CSS filename bug
-Astro scoped CSS with `@` in filename served as 0 bytes by Workers. Put styles in `src/styles/global.css`.
-
-### Debugging streaming responses
-Never `curl | grep` streaming responses. Save to file first, then grep.
-
-### Astro v6 waitUntil
-Use `context.locals.cfContext.waitUntil()` — NOT `context.locals.runtime.ctx.waitUntil()` (removed in Astro v6).
-
-### Google Civic API
-`representativeInfoByAddress` was removed April 30, 2025. Use ProPublica Congress API instead.
+- `src/pages/index.astro` and `WorkListing.tsx`: balanced introduction, runtime CMS reads, `work-sections-v2` KV cache (60 seconds), shareable `?focus=software|research|writing` filters.
+- `src/styles/global.css`: shared CSS, themes, responsive layouts. Content is readable immediately, without an entrance fade.
+- `src/components/ProjectArtifacts.astro`: source-backed project exhibits. Molt runs a precompiled Wasm program; Notifications uses the actual dispatcher with mock transports; the inflation calculator uses a dated CPI snapshot.
+- `plugin/`: Action Pages source and admin code. Maintained as an unfinished experiment, not a completed campaign product.
+- `src/lib/auth.ts`, API routes, and plugin tests describe the actual security/transport behavior. Do not infer verified delivery from an adapter’s existence.
+- EmDash 0.1.0 can generate faulty external-content FTS update/delete triggers. Read `migrations/README.md` before schema changes. Do not blindly upgrade or reseed to fix search.
+- Astro v6 request context uses `locals.cfContext.waitUntil()`. Inspect current types before assuming older runtime APIs.
+- Prefer global CSS for shared components; earlier scoped assets with `@` in their names were served incorrectly by Workers.
+- Representative lookup in the unfinished Action Pages experiment is not a confirmed working integration. Do not reintroduce the obsolete ProPublica recommendation.

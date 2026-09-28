@@ -1,0 +1,36 @@
+---
+import Base from "../../layouts/Base.astro";
+import profile from "../../data/resumes/profile.json";
+const { focus } = Astro.params;
+if (focus !== "software" && focus !== "research") return new Response("Not found", { status: 404 });
+const version = profile.versions[focus];
+const updated = new Date(`${profile.updated}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
+---
+<Base title={`${version.title} resume`} description={version.summary}>
+  <main id="main-content" class="page resume-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/about">About</a> / Resume</nav>
+    <h1 class="page-title">{version.title}</h1>
+    <p class="resume-contact">{profile.name} · {profile.location} · <a href={`mailto:${profile.email}`}>{profile.email}</a></p>
+    <nav class="resume-actions" aria-label="Resume options">
+      <a class="btn" href={`/resumes/alejandro-pena-${focus}.pdf`} download>Download PDF</a>
+      <a href={`/resume/${focus === "software" ? "research" : "software"}`}>{focus === "software" ? "Research & consulting resume" : "Software engineering resume"}</a>
+    </nav>
+    <div class="prose">
+      <p>{version.summary}</p>
+      <h2>Skills</h2><p>{version.skills}</p>
+      <h2>Experience</h2>
+      {profile.experience.map((job) => (
+        <section class="resume-job">
+          <h3>{job.role}</h3>
+          <p class="resume-job-meta">{job.organization}<br />{job.dates}</p>
+          <ul>{job[focus].map((point) => <li>{point}</li>)}</ul>
+        </section>
+      ))}
+      <h2>Selected work</h2>
+      {version.projects.map((project) => <section class="resume-project"><h3><a href={project.href}>{project.title}</a></h3><p>{project.text}</p></section>)}
+      <h2>Education & certification</h2>
+      {profile.education.map((line) => <p>{line}</p>)}
+    </div>
+    <p class="resume-updated">Updated {updated} · <a href="/contact">Get in touch</a></p>
+  </main>
+</Base>

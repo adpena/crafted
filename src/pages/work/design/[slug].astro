@@ -1,10 +1,12 @@
 ---
-import { getEmDashEntry } from "emdash";
+import { isPublicPortfolioSlug } from "../../../lib/portfolio-content";
+import { getEmDashEntry, type MediaValue } from "emdash";
 import { PortableText, Image } from "emdash/ui";
+import ProjectArtifacts from "../../../components/ProjectArtifacts.astro";
 import Base from "../../../layouts/Base.astro";
 
 const { slug } = Astro.params;
-if (!slug) return Astro.redirect("/404");
+if (!slug || !isPublicPortfolioSlug(slug)) return new Response("Not found", { status: 404 });
 
 const { entry, cacheHint } = await getEmDashEntry("design", slug);
 if (!entry) return Astro.redirect("/404");
@@ -18,10 +20,11 @@ const d = entry.data as {
 	medium?: string;
 	year?: string | number;
 	live_url?: string;
-	featured_image?: unknown;
+	featured_image?: MediaValue | string | null;
 	content?: unknown;
 };
-const ogImage = `/og/${slug}.png`;
+const cards = import.meta.glob("/public/og/*.png");
+const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png";
 ---
 
 <Base title={d.title} description={d.summary} image={ogImage}>
@@ -45,5 +48,6 @@ const ogImage = `/og/${slug}.png`;
 		)}
 
 		<div class="prose"><PortableText value={d.content} /></div>
+		<ProjectArtifacts slug={slug} />
 	</main>
 </Base>

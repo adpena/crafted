@@ -96,7 +96,7 @@ describe("pushToMailchimp", () => {
 		vi.stubGlobal("fetch", fn);
 
 		await pushToMailchimp(
-			baseSubmission({ type: "email_signup" }),
+			baseSubmission({ type: "signup" }),
 			mcEnv(),
 		);
 		const body = JSON.parse(calls[0]!.init.body as string);
@@ -106,7 +106,7 @@ describe("pushToMailchimp", () => {
 		expect(body.status).toBeUndefined();
 		expect(body.merge_fields.FNAME).toBe("Ada");
 		expect(body.merge_fields.LNAME).toBe("Lovelace");
-		expect(body.tags).toContain("email_signup");
+		expect(body.tags).toContain("signup");
 		expect(body.tags).toContain("rally-2026");
 	});
 

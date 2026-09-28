@@ -24,7 +24,7 @@ interface D1Like {
 }
 
 export const GET: APIRoute = async ({ url, request }) => {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
@@ -39,7 +39,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   const target = (url.searchParams.get("target") ?? "").slice(0, 500);
   const actor = (url.searchParams.get("actor") ?? "").slice(0, 200);
 
-  const db = (env as Record<string, unknown>).DB as D1Like | undefined;
+  const db = env.DB as D1Like | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }

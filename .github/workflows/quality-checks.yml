@@ -16,13 +16,11 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: plugin/package-lock.json
-      - name: Install plugin deps
-        working-directory: plugin
+          cache-dependency-path: package-lock.json
+      - name: Install locked repository dependencies
         run: npm ci
       - name: Run plugin tests
-        working-directory: plugin
-        run: npm test
+        run: npx vitest run plugin/tests
 
   site-build:
     name: Site build
@@ -35,11 +33,17 @@ jobs:
           cache: npm
       - name: Install deps
         run: npm ci
+      - name: Check site and plugin types
+        run: npm run typecheck
+      - name: Run site and plugin unit tests
+        run: npm test
+      - name: Check backup restoration and migrations
+        run: npm run test:backup
       - name: Build site
         run: npm run build
 
   e2e:
-    name: Playwright e2e
+    name: Portfolio browser checks
     runs-on: ubuntu-latest
     needs: site-build
     steps:
@@ -52,8 +56,17 @@ jobs:
         run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npm run test:e2e:all
+      - name: Build native SQLite dependency for EmDash CLI
+        run: npm rebuild better-sqlite3 --ignore-scripts=false
+      - name: Seed an isolated portfolio preview
+        run: npm run preview:seed
+      - name: Build the portfolio Worker
+        run: npm run build
+      - name: Run portfolio browser checks
+        run: npm run test:e2e:portfolio
+        env:
+          PORTFOLIO_TEST_STATE: .portfolio-release/test-state
+          PORTFOLIO_BUILT_PREVIEW: "1"
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
@@ -75,15 +88,19 @@ jobs:
           cache: npm
       - name: Install deps
         run: npm ci
-      - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.14.x
+      - name: Build native SQLite dependency for EmDash CLI
+        run: npm rebuild better-sqlite3 --ignore-scripts=false
+      - name: Seed an isolated portfolio preview
+        run: npm run preview:seed
       - name: Build site
         run: npm run build
-      - name: Run Lighthouse CI (desktop)
-        run: lhci autorun --config=.lighthouserc.json
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-      - name: Run Lighthouse CI (mobile)
-        run: lhci autorun --config=.lighthouserc.mobile.json
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Audit built portfolio on desktop and mobile
+        run: npm run lighthouse
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          include-hidden-files: true
+          retention-days: 14

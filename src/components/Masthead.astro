@@ -5,11 +5,10 @@ interface Props {
 	tagline?: string;
 }
 
-const { currentPath = "", siteTitle = "Studio", tagline = "Design & Development" } = Astro.props;
+const { currentPath = "", siteTitle = "Studio", tagline = "Software, data, design & public policy" } = Astro.props;
 
 const navLinks = [
 	{ label: "Work", href: "/" },
-	{ label: "Articles", href: "/articles" },
 	{ label: "About", href: "/about" },
 	{ label: "Contact", href: "/contact" },
 ];

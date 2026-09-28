@@ -24,7 +24,7 @@ export const GET: APIRoute = async ({ url }) => {
 		return new Response("Invalid slug", { status: 400 });
 	}
 
-	const kv = (env as Record<string, unknown>).CACHE as {
+	const kv = env.CACHE as {
 		get: (key: string) => Promise<string | null>;
 	} | undefined;
 

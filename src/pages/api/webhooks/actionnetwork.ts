@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
     "0.0.0.0";
   const ipHash = (await sha256Hex(ip)).slice(0, 32);
 
-  const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+  const kv = env.CACHE as KVNamespace | undefined;
   if (kv) {
     const window = Math.floor(Date.now() / 1000 / RATE_WINDOW_SEC);
     const rlKey = `rl:webhook:actionnetwork:${ipHash}:${window}`;
@@ -87,7 +87,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // --- HMAC-SHA256 signature verification ---
-  const secret = (env as Record<string, unknown>).AN_WEBHOOK_SECRET as string | undefined;
+  const secret = env.AN_WEBHOOK_SECRET as string | undefined;
   const sigHeader = request.headers.get("x-action-network-signature");
 
   if (secret) {
@@ -139,7 +139,7 @@ export const POST: APIRoute = async ({ request }) => {
   };
 
   // --- Store ---
-  const db = (env as Record<string, unknown>).DB as D1Like | undefined;
+  const db = env.DB as D1Like | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }

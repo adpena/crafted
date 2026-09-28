@@ -66,7 +66,7 @@ function requireHttpsUrl(value: unknown, label: string): string {
  * Delegates to src/lib/auth.ts for timing-safe HMAC comparison.
  */
 async function isAuthenticated(request: Request): Promise<boolean> {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   return verifyBearer(request.headers.get("Authorization"), token);
 }
 

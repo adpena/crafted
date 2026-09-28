@@ -58,7 +58,7 @@ interface BlastRequestBody {
 
 export const POST: APIRoute = async ({ request }) => {
   // --- Auth ---
-  const e = env as Record<string, unknown>;
+  const e = env;
   const token = e.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
@@ -140,7 +140,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!db) {
     return json(503, { error: "Database not configured" });
   }
-  const kv = e.KV as KVNamespace | undefined;
+  const kv = e.CACHE as KVNamespace | undefined;
 
   // --- Query contacts ---
   let recipients: Contact[];

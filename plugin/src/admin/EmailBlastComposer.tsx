@@ -1,3 +1,4 @@
+import { parseDryRunResponse, parseSendResponse, type SendResponse } from "./blast-response.ts";
 import { useState } from "react";
 import type { CSSProperties } from "react";
 import { getToken as readToken, setToken as writeToken } from "./token.ts";
@@ -28,18 +29,6 @@ const DEFAULT_BODY = `<!-- Merge fields: {{first_name}} {{last_name}} {{email}} 
 
 export interface EmailBlastComposerProps {
 	endpoint?: string;
-}
-
-interface DryRunResponse {
-	dry_run: true;
-	eligible: number;
-}
-
-interface SendResponse {
-	sent: number;
-	failed: number;
-	skipped: number;
-	errors: string[];
 }
 
 export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: EmailBlastComposerProps) {
@@ -80,8 +69,12 @@ export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: Email
 			headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
 			body: JSON.stringify(body),
 		});
-		const json = (await res.json()) as Record<string, unknown>;
-		if (!res.ok) throw new Error((json.error as string) ?? `HTTP ${res.status}`);
+		const json: unknown = await res.json();
+		if (!res.ok) {
+			const message = json && typeof json === "object" && "error" in json && typeof json.error === "string"
+				? json.error : `HTTP ${res.status}`;
+			throw new Error(message);
+		}
 		return json;
 	}
 
@@ -90,7 +83,7 @@ export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: Email
 		setPreviewing(true);
 		setEligible(null);
 		try {
-			const json = (await postBlast(true)) as DryRunResponse;
+			const json = parseDryRunResponse(await postBlast(true));
 			setEligible(json.eligible);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Preview failed");
@@ -104,7 +97,7 @@ export function EmailBlastComposer({ endpoint = "/api/admin/email/send" }: Email
 		setSending(true);
 		setResult(null);
 		try {
-			const json = (await postBlast(false)) as SendResponse;
+			const json = parseSendResponse(await postBlast(false));
 			setResult(json);
 			setConfirmOpen(false);
 		} catch (err) {

@@ -1,0 +1,14 @@
+{
+  "worker_version": "57af478b-48af-4103-a3d3-14ddf54502c6",
+  "wasm_sha256": "05ad4366060d310618bc814376254e9678a5ad74baf60fc20bd0a4ac5e9ce3c7",
+  "reference_interpreter": "CPython",
+  "reference_stdout_sha256": "ce1b311efd58b6f414e9ab65dbd3674ef6db78c491dd77f72b545610b5a1e416",
+  "rows": 28,
+  "columns": 72,
+  "browser_checks": [
+    "Chromium",
+    "WebKit",
+    "Mobile Safari profile"
+  ],
+  "comparison": "Exact stdout text, allowing only the terminal trailing newline to differ."
+}

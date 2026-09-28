@@ -37,7 +37,7 @@ Output rules:
 
 export const POST: APIRoute = async ({ request }) => {
 	// Auth — timing-safe
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+	const token = env.MCP_ADMIN_TOKEN as string | undefined;
 	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
 		return json(401, { error: "Unauthorized" });
 	}
@@ -83,13 +83,13 @@ export const POST: APIRoute = async ({ request }) => {
 		count = body.count;
 	}
 
-	const apiKey = (env as Record<string, unknown>).ANTHROPIC_API_KEY as string | undefined;
+	const apiKey = env.ANTHROPIC_API_KEY as string | undefined;
 	if (!apiKey) {
 		return json(503, { error: "AI generator not configured" });
 	}
 
 	// KV cache — 1 hour
-	const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+	const kv = env.CACHE as KVNamespace | undefined;
 	const cacheKey = `ai-variants:${await sha256(`${headline}|${context}|${count}`)}`;
 	if (kv) {
 		try {

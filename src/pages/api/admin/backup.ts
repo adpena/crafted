@@ -16,17 +16,17 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { verifyBearer } from "../../../lib/auth.ts";
 import { runBackup, type BackupD1, type BackupR2 } from "../../../lib/backup.ts";
-import { logAudit } from "../../../lib/audit.ts";
+import { logAudit, type AuditD1 } from "../../../lib/audit.ts";
 
 export const POST: APIRoute = async ({ request }) => {
-  const e = env as Record<string, unknown>;
+  const e = env;
 
   const token = e.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
 
-  const db = e.DB as BackupD1 | undefined;
+  const db = e.DB as (BackupD1 & AuditD1) | undefined;
   if (!db) return json(503, { error: "D1 not bound" });
 
   const r2 = e.BACKUPS as BackupR2 | undefined;
@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request }) => {
     const result = await runBackup(db, r2);
 
     if (db) {
-      await logAudit(db as Parameters<typeof logAudit>[0], {
+      await logAudit(db, {
         action: "d1_backup",
         target: result.key,
         actor: "admin",

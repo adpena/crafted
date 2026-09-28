@@ -27,7 +27,7 @@ interface D1Like {
 }
 
 export const GET: APIRoute = async ({ url, request }) => {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
@@ -41,7 +41,7 @@ export const GET: APIRoute = async ({ url, request }) => {
   const search = (url.searchParams.get("q") ?? "").slice(0, 100).toLowerCase();
   const tagFilter = (url.searchParams.get("tag") ?? "").slice(0, 50);
 
-  const db = (env as Record<string, unknown>).DB as D1Like;
+  const db = env.DB as D1Like;
 
   try {
     const countRow = await db

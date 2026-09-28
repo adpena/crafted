@@ -25,7 +25,7 @@ const ALLOWED_TYPES = new Set([
 
 export const POST: APIRoute = async ({ request }) => {
 	// Auth — timing-safe
-	const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+	const token = env.MCP_ADMIN_TOKEN as string | undefined;
 	if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
 		return json(401, { error: "Unauthorized" });
 	}
@@ -62,7 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
 		return json(400, { error: `Unsupported type: ${file.type}` });
 	}
 
-	const r2 = (env as Record<string, unknown>).MEDIA as R2Bucket | undefined;
+	const r2 = env.MEDIA as R2Bucket | undefined;
 	if (!r2) {
 		return json(503, { error: "Storage not available" });
 	}
@@ -86,12 +86,12 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	// Return public URL — assumes /api/media/[key] route serves the bucket
-	const baseUrl = (env as Record<string, unknown>).PUBLIC_BASE_URL as string | undefined;
+	const baseUrl = env.PUBLIC_BASE_URL as string | undefined;
 	const url = baseUrl
 		? `${baseUrl.replace(/\/$/, "")}/api/media/${key}`
 		: `/api/media/${key}`;
 
-	const db = (env as Record<string, unknown>).DB as Parameters<typeof logAudit>[0];
+	const db = env.DB as Parameters<typeof logAudit>[0];
 	if (db) await logAudit(db, { action: "file_upload", target: key, actor: "admin", metadata: { size: file.size, contentType: file.type }, request }).catch(() => {});
 
 	return json(200, { url, key, size: file.size, contentType: file.type });

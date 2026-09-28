@@ -42,7 +42,7 @@ interface SyncBody {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   if (!(await verifyBearer(request.headers.get("Authorization"), token))) {
     return json(401, { error: "Unauthorized" });
   }
@@ -72,7 +72,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const tag = (body.tag ?? "").trim().slice(0, 100);
 
-  const db = (env as Record<string, unknown>).DB as ContactsD1 | undefined;
+  const db = env.DB as ContactsD1 | undefined;
   if (!db) {
     return json(503, { error: "Storage not available" });
   }
@@ -102,7 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Build integration env
-  const e = env as Record<string, unknown>;
+  const e = env;
   const integrationEnv: IntegrationEnv = {
     ACTION_NETWORK_API_KEY: e.ACTION_NETWORK_API_KEY as string | undefined,
     MAILCHIMP_API_KEY: e.MAILCHIMP_API_KEY as string | undefined,

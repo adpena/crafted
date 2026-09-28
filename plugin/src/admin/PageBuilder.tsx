@@ -2484,7 +2484,7 @@ export function PageBuilder({
       >
         <Field
           label="Custom CSS"
-          hint={`Injected into the page head after the theme. Max ${MAX_CUSTOM_CSS_BYTES / 1024} KB. Dangerous patterns (expression, @import, data: urls, javascript:, behavior, -moz-binding) are rejected at publish time.`}
+          helper={`Injected into the page head after the theme. Max ${MAX_CUSTOM_CSS_BYTES / 1024} KB. Dangerous patterns (expression, @import, data: urls, javascript:, behavior, -moz-binding) are rejected at publish time.`}
           error={customCssOverLimit ? `Too large: ${customCssBytes} bytes (max ${MAX_CUSTOM_CSS_BYTES})` : undefined}
         >
           <textarea

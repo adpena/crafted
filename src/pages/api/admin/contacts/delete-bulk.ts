@@ -34,7 +34,7 @@ interface D1Like {
 }
 
 async function authed(request: Request): Promise<boolean> {
-  const token = (env as Record<string, unknown>).MCP_ADMIN_TOKEN as string | undefined;
+  const token = env.MCP_ADMIN_TOKEN as string | undefined;
   return verifyBearer(request.headers.get("Authorization"), token);
 }
 
@@ -53,8 +53,8 @@ export const POST: APIRoute = async ({ request }) => {
     return json(400, { error: "Invalid JSON" });
   }
 
-  const db = (env as Record<string, unknown>).DB as D1Like;
-  const kv = (env as Record<string, unknown>).CACHE as KVNamespace | undefined;
+  const db = env.DB as D1Like;
+  const kv = env.CACHE as KVNamespace | undefined;
 
   try {
     if (typeof body.email === "string" && body.email.trim()) {

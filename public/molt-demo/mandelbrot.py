@@ -1,5 +1,5 @@
-# Mandelbrot set renderer — compiled by Molt to WebAssembly
-# Edit parameters and recompile to see changes in real time
+# Python source for the Mandelbrot example
+# The browser preview uses JavaScript; parameter edits update that preview
 
 WIDTH: int = 400
 HEIGHT: int = 300

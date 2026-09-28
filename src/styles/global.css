@@ -321,6 +321,11 @@ code {
 	max-width: 38em;
 }
 
+.prose a {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
 .prose h2 {
 	font-size: var(--font-size-xl);
 	margin-top: 2em;
@@ -589,25 +594,7 @@ code {
    Entrance animations
    ═══════════════════════════════════════════ */
 
-@keyframes enter {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
-
-main > *,
-main > .container > * {
-	animation: enter 600ms ease both;
-}
-
-main > *:nth-child(2),
-main > .container > *:nth-child(2) { animation-delay: 50ms; }
-main > *:nth-child(3),
-main > .container > *:nth-child(3) { animation-delay: 100ms; }
-main > *:nth-child(4),
-main > .container > *:nth-child(4) { animation-delay: 150ms; }
-main > *:nth-child(5),
-main > .container > *:nth-child(5) { animation-delay: 200ms; }
-
+/* Page content is readable immediately; decorative animation stays local. */
 /* View Transitions — cross-document navigation animation.
    Uses the spec-standard CSS at-rule (meta tag is deprecated). */
 @view-transition {
@@ -1166,3 +1153,95 @@ astro-island {
 	}
 }
 
+/* Portfolio artifacts share the site's type and colors. */
+.page-artifacts { max-width: 64rem; }
+.artifact-panel { margin: 3rem 0; padding: clamp(1rem, 3vw, 2rem); border: 1px solid var(--color-border); }
+.artifact-panel h2 { margin: .4rem 0 1rem; }
+.artifact-panel p { line-height: 1.65; margin-bottom: 1rem; }
+.artifact-panel .source-note { margin-top: 1.5rem; }
+.eyebrow, .source-note, .demo-status { font-family: var(--font-mono); font-size: .75rem; }
+.source-note { margin-top: 1.5rem; line-height: 1.6; }
+.demo-fields { display: grid; gap: 1rem; margin: 1.5rem 0; }
+.artifact-panel label { display: grid; gap: .5rem; font-size: .9rem; }
+.artifact-panel input, .artifact-panel textarea, .artifact-panel select { box-sizing: border-box; max-width: 100%; width: 100%; min-height: 44px; padding: .7rem; border: 1px solid var(--color-border); border-radius: 0; background: var(--color-bg); color: var(--color-text); font: inherit; }
+.demo-channel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.demo-button { padding: .75rem 1.25rem; background: var(--color-text); color: var(--color-bg); border: 1px solid var(--color-text); cursor: pointer; font: inherit; }
+.demo-button:disabled { opacity: .5; cursor: default; }
+.artifact-panel pre { max-width: 100%; overflow: auto; padding: 1rem; border: 1px solid var(--color-border); font-size: .75rem; }
+.artifact-panel details { margin: 1.5rem 0; }
+.artifact-panel summary { cursor: pointer; }
+.artifact-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.artifact-metrics dt { font-size: .8rem; }
+.artifact-metrics dd { margin: .5rem 0; font-size: clamp(1.25rem, 3vw, 2rem); }
+.artifact-links { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+.artifact-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.artifact-table th, .artifact-table td { padding: .75rem .5rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+.artifact-table-wrap { max-width: 100%; overflow-x: auto; }
+@media (max-width: 600px) { .demo-channel-grid, .artifact-metrics { grid-template-columns: 1fr; } }
+.demo-select-label { margin-top: 1rem; }
+.district-map { display: block; width: 100%; max-height: 34rem; margin: 1.5rem auto; }
+.district-map path { cursor: pointer; }
+.district-map path:hover { stroke: var(--color-text); stroke-width: 2; }
+.inflation-result { font-size: 1.3rem; }
+.artifact-links a, .source-note a { text-decoration: underline; text-underline-offset: 3px; }
+.artifact-image-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.artifact-image-pair figure { margin: 0; }
+.artifact-image-pair img { width: 100%; height: auto; }
+.artifact-image-pair figcaption { font-family: var(--font-mono); font-size: .7rem; margin-top: .5rem; }
+.score-row { display: grid; grid-template-columns: minmax(7rem, 1fr) 2fr 4rem; align-items: center; gap: .75rem; margin: 1rem 0; font-size: .8rem; }
+.score-track { height: 1rem; background: var(--color-border); }
+.score-track span { display: block; height: 100%; background: var(--color-text); }
+.terminal-snapshot { background: #13171b; color: #c3d4cf; line-height: 1.5; }
+@media (max-width: 600px) { .artifact-image-pair { grid-template-columns: 1fr; } .score-row { grid-template-columns: 1.3fr 1fr 3rem; } }
+
+/* Portfolio: equal space for software and research, readable without hover. */
+.portfolio-home {
+  width: 100%; max-width: 60rem; margin: 0 auto;
+  padding: var(--spacing-xl) var(--content-padding) var(--spacing-2xl);
+}
+.portfolio-home > *, .about-page > * { animation: none; }
+.selected-work { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; }
+.selected-group { min-width: 0; }
+.selected-group > h2 { padding-bottom: .75rem; border-bottom: 1px solid var(--color-text); }
+.selected-project { margin-top: 1.4rem; }
+.selected-project h3 { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 400; margin-bottom: .5rem; }
+.selected-project p { font-size: .95rem; line-height: 1.6; color: var(--color-secondary); margin-bottom: .5rem; }
+.selected-project .selected-detail { font-family: var(--font-mono); font-size: .7rem; line-height: 1.6; }
+.selected-project h3 a:hover, .practice-feature h2 a:hover { text-decoration: underline; text-underline-offset: .2em; }
+.practice-feature { border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); margin: 2rem 0; padding: 1.5rem 0; }
+.practice-feature h2, .work-with-me h2, .all-work > h2 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 400; margin-bottom: .65rem; }
+.practice-feature > p:not(.section-label) { max-width: 44rem; font-size: 1rem; line-height: 1.65; color: var(--color-secondary); }
+.text-link { display: inline-block; text-decoration: underline; text-underline-offset: .2em; padding: .5rem 0; }
+.work-with-me { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2rem; padding: 0 0 2rem; }
+.work-with-me p { max-width: 36rem; font-size: .95rem; line-height: 1.6; color: var(--color-secondary); margin: 0; }
+.work-with-me-links { display: flex; flex-direction: column; align-items: flex-start; }
+.work-with-me-links a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: .2em; font-size: .9rem; }
+.all-work { border-top: 2px solid var(--color-text); padding-top: 1.5rem; scroll-margin-top: 1.5rem; }
+.work-index .work-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 3rem; }
+.work-index .compact-list li { padding: .65rem 0 .75rem .75rem; }
+.work-index .compact-item { display: flex; align-items: baseline; min-height: 44px; }
+.work-index .compact-title { font-size: 1rem; }
+.work-summary { font-size: .9rem; line-height: 1.6; color: var(--color-secondary); margin: 0 0 .4rem; }
+.work-tags { font-family: var(--font-mono); font-size: .7rem; line-height: 1.6; color: var(--color-secondary); margin: 0; }
+.about-page .terminal { font-family: var(--font-mono); margin-bottom: 1.5rem; }
+.about-page .terminal .line { min-height: 1.8em; white-space: pre-wrap; }
+.about-page .about-body { max-width: 42rem; margin-bottom: 2rem; }
+.about-page .about-body p { font-size: 1rem; line-height: 1.7; }
+.about-page .work-with-me { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+@media (max-width: 640px) {
+  .portfolio-home { padding-top: 1.5rem; }
+  .selected-work { gap: 1.25rem; }
+  .selected-project h3 { font-size: 1.1rem; line-height: 1.4; }
+  .selected-project p { font-size: .875rem; }
+  .work-index .work-main { grid-template-columns: 1fr; }
+  .work-with-me { grid-template-columns: 1fr; gap: .75rem; }
+  .work-with-me-links { flex-direction: row; flex-wrap: wrap; gap: 0 1.25rem; }
+}
+@media (max-width: 359px) { .selected-work { grid-template-columns: 1fr; } }
+.resume-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.5rem; margin: 1.25rem 0; }
+.resume-actions > a:not(.btn), .resume-contact a, .resume-updated a { text-decoration: underline; text-underline-offset: .2em; }
+.resume-contact, .resume-updated, .resume-job-meta { font-size: .875rem; line-height: 1.6; color: var(--color-secondary); }
+.resume-page .prose h2 { margin-top: 2rem; }
+.resume-page .prose h3 { font-size: 1.05rem; margin-bottom: .4rem; }
+.resume-job { margin-bottom: 1.75rem; }
+.resume-updated { margin-top: 2rem; }

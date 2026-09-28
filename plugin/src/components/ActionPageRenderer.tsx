@@ -1,3 +1,4 @@
+import { DemoMode } from "./DemoMode.ts";
 import { useState } from "react";
 import type { ReactNode, CSSProperties } from "react";
 import { createRegistry } from "../lib/registry.ts";
@@ -43,6 +44,8 @@ export const actions = createRegistry<ActionComponent>("actions");
 /* ------------------------------------------------------------------ */
 
 export type ActionPageConfig = {
+  /** Run sample actions locally, without submissions or external delivery. */
+  demo?: boolean;
   slug: string;
   campaign_id?: string;
 
@@ -111,7 +114,7 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
   // Webhooks are fired server-side in routes/submit.ts after form POST.
   // Do NOT fire webhooks here — it would expose callback URLs and HMAC
   // secrets in the client-side bundle.
-  const handleComplete = (data: SubmissionData) => {
+  const handleComplete = (_data: SubmissionData) => {
     setCompleted(true);
   };
 
@@ -139,6 +142,7 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
   };
 
   return (
+    <DemoMode.Provider value={page.demo === true}>
     <div style={rootStyle}>
       <Template {...page.template_props} />
 
@@ -151,10 +155,11 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
             visitorId={visitorId}
             variant={variant}
             locale={page.locale}
-            turnstileSiteKey={page.turnstile_site_key}
+            turnstileSiteKey={page.demo ? undefined : page.turnstile_site_key}
           />
         ) : (
           <>
+            {page.demo && <p role="status">Demo complete. Nothing was sent, saved, or charged.</p>}
             {Followup && (
               <Transition show={completed}>
                 {page.followup_message && (
@@ -176,13 +181,13 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
                   visitorId={visitorId}
                   variant={variant}
                   locale={page.locale}
-                  turnstileSiteKey={page.turnstile_site_key}
+                  turnstileSiteKey={page.demo ? undefined : page.turnstile_site_key}
                 />
               </Transition>
             )}
 
             {/* Social sharing — shown after action completion */}
-            {page.sharing?.enabled && (
+            {!page.demo && page.sharing?.enabled && (
               <ShareButtons
                 text={page.sharing.text}
                 platforms={page.sharing.platforms}
@@ -208,5 +213,6 @@ export function ActionPageRenderer({ page, visitorId = "", variant }: ActionPage
         />
       </div>
     </div>
+    </DemoMode.Provider>
   );
 }

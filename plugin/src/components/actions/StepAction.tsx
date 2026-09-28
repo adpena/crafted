@@ -1,3 +1,4 @@
+import { useActionRequest } from "../DemoMode.ts";
 import { useState, type ReactNode, type FormEvent, type ChangeEvent } from "react";
 import { tokens as s } from "./tokens.ts";
 import { labelStyle as label, errorStyle as err, submitButtonStyle } from "./form-styles.ts";
@@ -71,6 +72,7 @@ export function StepAction({
   submitUrl = "/api/action/submit",
   locale: localeProp,
 }: StepActionProps): ReactNode {
+  const request = useActionRequest();
   const locale = getLocale(localeProp);
   const turnstile = useTurnstile(turnstileSiteKey);
 
@@ -165,7 +167,7 @@ export function StepAction({
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15_000);
     try {
-      const res = await fetch(submitUrl, {
+      const res = await request(submitUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

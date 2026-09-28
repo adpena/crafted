@@ -1,5 +1,7 @@
+import { isPublicPortfolioSlug } from "../lib/portfolio-content";
 import type { APIRoute } from "astro";
 import { getEmDashCollection, getSiteSettings } from "emdash";
+import { publicationDate, contentText } from "../lib/content-metadata";
 import { escapeXml } from "../lib/xml";
 
 const COLLECTIONS = [
@@ -10,17 +12,17 @@ const COLLECTIONS = [
 ];
 
 export const GET: APIRoute = async ({ site, url }) => {
-	const siteUrl = site?.toString() || url.origin;
+	const siteUrl = (site?.toString() || url.origin).replace(/\/$/, "");
 	const settings = await getSiteSettings();
 	const siteTitle = settings?.title || "Studio";
-	const siteDescription = settings?.tagline || "Design & Development";
+	const siteDescription = settings?.tagline || "Software, data, design & public policy";
 
 	// Query all collections in parallel — same pattern as the home page
 	const results = await Promise.all(
 		COLLECTIONS.map(async (col) => {
 			try {
 				const { entries } = await getEmDashCollection(col.slug);
-				return entries.map((e) => ({ ...e, _prefix: col.prefix }));
+				return entries.filter((e) => isPublicPortfolioSlug(e.id)).map((e) => ({ ...e, _prefix: col.prefix }));
 			} catch {
 				return [];
 			}
@@ -29,22 +31,19 @@ export const GET: APIRoute = async ({ site, url }) => {
 
 	const allEntries = results
 		.flat()
-		.filter((e) => e.data.date || e.data.year)
-		.sort((a, b) => {
-			const da = a.data.date ? new Date(a.data.date).getTime() : parseInt(a.data.year || "0", 10) * 1e10;
-			const db = b.data.date ? new Date(b.data.date).getTime() : parseInt(b.data.year || "0", 10) * 1e10;
-			return db - da;
+		.flatMap((entry) => {
+			const date = publicationDate(entry.data);
+			return date ? [{ ...entry, _date: date }] : [];
 		})
+		.sort((a, b) => b._date.getTime() - a._date.getTime())
 		.slice(0, 20);
 
 	const items = allEntries
 		.map((entry) => {
-			const pubDate = entry.data.date
-				? new Date(entry.data.date).toUTCString()
-				: new Date(`${entry.data.year}-01-01`).toUTCString();
+			const pubDate = entry._date.toUTCString();
 			const entryUrl = escapeXml(`${siteUrl}/work/${entry._prefix}/${entry.id}`);
-			const title = escapeXml(entry.data.title || "Untitled");
-			const description = escapeXml(entry.data.summary || "");
+			const title = escapeXml(contentText(entry.data.title, "Untitled"));
+			const description = escapeXml(contentText(entry.data.summary));
 
 			return `    <item>
       <title>${title}</title>
@@ -76,4 +75,3 @@ ${items}
 		},
 	});
 };
-
