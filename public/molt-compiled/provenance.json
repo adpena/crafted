@@ -1,14 +1,33 @@
 {
-  "built_at": "2026-09-25",
+  "built_at": "2026-09-28",
   "molt_checkout_head": "7c82badf37973ea11db74bfd7e92b2271281706b",
-  "checkout_note": "Built with the local development checkout, which has uncommitted work. File hashes identify the shipped artifact and browser host; HEAD alone does not reproduce the build.",
-  "command": "WASI_SDK_PATH=<wasi-sdk-34.0-arm64-macos> molt build mandelbrot.py --target wasm --profile browser --out-dir <output> --json",
+  "checkout_note": "Built from git archive of the pinned commit in a fresh source and Cargo target directory. Uncommitted source changes are excluded.",
+  "reproduction": "scripts/build-molt-examples.py <molt-repository> <new-output-directory> --publish",
+  "command": "python -m molt build <example.py> --target wasm --profile browser --rebuild --out-dir <output> --json",
   "wasi_sdk": "https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-34",
   "host_adjustments": [
     "Export MoltVfs as an ES module.",
     "Forward linked molt_isolate_import to the instance export, matching the existing Molt Node host."
   ],
-  "scope": "Fixed 72 by 28 ASCII Mandelbrot, compiled ahead of time. Browser worker displays stdout; it does not compute the fractal in JavaScript.",
+  "scope": "Three fixed Python programs compiled ahead of time. The browser worker executes WebAssembly and displays stdout; it does not run a Python compiler.",
+  "repeat_build": [
+    {
+      "name": "word-count",
+      "bytes": 3306813,
+      "sha256": "2a8e9b3757c3da4140e4ba8e218635a371a3348e03771835e09fb18973fc8a3d"
+    },
+    {
+      "name": "word-count-repeat",
+      "bytes": 3306813,
+      "sha256": "2a8e9b3757c3da4140e4ba8e218635a371a3348e03771835e09fb18973fc8a3d"
+    }
+  ],
+  "toolchain": {
+    "python": "Python 3.12.13",
+    "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+    "cargo": "cargo 1.96.0 (30a34c682 2026-05-25)",
+    "platform": "macOS-26.4-arm64-arm-64bit-Mach-O"
+  },
   "files": [
     {
       "path": "LICENSE",
@@ -42,8 +61,8 @@
     },
     {
       "path": "mandelbrot.wasm",
-      "bytes": 3319126,
-      "sha256": "05ad4366060d310618bc814376254e9678a5ad74baf60fc20bd0a4ac5e9ce3c7"
+      "bytes": 3319095,
+      "sha256": "f59ea1fd8481fe94c90cbac9b8d87262bf8023967fd36dc6c9d87fcbfbcf88ea"
     },
     {
       "path": "molt_vfs_browser.js",
@@ -56,9 +75,30 @@
       "sha256": "17b8774f553fdb69c82c581cb591d489e2a0809d1aaec096fb9a8f9df7861e5c"
     },
     {
+      "path": "transfer-summary.py",
+      "bytes": 770,
+      "sha256": "a969f8e5162cd4ebbb733797f82bb8923703fcb403ae9f82bd5cd9716f8316cf"
+    },
+    {
+      "path": "transfer-summary.wasm",
+      "bytes": 3321304,
+      "sha256": "a8579454b326c88a583926753593c50009ad9ae8db39e3c61c7030866282a894"
+    },
+    {
+      "path": "word-count.py",
+      "bytes": 280,
+      "sha256": "70a988342068e811095c57eae9702e6244647ec417d1d0a99fe9c1bb727624c1"
+    },
+    {
+      "path": "word-count.wasm",
+      "bytes": 3306813,
+      "sha256": "2a8e9b3757c3da4140e4ba8e218635a371a3348e03771835e09fb18973fc8a3d"
+    },
+    {
       "path": "worker.js",
-      "bytes": 777,
-      "sha256": "d5cbbf1f4f907d0cce1757cda32524c1a662e0ab28009b301cbac90a7984d78a"
+      "bytes": 884,
+      "sha256": "37b46b71e591f6790e0e5cf803c4c00c026fca3228abaa3c6e59b2d58119e6a7"
     }
-  ]
+  ],
+  "backend_sha256": "0d877049df30e877411d1cc3142e61966265bd51899a655b8f217700c59943e0"
 }

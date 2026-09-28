@@ -53,8 +53,9 @@ const ogImage = `/public/og/${slug}.png` in cards ? `/og/${slug}.png` : "/og.png
 			{d.stack && <><dt>Stack</dt><dd>{d.stack}</dd></>}
 			{d.year && <><dt>Year</dt><dd>{d.year}</dd></>}
 			{d.project_status && <><dt>Status</dt><dd>{d.project_status}</dd></>}
-			{d.repo_url && <><dt>Repo</dt><dd><a href={d.repo_url} target="_blank" rel="noopener noreferrer">{d.repo_url.replace("https://github.com/", "")}</a></dd></>}
-			{d.live_url && <><dt>{slug === "comma-lab" ? "Challenge" : "Demo"}</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">{slug === "comma-lab" ? "Leaderboard" : "Live"}</a></dd></>}
+			{d.repo_url && <><dt>Source code</dt><dd><a href={d.repo_url} target="_blank" rel="noopener noreferrer">{d.repo_url.replace("https://github.com/", "")}</a></dd></>}
+			{d.live_url && <><dt>{slug === "comma-lab" ? "Challenge" : "Website"}</dt><dd><a href={d.live_url} target="_blank" rel="noopener noreferrer">{slug === "comma-lab" ? "Challenge and leaderboard" : "Open the project"}</a></dd></>}
+			{slug === "teadata" && <><dt>Example</dt><dd><a href="#teadata-demo">Explore campus data</a></dd></>}
 		</dl>
 
 		{hasMoltDemo && <CompiledMoltDemo client:load />}

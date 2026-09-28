@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function CompiledMoltDemo() {
+  const [example, setExample] = useState("mandelbrot");
   const worker = useRef<Worker | null>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [source, setSource] = useState("");
@@ -11,13 +12,14 @@ export default function CompiledMoltDemo() {
 
   useEffect(() => {
     setReady(true);
+    setSource(""); setOutput(""); setStatus("Ready to run");
     const controller = new AbortController();
-    fetch("/molt-compiled/mandelbrot.py", { signal: controller.signal }).then((response) => {
+    fetch(`/molt-compiled/${example}.py`, { signal: controller.signal }).then((response) => {
       if (!response.ok) throw new Error("Source unavailable");
       return response.text();
     }).then(setSource).catch(() => {});
     return () => { controller.abort(); worker.current?.terminate(); if (timeout.current) clearTimeout(timeout.current); };
-  }, []);
+  }, [example]);
 
   function run() {
     if (running) return;
@@ -34,19 +36,21 @@ export default function CompiledMoltDemo() {
       };
       worker.current.onerror = () => { setStatus("Could not start the WebAssembly worker. Try reloading the page."); finish(); };
       timeout.current = setTimeout(() => { setStatus("The example timed out. Try again."); finish(); }, 30000);
-      worker.current.postMessage({ type: "run" });
+      worker.current.postMessage({ type: "run", example });
     } catch (error) { setRunning(false); setStatus(`Could not start: ${error instanceof Error ? error.message : String(error)}`); }
   }
 
   return <section className="artifact-panel" aria-label="Compiled Python demo">
     <p className="eyebrow">Python → Molt → WebAssembly</p>
     <h2>A small program, running in your browser</h2>
-    <p>I compiled this Python Mandelbrot program with Molt. The button runs the resulting WebAssembly in a browser worker and displays its standard output.</p>
+    <p>I compiled these Python programs with a pinned version of Molt. Choose a fractal, a school-data calculation, or a word counter. The button runs the resulting WebAssembly in a browser worker and displays its standard output.</p>
+    <label className="example-picker">Python example<select value={example} disabled={running} onChange={(event) => setExample(event.target.value)}><option value="mandelbrot">Mandelbrot fractal</option><option value="transfer-summary">Austin ISD transfer summary</option><option value="word-count">Word counter</option></select></label>
     <button className="demo-button" disabled={!ready || running} onClick={run}>{running ? "Running…" : "Run compiled Python"}</button>
     <p className="source-note" role="status" aria-live="polite">{status}</p>
-    {output && <pre className="terminal-snapshot molt-output" tabIndex={0} aria-label="Mandelbrot output from the compiled Python program">{output}</pre>}
-    <details><summary>Python source</summary>{source ? <pre tabIndex={0}>{source}</pre> : <p><a href="/molt-compiled/mandelbrot.py">Open the source file</a></p>}</details>
+    {output && <pre className="terminal-snapshot molt-output" tabIndex={0} aria-label="Output from the compiled Python program">{output}</pre>}
+    <details><summary>Python source</summary>{source ? <pre tabIndex={0}>{source}</pre> : <p><a href={`/molt-compiled/${example}.py`}>Open the source file</a></p>}</details>
+    {example === "transfer-summary" && <p className="source-note">Counts from the <a href="/portfolio/charter-austin-original.docx">original Austin ISD report</a>, using May 2024 inputs. The program calculates transfer shares, not revenue losses.</p>}
     <p className="source-note">This example was compiled ahead of time. Editing and compiling arbitrary Python on this website is not supported.</p>
-    <div className="artifact-links"><a href="/molt-compiled/mandelbrot.py">Python source</a><a href="/molt-compiled/mandelbrot.wasm">Compiled Wasm (3.3 MB)</a><a href="/molt-compiled/provenance.json">Build record</a><a href="https://github.com/adpena/molt">Molt repository</a></div>
+    <div className="artifact-links"><a href={`/molt-compiled/${example}.py`}>Python source</a><a href={`/molt-compiled/${example}.wasm`}>Compiled WebAssembly</a><a href="/molt-compiled/provenance.json">Build record</a><a href="https://github.com/adpena/molt">Molt repository</a></div>
   </section>;
 }

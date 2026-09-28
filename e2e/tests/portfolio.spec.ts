@@ -12,7 +12,7 @@ test('software and research have equal space and visible descriptions', async ({
   }
   const [software, research] = await selected.locator('.selected-group').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
   expect(Math.abs(software - research)).toBeLessThan(2);
-  await expect(selected.getByRole('link', { name: 'teadata', exact: true })).toHaveAttribute('href', 'https://github.com/adpena/teadata');
+  await expect(selected.getByRole('link', { name: 'teadata', exact: true })).toHaveAttribute('href', '/work/dev/teadata');
   await expect(page.getByRole('region', { name: 'Data for Public Education', exact: true })).toBeVisible();
   await expect(page.locator('nav[aria-label="Main navigation"]')).not.toContainText('Articles');
   for (const colorScheme of ['light', 'dark'] as const) {
@@ -101,7 +101,7 @@ test('resumes and contact are reachable from the homepage', async ({ page, reque
 });
 
 test('public pages exclude unpublished work and do not overflow', async ({ page, request }) => {
-  for (const path of ['/', '/about', '/resume/software', '/resume/research']) {
+  for (const path of ['/', '/about', '/resume/software', '/resume/research', '/work/dev/teadata', '/work/dev/comma-lab', '/work/policy/the-lost-decade-and-a-half', '/work/policy/facing-facts']) {
     expect((await page.goto(path))?.status()).toBe(200);
     await expect(page.locator('main')).toBeVisible();
     await expect(page.locator('a[href*="working-but-uncovered"]')).toHaveCount(0);
@@ -116,12 +116,18 @@ test('public pages exclude unpublished work and do not overflow', async ({ page,
 });
 
 test('portfolio pages have no serious accessibility violations', async ({ page }) => {
-  for (const path of ['/', '/about', '/resume/software', '/contact']) {
+  test.setTimeout(60000);
+  for (const path of ['/', '/about', '/resume/software', '/contact', '/work/dev/teadata', '/work/dev/molt', '/work/dev/comma-lab', '/work/policy/the-lost-decade-and-a-half', '/work/policy/facing-facts', '/work/policy/fiscal-impact-of-charter-school-expansion']) {
     expect((await page.goto(path))?.status()).toBe(200);
     await expect(page.locator('main')).toBeVisible();
-    const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    // The preserved original table is sandboxed against script injection.
+    // Audit its standalone document separately below.
+    const result = await new AxeBuilder({ page }).exclude('.original-table-frame').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(result.violations.filter((v) => ['critical', 'serious'].includes(v.impact || '')), path).toEqual([]);
   }
+  await page.goto('/portfolio/lost-decade-2024-tables.html');
+  const original = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(original.violations.filter((v) => ['critical', 'serious'].includes(v.impact || '')).map((v) => ({ id: v.id, nodes: v.nodes.length, examples: v.nodes.slice(0, 2) }))).toEqual([]);
 });
 
 test('skip link reaches main content by keyboard', async ({ page, browserName }) => {

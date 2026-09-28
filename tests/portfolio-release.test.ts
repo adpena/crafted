@@ -24,7 +24,7 @@ describe('release guards', () => {
     expect(hash({ a: 1, draft: 'old' })).not.toBe(hash({ a: 1, draft: 'new' }));
   });
   it('requires the live portfolio, resumes, and absent WIP routes', async () => {
-    fakeSite(); expect(await verifyLive('http://localhost')).toHaveLength(17);
+    fakeSite(); expect(await verifyLive('http://localhost')).toHaveLength(23);
   });
   it('rejects an error page served as a PDF with HTTP 200', async () => {
     fakeSite((p) => p.endsWith('.pdf') ? new Response('<html>Error</html>') : undefined);

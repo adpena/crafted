@@ -1,0 +1,5725 @@
+{
+  "sourceCommit": "7b206d8a0fb086fec2176b78bb22bf1530486247",
+  "workbookSha256": "60385fd2323dbf3507cc0eb6b8de77eec8ebaee2473b84450ccdb58e3de483d8",
+  "scope": "795 selected D/F-rated district campuses in the repository's example workbook; not a statewide campus inventory.",
+  "districtCount": 217,
+  "rows": [
+    {
+      "id": "001907041",
+      "name": "PALESTINE J H",
+      "district": "Palestine ISD",
+      "rating": "D",
+      "beginningTeachers": 12.5
+    },
+    {
+      "id": "001907110",
+      "name": "STORY INT",
+      "district": "Palestine ISD",
+      "rating": "D",
+      "beginningTeachers": 11.7
+    },
+    {
+      "id": "001908041",
+      "name": "WESTWOOD J H",
+      "district": "Westwood ISD",
+      "rating": "F",
+      "beginningTeachers": 12.8
+    },
+    {
+      "id": "001908101",
+      "name": "WESTWOOD EL",
+      "district": "Westwood ISD",
+      "rating": "D",
+      "beginningTeachers": 7.5
+    },
+    {
+      "id": "001908102",
+      "name": "WESTWOOD PRI",
+      "district": "Westwood ISD",
+      "rating": "D",
+      "beginningTeachers": 16.9
+    },
+    {
+      "id": "003903123",
+      "name": "COSTON EL",
+      "district": "Lufkin ISD",
+      "rating": "D",
+      "beginningTeachers": 6
+    },
+    {
+      "id": "003903127",
+      "name": "HERTY PRI",
+      "district": "Lufkin ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "003906101",
+      "name": "ZAVALLA EL",
+      "district": "Zavalla ISD",
+      "rating": "D",
+      "beginningTeachers": 5.5
+    },
+    {
+      "id": "007906101",
+      "name": "POTEET EL",
+      "district": "Poteet ISD",
+      "rating": "D",
+      "beginningTeachers": 8.6
+    },
+    {
+      "id": "007906102",
+      "name": "POTEET INT",
+      "district": "Poteet ISD",
+      "rating": "D",
+      "beginningTeachers": 7.9
+    },
+    {
+      "id": "011901103",
+      "name": "CEDAR CREEK EL",
+      "district": "Bastrop ISD",
+      "rating": "F",
+      "beginningTeachers": 18.8
+    },
+    {
+      "id": "011901106",
+      "name": "CEDAR CREEK MIDDLE",
+      "district": "Bastrop ISD",
+      "rating": "F",
+      "beginningTeachers": 22.6
+    },
+    {
+      "id": "011901107",
+      "name": "RED ROCK EL",
+      "district": "Bastrop ISD",
+      "rating": "F",
+      "beginningTeachers": 15.5
+    },
+    {
+      "id": "011901108",
+      "name": "CEDAR CREEK INT",
+      "district": "Bastrop ISD",
+      "rating": "D",
+      "beginningTeachers": 5
+    },
+    {
+      "id": "011901110",
+      "name": "LOST PINES EL",
+      "district": "Bastrop ISD",
+      "rating": "F",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "011901112",
+      "name": "CAMINO REAL EL",
+      "district": "Bastrop ISD",
+      "rating": "D",
+      "beginningTeachers": 12.1
+    },
+    {
+      "id": "011902042",
+      "name": "ELGIN INT",
+      "district": "Elgin ISD",
+      "rating": "F",
+      "beginningTeachers": 17.2
+    },
+    {
+      "id": "011902101",
+      "name": "BOOKER T WASHINGTON EL",
+      "district": "Elgin ISD",
+      "rating": "F",
+      "beginningTeachers": 19.4
+    },
+    {
+      "id": "011902102",
+      "name": "ELGIN EL",
+      "district": "Elgin ISD",
+      "rating": "F",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "013903101",
+      "name": "PETTUS EL",
+      "district": "Pettus ISD",
+      "rating": "D",
+      "beginningTeachers": 37.4
+    },
+    {
+      "id": "014903104",
+      "name": "SOUTHWEST EL",
+      "district": "Belton ISD",
+      "rating": "F",
+      "beginningTeachers": 8.7
+    },
+    {
+      "id": "014906043",
+      "name": "RANCIER MIDDLE",
+      "district": "Killeen ISD",
+      "rating": "D",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "014906044",
+      "name": "MANOR MIDDLE",
+      "district": "Killeen ISD",
+      "rating": "F",
+      "beginningTeachers": 14.5
+    },
+    {
+      "id": "014906048",
+      "name": "PALO ALTO MIDDLE",
+      "district": "Killeen ISD",
+      "rating": "F",
+      "beginningTeachers": 17.7
+    },
+    {
+      "id": "014906050",
+      "name": "LIVE OAK RIDGE MIDDLE",
+      "district": "Killeen ISD",
+      "rating": "D",
+      "beginningTeachers": 16.2
+    },
+    {
+      "id": "014906119",
+      "name": "HAY BRANCH EL",
+      "district": "Killeen ISD",
+      "rating": "D",
+      "beginningTeachers": 9.3
+    },
+    {
+      "id": "014906125",
+      "name": "BROOKHAVEN EL",
+      "district": "Killeen ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "014909107",
+      "name": "JEFFERSON EL",
+      "district": "Temple ISD",
+      "rating": "D",
+      "beginningTeachers": 12.6
+    },
+    {
+      "id": "015904001",
+      "name": "HARLANDALE H S",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 5.4
+    },
+    {
+      "id": "015904002",
+      "name": "MCCOLLUM H S",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 6.9
+    },
+    {
+      "id": "015904044",
+      "name": "KINGSBOROUGH MIDDLE",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "015904102",
+      "name": "BELLAIRE EL",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015904103",
+      "name": "COLLIER EL",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 16.1
+    },
+    {
+      "id": "015904105",
+      "name": "STONEWALL/FLANDERS EL",
+      "district": "Harlandale ISD",
+      "rating": "F",
+      "beginningTeachers": 4.9
+    },
+    {
+      "id": "015904113",
+      "name": "VESTAL EL",
+      "district": "Harlandale ISD",
+      "rating": "F",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "015904116",
+      "name": "E H GILBERT EL",
+      "district": "Harlandale ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015905041",
+      "name": "BRENTWOOD MIDDLE",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "015905046",
+      "name": "GUS GARCIA MIDDLE",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "015905104",
+      "name": "ROY CISNEROS EL",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 11.7
+    },
+    {
+      "id": "015905112",
+      "name": "LOMA PARK EL",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 16.7
+    },
+    {
+      "id": "015905113",
+      "name": "ROOSEVELT EL",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 12.8
+    },
+    {
+      "id": "015905117",
+      "name": "H B GONZALEZ EL",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 21.6
+    },
+    {
+      "id": "015905125",
+      "name": "STAFFORD CENTER",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "015905142",
+      "name": "LAS PALMAS LEADERSHIP SCHOOL FOR GIRLS",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 11.8
+    },
+    {
+      "id": "015905144",
+      "name": "STAFFORD EL VISUAL AND PERFORMING ARTS",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 22.4
+    },
+    {
+      "id": "015905145",
+      "name": "ROOSEVELT DUAL LANGUAGE ACADEMY",
+      "district": "Edgewood ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 21.6
+    },
+    {
+      "id": "015907043",
+      "name": "DAVIS MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 13.2
+    },
+    {
+      "id": "015907044",
+      "name": "HOT WELLS MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 20.3
+    },
+    {
+      "id": "015907045",
+      "name": "ROGERS COLLEGE PREP MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 20
+    },
+    {
+      "id": "015907050",
+      "name": "LONGFELLOW MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 7.9
+    },
+    {
+      "id": "015907055",
+      "name": "RHODES MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "015907057",
+      "name": "ROGERS MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 15.2
+    },
+    {
+      "id": "015907059",
+      "name": "WHITTIER MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "015907060",
+      "name": "EDGAR ALLAN POE STEM DUAL LANGUAGE MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 23.2
+    },
+    {
+      "id": "015907061",
+      "name": "TAFOLLA MIDDLE",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 15.8
+    },
+    {
+      "id": "015907103",
+      "name": "CHARLES C BALL EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 23.2
+    },
+    {
+      "id": "015907116",
+      "name": "COLLINS GARDEN EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015907118",
+      "name": "DAVID CROCKETT ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "015907129",
+      "name": "CHARLES GRAEBNER EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 7.3
+    },
+    {
+      "id": "015907132",
+      "name": "HERFF EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 27.5
+    },
+    {
+      "id": "015907134",
+      "name": "HIGHLAND HILLS EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 5.4
+    },
+    {
+      "id": "015907137",
+      "name": "HIRSCH EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "015907142",
+      "name": "M L KING ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 9.2
+    },
+    {
+      "id": "015907143",
+      "name": "KELLY ACADEMY AT LOWELL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 6.6
+    },
+    {
+      "id": "015907147",
+      "name": "BOWDEN ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 9.2
+    },
+    {
+      "id": "015907157",
+      "name": "OGDEN EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 18.5
+    },
+    {
+      "id": "015907158",
+      "name": "PERSHING EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 10.7
+    },
+    {
+      "id": "015907161",
+      "name": "ROGERS ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 6.9
+    },
+    {
+      "id": "015907165",
+      "name": "SMITH EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "015907172",
+      "name": "WASHINGTON EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 2.3
+    },
+    {
+      "id": "015907175",
+      "name": "WOODLAWN ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "015907176",
+      "name": "WOODLAWN HILLS EL",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "015907179",
+      "name": "HAWTHORNE PK-8 ACADEMY",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 9.9
+    },
+    {
+      "id": "015907182",
+      "name": "HEALY-MURPHY",
+      "district": "San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 13.8
+    },
+    {
+      "id": "015907241",
+      "name": "CARVAJAL EL",
+      "district": "San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 18.2
+    },
+    {
+      "id": "015908001",
+      "name": "SOUTH SAN ANTONIO H S",
+      "district": "South San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "015908041",
+      "name": "DWIGHT MIDDLE",
+      "district": "South San Antonio ISD",
+      "rating": "F",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "015908108",
+      "name": "FRANK MADLA EL",
+      "district": "South San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "015908112",
+      "name": "MIGUEL CARRILLO JR EL",
+      "district": "South San Antonio ISD",
+      "rating": "D",
+      "beginningTeachers": 3.5
+    },
+    {
+      "id": "015910042",
+      "name": "GARNER MIDDLE",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "015910045",
+      "name": "JACKSON MIDDLE",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 6.9
+    },
+    {
+      "id": "015910107",
+      "name": "JACKSON-KELLER EL",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "015910108",
+      "name": "LARKSPUR EL",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 8.7
+    },
+    {
+      "id": "015910117",
+      "name": "WINDCREST EL",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 19.8
+    },
+    {
+      "id": "015910121",
+      "name": "EL DORADO EL",
+      "district": "North East ISD",
+      "rating": "D",
+      "beginningTeachers": 8.6
+    },
+    {
+      "id": "015911103",
+      "name": "PECAN VALLEY EL",
+      "district": "East Central ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015912045",
+      "name": "JUDITH A RESNIK MIDDLE",
+      "district": "Southwest ISD",
+      "rating": "D",
+      "beginningTeachers": 18.1
+    },
+    {
+      "id": "015912105",
+      "name": "SKY HARBOUR EL",
+      "district": "Southwest ISD",
+      "rating": "D",
+      "beginningTeachers": 11.4
+    },
+    {
+      "id": "015912109",
+      "name": "KRIEWALD ROAD SCHOOL OF THE ARTS",
+      "district": "Southwest ISD",
+      "rating": "D",
+      "beginningTeachers": 10.7
+    },
+    {
+      "id": "015915001",
+      "name": "HOLMES H S",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 9.6
+    },
+    {
+      "id": "015915002",
+      "name": "JAY H S",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "015915041",
+      "name": "NEFF MIDDLE",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 6.6
+    },
+    {
+      "id": "015915042",
+      "name": "RAYBURN MIDDLE",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 10.2
+    },
+    {
+      "id": "015915046",
+      "name": "PEASE MIDDLE",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "015915103",
+      "name": "GLENOAKS EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "015915105",
+      "name": "HULL EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "015915111",
+      "name": "GLASS EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 3.1
+    },
+    {
+      "id": "015915112",
+      "name": "POWELL EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015915115",
+      "name": "COLONIES NORTH EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "015915122",
+      "name": "PASSMORE EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "015915128",
+      "name": "CARLOS COON EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "015915131",
+      "name": "LINTON EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "015915135",
+      "name": "CODY EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 7.3
+    },
+    {
+      "id": "015915138",
+      "name": "KNOWLTON EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 12.5
+    },
+    {
+      "id": "015915158",
+      "name": "MCDERMOTT EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 7.8
+    },
+    {
+      "id": "015915177",
+      "name": "CARNAHAN EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "015915184",
+      "name": "HATCHETT EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "D",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "015915185",
+      "name": "MEAD EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 8.6
+    },
+    {
+      "id": "015915189",
+      "name": "MARTIN EL",
+      "district": "Northside ISD (Bexar)",
+      "rating": "F",
+      "beginningTeachers": 4.6
+    },
+    {
+      "id": "015916041",
+      "name": "KIRBY MIDDLE",
+      "district": "Judson ISD",
+      "rating": "F",
+      "beginningTeachers": 18.1
+    },
+    {
+      "id": "015916044",
+      "name": "HENRY METZGER MIDDLE",
+      "district": "Judson ISD",
+      "rating": "F",
+      "beginningTeachers": 21.7
+    },
+    {
+      "id": "015916102",
+      "name": "HOPKINS EL",
+      "district": "Judson ISD",
+      "rating": "D",
+      "beginningTeachers": 3.9
+    },
+    {
+      "id": "015916105",
+      "name": "PARK VILLAGE BLENDED LEARNING ACADEMY",
+      "district": "Judson ISD",
+      "rating": "F",
+      "beginningTeachers": 17.7
+    },
+    {
+      "id": "015916110",
+      "name": "SPRING MEADOWS EL",
+      "district": "Judson ISD",
+      "rating": "D",
+      "beginningTeachers": 10.8
+    },
+    {
+      "id": "015916111",
+      "name": "MILLER POINT EL",
+      "district": "Judson ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "015916115",
+      "name": "MARY LOU HARTMAN",
+      "district": "Judson ISD",
+      "rating": "D",
+      "beginningTeachers": 13.2
+    },
+    {
+      "id": "018902101",
+      "name": "MERIDIAN EL",
+      "district": "Meridian ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "018905003",
+      "name": "WALNUT SPRINGS SCHOOL",
+      "district": "Walnut Springs ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "019907042",
+      "name": "TEXAS MIDDLE",
+      "district": "Texarkana ISD",
+      "rating": "F",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "019907105",
+      "name": "HIGHLAND PARK EL",
+      "district": "Texarkana ISD",
+      "rating": "F",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "019907107",
+      "name": "THERON JONES EARLY LITERACY CENTER",
+      "district": "Texarkana ISD",
+      "rating": "D",
+      "beginningTeachers": 8.9
+    },
+    {
+      "id": "019907108",
+      "name": "WESTLAWN EL",
+      "district": "Texarkana ISD",
+      "rating": "F",
+      "beginningTeachers": 33
+    },
+    {
+      "id": "019907111",
+      "name": "SPRING LAKE PARK EL",
+      "district": "Texarkana ISD",
+      "rating": "D",
+      "beginningTeachers": 12.9
+    },
+    {
+      "id": "019907115",
+      "name": "PAUL LAURENCE DUNBAR EARLY EDUCATION CENTER",
+      "district": "Texarkana ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "019908001",
+      "name": "LIBERTY-EYLAU H S",
+      "district": "Liberty-Eylau ISD",
+      "rating": "D",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "019908041",
+      "name": "LIBERTY-EYLAU MIDDLE",
+      "district": "Liberty-Eylau ISD",
+      "rating": "F",
+      "beginningTeachers": 7.3
+    },
+    {
+      "id": "019908102",
+      "name": "LIBERTY-EYLAU EARLY CHILDHOOD CENTER",
+      "district": "Liberty-Eylau ISD",
+      "rating": "D",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "019908103",
+      "name": "LIBERTY-EYLAU EL",
+      "district": "Liberty-Eylau ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "019914101",
+      "name": "LEARY EL",
+      "district": "Leary ISD",
+      "rating": "D",
+      "beginningTeachers": 36.4
+    },
+    {
+      "id": "020905042",
+      "name": "FREEPORT INT",
+      "district": "Brazosport ISD",
+      "rating": "D",
+      "beginningTeachers": 14.2
+    },
+    {
+      "id": "021901102",
+      "name": "COLLEGE HILLS EL",
+      "district": "College Station ISD",
+      "rating": "D",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "021902045",
+      "name": "JANE LONG",
+      "district": "Bryan ISD",
+      "rating": "D",
+      "beginningTeachers": 13.8
+    },
+    {
+      "id": "021902049",
+      "name": "O W SADBERRY SR INT",
+      "district": "Bryan ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "024901001",
+      "name": "FALFURRIAS H S",
+      "district": "Brooks County ISD",
+      "rating": "D",
+      "beginningTeachers": 20.8
+    },
+    {
+      "id": "024901041",
+      "name": "FALFURRIAS J H",
+      "district": "Brooks County ISD",
+      "rating": "D",
+      "beginningTeachers": 21.8
+    },
+    {
+      "id": "024901101",
+      "name": "FALFURRIAS EL",
+      "district": "Brooks County ISD",
+      "rating": "D",
+      "beginningTeachers": 7.1
+    },
+    {
+      "id": "024901103",
+      "name": "LASATER EL",
+      "district": "Brooks County ISD",
+      "rating": "D",
+      "beginningTeachers": 29.1
+    },
+    {
+      "id": "024901105",
+      "name": "FALFURRIAS INNOVATION ACADEMY",
+      "district": "Brooks County ISD",
+      "rating": "D",
+      "beginningTeachers": 24.1
+    },
+    {
+      "id": "026902042",
+      "name": "SOMERVILLE INT",
+      "district": "Somerville ISD",
+      "rating": "D",
+      "beginningTeachers": 35.3
+    },
+    {
+      "id": "027904103",
+      "name": "HIGHLAND LAKES EL",
+      "district": "Marble Falls ISD",
+      "rating": "D",
+      "beginningTeachers": 14.5
+    },
+    {
+      "id": "028902106",
+      "name": "ALMA BREWER STRAWN EL",
+      "district": "Lockhart ISD",
+      "rating": "D",
+      "beginningTeachers": 8.4
+    },
+    {
+      "id": "028906001",
+      "name": "PRAIRIE LEA EL",
+      "district": "Prairie Lea ISD",
+      "rating": "D",
+      "beginningTeachers": 15
+    },
+    {
+      "id": "031901046",
+      "name": "PERKINS MIDDLE",
+      "district": "Brownsville ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "031903108",
+      "name": "JEFFERSON EL",
+      "district": "Harlingen Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 4
+    },
+    {
+      "id": "031911041",
+      "name": "RIO HONDO MIDDLE",
+      "district": "Rio Hondo ISD",
+      "rating": "D",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "031912001",
+      "name": "SAN BENITO H S",
+      "district": "San Benito Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 6.1
+    },
+    {
+      "id": "035901041",
+      "name": "DIMMITT MIDDLE",
+      "district": "Dimmitt ISD",
+      "rating": "D",
+      "beginningTeachers": 19.1
+    },
+    {
+      "id": "035901102",
+      "name": "RICHARDSON EL",
+      "district": "Dimmitt ISD",
+      "rating": "D",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "037904043",
+      "name": "NICHOLS INT",
+      "district": "Jacksonville ISD",
+      "rating": "D",
+      "beginningTeachers": 5.1
+    },
+    {
+      "id": "040901001",
+      "name": "MORTON SCHOOL",
+      "district": "Morton ISD",
+      "rating": "D",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "042903101",
+      "name": "SANTA ANNA EL",
+      "district": "Santa Anna ISD",
+      "rating": "D",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "043910045",
+      "name": "ARMSTRONG MIDDLE",
+      "district": "Plano ISD",
+      "rating": "D",
+      "beginningTeachers": 28.6
+    },
+    {
+      "id": "043910104",
+      "name": "SIGLER EL",
+      "district": "Plano ISD",
+      "rating": "F",
+      "beginningTeachers": 17.9
+    },
+    {
+      "id": "043910105",
+      "name": "MEMORIAL EL",
+      "district": "Plano ISD",
+      "rating": "D",
+      "beginningTeachers": 23.3
+    },
+    {
+      "id": "043910109",
+      "name": "FORMAN EL",
+      "district": "Plano ISD",
+      "rating": "D",
+      "beginningTeachers": 14.8
+    },
+    {
+      "id": "043910117",
+      "name": "THOMAS EL",
+      "district": "Plano ISD",
+      "rating": "D",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "045903043",
+      "name": "RICE JH",
+      "district": "Rice Cons ISD",
+      "rating": "F",
+      "beginningTeachers": 16.1
+    },
+    {
+      "id": "049901101",
+      "name": "EDISON EL",
+      "district": "Gainesville ISD",
+      "rating": "F",
+      "beginningTeachers": 10.1
+    },
+    {
+      "id": "049901107",
+      "name": "W E CHALMERS EL",
+      "district": "Gainesville ISD",
+      "rating": "F",
+      "beginningTeachers": 3.1
+    },
+    {
+      "id": "052901101",
+      "name": "CRANE EL",
+      "district": "Crane ISD",
+      "rating": "F",
+      "beginningTeachers": 13.2
+    },
+    {
+      "id": "054903041",
+      "name": "RALLS MIDDLE",
+      "district": "Ralls ISD",
+      "rating": "F",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "054903102",
+      "name": "RALLS EL",
+      "district": "Ralls ISD",
+      "rating": "D",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "056901104",
+      "name": "DALHART EL",
+      "district": "Dalhart ISD",
+      "rating": "D",
+      "beginningTeachers": 3.1
+    },
+    {
+      "id": "057903044",
+      "name": "LONG MIDDLE",
+      "district": "Carrollton-Farmers Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 14.5
+    },
+    {
+      "id": "057903046",
+      "name": "POLK MIDDLE",
+      "district": "Carrollton-Farmers Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 16.6
+    },
+    {
+      "id": "057903103",
+      "name": "CENTRAL EL",
+      "district": "Carrollton-Farmers Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 18.7
+    },
+    {
+      "id": "057903129",
+      "name": "MCWHORTER EL",
+      "district": "Carrollton-Farmers Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 23.9
+    },
+    {
+      "id": "057904042",
+      "name": "BESSIE COLEMAN MIDDLE",
+      "district": "Cedar Hill ISD",
+      "rating": "D",
+      "beginningTeachers": 7
+    },
+    {
+      "id": "057904102",
+      "name": "PLUMMER EL",
+      "district": "Cedar Hill ISD",
+      "rating": "D",
+      "beginningTeachers": 10.6
+    },
+    {
+      "id": "057904107",
+      "name": "WATERFORD OAKS EL",
+      "district": "Cedar Hill ISD",
+      "rating": "D",
+      "beginningTeachers": 20.2
+    },
+    {
+      "id": "057905042",
+      "name": "JUDGE LOUIS A BEDFORD JR LAW ACADEMY",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 13.9
+    },
+    {
+      "id": "057905046",
+      "name": "YOUNG MEN'S LEADERSHIP ACADEMY AT FRED F FLORENCE",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "057905060",
+      "name": "BOUDE STOREY MIDDLE",
+      "district": "Dallas ISD",
+      "rating": "F",
+      "beginningTeachers": 3.1
+    },
+    {
+      "id": "057905072",
+      "name": "DR FREDERICK DOUGLASS TODD SR MIDDLE",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 5.9
+    },
+    {
+      "id": "057905107",
+      "name": "JOSE 'JOE' MAY EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 11.5
+    },
+    {
+      "id": "057905115",
+      "name": "HARRELL BUDD EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 21.1
+    },
+    {
+      "id": "057905131",
+      "name": "IGNACIO ZARAGOZA EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 7.1
+    },
+    {
+      "id": "057905178",
+      "name": "H I HOLLAND EL AT LISBON",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "057905185",
+      "name": "WILLIAM B MILLER EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 24.9
+    },
+    {
+      "id": "057905225",
+      "name": "DANIEL WEBSTER EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 11.4
+    },
+    {
+      "id": "057905235",
+      "name": "BIRDIE ALEXANDER EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "057905240",
+      "name": "FRANK GUZICK EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 5.7
+    },
+    {
+      "id": "057905264",
+      "name": "RONALD E MCNAIR EL",
+      "district": "Dallas ISD",
+      "rating": "F",
+      "beginningTeachers": 12.5
+    },
+    {
+      "id": "057905271",
+      "name": "JULIAN T SALDIVAR EL",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "057905372",
+      "name": "WEST DALLAS J H",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "057905380",
+      "name": "WILMER-HUTCHINS H S",
+      "district": "Dallas ISD",
+      "rating": "D",
+      "beginningTeachers": 15.7
+    },
+    {
+      "id": "057906042",
+      "name": "DESOTO WEST MIDDLE",
+      "district": "DeSoto ISD",
+      "rating": "F",
+      "beginningTeachers": 3.3
+    },
+    {
+      "id": "057906106",
+      "name": "THE MEADOWS EL",
+      "district": "DeSoto ISD",
+      "rating": "D",
+      "beginningTeachers": 26.1
+    },
+    {
+      "id": "057906107",
+      "name": "COCKRELL HILL EL",
+      "district": "DeSoto ISD",
+      "rating": "D",
+      "beginningTeachers": 4
+    },
+    {
+      "id": "057906108",
+      "name": "FRANK D MOATES EL",
+      "district": "DeSoto ISD",
+      "rating": "D",
+      "beginningTeachers": 6.8
+    },
+    {
+      "id": "057907042",
+      "name": "WILLIAM H BYRD MIDDLE",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 18
+    },
+    {
+      "id": "057907101",
+      "name": "CENTRAL EL",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 18.1
+    },
+    {
+      "id": "057907102",
+      "name": "FAIRMEADOWS EL",
+      "district": "Duncanville ISD",
+      "rating": "D",
+      "beginningTeachers": 9
+    },
+    {
+      "id": "057907103",
+      "name": "MERRIFIELD EL",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 8.8
+    },
+    {
+      "id": "057907105",
+      "name": "S GUS ALEXANDER JR EL",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 15.8
+    },
+    {
+      "id": "057907106",
+      "name": "CLINT Q SMITH EL",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 8.7
+    },
+    {
+      "id": "057907107",
+      "name": "CHARLES ACTON LEADERSHP ACADEMY",
+      "district": "Duncanville ISD",
+      "rating": "D",
+      "beginningTeachers": 25.9
+    },
+    {
+      "id": "057907108",
+      "name": "H BOB DANIEL SR INT",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "057907110",
+      "name": "GRACE R BRANDENBURG INT",
+      "district": "Duncanville ISD",
+      "rating": "D",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "057907112",
+      "name": "JAMES R BILHARTZ JR EL",
+      "district": "Duncanville ISD",
+      "rating": "F",
+      "beginningTeachers": 30.8
+    },
+    {
+      "id": "057909042",
+      "name": "BUSSEY MIDDLE",
+      "district": "Garland ISD",
+      "rating": "D",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "057909156",
+      "name": "NITA PEARSON EL",
+      "district": "Garland ISD",
+      "rating": "D",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "057910041",
+      "name": "DIGITAL ARTS & TECHNOLOGY ACADEMY AT ADAMS MIDDLE",
+      "district": "Grand Prairie ISD",
+      "rating": "D",
+      "beginningTeachers": 8.8
+    },
+    {
+      "id": "057910051",
+      "name": "JAMES FANNIN MIDDLE",
+      "district": "Grand Prairie ISD",
+      "rating": "D",
+      "beginningTeachers": 14.1
+    },
+    {
+      "id": "057910124",
+      "name": "HECTOR P GARCIA EL",
+      "district": "Grand Prairie ISD",
+      "rating": "F",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "057910131",
+      "name": "HOBBS WILLIAMS EL",
+      "district": "Grand Prairie ISD",
+      "rating": "D",
+      "beginningTeachers": 9.1
+    },
+    {
+      "id": "057912041",
+      "name": "BOWIE MIDDLE",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "057912042",
+      "name": "CROCKETT MIDDLE",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 27.8
+    },
+    {
+      "id": "057912043",
+      "name": "TRAVIS MIDDLE",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "057912045",
+      "name": "AUSTIN MIDDLE",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 10.9
+    },
+    {
+      "id": "057912101",
+      "name": "BARTON EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 14.2
+    },
+    {
+      "id": "057912102",
+      "name": "BROWN EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "057912105",
+      "name": "GOOD EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 14.7
+    },
+    {
+      "id": "057912106",
+      "name": "HALEY J EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 6.9
+    },
+    {
+      "id": "057912108",
+      "name": "JOHNSTON EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "057912111",
+      "name": "LEE EL",
+      "district": "Irving ISD",
+      "rating": "F",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "057912112",
+      "name": "LIVELY EL",
+      "district": "Irving ISD",
+      "rating": "F",
+      "beginningTeachers": 10.7
+    },
+    {
+      "id": "057912114",
+      "name": "SCHULZE EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 4.8
+    },
+    {
+      "id": "057912119",
+      "name": "HANES EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 17.3
+    },
+    {
+      "id": "057912120",
+      "name": "TOWNLEY EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 16.3
+    },
+    {
+      "id": "057912121",
+      "name": "DAVIS EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 18.2
+    },
+    {
+      "id": "057912122",
+      "name": "GILBERT F M EL",
+      "district": "Irving ISD",
+      "rating": "F",
+      "beginningTeachers": 3.9
+    },
+    {
+      "id": "057912123",
+      "name": "JACKIE MAE TOWNSELL EL",
+      "district": "Irving ISD",
+      "rating": "D",
+      "beginningTeachers": 9.9
+    },
+    {
+      "id": "057913041",
+      "name": "LANCASTER MIDDLE",
+      "district": "Lancaster ISD",
+      "rating": "D",
+      "beginningTeachers": 33
+    },
+    {
+      "id": "057913101",
+      "name": "PLEASANT RUN EL",
+      "district": "Lancaster ISD",
+      "rating": "D",
+      "beginningTeachers": 21.3
+    },
+    {
+      "id": "057914124",
+      "name": "CANNADAY EL",
+      "district": "Mesquite ISD",
+      "rating": "D",
+      "beginningTeachers": 9.3
+    },
+    {
+      "id": "057914127",
+      "name": "THOMPSON EL",
+      "district": "Mesquite ISD",
+      "rating": "D",
+      "beginningTeachers": 14.5
+    },
+    {
+      "id": "057914131",
+      "name": "MACKEY EL",
+      "district": "Mesquite ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "057916049",
+      "name": "LIBERTY J H",
+      "district": "Richardson ISD",
+      "rating": "F",
+      "beginningTeachers": 21.4
+    },
+    {
+      "id": "057916103",
+      "name": "DOVER EL",
+      "district": "Richardson ISD",
+      "rating": "F",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "057916114",
+      "name": "STULTS ROAD EL",
+      "district": "Richardson ISD",
+      "rating": "D",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "057916120",
+      "name": "FORESTRIDGE EL",
+      "district": "Richardson ISD",
+      "rating": "F",
+      "beginningTeachers": 9.3
+    },
+    {
+      "id": "057916126",
+      "name": "SKYVIEW EL",
+      "district": "Richardson ISD",
+      "rating": "D",
+      "beginningTeachers": 25.2
+    },
+    {
+      "id": "057916135",
+      "name": "AIKIN EL",
+      "district": "Richardson ISD",
+      "rating": "D",
+      "beginningTeachers": 29.7
+    },
+    {
+      "id": "057916137",
+      "name": "RISD ACAD",
+      "district": "Richardson ISD",
+      "rating": "F",
+      "beginningTeachers": 24.6
+    },
+    {
+      "id": "057916143",
+      "name": "FOREST LANE ACADEMY",
+      "district": "Richardson ISD",
+      "rating": "D",
+      "beginningTeachers": 4.1
+    },
+    {
+      "id": "057916144",
+      "name": "AUDELIA CREEK EL",
+      "district": "Richardson ISD",
+      "rating": "F",
+      "beginningTeachers": 22
+    },
+    {
+      "id": "059901001",
+      "name": "HEREFORD H S",
+      "district": "Hereford ISD",
+      "rating": "D",
+      "beginningTeachers": 3.8
+    },
+    {
+      "id": "059901042",
+      "name": "HEREFORD J H",
+      "district": "Hereford ISD",
+      "rating": "D",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "059901104",
+      "name": "NORTHWEST EL",
+      "district": "Hereford ISD",
+      "rating": "F",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "060914102",
+      "name": "FANNINDEL EL",
+      "district": "Fannindel ISD",
+      "rating": "F",
+      "beginningTeachers": 31.1
+    },
+    {
+      "id": "061901110",
+      "name": "GINNINGS EL",
+      "district": "Denton ISD",
+      "rating": "F",
+      "beginningTeachers": 10.2
+    },
+    {
+      "id": "061901111",
+      "name": "BORMAN EL",
+      "district": "Denton ISD",
+      "rating": "D",
+      "beginningTeachers": 27
+    },
+    {
+      "id": "061902042",
+      "name": "STEM ACADEMY AT HEDRICK MIDDLE",
+      "district": "Lewisville ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "061902050",
+      "name": "DELAY MIDDLE",
+      "district": "Lewisville ISD",
+      "rating": "F",
+      "beginningTeachers": 4.8
+    },
+    {
+      "id": "061902101",
+      "name": "CENTRAL EL",
+      "district": "Lewisville ISD",
+      "rating": "D",
+      "beginningTeachers": 6.3
+    },
+    {
+      "id": "061902131",
+      "name": "SOUTHRIDGE EL",
+      "district": "Lewisville ISD",
+      "rating": "D",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "061902144",
+      "name": "MILL STREET EL",
+      "district": "Lewisville ISD",
+      "rating": "F",
+      "beginningTeachers": 8.9
+    },
+    {
+      "id": "062903102",
+      "name": "YOAKUM INT",
+      "district": "Yoakum ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "062903103",
+      "name": "YOAKUM PRI",
+      "district": "Yoakum ISD",
+      "rating": "D",
+      "beginningTeachers": 5.2
+    },
+    {
+      "id": "062903105",
+      "name": "YOAKUM ANNEX",
+      "district": "Yoakum ISD",
+      "rating": "D",
+      "beginningTeachers": 17.3
+    },
+    {
+      "id": "064903001",
+      "name": "CARRIZO SPRINGS H S",
+      "district": "Carrizo Springs Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 23.2
+    },
+    {
+      "id": "064903102",
+      "name": "CARRIZO SPRINGS EL",
+      "district": "Carrizo Springs Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 22.3
+    },
+    {
+      "id": "066903102",
+      "name": "NORMAN M THOMAS EL",
+      "district": "Freer ISD",
+      "rating": "F",
+      "beginningTeachers": 9.3
+    },
+    {
+      "id": "067907041",
+      "name": "RANGER MIDDLE",
+      "district": "Ranger ISD",
+      "rating": "D",
+      "beginningTeachers": 2.4
+    },
+    {
+      "id": "068901044",
+      "name": "CROCKETT MIDDLE",
+      "district": "Ector County ISD",
+      "rating": "F",
+      "beginningTeachers": 4.3
+    },
+    {
+      "id": "068901047",
+      "name": "ECTOR COLLEGE PREP SUCCESS ACADEMY",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "068901104",
+      "name": "BURNET EL",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 17.2
+    },
+    {
+      "id": "068901107",
+      "name": "DOWLING EL",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 5.2
+    },
+    {
+      "id": "068901117",
+      "name": "PEASE EL",
+      "district": "Ector County ISD",
+      "rating": "F",
+      "beginningTeachers": 5.9
+    },
+    {
+      "id": "068901123",
+      "name": "EL MAGNET AT ZAVALA",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "068901127",
+      "name": "EL MAGNET AT BLACKSHEAR",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "068901130",
+      "name": "LAURO CAVAZOS EL",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "068901131",
+      "name": "EDWARD K DOWNING EL",
+      "district": "Ector County ISD",
+      "rating": "F",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "068901132",
+      "name": "G E 'BUDDY' WEST EL",
+      "district": "Ector County ISD",
+      "rating": "D",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "070903103",
+      "name": "BOWIE EL",
+      "district": "Ennis ISD",
+      "rating": "D",
+      "beginningTeachers": 96.7
+    },
+    {
+      "id": "071902044",
+      "name": "GUILLEN MIDDLE",
+      "district": "El Paso ISD",
+      "rating": "F",
+      "beginningTeachers": 2.6
+    },
+    {
+      "id": "071902111",
+      "name": "COOLEY EL",
+      "district": "El Paso ISD",
+      "rating": "D",
+      "beginningTeachers": 9.6
+    },
+    {
+      "id": "071902172",
+      "name": "CHARLES Q MURPHREE PK-8",
+      "district": "El Paso ISD",
+      "rating": "F",
+      "beginningTeachers": 7.8
+    },
+    {
+      "id": "071903041",
+      "name": "FABENS MIDDLE",
+      "district": "Fabens ISD",
+      "rating": "D",
+      "beginningTeachers": 4.2
+    },
+    {
+      "id": "071904001",
+      "name": "SAN ELIZARIO H S",
+      "district": "San Elizario ISD",
+      "rating": "D",
+      "beginningTeachers": 3.4
+    },
+    {
+      "id": "071904101",
+      "name": "L G ALARCON EL",
+      "district": "San Elizario ISD",
+      "rating": "D",
+      "beginningTeachers": 4.6
+    },
+    {
+      "id": "071904102",
+      "name": "LORENZO LOYA PRI",
+      "district": "San Elizario ISD",
+      "rating": "D",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "071904103",
+      "name": "JOSEFA L SAMBRANO EL",
+      "district": "San Elizario ISD",
+      "rating": "D",
+      "beginningTeachers": 5.8
+    },
+    {
+      "id": "074903103",
+      "name": "BAILEY INGLISH EARLY CHILDHOOD CENTER",
+      "district": "Bonham ISD",
+      "rating": "F",
+      "beginningTeachers": 16.3
+    },
+    {
+      "id": "077902101",
+      "name": "LOCKNEY EL",
+      "district": "Lockney ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "079901108",
+      "name": "TRAVIS EL",
+      "district": "Lamar Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 9.9
+    },
+    {
+      "id": "079907002",
+      "name": "WILLOWRIDGE H S",
+      "district": "Fort Bend ISD",
+      "rating": "F",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "079907042",
+      "name": "MISSOURI CITY MIDDLE",
+      "district": "Fort Bend ISD",
+      "rating": "F",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "079907046",
+      "name": "CHRISTA MCAULIFFE MIDDLE",
+      "district": "Fort Bend ISD",
+      "rating": "F",
+      "beginningTeachers": 10.3
+    },
+    {
+      "id": "079907134",
+      "name": "WALTER MOSES BURTON EL",
+      "district": "Fort Bend ISD",
+      "rating": "D",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "079907150",
+      "name": "HERITAGE ROSE EL",
+      "district": "Fort Bend ISD",
+      "rating": "D",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "079907163",
+      "name": "BLUE RIDGE BRIARGATE EL",
+      "district": "Fort Bend ISD",
+      "rating": "D",
+      "beginningTeachers": 31.2
+    },
+    {
+      "id": "079907164",
+      "name": "MISSION BEND GLEN EL",
+      "district": "Fort Bend ISD",
+      "rating": "D",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "079910041",
+      "name": "STAFFORD MIDDLE",
+      "district": "Stafford MSD",
+      "rating": "D",
+      "beginningTeachers": 13.6
+    },
+    {
+      "id": "079910102",
+      "name": "STAFFORD EL",
+      "district": "Stafford MSD",
+      "rating": "D",
+      "beginningTeachers": 12.5
+    },
+    {
+      "id": "082903001",
+      "name": "PEARSALL H S",
+      "district": "Pearsall ISD",
+      "rating": "D",
+      "beginningTeachers": 11.5
+    },
+    {
+      "id": "082903041",
+      "name": "PEARSALL J H",
+      "district": "Pearsall ISD",
+      "rating": "D",
+      "beginningTeachers": 14.1
+    },
+    {
+      "id": "082903103",
+      "name": "PEARSALL INT",
+      "district": "Pearsall ISD",
+      "rating": "F",
+      "beginningTeachers": 11.5
+    },
+    {
+      "id": "082903104",
+      "name": "TED FLORES EL",
+      "district": "Pearsall ISD",
+      "rating": "F",
+      "beginningTeachers": 22.8
+    },
+    {
+      "id": "084902042",
+      "name": "CENTRAL MIDDLE",
+      "district": "Galveston ISD",
+      "rating": "D",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "084902115",
+      "name": "BURNET EL",
+      "district": "Galveston ISD",
+      "rating": "D",
+      "beginningTeachers": 17.2
+    },
+    {
+      "id": "084906002",
+      "name": "LA MARQUE H S",
+      "district": "Texas City ISD",
+      "rating": "D",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "084906043",
+      "name": "GILES MIDDLE",
+      "district": "Texas City ISD",
+      "rating": "D",
+      "beginningTeachers": 7
+    },
+    {
+      "id": "084906101",
+      "name": "FRY INT",
+      "district": "Texas City ISD",
+      "rating": "D",
+      "beginningTeachers": 10.8
+    },
+    {
+      "id": "084908103",
+      "name": "STEWART EL",
+      "district": "Hitchcock ISD",
+      "rating": "D",
+      "beginningTeachers": 18.9
+    },
+    {
+      "id": "084908104",
+      "name": "HITCHCOCK HEADSTART",
+      "district": "Hitchcock ISD",
+      "rating": "D",
+      "beginningTeachers": 100
+    },
+    {
+      "id": "084908106",
+      "name": "HITCHCOCK PRI",
+      "district": "Hitchcock ISD",
+      "rating": "D",
+      "beginningTeachers": 33.9
+    },
+    {
+      "id": "091903103",
+      "name": "HOUSTON EL",
+      "district": "Denison ISD",
+      "rating": "D",
+      "beginningTeachers": 19.9
+    },
+    {
+      "id": "091903114",
+      "name": "TERRELL EL",
+      "district": "Denison ISD",
+      "rating": "D",
+      "beginningTeachers": 15.3
+    },
+    {
+      "id": "091906108",
+      "name": "WAKEFIELD EL",
+      "district": "Sherman ISD",
+      "rating": "F",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "091906109",
+      "name": "WASHINGTON EL",
+      "district": "Sherman ISD",
+      "rating": "D",
+      "beginningTeachers": 13.4
+    },
+    {
+      "id": "092901042",
+      "name": "GLADEWATER MIDDLE",
+      "district": "Gladewater ISD",
+      "rating": "D",
+      "beginningTeachers": 13.4
+    },
+    {
+      "id": "092901102",
+      "name": "GLADEWATER PRI",
+      "district": "Gladewater ISD",
+      "rating": "D",
+      "beginningTeachers": 12.3
+    },
+    {
+      "id": "092901105",
+      "name": "WELDON EL",
+      "district": "Gladewater ISD",
+      "rating": "D",
+      "beginningTeachers": 10.2
+    },
+    {
+      "id": "093904104",
+      "name": "JOHN C WEBB EL",
+      "district": "Navasota ISD",
+      "rating": "D",
+      "beginningTeachers": 5
+    },
+    {
+      "id": "093904106",
+      "name": "HIGH POINT EL",
+      "district": "Navasota ISD",
+      "rating": "F",
+      "beginningTeachers": 22.1
+    },
+    {
+      "id": "094901104",
+      "name": "ORALIA R RODRIGUEZ EL",
+      "district": "Seguin ISD",
+      "rating": "D",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "095905122",
+      "name": "PLAINVIEW INT",
+      "district": "Plainview ISD",
+      "rating": "D",
+      "beginningTeachers": 16.8
+    },
+    {
+      "id": "100908101",
+      "name": "WEST HARDIN EL",
+      "district": "West Hardin County Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 7.4
+    },
+    {
+      "id": "101902003",
+      "name": "MACARTHUR H S",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 20.6
+    },
+    {
+      "id": "101902012",
+      "name": "DAVIS H S ALDINE",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 24.5
+    },
+    {
+      "id": "101902041",
+      "name": "ALDINE MIDDLE",
+      "district": "Aldine ISD",
+      "rating": "F",
+      "beginningTeachers": 18.7
+    },
+    {
+      "id": "101902044",
+      "name": "STOVALL MIDDLE",
+      "district": "Aldine ISD",
+      "rating": "F",
+      "beginningTeachers": 11.3
+    },
+    {
+      "id": "101902046",
+      "name": "HOFFMAN MIDDLE",
+      "district": "Aldine ISD",
+      "rating": "F",
+      "beginningTeachers": 26.7
+    },
+    {
+      "id": "101902048",
+      "name": "GRANTHAM ACADEMY",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 22.7
+    },
+    {
+      "id": "101902051",
+      "name": "PLUMMER MIDDLE",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 27.8
+    },
+    {
+      "id": "101902052",
+      "name": "LEWIS MIDDLE",
+      "district": "Aldine ISD",
+      "rating": "F",
+      "beginningTeachers": 29.7
+    },
+    {
+      "id": "101902105",
+      "name": "FRANCIS EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 35.9
+    },
+    {
+      "id": "101902114",
+      "name": "SMITH EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 16.4
+    },
+    {
+      "id": "101902124",
+      "name": "DUNN EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 36.4
+    },
+    {
+      "id": "101902130",
+      "name": "KUJAWA EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 25
+    },
+    {
+      "id": "101902137",
+      "name": "ECKERT EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 23.6
+    },
+    {
+      "id": "101902139",
+      "name": "STEHLIK EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 27.5
+    },
+    {
+      "id": "101902141",
+      "name": "CARAWAY EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 29.8
+    },
+    {
+      "id": "101902146",
+      "name": "OGDEN EL",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 51
+    },
+    {
+      "id": "101902155",
+      "name": "DE SANTIAGO EC/PK/K",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 8.6
+    },
+    {
+      "id": "101902164",
+      "name": "KUJAWA EC/PK/K",
+      "district": "Aldine ISD",
+      "rating": "D",
+      "beginningTeachers": 11.7
+    },
+    {
+      "id": "101903042",
+      "name": "OLLE MIDDLE",
+      "district": "Alief ISD",
+      "rating": "F",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "101903043",
+      "name": "KILLOUGH MIDDLE",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 10.2
+    },
+    {
+      "id": "101903044",
+      "name": "HOLUB MIDDLE",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 16.6
+    },
+    {
+      "id": "101903101",
+      "name": "YOUENS EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "101903102",
+      "name": "BOONE EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 25.6
+    },
+    {
+      "id": "101903106",
+      "name": "MAHANAY EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 6
+    },
+    {
+      "id": "101903116",
+      "name": "LANDIS EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "101903117",
+      "name": "SNEED EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 13.7
+    },
+    {
+      "id": "101903118",
+      "name": "BEST EL",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 20.9
+    },
+    {
+      "id": "101903122",
+      "name": "COLLINS EL",
+      "district": "Alief ISD",
+      "rating": "F",
+      "beginningTeachers": 16.8
+    },
+    {
+      "id": "101903140",
+      "name": "OWENS INT",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 29.3
+    },
+    {
+      "id": "101903141",
+      "name": "KLENTZMAN INT",
+      "district": "Alief ISD",
+      "rating": "F",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "101903145",
+      "name": "BUDEWIG INT",
+      "district": "Alief ISD",
+      "rating": "D",
+      "beginningTeachers": 19.1
+    },
+    {
+      "id": "101905105",
+      "name": "CRENSHAW EL",
+      "district": "Channelview ISD",
+      "rating": "D",
+      "beginningTeachers": 19.6
+    },
+    {
+      "id": "101908102",
+      "name": "DEEPWATER EL",
+      "district": "Deer Park ISD",
+      "rating": "D",
+      "beginningTeachers": 2
+    },
+    {
+      "id": "101908106",
+      "name": "PARKWOOD EL",
+      "district": "Deer Park ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "101908109",
+      "name": "EARLY CHILDHOOD CENTER",
+      "district": "Deer Park ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "101911041",
+      "name": "BAYTOWN J H",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 15.9
+    },
+    {
+      "id": "101911043",
+      "name": "CEDAR BAYOU J H",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 16.6
+    },
+    {
+      "id": "101911045",
+      "name": "HORACE MANN J H",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 12
+    },
+    {
+      "id": "101911105",
+      "name": "CARVER EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 7.6
+    },
+    {
+      "id": "101911107",
+      "name": "HARLEM EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 6.8
+    },
+    {
+      "id": "101911108",
+      "name": "HIGHLANDS EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 8.9
+    },
+    {
+      "id": "101911111",
+      "name": "LAMAR EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "F",
+      "beginningTeachers": 4.5
+    },
+    {
+      "id": "101911113",
+      "name": "ASHBEL SMITH EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 7.5
+    },
+    {
+      "id": "101911117",
+      "name": "HOPPER PRI",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "101911120",
+      "name": "DE ZAVALA EL",
+      "district": "Goose Creek Consolidated ISD",
+      "rating": "D",
+      "beginningTeachers": 15.6
+    },
+    {
+      "id": "101912082",
+      "name": "WILLIAMS MIDDLE",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 13.5
+    },
+    {
+      "id": "101912114",
+      "name": "BRAEBURN EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "101912123",
+      "name": "CODWELL EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 4.8
+    },
+    {
+      "id": "101912124",
+      "name": "BURNET EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "101912140",
+      "name": "DOGAN EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 15.5
+    },
+    {
+      "id": "101912194",
+      "name": "LEWIS EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 12.3
+    },
+    {
+      "id": "101912219",
+      "name": "PINEY POINT EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "101912263",
+      "name": "LAW EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 17.6
+    },
+    {
+      "id": "101912271",
+      "name": "FOERSTER EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "101912283",
+      "name": "GARCIA EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 10.3
+    },
+    {
+      "id": "101912289",
+      "name": "MARTINEZ C EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 5.6
+    },
+    {
+      "id": "101912292",
+      "name": "CARRILLO EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "101912295",
+      "name": "BENAVIDEZ EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 21.8
+    },
+    {
+      "id": "101912298",
+      "name": "MARTINEZ R EL",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 2.7
+    },
+    {
+      "id": "101912357",
+      "name": "LAURENZO EARLY CHILDHOOD CTR",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "101912360",
+      "name": "BELLFORT EARLY CHILDHOOD CENTER",
+      "district": "Houston ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "101913041",
+      "name": "HUMBLE MIDDLE",
+      "district": "Humble ISD",
+      "rating": "D",
+      "beginningTeachers": 14
+    },
+    {
+      "id": "101913102",
+      "name": "LAKELAND EL",
+      "district": "Humble ISD",
+      "rating": "D",
+      "beginningTeachers": 8.1
+    },
+    {
+      "id": "101913103",
+      "name": "NORTH BEND EL",
+      "district": "Humble ISD",
+      "rating": "D",
+      "beginningTeachers": 7.6
+    },
+    {
+      "id": "101913117",
+      "name": "JACK M FIELDS SR EL",
+      "district": "Humble ISD",
+      "rating": "F",
+      "beginningTeachers": 5.2
+    },
+    {
+      "id": "101913123",
+      "name": "RIVER PINES EL",
+      "district": "Humble ISD",
+      "rating": "D",
+      "beginningTeachers": 8.9
+    },
+    {
+      "id": "101913127",
+      "name": "RIDGE CREEK EL",
+      "district": "Humble ISD",
+      "rating": "D",
+      "beginningTeachers": 2.1
+    },
+    {
+      "id": "101917109",
+      "name": "JESSUP EL",
+      "district": "Pasadena ISD",
+      "rating": "D",
+      "beginningTeachers": 8
+    },
+    {
+      "id": "101917126",
+      "name": "BURNETT EL",
+      "district": "Pasadena ISD",
+      "rating": "D",
+      "beginningTeachers": 6.2
+    },
+    {
+      "id": "101917136",
+      "name": "DE ZAVALA MIDDLE",
+      "district": "Pasadena ISD",
+      "rating": "D",
+      "beginningTeachers": 15.9
+    },
+    {
+      "id": "101917144",
+      "name": "KELLER MIDDLE",
+      "district": "Pasadena ISD",
+      "rating": "D",
+      "beginningTeachers": 13.6
+    },
+    {
+      "id": "101917148",
+      "name": "THOMAS HANCOCK EL",
+      "district": "Pasadena ISD",
+      "rating": "D",
+      "beginningTeachers": 17.4
+    },
+    {
+      "id": "101919001",
+      "name": "SPRING H S",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "101919002",
+      "name": "WESTFIELD H S",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 17.1
+    },
+    {
+      "id": "101919003",
+      "name": "ANDY DEKANEY H S",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 20.9
+    },
+    {
+      "id": "101919019",
+      "name": "MOMENTUM H S",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "101919044",
+      "name": "DUEITT MIDDLE",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 22.8
+    },
+    {
+      "id": "101919046",
+      "name": "BAMMEL MIDDLE",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 47.7
+    },
+    {
+      "id": "101919048",
+      "name": "RICKEY C BAILEY MIDDLE",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 25.5
+    },
+    {
+      "id": "101919102",
+      "name": "BAMMEL EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 16.1
+    },
+    {
+      "id": "101919103",
+      "name": "PONDEROSA EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 45.6
+    },
+    {
+      "id": "101919105",
+      "name": "PAT REYNOLDS EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "101919109",
+      "name": "ANDERSON EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 15.3
+    },
+    {
+      "id": "101919110",
+      "name": "JOAN LINK EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 15.5
+    },
+    {
+      "id": "101919111",
+      "name": "SMITH EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 21.4
+    },
+    {
+      "id": "101919114",
+      "name": "DELORAS E THOMPSON EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 17.5
+    },
+    {
+      "id": "101919115",
+      "name": "HERITAGE EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 23.5
+    },
+    {
+      "id": "101919116",
+      "name": "CLARK EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 20.3
+    },
+    {
+      "id": "101919117",
+      "name": "SALYERS EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "101919124",
+      "name": "CAROLEE BOOKER EL",
+      "district": "Spring ISD",
+      "rating": "F",
+      "beginningTeachers": 31.1
+    },
+    {
+      "id": "101919125",
+      "name": "HOYLAND EL",
+      "district": "Spring ISD",
+      "rating": "D",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "101920005",
+      "name": "NORTHBROOK H S",
+      "district": "Spring Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 10.3
+    },
+    {
+      "id": "101920046",
+      "name": "SPRING OAKS MIDDLE",
+      "district": "Spring Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 5.1
+    },
+    {
+      "id": "101920047",
+      "name": "NORTHBROOK MIDDLE",
+      "district": "Spring Branch ISD",
+      "rating": "F",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "101920103",
+      "name": "EDGEWOOD EL",
+      "district": "Spring Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "101920106",
+      "name": "HOUSMAN EL",
+      "district": "Spring Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "101920122",
+      "name": "TERRACE EL",
+      "district": "Spring Branch ISD",
+      "rating": "D",
+      "beginningTeachers": 11.3
+    },
+    {
+      "id": "101920126",
+      "name": "BUFFALO CREEK EL",
+      "district": "Spring Branch ISD",
+      "rating": "F",
+      "beginningTeachers": 6.2
+    },
+    {
+      "id": "102902103",
+      "name": "CROCKETT EL",
+      "district": "Marshall ISD",
+      "rating": "F",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "105902101",
+      "name": "BOWIE EL",
+      "district": "San Marcos Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 34.5
+    },
+    {
+      "id": "108902103",
+      "name": "T PRICE EL",
+      "district": "Donna ISD",
+      "rating": "D",
+      "beginningTeachers": 3.8
+    },
+    {
+      "id": "108902113",
+      "name": "PATRICIA S GARZA EL",
+      "district": "Donna ISD",
+      "rating": "D",
+      "beginningTeachers": 7.8
+    },
+    {
+      "id": "108903103",
+      "name": "JOHN F KENNEDY EL",
+      "district": "Edcouch-Elsa ISD",
+      "rating": "D",
+      "beginningTeachers": 15.9
+    },
+    {
+      "id": "108904047",
+      "name": "BETTY HARWELL MIDDLE",
+      "district": "Edinburg Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 4
+    },
+    {
+      "id": "108904110",
+      "name": "ZAVALA EL",
+      "district": "Edinburg Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 2.1
+    },
+    {
+      "id": "108904127",
+      "name": "DR THOMAS ESPARZA EL",
+      "district": "Edinburg Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108907041",
+      "name": "SGT MANUEL CHACON MIDDLE",
+      "district": "Mercedes ISD",
+      "rating": "D",
+      "beginningTeachers": 15.7
+    },
+    {
+      "id": "108907108",
+      "name": "SGT WILLIAM G HARRELL MIDDLE",
+      "district": "Mercedes ISD",
+      "rating": "D",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "108908104",
+      "name": "MARCELL EL",
+      "district": "Mission Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "108908107",
+      "name": "ALTON EL",
+      "district": "Mission Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "108909129",
+      "name": "SGT LEONEL TREVINO EL",
+      "district": "Pharr-San Juan-Alamo ISD",
+      "rating": "D",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "108910001",
+      "name": "PROGRESO H S",
+      "district": "Progreso ISD",
+      "rating": "D",
+      "beginningTeachers": 10.6
+    },
+    {
+      "id": "108912043",
+      "name": "DR JAVIER SAENZ MIDDLE",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 3.8
+    },
+    {
+      "id": "108912048",
+      "name": "JUAN DE DIOS SALINAS MIDDLE",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912105",
+      "name": "ROSENDO BENAVIDES EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 3.9
+    },
+    {
+      "id": "108912106",
+      "name": "LEO J LEO EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912109",
+      "name": "ELODIA R CHAPA EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912112",
+      "name": "NARCISO CAVAZOS",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912120",
+      "name": "JUAN SEGUIN EL",
+      "district": "La Joya ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912122",
+      "name": "DR AMERICO PAREDES EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 6
+    },
+    {
+      "id": "108912124",
+      "name": "CORINA PENA EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912126",
+      "name": "EVANGELINA GARZA EL",
+      "district": "La Joya ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108912127",
+      "name": "DR MARIA PALMIRA MENDIOLA EL",
+      "district": "La Joya ISD",
+      "rating": "D",
+      "beginningTeachers": 2.4
+    },
+    {
+      "id": "108913041",
+      "name": "MARY HOGE MIDDLE",
+      "district": "Weslaco ISD",
+      "rating": "D",
+      "beginningTeachers": 2.6
+    },
+    {
+      "id": "108913104",
+      "name": "RODOLFO RUDY SILVA JR EL",
+      "district": "Weslaco ISD",
+      "rating": "D",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "108913110",
+      "name": "AIRPORT EL",
+      "district": "Weslaco ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "108915001",
+      "name": "MONTE ALTO H S",
+      "district": "Monte Alto ISD",
+      "rating": "D",
+      "beginningTeachers": 32
+    },
+    {
+      "id": "108915101",
+      "name": "ROBERTO GARATE EL",
+      "district": "Monte Alto ISD",
+      "rating": "D",
+      "beginningTeachers": 19.3
+    },
+    {
+      "id": "110902105",
+      "name": "SOUTH EL",
+      "district": "Levelland ISD",
+      "rating": "D",
+      "beginningTeachers": 13.5
+    },
+    {
+      "id": "113901102",
+      "name": "CROCKETT EL",
+      "district": "Crockett ISD",
+      "rating": "F",
+      "beginningTeachers": 3.9
+    },
+    {
+      "id": "113901105",
+      "name": "EARLY CHILDHOOD CTR",
+      "district": "Crockett ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "115901101",
+      "name": "BENITO MARTINEZ EL",
+      "district": "Fort Hancock ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "116903043",
+      "name": "COMMERCE MIDDLE",
+      "district": "Commerce ISD",
+      "rating": "D",
+      "beginningTeachers": 14.4
+    },
+    {
+      "id": "116903101",
+      "name": "COMMERCE EL",
+      "district": "Commerce ISD",
+      "rating": "F",
+      "beginningTeachers": 7.1
+    },
+    {
+      "id": "116905001",
+      "name": "NEW HORIZONS LEARNING CENTER",
+      "district": "Greenville ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "116905041",
+      "name": "GREENVILLE MIDDLE",
+      "district": "Greenville ISD",
+      "rating": "F",
+      "beginningTeachers": 12.9
+    },
+    {
+      "id": "116905103",
+      "name": "CROCKETT EL",
+      "district": "Greenville ISD",
+      "rating": "F",
+      "beginningTeachers": 10.9
+    },
+    {
+      "id": "116905104",
+      "name": "CARVER EL",
+      "district": "Greenville ISD",
+      "rating": "F",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "116905107",
+      "name": "TRAVIS INT",
+      "district": "Greenville ISD",
+      "rating": "D",
+      "beginningTeachers": 13.3
+    },
+    {
+      "id": "116908041",
+      "name": "C B THOMPSON MIDDLE",
+      "district": "Quinlan ISD",
+      "rating": "D",
+      "beginningTeachers": 12.5
+    },
+    {
+      "id": "121904043",
+      "name": "JASPER J H",
+      "district": "Jasper ISD",
+      "rating": "D",
+      "beginningTeachers": 7.7
+    },
+    {
+      "id": "123907009",
+      "name": "MEMORIAL H S",
+      "district": "Port Arthur ISD",
+      "rating": "D",
+      "beginningTeachers": 34.6
+    },
+    {
+      "id": "123907043",
+      "name": "LINCOLN MIDDLE",
+      "district": "Port Arthur ISD",
+      "rating": "F",
+      "beginningTeachers": 35.5
+    },
+    {
+      "id": "123907105",
+      "name": "LAKEVIEW EL",
+      "district": "Port Arthur ISD",
+      "rating": "D",
+      "beginningTeachers": 15.6
+    },
+    {
+      "id": "123907108",
+      "name": "TRAVIS EL",
+      "district": "Port Arthur ISD",
+      "rating": "D",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "123907109",
+      "name": "TYRRELL EL",
+      "district": "Port Arthur ISD",
+      "rating": "D",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "123907111",
+      "name": "WHEATLEY SCHOOL OF EARLY CHILDHOOD PROGRAMS",
+      "district": "Port Arthur ISD",
+      "rating": "D",
+      "beginningTeachers": 5
+    },
+    {
+      "id": "123907113",
+      "name": "PORT ACRES EL",
+      "district": "Port Arthur ISD",
+      "rating": "F",
+      "beginningTeachers": 36.9
+    },
+    {
+      "id": "123907116",
+      "name": "STAFF SERGEANT LUCIAN ADAMS EL",
+      "district": "Port Arthur ISD",
+      "rating": "F",
+      "beginningTeachers": 18
+    },
+    {
+      "id": "123910012",
+      "name": "PAUL A BROWN ALTERNATIVE CENTER",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 29.1
+    },
+    {
+      "id": "123910014",
+      "name": "BEAUMONT UNITED H S",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 15.2
+    },
+    {
+      "id": "123910042",
+      "name": "SMITH MIDDLE",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "123910048",
+      "name": "VINCENT MIDDLE",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 14.8
+    },
+    {
+      "id": "123910101",
+      "name": "AMELIA EL",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "123910112",
+      "name": "GUESS EL",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 14.7
+    },
+    {
+      "id": "123910123",
+      "name": "HOMER DR EL",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 9.2
+    },
+    {
+      "id": "123910125",
+      "name": "PIETZSCH/MAC ARTHUR EL",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 12.1
+    },
+    {
+      "id": "123910126",
+      "name": "DISHMAN EL",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 8.1
+    },
+    {
+      "id": "123910127",
+      "name": "BLANCHETTE EL",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 24
+    },
+    {
+      "id": "123910128",
+      "name": "MARTIN EL",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 3.3
+    },
+    {
+      "id": "123910130",
+      "name": "CHARLTON-POLLARD EL",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": 4.9
+    },
+    {
+      "id": "123910131",
+      "name": "FEHL-PRICE EL",
+      "district": "Beaumont ISD",
+      "rating": "F",
+      "beginningTeachers": null
+    },
+    {
+      "id": "123910132",
+      "name": "BINGMAN PK",
+      "district": "Beaumont ISD",
+      "rating": "D",
+      "beginningTeachers": 30.8
+    },
+    {
+      "id": "125905101",
+      "name": "PREMONT ERNEST H SINGLETON EARLY COLLEGE ACADEMY",
+      "district": "Premont ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "125905103",
+      "name": "PREMONT MONTESSORI ACADEMY",
+      "district": "Premont ISD",
+      "rating": "F",
+      "beginningTeachers": 50
+    },
+    {
+      "id": "128901107",
+      "name": "KARNES CITY PRI",
+      "district": "Karnes City ISD",
+      "rating": "D",
+      "beginningTeachers": 7
+    },
+    {
+      "id": "128903101",
+      "name": "RUNGE EL",
+      "district": "Runge ISD",
+      "rating": "F",
+      "beginningTeachers": 55.7
+    },
+    {
+      "id": "129902113",
+      "name": "DEWBERRY EL",
+      "district": "Forney ISD",
+      "rating": "D",
+      "beginningTeachers": 35.5
+    },
+    {
+      "id": "129904101",
+      "name": "KEMP PRI",
+      "district": "Kemp ISD",
+      "rating": "D",
+      "beginningTeachers": 18.6
+    },
+    {
+      "id": "129904102",
+      "name": "KEMP INT",
+      "district": "Kemp ISD",
+      "rating": "D",
+      "beginningTeachers": 20.8
+    },
+    {
+      "id": "129906041",
+      "name": "HERMAN FURLOUGH JR MIDDLE",
+      "district": "Terrell ISD",
+      "rating": "D",
+      "beginningTeachers": 9
+    },
+    {
+      "id": "129906107",
+      "name": "J W LONG EL",
+      "district": "Terrell ISD",
+      "rating": "D",
+      "beginningTeachers": 10.3
+    },
+    {
+      "id": "137901001",
+      "name": "H M KING H S",
+      "district": "Kingsville ISD",
+      "rating": "D",
+      "beginningTeachers": 10.7
+    },
+    {
+      "id": "137901041",
+      "name": "GILLETT MIDDLE",
+      "district": "Kingsville ISD",
+      "rating": "F",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "137901105",
+      "name": "HARVEY EL",
+      "district": "Kingsville ISD",
+      "rating": "F",
+      "beginningTeachers": 10.6
+    },
+    {
+      "id": "137901109",
+      "name": "HARREL EL",
+      "district": "Kingsville ISD",
+      "rating": "D",
+      "beginningTeachers": 17.5
+    },
+    {
+      "id": "137901110",
+      "name": "PEREZ EL",
+      "district": "Kingsville ISD",
+      "rating": "F",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "139909112",
+      "name": "CROCKETT INT",
+      "district": "Paris ISD",
+      "rating": "D",
+      "beginningTeachers": 7.6
+    },
+    {
+      "id": "140904041",
+      "name": "LITTLEFIELD J H",
+      "district": "Littlefield ISD",
+      "rating": "D",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "140904102",
+      "name": "LITTLEFIELD EL",
+      "district": "Littlefield ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "140904103",
+      "name": "LITTLEFIELD PRI",
+      "district": "Littlefield ISD",
+      "rating": "D",
+      "beginningTeachers": 14.2
+    },
+    {
+      "id": "144903001",
+      "name": "DIME BOX SCHOOL",
+      "district": "Dime Box ISD",
+      "rating": "D",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "145907002",
+      "name": "OAKWOOD H S",
+      "district": "Oakwood ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "146901001",
+      "name": "CLEVELAND H S",
+      "district": "Cleveland ISD",
+      "rating": "D",
+      "beginningTeachers": 17.8
+    },
+    {
+      "id": "146901004",
+      "name": "FREDERICK A DOUGLASS LEARNING ACADEMY",
+      "district": "Cleveland ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "146901041",
+      "name": "CLEVELAND MIDDLE",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 25.1
+    },
+    {
+      "id": "146901042",
+      "name": "SANTA FE MIDDLE",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 15.8
+    },
+    {
+      "id": "146901102",
+      "name": "NORTHSIDE EL",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 18.6
+    },
+    {
+      "id": "146901103",
+      "name": "SOUTHSIDE EL",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 18.5
+    },
+    {
+      "id": "146901104",
+      "name": "EASTSIDE EL",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "146901105",
+      "name": "COTTONWOOD EL",
+      "district": "Cleveland ISD",
+      "rating": "F",
+      "beginningTeachers": 26.4
+    },
+    {
+      "id": "146901106",
+      "name": "PINE BURR EL",
+      "district": "Cleveland ISD",
+      "rating": "D",
+      "beginningTeachers": 45.5
+    },
+    {
+      "id": "146901107",
+      "name": "SANTA FE EL",
+      "district": "Cleveland ISD",
+      "rating": "D",
+      "beginningTeachers": 19.4
+    },
+    {
+      "id": "147903042",
+      "name": "MEXIA J H",
+      "district": "Mexia ISD",
+      "rating": "F",
+      "beginningTeachers": 6
+    },
+    {
+      "id": "147903103",
+      "name": "A B MCBAY EL",
+      "district": "Mexia ISD",
+      "rating": "F",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "147903105",
+      "name": "R Q SIMS INT",
+      "district": "Mexia ISD",
+      "rating": "F",
+      "beginningTeachers": 14.6
+    },
+    {
+      "id": "152901063",
+      "name": "DUNBAR COLLEGE PREPARATORY ACADEMY",
+      "district": "Lubbock ISD",
+      "rating": "F",
+      "beginningTeachers": 15.2
+    },
+    {
+      "id": "152901067",
+      "name": "MACKENZIE MIDDLE",
+      "district": "Lubbock ISD",
+      "rating": "D",
+      "beginningTeachers": 16.7
+    },
+    {
+      "id": "152901068",
+      "name": "SLATON MIDDLE",
+      "district": "Lubbock ISD",
+      "rating": "F",
+      "beginningTeachers": 22
+    },
+    {
+      "id": "152901176",
+      "name": "PARSONS EL",
+      "district": "Lubbock ISD",
+      "rating": "D",
+      "beginningTeachers": 13.4
+    },
+    {
+      "id": "152901180",
+      "name": "STEWART EL",
+      "district": "Lubbock ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "152901190",
+      "name": "WOLFFARTH EL",
+      "district": "Lubbock ISD",
+      "rating": "D",
+      "beginningTeachers": 13.4
+    },
+    {
+      "id": "152901194",
+      "name": "ALDERSON EL",
+      "district": "Lubbock ISD",
+      "rating": "D",
+      "beginningTeachers": 13.6
+    },
+    {
+      "id": "153907001",
+      "name": "WILSON SCHOOL",
+      "district": "Wilson ISD",
+      "rating": "D",
+      "beginningTeachers": 20.4
+    },
+    {
+      "id": "155901102",
+      "name": "JEFFERSON EL",
+      "district": "Jefferson ISD",
+      "rating": "D",
+      "beginningTeachers": 24.7
+    },
+    {
+      "id": "155901103",
+      "name": "JEFFERSON PRI SCH",
+      "district": "Jefferson ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "158901102",
+      "name": "TENIE HOLMES EL",
+      "district": "Bay City ISD",
+      "rating": "D",
+      "beginningTeachers": 8
+    },
+    {
+      "id": "161906042",
+      "name": "LA VEGA J H GEORGE DIXON CAMPUS",
+      "district": "La Vega ISD",
+      "rating": "D",
+      "beginningTeachers": 6.6
+    },
+    {
+      "id": "161906103",
+      "name": "LA VEGA INT H P MILES CAMPUS",
+      "district": "La Vega ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "161906105",
+      "name": "LA VEGA EL",
+      "district": "La Vega ISD",
+      "rating": "F",
+      "beginningTeachers": 4.8
+    },
+    {
+      "id": "161906106",
+      "name": "LA VEGA PRI PHIL BANCALE CAMPUS",
+      "district": "La Vega ISD",
+      "rating": "F",
+      "beginningTeachers": 1.1
+    },
+    {
+      "id": "161914002",
+      "name": "WACO H S",
+      "district": "Waco ISD",
+      "rating": "D",
+      "beginningTeachers": 9.3
+    },
+    {
+      "id": "161914043",
+      "name": "CESAR CHAVEZ MIDDLE",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "161914050",
+      "name": "G W CARVER MIDDLE",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 15.8
+    },
+    {
+      "id": "161914101",
+      "name": "ALTA VISTA EL",
+      "district": "Waco ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "161914106",
+      "name": "CRESTVIEW EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 11.9
+    },
+    {
+      "id": "161914107",
+      "name": "DEAN HIGHLAND EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 4.8
+    },
+    {
+      "id": "161914110",
+      "name": "J H HINES EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 20.1
+    },
+    {
+      "id": "161914112",
+      "name": "KENDRICK EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 2.9
+    },
+    {
+      "id": "161914116",
+      "name": "MOUNTAINVIEW EL",
+      "district": "Waco ISD",
+      "rating": "D",
+      "beginningTeachers": 2.7
+    },
+    {
+      "id": "161914120",
+      "name": "PARKDALE EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 19.3
+    },
+    {
+      "id": "161914121",
+      "name": "PROVIDENT HEIGHTS EL",
+      "district": "Waco ISD",
+      "rating": "D",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "161914130",
+      "name": "SOUTH WACO EL",
+      "district": "Waco ISD",
+      "rating": "F",
+      "beginningTeachers": 18.6
+    },
+    {
+      "id": "161921041",
+      "name": "CONNALLY J H",
+      "district": "Connally ISD",
+      "rating": "D",
+      "beginningTeachers": 8.5
+    },
+    {
+      "id": "161921101",
+      "name": "CONNALLY PRI",
+      "district": "Connally ISD",
+      "rating": "F",
+      "beginningTeachers": 24.9
+    },
+    {
+      "id": "161921104",
+      "name": "CONNALLY EL",
+      "district": "Connally ISD",
+      "rating": "F",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "161921106",
+      "name": "CONNALLY EARLY CHILDHOOD CENTER",
+      "district": "Connally ISD",
+      "rating": "F",
+      "beginningTeachers": 20
+    },
+    {
+      "id": "165901106",
+      "name": "DE ZAVALA EL",
+      "district": "Midland ISD",
+      "rating": "D",
+      "beginningTeachers": 3.3
+    },
+    {
+      "id": "165901110",
+      "name": "JONES EL",
+      "district": "Midland ISD",
+      "rating": "D",
+      "beginningTeachers": 4.3
+    },
+    {
+      "id": "165901117",
+      "name": "SOUTH EL",
+      "district": "Midland ISD",
+      "rating": "F",
+      "beginningTeachers": 21.4
+    },
+    {
+      "id": "165901134",
+      "name": "RALPH BUNCHE EL",
+      "district": "Midland ISD",
+      "rating": "D",
+      "beginningTeachers": 11.9
+    },
+    {
+      "id": "167902001",
+      "name": "MULLIN MAIN",
+      "district": "Mullin ISD",
+      "rating": "F",
+      "beginningTeachers": 16.9
+    },
+    {
+      "id": "170902051",
+      "name": "MOORHEAD J H",
+      "district": "Conroe ISD",
+      "rating": "D",
+      "beginningTeachers": 15.7
+    },
+    {
+      "id": "170902070",
+      "name": "TRAVIS INT",
+      "district": "Conroe ISD",
+      "rating": "D",
+      "beginningTeachers": 2.4
+    },
+    {
+      "id": "170902102",
+      "name": "AUSTIN EL",
+      "district": "Conroe ISD",
+      "rating": "D",
+      "beginningTeachers": 8.5
+    },
+    {
+      "id": "170904103",
+      "name": "C C HARDY EL",
+      "district": "Willis ISD",
+      "rating": "D",
+      "beginningTeachers": 22.4
+    },
+    {
+      "id": "170907102",
+      "name": "GREENLEAF EL",
+      "district": "Splendora ISD",
+      "rating": "D",
+      "beginningTeachers": 9.9
+    },
+    {
+      "id": "170908041",
+      "name": "WHITE OAK MIDDLE",
+      "district": "New Caney ISD",
+      "rating": "D",
+      "beginningTeachers": 13.8
+    },
+    {
+      "id": "170908042",
+      "name": "KEEFER CROSSING MIDDLE",
+      "district": "New Caney ISD",
+      "rating": "F",
+      "beginningTeachers": 9.8
+    },
+    {
+      "id": "170908045",
+      "name": "PINE VALLEY MIDDLE",
+      "district": "New Caney ISD",
+      "rating": "D",
+      "beginningTeachers": 11.5
+    },
+    {
+      "id": "170908113",
+      "name": "OAKLEY EL",
+      "district": "New Caney ISD",
+      "rating": "D",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "170908115",
+      "name": "DOGWOOD EL",
+      "district": "New Caney ISD",
+      "rating": "D",
+      "beginningTeachers": 27.3
+    },
+    {
+      "id": "171901101",
+      "name": "CACTUS EL",
+      "district": "Dumas ISD",
+      "rating": "F",
+      "beginningTeachers": 20.7
+    },
+    {
+      "id": "172902101",
+      "name": "SOUTH EL",
+      "district": "Daingerfield-Lone Star ISD",
+      "rating": "D",
+      "beginningTeachers": 25.7
+    },
+    {
+      "id": "172902102",
+      "name": "WEST EL",
+      "district": "Daingerfield-Lone Star ISD",
+      "rating": "D",
+      "beginningTeachers": 15.2
+    },
+    {
+      "id": "174904043",
+      "name": "MCMICHAEL MIDDLE",
+      "district": "Nacogdoches ISD",
+      "rating": "D",
+      "beginningTeachers": 21.7
+    },
+    {
+      "id": "174904101",
+      "name": "BROOKS-QUINN-JONES EL",
+      "district": "Nacogdoches ISD",
+      "rating": "F",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "174904102",
+      "name": "EMELINE CARPENTER EL",
+      "district": "Nacogdoches ISD",
+      "rating": "D",
+      "beginningTeachers": 9.5
+    },
+    {
+      "id": "174904103",
+      "name": "FREDONIA EARLY CHILDHOOD CENTER",
+      "district": "Nacogdoches ISD",
+      "rating": "D",
+      "beginningTeachers": 14.4
+    },
+    {
+      "id": "174904112",
+      "name": "MIKE MOSES EL",
+      "district": "Nacogdoches ISD",
+      "rating": "F",
+      "beginningTeachers": 26.2
+    },
+    {
+      "id": "175903042",
+      "name": "COLLINS INT",
+      "district": "Corsicana ISD",
+      "rating": "D",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "175903102",
+      "name": "JOSE ANTONIO NAVARRO EL",
+      "district": "Corsicana ISD",
+      "rating": "D",
+      "beginningTeachers": 41
+    },
+    {
+      "id": "175903103",
+      "name": "FANNIN EL",
+      "district": "Corsicana ISD",
+      "rating": "F",
+      "beginningTeachers": 9.5
+    },
+    {
+      "id": "176901001",
+      "name": "BURKEVILLE SCHOOL",
+      "district": "Burkeville ISD",
+      "rating": "F",
+      "beginningTeachers": 12.6
+    },
+    {
+      "id": "177902101",
+      "name": "SOUTHEAST EARLY CHILDHOOD CENTER",
+      "district": "Sweetwater ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "177902102",
+      "name": "EAST RIDGE EL",
+      "district": "Sweetwater ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "177902104",
+      "name": "SWEETWATER INT",
+      "district": "Sweetwater ISD",
+      "rating": "D",
+      "beginningTeachers": 7.1
+    },
+    {
+      "id": "177902105",
+      "name": "SOUTHEAST EL",
+      "district": "Sweetwater ISD",
+      "rating": "D",
+      "beginningTeachers": 25.6
+    },
+    {
+      "id": "178904050",
+      "name": "MARTIN MIDDLE",
+      "district": "Corpus Christi ISD",
+      "rating": "D",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "178904123",
+      "name": "CULLEN PLACE EL",
+      "district": "Corpus Christi ISD",
+      "rating": "D",
+      "beginningTeachers": 3.6
+    },
+    {
+      "id": "178909041",
+      "name": "SEALE J H",
+      "district": "Robstown ISD",
+      "rating": "F",
+      "beginningTeachers": 11.3
+    },
+    {
+      "id": "178909103",
+      "name": "LOTSPEICH LEADERSHIP ACADEMY",
+      "district": "Robstown ISD",
+      "rating": "F",
+      "beginningTeachers": 10.8
+    },
+    {
+      "id": "178909105",
+      "name": "ROBERT DRISCOLL JR STEM ACADEMY",
+      "district": "Robstown ISD",
+      "rating": "F",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "178915041",
+      "name": "WEST OSO J H",
+      "district": "West Oso ISD",
+      "rating": "F",
+      "beginningTeachers": 8
+    },
+    {
+      "id": "181906041",
+      "name": "WEST ORANGE-STARK MIDDLE",
+      "district": "West Orange-Cove Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "181906102",
+      "name": "WEST ORANGE-STARK EL",
+      "district": "West Orange-Cove Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 13.8
+    },
+    {
+      "id": "181906104",
+      "name": "M B NORTH E C LRN CTR",
+      "district": "West Orange-Cove Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "185901101",
+      "name": "BOVINA EL",
+      "district": "Bovina ISD",
+      "rating": "F",
+      "beginningTeachers": 4.4
+    },
+    {
+      "id": "185903101",
+      "name": "FRIONA EL",
+      "district": "Friona ISD",
+      "rating": "D",
+      "beginningTeachers": 32.2
+    },
+    {
+      "id": "185903102",
+      "name": "FRIONA PRI",
+      "district": "Friona ISD",
+      "rating": "D",
+      "beginningTeachers": 25.6
+    },
+    {
+      "id": "186902007",
+      "name": "BUTZ PREPARATORY ACADEMY",
+      "district": "Fort Stockton ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "187906101",
+      "name": "LEGGETT EL",
+      "district": "Leggett ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "188901044",
+      "name": "FANNIN MIDDLE",
+      "district": "Amarillo ISD",
+      "rating": "D",
+      "beginningTeachers": 11.6
+    },
+    {
+      "id": "188901109",
+      "name": "HAMLET EL",
+      "district": "Amarillo ISD",
+      "rating": "D",
+      "beginningTeachers": 8.7
+    },
+    {
+      "id": "188901115",
+      "name": "PARK HILLS EL",
+      "district": "Amarillo ISD",
+      "rating": "D",
+      "beginningTeachers": 0.6
+    },
+    {
+      "id": "188901124",
+      "name": "ROGERS EL",
+      "district": "Amarillo ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "188901143",
+      "name": "TRADEWIND EL",
+      "district": "Amarillo ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "188902103",
+      "name": "WILLOW VISTA ECA",
+      "district": "River Road ISD",
+      "rating": "F",
+      "beginningTeachers": 20.3
+    },
+    {
+      "id": "189902001",
+      "name": "PRESIDIO H S",
+      "district": "Presidio ISD",
+      "rating": "D",
+      "beginningTeachers": 10
+    },
+    {
+      "id": "189902041",
+      "name": "LUCY REDE FRANCO MIDDLE",
+      "district": "Presidio ISD",
+      "rating": "D",
+      "beginningTeachers": 21.8
+    },
+    {
+      "id": "189902101",
+      "name": "PRESIDIO EL",
+      "district": "Presidio ISD",
+      "rating": "D",
+      "beginningTeachers": 13.5
+    },
+    {
+      "id": "194904002",
+      "name": "CLARKSVILLE MIDDLE AND H S",
+      "district": "Clarksville ISD",
+      "rating": "D",
+      "beginningTeachers": 21.2
+    },
+    {
+      "id": "194904103",
+      "name": "CHEATHAM EL",
+      "district": "Clarksville ISD",
+      "rating": "F",
+      "beginningTeachers": 28.3
+    },
+    {
+      "id": "195901101",
+      "name": "AUSTIN EL",
+      "district": "Pecos-Barstow-Toyah ISD",
+      "rating": "F",
+      "beginningTeachers": 42.5
+    },
+    {
+      "id": "195901109",
+      "name": "ZAVALA EL",
+      "district": "Pecos-Barstow-Toyah ISD",
+      "rating": "F",
+      "beginningTeachers": 26.3
+    },
+    {
+      "id": "196903103",
+      "name": "REFUGIO EL",
+      "district": "Refugio ISD",
+      "rating": "F",
+      "beginningTeachers": 4.5
+    },
+    {
+      "id": "198902101",
+      "name": "CALVERT SCHOOL",
+      "district": "Calvert ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "198905002",
+      "name": "HEARNE JH/HS",
+      "district": "Hearne ISD",
+      "rating": "D",
+      "beginningTeachers": 16.7
+    },
+    {
+      "id": "201903001",
+      "name": "LANEVILLE SCHOOL",
+      "district": "Laneville ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "201904041",
+      "name": "LEVERETTS CHAPEL J H",
+      "district": "Leveretts Chapel ISD",
+      "rating": "D",
+      "beginningTeachers": 41.3
+    },
+    {
+      "id": "204904041",
+      "name": "SHEPHERD MIDDLE",
+      "district": "Shepherd ISD",
+      "rating": "D",
+      "beginningTeachers": 39.9
+    },
+    {
+      "id": "204904101",
+      "name": "SHEPHERD PRI",
+      "district": "Shepherd ISD",
+      "rating": "D",
+      "beginningTeachers": 49.4
+    },
+    {
+      "id": "204904102",
+      "name": "SHEPHERD INT",
+      "district": "Shepherd ISD",
+      "rating": "D",
+      "beginningTeachers": 33.2
+    },
+    {
+      "id": "205904041",
+      "name": "MATHIS MIDDLE",
+      "district": "Mathis ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "205907041",
+      "name": "RICARDO L TREVINO J H",
+      "district": "Taft ISD",
+      "rating": "D",
+      "beginningTeachers": 6.4
+    },
+    {
+      "id": "205907101",
+      "name": "WOODROE PETTY EL",
+      "district": "Taft ISD",
+      "rating": "F",
+      "beginningTeachers": 3.9
+    },
+    {
+      "id": "206901101",
+      "name": "SAN SABA EL",
+      "district": "San Saba ISD",
+      "rating": "D",
+      "beginningTeachers": 12
+    },
+    {
+      "id": "210904002",
+      "name": "TENAHA SCHOOLS",
+      "district": "Tenaha ISD",
+      "rating": "D",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "212905041",
+      "name": "BOULTER MIDDLE",
+      "district": "Tyler ISD",
+      "rating": "D",
+      "beginningTeachers": 22.1
+    },
+    {
+      "id": "212905106",
+      "name": "CLARKSTON EL",
+      "district": "Tyler ISD",
+      "rating": "D",
+      "beginningTeachers": 3.8
+    },
+    {
+      "id": "212910101",
+      "name": "WINONA EL",
+      "district": "Winona ISD",
+      "rating": "D",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "214901104",
+      "name": "ALBERTO AND CELIA BARRERA EL",
+      "district": "Rio Grande City Grulla ISD",
+      "rating": "F",
+      "beginningTeachers": 6
+    },
+    {
+      "id": "214902101",
+      "name": "SAN ISIDRO EL",
+      "district": "San Isidro ISD",
+      "rating": "D",
+      "beginningTeachers": 42.3
+    },
+    {
+      "id": "219903001",
+      "name": "TULIA H S",
+      "district": "Tulia ISD",
+      "rating": "D",
+      "beginningTeachers": 9.5
+    },
+    {
+      "id": "219903101",
+      "name": "TULIA EL",
+      "district": "Tulia ISD",
+      "rating": "F",
+      "beginningTeachers": 5.7
+    },
+    {
+      "id": "220901002",
+      "name": "SAM HOUSTON H S",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 19.2
+    },
+    {
+      "id": "220901041",
+      "name": "CARTER J H",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 40.1
+    },
+    {
+      "id": "220901050",
+      "name": "WORKMAN J H",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 29.5
+    },
+    {
+      "id": "220901101",
+      "name": "BERRY EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "220901102",
+      "name": "BLANTON EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 13.1
+    },
+    {
+      "id": "220901109",
+      "name": "RANKIN EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 11.6
+    },
+    {
+      "id": "220901111",
+      "name": "SOUTH DAVIS EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 15.4
+    },
+    {
+      "id": "220901112",
+      "name": "SPEER EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 21.5
+    },
+    {
+      "id": "220901114",
+      "name": "THORNTON EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 16.1
+    },
+    {
+      "id": "220901120",
+      "name": "POPE EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 11.5
+    },
+    {
+      "id": "220901121",
+      "name": "JOHNS EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 21.5
+    },
+    {
+      "id": "220901123",
+      "name": "SHORT EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 12.8
+    },
+    {
+      "id": "220901128",
+      "name": "KEY EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 12.6
+    },
+    {
+      "id": "220901131",
+      "name": "MORTON EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 7.6
+    },
+    {
+      "id": "220901135",
+      "name": "MILLER EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "220901140",
+      "name": "STARRETT EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 14.6
+    },
+    {
+      "id": "220901142",
+      "name": "ELLIS EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 20.9
+    },
+    {
+      "id": "220901145",
+      "name": "WILLIAMS EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 20.4
+    },
+    {
+      "id": "220901148",
+      "name": "WEBB EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 7.7
+    },
+    {
+      "id": "220901150",
+      "name": "CROUCH EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 14.7
+    },
+    {
+      "id": "220901160",
+      "name": "ANDERSON EL",
+      "district": "Arlington ISD",
+      "rating": "F",
+      "beginningTeachers": 11.1
+    },
+    {
+      "id": "220901162",
+      "name": "PATRICK EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 15.8
+    },
+    {
+      "id": "220901164",
+      "name": "PEACH EL",
+      "district": "Arlington ISD",
+      "rating": "D",
+      "beginningTeachers": 9.6
+    },
+    {
+      "id": "220902041",
+      "name": "HALTOM MIDDLE",
+      "district": "Birdville ISD",
+      "rating": "D",
+      "beginningTeachers": 7.1
+    },
+    {
+      "id": "220902109",
+      "name": "CHENEY HILLS EL",
+      "district": "Birdville ISD",
+      "rating": "D",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "220902111",
+      "name": "WEST BIRDVILLE EL",
+      "district": "Birdville ISD",
+      "rating": "F",
+      "beginningTeachers": 6.5
+    },
+    {
+      "id": "220904041",
+      "name": "CHARLES BAXTER J H",
+      "district": "Everman ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220904102",
+      "name": "E RAY EL",
+      "district": "Everman ISD",
+      "rating": "D",
+      "beginningTeachers": 4
+    },
+    {
+      "id": "220904106",
+      "name": "JOHN AND POLLY TOWNLEY EL",
+      "district": "Everman ISD",
+      "rating": "D",
+      "beginningTeachers": 8.9
+    },
+    {
+      "id": "220905003",
+      "name": "SOUTH HILLS H S",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 3.5
+    },
+    {
+      "id": "220905005",
+      "name": "DUNBAR H S",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "220905006",
+      "name": "EASTERN HILLS H S",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 9.7
+    },
+    {
+      "id": "220905015",
+      "name": "WESTERN HILLS H S",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8.6
+    },
+    {
+      "id": "220905042",
+      "name": "DAGGETT MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 2.9
+    },
+    {
+      "id": "220905048",
+      "name": "WILLIAM JAMES MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "220905052",
+      "name": "MEADOWBROOK MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 15.9
+    },
+    {
+      "id": "220905053",
+      "name": "MONNIG MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 10.9
+    },
+    {
+      "id": "220905054",
+      "name": "MORNINGSIDE MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "220905056",
+      "name": "RIVERSIDE MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 9.6
+    },
+    {
+      "id": "220905059",
+      "name": "J MARTIN JACQUET MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 17.8
+    },
+    {
+      "id": "220905060",
+      "name": "WEDGWOOD MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 15.2
+    },
+    {
+      "id": "220905061",
+      "name": "LEONARD MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 2.6
+    },
+    {
+      "id": "220905062",
+      "name": "INT'L NEWCOMER ACAD",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 6.5
+    },
+    {
+      "id": "220905070",
+      "name": "JEAN MCCLUNG MIDDLE",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "220905105",
+      "name": "WEST HANDLEY EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 4.1
+    },
+    {
+      "id": "220905115",
+      "name": "GEORGE CLARKE EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "220905118",
+      "name": "HAZEL HARVEY PEACE EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905120",
+      "name": "RUFINO MENDOZA SR EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905122",
+      "name": "DIAMOND HILL EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905123",
+      "name": "S S DILLOW EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "220905125",
+      "name": "EASTERN HILLS EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 3.2
+    },
+    {
+      "id": "220905126",
+      "name": "EAST HANDLEY EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8
+    },
+    {
+      "id": "220905130",
+      "name": "HARLEAN BEAL EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 23.8
+    },
+    {
+      "id": "220905133",
+      "name": "W M GREEN EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "220905135",
+      "name": "VAN ZANDT-GUINN EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8.7
+    },
+    {
+      "id": "220905138",
+      "name": "HELBING EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "220905139",
+      "name": "KIRKPATRICK EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 9.5
+    },
+    {
+      "id": "220905146",
+      "name": "MOORE M H EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 3.2
+    },
+    {
+      "id": "220905160",
+      "name": "MAUDRIE WALTON EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 8.3
+    },
+    {
+      "id": "220905172",
+      "name": "W J TURNER EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 4
+    },
+    {
+      "id": "220905178",
+      "name": "WESTCREEK EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 16.8
+    },
+    {
+      "id": "220905180",
+      "name": "WESTERN HILLS EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 11.7
+    },
+    {
+      "id": "220905188",
+      "name": "ATWOOD MCDONALD EL",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905208",
+      "name": "T A SIMS EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "220905209",
+      "name": "EDWARD BRISCOE EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905221",
+      "name": "WESTERN HILLS PRI",
+      "district": "Fort Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220905222",
+      "name": "CLIFFORD DAVIS EL",
+      "district": "Fort Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 10.9
+    },
+    {
+      "id": "220908107",
+      "name": "GLENN HARMON EL",
+      "district": "Mansfield ISD",
+      "rating": "D",
+      "beginningTeachers": 2.8
+    },
+    {
+      "id": "220910001",
+      "name": "LAKE WORTH H S",
+      "district": "Lake Worth ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "220910042",
+      "name": "LUCYLE COLLINS MIDDLE",
+      "district": "Lake Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 7.9
+    },
+    {
+      "id": "220910043",
+      "name": "N A HOWRY STEAM ACADEMY",
+      "district": "Lake Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "220910101",
+      "name": "EFFIE MORRIS EARLY LEARNING ACADEMY",
+      "district": "Lake Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "220910103",
+      "name": "MARINE CREEK LEADERSHIP ACADEMY",
+      "district": "Lake Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 11.3
+    },
+    {
+      "id": "220910104",
+      "name": "MARILYN MILLER LANGUAGE ACADEMY",
+      "district": "Lake Worth ISD",
+      "rating": "F",
+      "beginningTeachers": 14.3
+    },
+    {
+      "id": "220912042",
+      "name": "CROWLEY MIDDLE",
+      "district": "Crowley ISD",
+      "rating": "F",
+      "beginningTeachers": 12.7
+    },
+    {
+      "id": "220912101",
+      "name": "BESS RACE EL",
+      "district": "Crowley ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "220912102",
+      "name": "SYCAMORE EL",
+      "district": "Crowley ISD",
+      "rating": "D",
+      "beginningTeachers": 19.1
+    },
+    {
+      "id": "220912105",
+      "name": "JACKIE CARDEN EL",
+      "district": "Crowley ISD",
+      "rating": "D",
+      "beginningTeachers": 8
+    },
+    {
+      "id": "220912109",
+      "name": "J A HARGRAVE EL",
+      "district": "Crowley ISD",
+      "rating": "D",
+      "beginningTeachers": 13.8
+    },
+    {
+      "id": "220912114",
+      "name": "MARY HARRIS EL",
+      "district": "Crowley ISD",
+      "rating": "D",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "220918111",
+      "name": "NORTHBROOK EL",
+      "district": "Eagle Mountain-Saginaw ISD",
+      "rating": "F",
+      "beginningTeachers": 18.2
+    },
+    {
+      "id": "220920101",
+      "name": "LIBERTY EL",
+      "district": "White Settlement ISD",
+      "rating": "D",
+      "beginningTeachers": 8.4
+    },
+    {
+      "id": "221901104",
+      "name": "BOWIE EL",
+      "district": "Abilene ISD",
+      "rating": "D",
+      "beginningTeachers": 2.9
+    },
+    {
+      "id": "221901152",
+      "name": "ORTIZ EL",
+      "district": "Abilene ISD",
+      "rating": "F",
+      "beginningTeachers": 5.7
+    },
+    {
+      "id": "221901155",
+      "name": "MARTINEZ EL",
+      "district": "Abilene ISD",
+      "rating": "D",
+      "beginningTeachers": 3
+    },
+    {
+      "id": "223901101",
+      "name": "COLONIAL HEIGHTS EL",
+      "district": "Brownfield ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "223901102",
+      "name": "OAK GROVE EL",
+      "district": "Brownfield ISD",
+      "rating": "F",
+      "beginningTeachers": 2.2
+    },
+    {
+      "id": "226903045",
+      "name": "LINCOLN MIDDLE",
+      "district": "San Angelo ISD",
+      "rating": "F",
+      "beginningTeachers": 4.6
+    },
+    {
+      "id": "226903102",
+      "name": "MCGILL EL",
+      "district": "San Angelo ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "226903106",
+      "name": "BRADFORD EL",
+      "district": "San Angelo ISD",
+      "rating": "F",
+      "beginningTeachers": 10.4
+    },
+    {
+      "id": "226903110",
+      "name": "FANNIN EL",
+      "district": "San Angelo ISD",
+      "rating": "F",
+      "beginningTeachers": 4.1
+    },
+    {
+      "id": "226903113",
+      "name": "GOLIAD EL",
+      "district": "San Angelo ISD",
+      "rating": "D",
+      "beginningTeachers": 1.7
+    },
+    {
+      "id": "226903116",
+      "name": "REAGAN EL",
+      "district": "San Angelo ISD",
+      "rating": "F",
+      "beginningTeachers": 9.2
+    },
+    {
+      "id": "227901019",
+      "name": "EASTSIDE EARLY COLLEGE H S",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 21.3
+    },
+    {
+      "id": "227901046",
+      "name": "BURNET MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "227901051",
+      "name": "MARTIN MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 29.9
+    },
+    {
+      "id": "227901053",
+      "name": "WEBB MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 23.2
+    },
+    {
+      "id": "227901054",
+      "name": "BEDICHEK MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 18.9
+    },
+    {
+      "id": "227901055",
+      "name": "DOBIE MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 26.9
+    },
+    {
+      "id": "227901061",
+      "name": "PAREDES MIDDLE",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 22.9
+    },
+    {
+      "id": "227901063",
+      "name": "GENERAL MARSHALL MIDDLE",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 48
+    },
+    {
+      "id": "227901101",
+      "name": "ALLISON EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 19.2
+    },
+    {
+      "id": "227901102",
+      "name": "ANDREWS EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 20.7
+    },
+    {
+      "id": "227901109",
+      "name": "BROWN EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 19
+    },
+    {
+      "id": "227901114",
+      "name": "DAWSON EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 36.9
+    },
+    {
+      "id": "227901116",
+      "name": "GOVALLE EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 37.3
+    },
+    {
+      "id": "227901118",
+      "name": "HARRIS EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 17.4
+    },
+    {
+      "id": "227901125",
+      "name": "OAK SPRINGS EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 39.7
+    },
+    {
+      "id": "227901126",
+      "name": "ORTEGA EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 13.1
+    },
+    {
+      "id": "227901127",
+      "name": "SANCHEZ EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 17.2
+    },
+    {
+      "id": "227901129",
+      "name": "PECAN SPRINGS EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 20.4
+    },
+    {
+      "id": "227901130",
+      "name": "PLEASANT HILL EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 9.4
+    },
+    {
+      "id": "227901141",
+      "name": "WALNUT CREEK EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 19.7
+    },
+    {
+      "id": "227901144",
+      "name": "WOOTEN EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 12.2
+    },
+    {
+      "id": "227901149",
+      "name": "BARRINGTON EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 14.6
+    },
+    {
+      "id": "227901150",
+      "name": "NORMAN-SIMS EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "227901152",
+      "name": "WOOLDRIDGE EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 8.8
+    },
+    {
+      "id": "227901156",
+      "name": "ODOM EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 17
+    },
+    {
+      "id": "227901160",
+      "name": "LINDER EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 15.6
+    },
+    {
+      "id": "227901161",
+      "name": "COOK EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 16.9
+    },
+    {
+      "id": "227901162",
+      "name": "HOUSTON EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 27.4
+    },
+    {
+      "id": "227901163",
+      "name": "HART EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 21.4
+    },
+    {
+      "id": "227901164",
+      "name": "PICKLE EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 7.4
+    },
+    {
+      "id": "227901165",
+      "name": "MCBEE EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 23.3
+    },
+    {
+      "id": "227901174",
+      "name": "RODRIGUEZ EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 18.3
+    },
+    {
+      "id": "227901175",
+      "name": "WIDEN EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 11.4
+    },
+    {
+      "id": "227901178",
+      "name": "JORDAN EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 35.3
+    },
+    {
+      "id": "227901188",
+      "name": "PADRON EL",
+      "district": "Austin ISD",
+      "rating": "D",
+      "beginningTeachers": 10.5
+    },
+    {
+      "id": "227901189",
+      "name": "OVERTON EL",
+      "district": "Austin ISD",
+      "rating": "F",
+      "beginningTeachers": 16.1
+    },
+    {
+      "id": "227904104",
+      "name": "NORTHWEST EL",
+      "district": "Pflugerville ISD",
+      "rating": "F",
+      "beginningTeachers": 2.4
+    },
+    {
+      "id": "227904109",
+      "name": "SPRINGHILL EL",
+      "district": "Pflugerville ISD",
+      "rating": "D",
+      "beginningTeachers": 3.6
+    },
+    {
+      "id": "227907042",
+      "name": "DECKER MIDDLE",
+      "district": "Manor ISD",
+      "rating": "F",
+      "beginningTeachers": 11.3
+    },
+    {
+      "id": "227907104",
+      "name": "DECKER EL",
+      "district": "Manor ISD",
+      "rating": "F",
+      "beginningTeachers": 18.4
+    },
+    {
+      "id": "227907105",
+      "name": "BLAKE MANOR EL",
+      "district": "Manor ISD",
+      "rating": "D",
+      "beginningTeachers": 23.3
+    },
+    {
+      "id": "227910041",
+      "name": "DEL VALLE MIDDLE",
+      "district": "Del Valle ISD",
+      "rating": "D",
+      "beginningTeachers": 4.9
+    },
+    {
+      "id": "227910042",
+      "name": "JOHN P OJEDA MIDDLE",
+      "district": "Del Valle ISD",
+      "rating": "D",
+      "beginningTeachers": 11
+    },
+    {
+      "id": "227910043",
+      "name": "DAILEY MIDDLE",
+      "district": "Del Valle ISD",
+      "rating": "F",
+      "beginningTeachers": 10.7
+    },
+    {
+      "id": "227910108",
+      "name": "BATY EL",
+      "district": "Del Valle ISD",
+      "rating": "D",
+      "beginningTeachers": 4.7
+    },
+    {
+      "id": "228903041",
+      "name": "TRINITY J H",
+      "district": "Trinity ISD",
+      "rating": "D",
+      "beginningTeachers": 10.8
+    },
+    {
+      "id": "228903103",
+      "name": "LANSBERRY EL",
+      "district": "Trinity ISD",
+      "rating": "F",
+      "beginningTeachers": 17.3
+    },
+    {
+      "id": "229903102",
+      "name": "WOODVILLE EL",
+      "district": "Woodville ISD",
+      "rating": "D",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "229904101",
+      "name": "FRED EL",
+      "district": "Warren ISD",
+      "rating": "D",
+      "beginningTeachers": 2.3
+    },
+    {
+      "id": "230901041",
+      "name": "BIG SANDY J H",
+      "district": "Big Sandy ISD (Upshur)",
+      "rating": "D",
+      "beginningTeachers": 1.9
+    },
+    {
+      "id": "230903102",
+      "name": "ORE CITY EL",
+      "district": "Ore City ISD",
+      "rating": "D",
+      "beginningTeachers": 9.7
+    },
+    {
+      "id": "230904101",
+      "name": "SHARON A RICHARDSON EL",
+      "district": "Union Hill ISD",
+      "rating": "F",
+      "beginningTeachers": 23.8
+    },
+    {
+      "id": "232903044",
+      "name": "MORALES J H",
+      "district": "Uvalde Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 10.9
+    },
+    {
+      "id": "232903102",
+      "name": "DALTON EL",
+      "district": "Uvalde Cons ISD",
+      "rating": "F",
+      "beginningTeachers": 6.3
+    },
+    {
+      "id": "232903110",
+      "name": "UVALDE EL AT FLORES CAMPUS",
+      "district": "Uvalde Cons ISD",
+      "rating": "F",
+      "beginningTeachers": 3.7
+    },
+    {
+      "id": "233901111",
+      "name": "RUBEN CHAVIRA EL",
+      "district": "San Felipe-Del Rio Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 14.7
+    },
+    {
+      "id": "235901001",
+      "name": "BLOOMINGTON H S",
+      "district": "Bloomington ISD",
+      "rating": "F",
+      "beginningTeachers": 1.9
+    },
+    {
+      "id": "235901041",
+      "name": "BLOOMINGTON J H",
+      "district": "Bloomington ISD",
+      "rating": "D",
+      "beginningTeachers": 17.9
+    },
+    {
+      "id": "235901101",
+      "name": "BLOOMINGTON EL",
+      "district": "Bloomington ISD",
+      "rating": "F",
+      "beginningTeachers": 16.9
+    },
+    {
+      "id": "235901103",
+      "name": "PLACEDO EL",
+      "district": "Bloomington ISD",
+      "rating": "F",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "235902042",
+      "name": "PATTI WELDER MIDDLE",
+      "district": "Victoria ISD",
+      "rating": "D",
+      "beginningTeachers": 14.9
+    },
+    {
+      "id": "235902046",
+      "name": "STEM MIDDLE",
+      "district": "Victoria ISD",
+      "rating": "D",
+      "beginningTeachers": 22.1
+    },
+    {
+      "id": "235902105",
+      "name": "HOPKINS EL",
+      "district": "Victoria ISD",
+      "rating": "D",
+      "beginningTeachers": 6.7
+    },
+    {
+      "id": "236902103",
+      "name": "SAMUEL HOUSTON EL",
+      "district": "Huntsville ISD",
+      "rating": "F",
+      "beginningTeachers": 100
+    },
+    {
+      "id": "236902104",
+      "name": "SCOTT JOHNSON EL",
+      "district": "Huntsville ISD",
+      "rating": "F",
+      "beginningTeachers": 100
+    },
+    {
+      "id": "236902106",
+      "name": "HUNTSVILLE EL",
+      "district": "Huntsville ISD",
+      "rating": "F",
+      "beginningTeachers": 100
+    },
+    {
+      "id": "237902101",
+      "name": "HEMPSTEAD EL",
+      "district": "Hempstead ISD",
+      "rating": "D",
+      "beginningTeachers": 19.7
+    },
+    {
+      "id": "237905041",
+      "name": "ROYAL J H",
+      "district": "Royal ISD",
+      "rating": "D",
+      "beginningTeachers": 45.6
+    },
+    {
+      "id": "237905105",
+      "name": "ROYAL EL",
+      "district": "Royal ISD",
+      "rating": "D",
+      "beginningTeachers": 45.2
+    },
+    {
+      "id": "237905106",
+      "name": "ROYAL EARLY CHILDHOOD CENTER",
+      "district": "Royal ISD",
+      "rating": "D",
+      "beginningTeachers": 20.8
+    },
+    {
+      "id": "240901043",
+      "name": "JOAQUIN CIGARROA MIDDLE",
+      "district": "Laredo ISD",
+      "rating": "D",
+      "beginningTeachers": 11.7
+    },
+    {
+      "id": "240904041",
+      "name": "BRUNI MIDDLE",
+      "district": "Webb Cons ISD",
+      "rating": "F",
+      "beginningTeachers": 66.7
+    },
+    {
+      "id": "240904102",
+      "name": "OILTON EL",
+      "district": "Webb Cons ISD",
+      "rating": "D",
+      "beginningTeachers": 44.4
+    },
+    {
+      "id": "241904102",
+      "name": "C G SIVELLS EL",
+      "district": "Wharton ISD",
+      "rating": "D",
+      "beginningTeachers": 43.5
+    },
+    {
+      "id": "241904106",
+      "name": "WHARTON EL",
+      "district": "Wharton ISD",
+      "rating": "D",
+      "beginningTeachers": 38.4
+    },
+    {
+      "id": "243905048",
+      "name": "HIRSCHI MIDDLE",
+      "district": "Wichita Falls ISD",
+      "rating": "D",
+      "beginningTeachers": 16
+    },
+    {
+      "id": "243905104",
+      "name": "BROOK VILLAGE EARLY CHILDHOOD",
+      "district": "Wichita Falls ISD",
+      "rating": "D",
+      "beginningTeachers": 0
+    },
+    {
+      "id": "243905125",
+      "name": "BOOKER T WASHINGTON EL",
+      "district": "Wichita Falls ISD",
+      "rating": "D",
+      "beginningTeachers": 3.4
+    },
+    {
+      "id": "243905129",
+      "name": "SOUTHERN HILLS EL",
+      "district": "Wichita Falls ISD",
+      "rating": "F",
+      "beginningTeachers": 8.2
+    },
+    {
+      "id": "243905210",
+      "name": "HAYNES HEAD START",
+      "district": "Wichita Falls ISD",
+      "rating": "D",
+      "beginningTeachers": 5.3
+    },
+    {
+      "id": "244903041",
+      "name": "VERNON MIDDLE",
+      "district": "Vernon ISD",
+      "rating": "D",
+      "beginningTeachers": 9.9
+    },
+    {
+      "id": "245901001",
+      "name": "LASARA H S",
+      "district": "Lasara ISD",
+      "rating": "D",
+      "beginningTeachers": 28.4
+    },
+    {
+      "id": "245902041",
+      "name": "LYFORD MIDDLE",
+      "district": "Lyford Cons ISD",
+      "rating": "F",
+      "beginningTeachers": 13.7
+    },
+    {
+      "id": "248901041",
+      "name": "KERMIT J H",
+      "district": "Kermit ISD",
+      "rating": "D",
+      "beginningTeachers": 19.2
+    },
+    {
+      "id": "248901101",
+      "name": "KERMIT EL",
+      "district": "Kermit ISD",
+      "rating": "F",
+      "beginningTeachers": 7.9
+    },
+    {
+      "id": "254901104",
+      "name": "BENITO JUAREZ EL",
+      "district": "Crystal City ISD",
+      "rating": "F",
+      "beginningTeachers": 11.2
+    },
+    {
+      "id": "254902001",
+      "name": "LA PRYOR SECONDARY",
+      "district": "La Pryor ISD",
+      "rating": "F",
+      "beginningTeachers": 9.6
+    }
+  ],
+  "verifiedQueries": [
+    {
+      "district": "Austin ISD",
+      "rating": "all",
+      "minimum": 0,
+      "ids": [
+        "227901063",
+        "227901125",
+        "227901116",
+        "227901114",
+        "227901178",
+        "227901051",
+        "227901162",
+        "227901055",
+        "227901165",
+        "227901053"
+      ]
+    },
+    {
+      "district": "Austin ISD",
+      "rating": "D",
+      "minimum": 10,
+      "ids": [
+        "227901063",
+        "227901165",
+        "227901019",
+        "227901102",
+        "227901141",
+        "227901101",
+        "227901150",
+        "227901174",
+        "227901118",
+        "227901156"
+      ]
+    },
+    {
+      "district": "Austin ISD",
+      "rating": "F",
+      "minimum": 20,
+      "ids": [
+        "227901125",
+        "227901116",
+        "227901114",
+        "227901178",
+        "227901051",
+        "227901162",
+        "227901055",
+        "227901053",
+        "227901061",
+        "227901163"
+      ]
+    },
+    {
+      "district": "Houston ISD",
+      "rating": "all",
+      "minimum": 0,
+      "ids": [
+        "101912295",
+        "101912263",
+        "101912140",
+        "101912082",
+        "101912194",
+        "101912114",
+        "101912283",
+        "101912124",
+        "101912289",
+        "101912292"
+      ]
+    },
+    {
+      "district": "Houston ISD",
+      "rating": "D",
+      "minimum": 10,
+      "ids": [
+        "101912295",
+        "101912263",
+        "101912140",
+        "101912082",
+        "101912194",
+        "101912114",
+        "101912283"
+      ]
+    },
+    {
+      "district": "Houston ISD",
+      "rating": "F",
+      "minimum": 20,
+      "ids": []
+    },
+    {
+      "district": "Dallas ISD",
+      "rating": "all",
+      "minimum": 0,
+      "ids": [
+        "057905185",
+        "057905115",
+        "057905380",
+        "057905042",
+        "057905178",
+        "057905264",
+        "057905235",
+        "057905107",
+        "057905225",
+        "057905046"
+      ]
+    },
+    {
+      "district": "Dallas ISD",
+      "rating": "D",
+      "minimum": 10,
+      "ids": [
+        "057905185",
+        "057905115",
+        "057905380",
+        "057905042",
+        "057905178",
+        "057905235",
+        "057905107",
+        "057905225",
+        "057905046",
+        "057905271"
+      ]
+    },
+    {
+      "district": "Dallas ISD",
+      "rating": "F",
+      "minimum": 20,
+      "ids": []
+    },
+    {
+      "district": "Abilene ISD",
+      "rating": "all",
+      "minimum": 0,
+      "ids": [
+        "221901152",
+        "221901155",
+        "221901104"
+      ]
+    },
+    {
+      "district": "Abilene ISD",
+      "rating": "D",
+      "minimum": 10,
+      "ids": []
+    },
+    {
+      "district": "Abilene ISD",
+      "rating": "F",
+      "minimum": 20,
+      "ids": []
+    }
+  ]
+}

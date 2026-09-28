@@ -1,0 +1,25 @@
+{
+  "verified_at": "2026-09-28",
+  "files": [
+    {
+      "path": "public/portfolio/charter-austin-original.docx",
+      "bytes": 320785,
+      "sha256": "e5263daad626599a038cdbe93e7c7413f2e74d384040acf17cb7a3bc8d13fb29"
+    },
+    {
+      "path": "public/portfolio/lost-decade-2024-report.pdf",
+      "bytes": 5332743,
+      "sha256": "8c6c1c4c29e53de9857d563b0e435e373e8c4e6ed8d7b37d898937cf79fa1dc6"
+    },
+    {
+      "path": "public/portfolio/lost-decade-2024-tables.html",
+      "bytes": 217150,
+      "sha256": "d486ef1fb1355b097f8a6a1ea26f8f2c07baab0035f05e412a106d0e252899ee"
+    },
+    {
+      "path": "public/portfolio/osod-report-page-5.png",
+      "bytes": 205482,
+      "sha256": "af54948218825b98430678a437a11dc52da6b9c9af7e3f2d88304fb21e85dd23"
+    }
+  ]
+}

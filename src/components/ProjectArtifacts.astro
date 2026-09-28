@@ -4,6 +4,7 @@ import InflationDemo from "./InflationDemo";
 import NotificationsDemo from "./NotificationsDemo";
 import CompressionExhibit from "./CompressionExhibit";
 import FMToolsExample from "./FMToolsExample";
+import TeadataDemo from "./TeadataDemo";
 import pay from "../data/portfolio/pay-history.json";
 import paths from "../data/portfolio/district-map.json";
 import charter from "../data/portfolio/charter-cost.json";
@@ -14,10 +15,22 @@ import reproq from "../data/portfolio/reproq-snapshot.txt?raw";
 const { slug } = Astro.props;
 ---
 <div id="project-artifacts">
+{slug === "teadata" && <TeadataDemo client:visible />}
+{slug === "data-for-public-education" && <section class="artifact-panel"><h2>From a research question to a working tool</h2><p>A project might start with a question about staffing in a group of schools. I use teadata to join campus records, check the reporting years and identifiers, and produce a table the client can review. The same data model supports the profiles, maps, and exports on Data for Public Education.</p><p>The campus example shows that connection using a published workbook: the Python library prepares the records, and a small web interface lets readers explore them.</p><div class="artifact-links"><a href="/work/dev/teadata#teadata-demo">Explore the teadata example</a><a href="/work/policy/facing-facts">Read an OSOD research case study</a></div></section>}
 {slug === "notifications" && <NotificationsDemo client:load />}
 {slug === "fmtools" && <FMToolsExample examples={examples} client:load />}
 {slug === "comma-lab" && <CompressionExhibit client:load />}
-{(slug === "respect-campaign-map" || slug === "the-lost-decade-and-a-half") && <>
+{slug === "the-lost-decade-and-a-half" && <section class="artifact-panel">
+	<p class="eyebrow">May 2024 · original report and web tables</p><h2>The report I wrote and built</h2>
+	<p>I wrote The Lost Decade (and a Half), did the analysis, and built the responsive district tables for Texas AFT’s website. The report connects educator pay, inflation, staffing, and school funding.</p>
+	<a class="report-preview" href="/portfolio/lost-decade-2024-report.pdf"><img src="/portfolio/lost-decade-2024-cover.png" width="696" height="900" alt="First page of the May 2024 Lost Decade (and a Half) report" loading="lazy" /></a>
+	<div class="artifact-links"><a href="/portfolio/lost-decade-2024-report.pdf">Read the 2024 report (PDF)</a><a href="https://web.archive.org/web/20250123212800/https://www.texasaft.org/lost-decade-and-a-half/">Archived Texas AFT article</a></div>
+	<h3>A district index that works on a phone</h3><p>The original page used separate wide and narrow table layouts to make 1,209 district entries readable on different screens. This preserved copy shows that layout. The old workbook links have been removed from the exhibit; the archived article retains them.</p>
+	<iframe class="original-table-frame" src="/portfolio/lost-decade-2024-tables.html" title="Preserved 2024 responsive district index" loading="lazy" sandbox="" />
+	<p class="source-note"><a href="/portfolio/lost-decade-2024-tables.html">Open the preserved tables at full width</a>. The underlying 2024 salary workbooks are not included in this exhibit.</p>
+	<details><summary>Earlier work: the 2022 district-pay comparison</summary><DistrictResearch kind="pay" rows={pay} paths={[]} client:visible /><p class="source-note">This older dataset covers 1,019 districts and belongs to the 2022 research, not the 2024 report above. <a href="/portfolio/pay-history.csv">Download the 2022 comparison data</a>.</p></details>
+</section>}
+{slug === "respect-campaign-map" && <>
 	<DistrictResearch kind="pay" rows={pay} paths={slug === "respect-campaign-map" ? paths : []} client:load />
 	<p class="source-note">Source: <a href="https://github.com/adpena/RespectCampaignMap">Respect Campaign Map</a>, historical district-pay dataset. <a href="/portfolio/pay-history.csv">Download the comparison data</a>.</p>
 </>}
@@ -26,6 +39,13 @@ const { slug } = Astro.props;
 	<p class="source-note">Source: <a href="https://github.com/adpena/TexasInflationCalculator">the original calculator</a>, using the <a href="https://comptroller.texas.gov/economy/key-indicators/">Texas Comptroller’s Key Economic Indicators</a>. Snapshot ends May 2023.</p>
 </>}
 {slug === "fiscal-impact-of-charter-school-expansion" && <>
+	<section class="artifact-panel"><p class="eyebrow">Original district deliverable · May 2024 inputs</p><h2>From state records to an Austin ISD report</h2>
+	<p>I built the collection and reporting pipeline, generated district summaries, and wrote the Texas AFT newsletter article explaining the findings. This is the original Austin ISD Word report from the project repository.</p>
+	<ol class="exhibit-steps"><li><strong>Collect and match.</strong> Join TEA transfer reports, enrollment counts, and Summary of Finances records by district and school year.</li><li><strong>Estimate.</strong> Calculate selected formula revenue per refined average daily attendance, then apply the district’s attendance-to-enrollment ratio and observed charter-transfer count. Masked transfer counts are excluded from this version.</li><li><strong>Deliver.</strong> Generate a district report with five years of counts, estimates, and source notes, plus a web index for finding each district’s document.</li></ol>
+	<dl class="artifact-metrics"><div><dt>2023–24 observed transfers</dt><dd>12,636</dd></div><div><dt>District enrollment</dt><dd>72,830</dd></div><div><dt>Transfers ÷ enrollment</dt><dd>17.35%</dd></div></dl>
+	<p>The report estimated $624,927,517 in cumulative revenue losses over 2019–20 through 2023–24. That is a model estimate, not an audited accounting of dollars transferred. Its 2023–24 finance inputs were preliminary, accessed May 19, 2024.</p>
+	<div class="artifact-links"><a href="/portfolio/charter-austin-original.docx">Original Austin ISD report (Word)</a><a href="https://github.com/adpena/CharterCostTracker/blob/b9123138fcbd2e3f3e51fffd0ed64ff688cd206e/gen_statewide_cost_of_charter_reports.py#L150">Calculation code</a><a href="https://github.com/adpena/CharterCostTracker/blob/b9123138fcbd2e3f3e51fffd0ed64ff688cd206e/gen_school_district_fiscal_impact_summaries.py">Report generator</a></div>
+	<p class="source-note">The explorer below uses a later, June 21 export for one school year. Its figures can differ from this original five-year report.</p></section>
 	<DistrictResearch kind="charter" rows={charter} client:load />
 	<div class="artifact-links"><a href="/portfolio/charter-cost-austin-workbook-excerpt.pdf">Austin ISD workbook excerpt (PDF)</a><a href="/portfolio/charter-cost-2023-24.csv">Download the exhibit data</a><a href="https://github.com/adpena/CharterCostTracker/blob/main/Charter_School_Fiscal_Impact_Summaries.html">Original generated report index</a><a href="https://github.com/adpena/CharterCostTracker">Code and source exports</a></div>
 </>}
@@ -34,9 +54,14 @@ const { slug } = Astro.props;
 	<div class="artifact-links"><a href="/portfolio/hb2-aldine-workbook-excerpt.pdf">Aldine ISD workbook excerpt (PDF)</a><a href="/portfolio/hb2-2025-26.csv">Download the exhibit data</a><a href="https://docs.google.com/spreadsheets/d/1q_tBv7HuYHj1EsePX4BX8ALBck54FgMXYoAa7aDz4FI/edit">Statewide comparison workbook</a></div>
 </>}
 {slug === "facing-facts" && <section class="artifact-panel">
-	<p class="eyebrow">2022–23 operating expenditures · report page 5</p><h2>Central administration’s share of spending</h2><p>One of the report’s comparisons: the share of total annual operating expenditures spent on central administration.</p>
+	<p class="eyebrow">TEA Snapshot 2023 · 2021–22 financial data</p><h2>Central administration’s share of spending</h2><p>One of the report’s comparisons: the share of total annual operating expenditures spent on central administration.</p>
 	{[{name:"Public school districts",value:6.8},{name:"Charter schools",value:10.3}].map((row) => <div class="score-row"><span>{row.name}</span><div class="score-track"><span style={`width:${row.value / 12 * 100}%`} /></div><strong>{row.value}%</strong></div>)}
 	<p class="source-note">Statewide aggregates from <a href="https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf#page=5">Facing Facts, February 2025</a>. These are expenditure shares, not per-student amounts. The report documents its TEA sources and methods in the notes.</p>
+	<h3>Reading one comparison</h3><p>Using the rounded values printed in the report, 10.3% − 6.8% = 3.5 percentage points. Dividing that gap by the district share gives about 51% more of the operating budget devoted to central administration. That does not mean 51% more spending per student.</p>
+	<p>I checked this comparison against TEA’s Snapshot 2023 district file. Weighting each reported central-administration percentage by its operating expenditures produces approximately 6.83% for districts and 10.29% for charters, which round to the published figures. The calculation uses 1,020 district and 184 charter records with usable financial values; five other records have missing values.</p>
+	<p class="source-note">A date clarification: the original report labels this comparison 2022–23. TEA’s data dictionary dates Snapshot 2023’s financial fields to 2021–22. This exhibit uses the source’s financial year. The reconstruction is approximate because TEA rounds each entity’s percentage.</p>
+	<a class="report-preview" href="https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf#page=5"><img src="/portfolio/osod-report-page-5.png" width="773" height="1000" alt="Page 5 of the OSOD report, comparing central-administration spending, teacher experience, and turnover" loading="lazy" /></a>
+	<div class="artifact-links"><a href="https://osod.org/wp-content/uploads/2025/02/Facing-facts_digital_02.26.pdf">Read the 30-year report</a><a href="https://rptsvr1.tea.texas.gov/perfreport/snapshot/download.html">TEA source data and definitions</a><a href="/portfolio/osod-snapshot-2023.csv">Comparison inputs (CSV)</a><a href="/portfolio/osod-source-check.json">Calculation record</a><a href="https://github.com/adpena/crafted/blob/main/scripts/build-osod-exhibit.py">Reproduce the check</a></div>
 </section>}
 {slug === "reproq" && <section class="artifact-panel"><p class="eyebrow">Reproq TUI · recorded test fixture</p><h2>The queue from the terminal</h2><p>The dashboard brings queue depth, failures, worker health, and events into one terminal view. This snapshot comes from the project’s automated UI test and contains sample metrics.</p><pre class="terminal-snapshot" tabindex="0" aria-label="Scrollable Reproq TUI dashboard snapshot">{reproq}</pre><p class="source-note"><a href="https://github.com/adpena/reproq-tui/blob/main/internal/ui/testdata/dashboard.golden">Snapshot source</a> · <a href="https://github.com/adpena/reproq-tui#demo-mode">Run the local demo</a></p></section>}
 

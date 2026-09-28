@@ -46,7 +46,7 @@ Backups and release receipts contain private CMS information and belong only in 
 
 - `src/pages/index.astro` and `WorkListing.tsx`: balanced introduction, runtime CMS reads, `work-sections-v2` KV cache (60 seconds), shareable `?focus=software|research|writing` filters.
 - `src/styles/global.css`: shared CSS, themes, responsive layouts. Content is readable immediately, without an entrance fade.
-- `src/components/ProjectArtifacts.astro`: source-backed project exhibits. Molt runs a precompiled Wasm program; Notifications uses the actual dispatcher with mock transports; the inflation calculator uses a dated CPI snapshot.
+- `src/components/ProjectArtifacts.astro`: source-backed project exhibits. Molt runs three precompiled Wasm programs; teadata's browser snapshot is checked against actual Python queries; Notifications uses the actual dispatcher with mock transports; the inflation calculator uses a dated CPI snapshot. See `docs/portfolio-case-studies.md` for source dates and reproduction commands.
 - `plugin/`: Action Pages source and admin code. Maintained as an unfinished experiment, not a completed campaign product.
 - `src/lib/auth.ts`, API routes, and plugin tests describe the actual security/transport behavior. Do not infer verified delivery from an adapter’s existence.
 - EmDash 1 stores plain text in self-contained FTS tables. Backups rebuild these using the CMS insert triggers. Read `docs/deploy.md` before core upgrades; production checks migrations and never applies them on public requests.
