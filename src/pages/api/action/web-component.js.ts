@@ -1,15 +1,14 @@
 /**
  * Astro bridge route serving the Web Component loader script.
  *
- * The plugin route handler at plugin/src/routes/web-component.ts isn't
- * mounted directly by Astro — emdash routes are sandboxed. This bridge
- * imports the SCRIPT constant and serves it as a public JavaScript asset.
+ * EmDash's raw API responses disallow active JavaScript. This site route
+ * serves the loader; the corresponding plugin route redirects here.
  *
- * URL: /api/_plugin/action-pages/web-component.js
+ * URL: /api/action/web-component.js
  */
 
 import type { APIRoute } from "astro";
-import { WEB_COMPONENT_SCRIPT } from "../../../../../plugin/src/routes/web-component.ts";
+import { WEB_COMPONENT_SCRIPT } from "../../../../plugin/src/routes/web-component.ts";
 
 export const GET: APIRoute = async () => {
 	return new Response(WEB_COMPONENT_SCRIPT, {

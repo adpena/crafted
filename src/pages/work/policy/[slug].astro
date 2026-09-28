@@ -10,7 +10,7 @@ if (!slug || !isPublicPortfolioSlug(slug)) return new Response("Not found", { st
 
 const { entry, cacheHint } = await getEmDashEntry("policy", slug);
 if (!entry) return Astro.redirect("/404");
-try { Astro.cache.set(cacheHint); } catch {}
+try { if (Astro.cache.enabled) Astro.cache.set(cacheHint); } catch {}
 
 // emdash returns entry.data as `unknown` (collection schemas are dynamic);
 // narrow to the expected shape here so the template can read fields

@@ -1,5 +1,5 @@
-import { definePlugin } from "emdash";
-import type { PluginDefinition } from "emdash";
+import { definePlugin, pluginResponse } from "emdash";
+import type { PluginDefinition, PluginContext, PluginRoute, RouteContext } from "emdash";
 import { handleInstall } from "./hooks/install.ts";
 import { handleContentAfterSave } from "./hooks/content-after-save.ts";
 import { handlePageMetadata } from "./hooks/page-metadata.ts";
@@ -12,6 +12,26 @@ import { handleCreatePage } from "./routes/create-page.ts";
 import { handleWebComponent } from "./routes/web-component.ts";
 import { handleTestNotification } from "./routes/test-notification.ts";
 
+// Native routes receive one combined context. Adapt the existing handlers and
+// preserve JSON status codes. EmDash's raw routes deliberately disallow active
+// script content, so script requests redirect to the site's Astro asset routes.
+function nativeRoute(handler: (route: RouteContext, plugin: PluginContext) => Promise<{
+  status: number; body: unknown; headers?: Record<string, string>;
+}>, scriptPath?: string): PluginRoute['handler'] {
+  return async (context) => {
+    const { status, body, headers } = await handler(context, context);
+    if (typeof body === 'string' && scriptPath) {
+      return pluginResponse({ status: 302, headers: {
+        location: scriptPath + new URL(context.request.url).search,
+      } });
+    }
+    return pluginResponse({ status,
+      headers: { 'content-type': 'application/json; charset=utf-8', ...headers },
+      body: { kind: 'text', value: JSON.stringify(body) },
+    });
+  };
+}
+
 /**
  * Native-format plugin factory.
  *
@@ -20,12 +40,10 @@ import { handleTestNotification } from "./routes/test-notification.ts";
  * to the runtime manifest so the admin panel can render them.
  */
 export function createPlugin() {
-  // Cast needed: TS overload resolution sees StandardPluginDefinition (no id)
-  // before PluginDefinition (with id). Explicit cast selects the native overload.
   return definePlugin({
     id: "action-pages",
     version: "0.3.0",
-    capabilities: ["read:content", "write:content", "email:send", "network:fetch", "page:inject"],
+    capabilities: ["content:read", "content:write", "email:send", "network:request", "hooks.page-fragments:register"],
     allowedHosts: ["secure.actblue.com", "*.cloudflareinsights.com"],
     storage: {
       firms: { indexes: ["slug"] },
@@ -193,13 +211,13 @@ export function createPlugin() {
       "cron": { handler: handleCron },
     },
     routes: {
-      submit: { handler: handleSubmit, public: true },
-      page: { handler: handlePage, public: true },
-      embed: { handler: handleEmbed, public: true },
-      stats: { handler: handleStats },
-      "create-page": { handler: handleCreatePage },
-      "web-component.js": { handler: handleWebComponent, public: true },
-      "test-notification": { handler: handleTestNotification },
+      submit: { handler: nativeRoute(handleSubmit), response: "raw", public: true },
+      page: { handler: nativeRoute(handlePage), response: "raw", public: true },
+      embed: { handler: nativeRoute(handleEmbed, "/api/action/embed.js"), response: "raw", public: true },
+      stats: { handler: nativeRoute(handleStats), response: "raw" },
+      "create-page": { handler: nativeRoute(handleCreatePage), response: "raw" },
+      "web-component.js": { handler: nativeRoute(handleWebComponent, "/api/action/web-component.js"), response: "raw", public: true },
+      "test-notification": { handler: nativeRoute(handleTestNotification), response: "raw" },
     },
-  } as unknown as PluginDefinition);
+  } satisfies PluginDefinition);
 }

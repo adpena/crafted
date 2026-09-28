@@ -7,7 +7,7 @@ import WorkWithMe from "../components/WorkWithMe.astro";
 
 const { entry, cacheHint } = await getEmDashEntry("pages", "about");
 if (!entry) return new Response("About is temporarily unavailable. Contact contact@adpena.com.", { status: 503 });
-try { Astro.cache.set(cacheHint); } catch {}
+try { if (Astro.cache.enabled) Astro.cache.set(cacheHint); } catch {}
 const bio = entry.data as { content?: unknown };
 ---
 

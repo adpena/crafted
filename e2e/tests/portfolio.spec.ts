@@ -1,19 +1,26 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('software and research have equal space and visible descriptions', async ({ page }) => {
+test('software and research have equal space and visible descriptions', async ({ page }, testInfo) => {
   expect((await page.goto('/'))?.status()).toBe(200);
   const selected = page.locator('.selected-work');
   await expect(selected.locator('.selected-group')).toHaveCount(2);
   for (const name of ['Software', 'Research']) {
     const group = selected.getByRole('region', { name, exact: true });
-    await expect(group.locator('article')).toHaveCount(2);
+    await expect(group.locator('article')).toHaveCount(3);
     await expect(group.locator('article p').first()).toBeVisible();
   }
   const [software, research] = await selected.locator('.selected-group').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
   expect(Math.abs(software - research)).toBeLessThan(2);
+  await expect(selected.getByRole('link', { name: 'teadata', exact: true })).toHaveAttribute('href', 'https://github.com/adpena/teadata');
   await expect(page.getByRole('region', { name: 'Data for Public Education', exact: true })).toBeVisible();
   await expect(page.locator('nav[aria-label="Main navigation"]')).not.toContainText('Articles');
+  for (const colorScheme of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme });
+    await testInfo.attach(`homepage-${colorScheme}`, {
+      body: await page.screenshot({ fullPage: true, animations: 'disabled' }), contentType: 'image/png',
+    });
+  }
 });
 
 test('filters survive links, reloads, and browser history', async ({ page }) => {
@@ -80,7 +87,11 @@ test('public pages exclude unpublished work and do not overflow', async ({ page,
     await expect(page.locator('a[href*="working-but-uncovered"]')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   }
-  for (const path of ['/rss.xml', '/sitemap.xml']) expect(await (await request.get(path)).text()).not.toContain('working-but-uncovered');
+  for (const path of ['/rss.xml', '/sitemap.xml', '/sitemap-dev.xml', '/sitemap-policy.xml']) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).not.toContain('working-but-uncovered');
+  }
   expect((await request.get('/work/dev/working-but-uncovered')).status()).toBe(404);
 });
 
@@ -100,4 +111,18 @@ test('skip link reaches main content by keyboard', async ({ page, browserName })
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#main-content$/);
+});
+
+test('EmDash plugin routes retain JSON errors and serve scripts through site assets', async ({ request }) => {
+  const missing = await request.get('/_emdash/api/plugins/action-pages/page?slug=missing-upgrade-check');
+  expect(missing.status()).toBe(404);
+  expect(await missing.json()).toMatchObject({ error: { code: 'NOT_FOUND' } });
+  expect((await request.get('/_emdash/api/plugins/action-pages/embed')).status()).toBe(400);
+  for (const route of ['embed?slug=demo', 'web-component.js']) {
+    const script = await request.get(`/_emdash/api/plugins/action-pages/${route}`);
+    expect(script.status()).toBe(200);
+    expect(script.headers()['content-type']).toContain('application/javascript');
+    expect(script.url()).toContain('/api/action/');
+  }
+  expect((await request.get('/_emdash/api/plugins/action-pages/stats')).status()).toBe(401);
 });
