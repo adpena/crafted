@@ -69,7 +69,7 @@ function checkPrepared(state) {
 export async function verifyLive(origin = 'https://adpena.com') {
   const paths = ['/', '/?focus=software', '/?focus=research', '/?focus=writing', '/action-pages', '/about', '/contact', '/resume/software', '/resume/research', '/sitemap.xml', '/sitemap-writing.xml', '/rss.xml',
     '/resumes/alejandro-pena-software.pdf', '/resumes/alejandro-pena-research.pdf',
-    '/work/dev/teadata', '/work/dev/molt', '/work/dev/comma-lab',
+    '/work/dev/teadata', '/work/dev/molt', '/work/dev/comma-lab', '/work/dev/freeinvoicemaker',
     '/work/policy/the-lost-decade-and-a-half', '/work/policy/fiscal-impact-of-charter-school-expansion', '/work/policy/facing-facts'];
   const checked = [];
   for (const path of paths) {
