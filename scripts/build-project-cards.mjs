@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import { writeFile } from 'node:fs/promises';
 const cards = [
-  ['freeinvoicemaker', 'SOFTWARE / WEB APPLICATION', ['Free Invoice Maker'], ['An invoice editor with local drafts', 'and PDF downloads.'], ['BROWSER STORAGE', 'TEMPLATES', 'PDF PREVIEW']],
+  ['freeinvoicemaker', 'SOFTWARE / WEB APPLICATION', ['Free Invoice Maker'], ['Invoice tools for people', 'and AI agents.'], ['VISUAL EDITING', 'NATURAL LANGUAGE', 'MCP TOOLS']],
   ['teadata', 'SOFTWARE / PUBLIC DATA', ['teadata'], ['One data model for Texas schools.', 'Python queries you can inspect.'], ['795 CAMPUSES', '217 DISTRICTS', 'Published example dataset']],
   ['comma-lab', 'SOFTWARE / RESEARCH', ['A lossy video', 'compression challenge'], ['Three submissions, with code,', 'archives, and evaluation reports.'], ['PR 107', 'PR 110', 'PR 140']],
   ['molt', 'SOFTWARE / COMPILERS', ['Molt'], ['Python programs compiled', 'to WebAssembly.'], ['A FRACTAL', 'A DATA SUMMARY', 'A WORD COUNTER']],
