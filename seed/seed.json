@@ -2247,6 +2247,120 @@
         }
       },
       {
+        "id": "freeinvoicemaker",
+        "slug": "freeinvoicemaker",
+        "status": "published",
+        "data": {
+          "title": "Free Invoice Maker",
+          "summary": "An invoice editor that saves drafts on your device and generates PDFs in the browser, without an account.",
+          "content": [
+            {
+              "_type": "block",
+              "_key": "invoice-0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-0",
+                  "text": "I built the invoice editor, template controls, draft storage, and PDF output.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-1",
+                  "text": "You can choose a template, add a logo, and enter line items, tax, discounts, and payment details. Paper size, orientation, fonts, and colors are adjustable. Pasted tables can fill line items after a review step.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-2",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-2",
+                  "text": "The invoice preview",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-3",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-3",
+                  "text": "The preview and download use the same PDF file, generated in the browser. That keeps page breaks, margins, and fonts consistent between the two.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-4",
+              "style": "h2",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-4",
+                  "text": "Storage and calculations",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-5",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-5",
+                  "text": "I use IndexedDB for drafts and a separate sync queue for signed-in accounts. The site uses Astro and React, with a Cloudflare Workers backend and D1 database.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "invoice-6",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "invoice-span-6",
+                  "text": "Currency amounts are stored in integer minor units: cents for US dollars, whole yen, and fils for Bahraini dinars. Calculations and the browser PDF renderer use the same currency scale.",
+                  "marks": []
+                }
+              ]
+            }
+          ],
+          "live_url": "https://freeinvoicemaker.app",
+          "stack": "TypeScript, Astro, React, IndexedDB, Cloudflare Workers",
+          "language": "TypeScript",
+          "year": "2026",
+          "project_status": "Active"
+        }
+      },
+      {
         "id": "molt",
         "slug": "molt",
         "status": "published",
