@@ -159,9 +159,9 @@ const customCss = sanitizeCustomCss(
   <meta name="robots" content="noindex,nofollow" />
   <title>Preview — {title}</title>
   <style is:global>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .action-document, .action-document *, .action-document *::before, .action-document *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    body.action-document {
       font-family: var(--page-font-serif);
       line-height: 1.6;
       color: var(--page-text);
@@ -169,8 +169,8 @@ const customCss = sanitizeCustomCss(
       min-height: 100vh;
     }
 
-    main { width: 100%; }
-    astro-island { display: contents; }
+    .action-document main { width: 100%; }
+    .action-document astro-island { display: contents; }
 
     /* Subtle "PREVIEW" watermark so the admin always sees this is not live */
     .preview-watermark {
@@ -192,7 +192,7 @@ const customCss = sanitizeCustomCss(
     <style is:global set:html={customCss.css} />
   )}
 </head>
-<body style={cssVarString}>
+<body class="action-document" style={cssVarString}>
   <main id="main-content">
     <ActionPageIsland page={previewConfig} client:load />
   </main>

@@ -39,6 +39,8 @@ Review the seed diff before committing. The sync exports only published custom f
 
 Run portfolio browser checks against an isolated seeded preview. Install browsers once using `npx playwright install --with-deps` (the OS dependency installation is intended for CI/Linux).
 
+The portfolio gate includes Chromium, Firefox, WebKit, mobile Chrome, mobile Safari, and tablet Safari profiles. It checks control sizes and containment at 320, 768, and 1440 CSS pixels, enlarged text, table scrolling, district search/map selection, keyboard disclosures and theme controls, demo failure/retry/cancel states, and disabled-JavaScript fallbacks. Device profiles emulate viewport and input settings; they do not replace physical-device or screen-reader testing. Contact checks exercise browser validation without sending a message.
+
 ```sh
 PORTFOLIO_TEST_STATE=.portfolio-release/test-state npm run test:e2e:portfolio
 npm run build

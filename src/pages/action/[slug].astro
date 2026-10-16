@@ -118,9 +118,9 @@ const customCss = sanitizeCustomCss(
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={ogDescription} />
   <style is:global>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    .action-document, .action-document *, .action-document *::before, .action-document *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    body.action-document {
       font-family: var(--page-font-serif);
       line-height: 1.6;
       color: var(--page-text);
@@ -129,8 +129,8 @@ const customCss = sanitizeCustomCss(
     }
 
     /* Hero templates render full-width; action forms are centered */
-    main { width: 100%; }
-    astro-island { display: contents; }
+    .action-document main { width: 100%; }
+    .action-document astro-island { display: contents; }
 
     .demo-notice {
       padding: 0.65rem 1rem;
@@ -144,7 +144,7 @@ const customCss = sanitizeCustomCss(
     <style is:global set:html={customCss.css} />
   )}
 </head>
-<body style={cssVarString}>
+<body class="action-document" style={cssVarString}>
   {isPortfolioDemo && (
     <aside class="demo-notice" aria-label="Demo information">
       Fictional portfolio demo. Forms run locally; nothing is sent, saved, or charged. <a href="/action-pages">About Action Pages</a>

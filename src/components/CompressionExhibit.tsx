@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import archives from "../../public/portfolio/compression-archives.json";
 const reports = [
 	{ pr: 107, date: "May 4, 2026", name: "Apogee", bytes: 178392, segnet: .00068841, posenet: .00017394, hardware: "CUDA · Tesla T4", contribution: "A submission built on the public HNeRV lineage, with a deterministic decoder wrapper and archive checks tied to the evaluation report.", runtime: "https://github.com/adpena/comma_video_compression_challenge/tree/apogee-pr98-hnerv-adapter/submissions/apogee" },
@@ -6,10 +6,14 @@ const reports = [
 	{ pr: 140, date: "September 3, 2026", name: "Semantic joint context mixing", bytes: 180002, segnet: .00020139, posenet: .00000637, hardware: "CUDA · Tesla T4", contribution: "I priced segmentation edits against their pose error, re-solved the pose coefficients, and reduced the lossless representation. The learned renderer and pose-carrier design build on PRs #130 and #135, with #133 in that lineage.", runtime: "https://github.com/commaai/comma_video_compression_challenge/pull/140/files" },
 ];
 export default function CompressionExhibit() {
+	const [ready, setReady] = useState(false);
+	useEffect(() => setReady(true), []);
 	const [index, setIndex] = useState(2);
 	const report = reports[index]!;
 	const terms = [{ name: "Segmentation distortion", value: 100 * report.segnet }, { name: "Pose distortion", value: Math.sqrt(10 * report.posenet) }, { name: "File-size cost", value: 25 * report.bytes / 37545489 }];
-	return <section className="artifact-panel"><p className="eyebrow">Public submission reports · 600 samples each</p><h2>What goes into the score?</h2><p>The challenge charges for file size and for changes in two perception models’ outputs. Lower is better.</p><label>Submission<select aria-label="Submission" value={index} onChange={(e) => setIndex(Number(e.target.value))}>{reports.map((r, i) => <option key={r.pr} value={i}>PR #{r.pr} · {r.name}</option>)}</select></label>
+	return <section className="artifact-panel"><p className="eyebrow">Public submission reports · 600 samples each</p><h2>What goes into the score?</h2><p>The challenge charges for file size and for changes in two perception models’ outputs. Lower is better.</p><label>Submission<select aria-label="Submission" disabled={!ready} value={index} onChange={(e) => setIndex(Number(e.target.value))}>{reports.map((r, i) => <option key={r.pr} value={i}>PR #{r.pr} · {r.name}</option>)}</select></label>
+		<noscript><p>Enable JavaScript to switch submissions. PR #140’s score and all three submission records are shown below.</p></noscript>
+		<p className="source-note" role="status">PR #{report.pr}: approximate score {terms.reduce((sum, term) => sum + term.value, 0).toFixed(4)}.</p>
 		<dl className="artifact-metrics"><div><dt>Archive size</dt><dd>{report.bytes.toLocaleString()} B</dd></div><div><dt>Original video</dt><dd>37,545,489 B</dd></div><div><dt>Score, approximately</dt><dd>{terms.reduce((sum, term) => sum + term.value, 0).toFixed(4)}</dd></div></dl>
 		{terms.map((term) => <div className="score-row" key={term.name}><span>{term.name}</span><div className="score-track"><span style={{ width: `${term.value / .15 * 100}%` }} /></div><span>{term.value.toFixed(5)}</span></div>)}
 		<p className="source-note">100 × SegNet distortion + √(10 × PoseNet distortion) + 25 × archive/original size. Recomputed from the rounded components in <a href={`https://github.com/commaai/comma_video_compression_challenge/pull/${report.pr}`}>PR #{report.pr}</a>. Evaluation: {report.hardware}. Hardware differs between reports, and these values are not a live ranking.</p>

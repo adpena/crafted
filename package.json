@@ -29,7 +29,7 @@
 		"release:prepare": "node scripts/portfolio-release.mjs prepare",
 		"release:verify": "node scripts/portfolio-release.mjs verify",
 		"backup:site": "python3 scripts/backup-site.py",
-		"test:e2e:portfolio": "playwright test e2e/tests/portfolio.spec.ts e2e/tests/portfolio-artifacts.spec.ts --project=chromium --project=webkit --project=\"Mobile Safari\"",
+		"test:e2e:portfolio": "playwright test e2e/tests/portfolio.spec.ts e2e/tests/portfolio-artifacts.spec.ts e2e/tests/portfolio-interactions.spec.ts",
 		"preview:seed": "python3 scripts/seed-portfolio-preview.py",
 		"test:backup": "python3 -m unittest discover -s tests -p test_portfolio_backup.py"
 	},

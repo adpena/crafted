@@ -82,6 +82,9 @@
 }
 
 html {
+	/* Give the page canvas an explicit theme, including mobile Safari's overscroll. */
+	background: var(--color-bg);
+	color: var(--color-text);
 	scroll-behavior: smooth;
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -1163,20 +1166,39 @@ astro-island {
 .source-note { margin-top: 1.5rem; line-height: 1.6; }
 .demo-fields { display: grid; gap: 1rem; margin: 1.5rem 0; }
 .artifact-panel label { display: grid; gap: .5rem; font-size: .9rem; }
-.artifact-panel input, .artifact-panel textarea, .artifact-panel select { box-sizing: border-box; max-width: 100%; width: 100%; min-height: 44px; padding: .7rem; border: 1px solid var(--color-border); border-radius: 0; background: var(--color-bg); color: var(--color-text); font: inherit; }
+.artifact-panel input, .artifact-panel textarea, .artifact-panel select { box-sizing: border-box; min-width: 0; max-width: 100%; width: 100%; min-height: 44px; padding: .7rem; border: 1px solid var(--color-border); border-radius: 0; background: var(--color-bg); color: var(--color-text); font: inherit; font-size: 1rem; }
+/* Native WebKit selects ignore minimum height with their default appearance. */
+.artifact-panel select { appearance: none; padding-right: 2.5rem; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%); background-position: calc(100% - 1rem) 50%, calc(100% - .65rem) 50%; background-size: .35rem .35rem; background-repeat: no-repeat; }
+.artifact-panel :is(select, input, textarea):disabled { opacity: .6; cursor: default; }
 .demo-channel-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-.demo-button { padding: .75rem 1.25rem; background: var(--color-text); color: var(--color-bg); border: 1px solid var(--color-text); cursor: pointer; font: inherit; }
+.demo-button { min-height: 44px; padding: .75rem 1.25rem; background: var(--color-text); color: var(--color-bg); border: 1px solid var(--color-text); cursor: pointer; font: inherit; }
+.demo-button-secondary { background: var(--color-bg); color: var(--color-text); }
+.demo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 .demo-button:disabled { opacity: .5; cursor: default; }
 .artifact-panel pre { max-width: 100%; overflow: auto; padding: 1rem; border: 1px solid var(--color-border); font-size: .75rem; }
 .artifact-panel details { margin: 1.5rem 0; }
-.artifact-panel summary { cursor: pointer; }
+.artifact-panel summary { box-sizing: border-box; min-height: 44px; padding-block: .65rem; cursor: pointer; }
 .artifact-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
 .artifact-metrics dt { font-size: .8rem; }
 .artifact-metrics dd { margin: .5rem 0; font-size: clamp(1.25rem, 3vw, 2rem); }
-.artifact-links { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+.artifact-links { display: flex; gap: .5rem 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+.artifact-links a { display: inline-flex; align-items: center; min-height: 44px; }
 .artifact-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
 .artifact-table th, .artifact-table td { padding: .75rem .5rem; text-align: left; border-bottom: 1px solid var(--color-border); }
 .artifact-table-wrap { max-width: 100%; overflow-x: auto; }
+.table-explorer { min-width: 0; margin-block: 1.5rem; }
+.table-scroll-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .75rem; }
+.table-scroll-tools .source-note { flex: 1 1 15rem; margin: 0; }
+.table-scroll-buttons { display: flex; flex-wrap: wrap; max-width: 100%; gap: .5rem; }
+.table-scroll-buttons button { padding: .5rem .75rem; }
+.campus-table { min-width: 32rem; }
+.campus-table td { white-space: nowrap; }
+.campus-table th:first-child { width: 40%; }
+.district-controls { min-width: 0; padding: 0; border: 0; }
+.district-search { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; }
+.district-search label { flex: 1 1 15rem; }
+.artifact-panel :is(label, .artifact-metrics > div, .score-row > *) { min-width: 0; }
+.artifact-panel :is(p, dd, th, td, a, .score-row) { overflow-wrap: anywhere; }
 @media (max-width: 600px) { .demo-channel-grid, .artifact-metrics { grid-template-columns: 1fr; } }
 .demo-select-label { margin-top: 1rem; }
 .district-map { display: block; width: 100%; max-height: 34rem; margin: 1.5rem auto; }
@@ -1264,7 +1286,6 @@ astro-island {
 .original-table-frame { display: block; width: 100%; height: 30rem; border: 1px solid var(--color-border); background: white; margin: 1.5rem 0; }
 .example-picker { display: grid; gap: .5rem; max-width: 25rem; margin-block: 1.5rem; }
 fieldset.exhibit-controls { border: 0; padding: 0; min-width: 0; }
-.example-picker select { min-height: 44px; padding: .5rem; font: inherit; color: var(--color-text); background: var(--color-bg); }
 .report-preview { display: block; max-width: 27rem; margin-block: 1.5rem; }
 .report-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); }
 .exhibit-steps, .submission-timeline { padding-left: 1.5rem; }

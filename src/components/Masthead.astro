@@ -26,6 +26,7 @@ function isActive(href: string): boolean {
 			id="theme-toggle"
 			aria-label="Toggle dark mode"
 			type="button"
+			hidden
 		>
 			<span class="theme-toggle-icon" aria-hidden="true"></span>
 		</button>
@@ -190,6 +191,7 @@ function isActive(href: string): boolean {
 	.theme-toggle:hover {
 		color: var(--color-text);
 	}
+	.theme-toggle[hidden] { display: none; }
 
 	/* Sun icon (light mode) */
 	.theme-toggle-icon::before {
@@ -217,17 +219,26 @@ function isActive(href: string): boolean {
 <script>
 	const toggle = document.getElementById('theme-toggle');
 	if (toggle) {
-		// Read saved preference
-		const saved = localStorage.getItem('theme');
-		if (saved) document.documentElement.setAttribute('data-theme', saved);
+		// Storage can be blocked even when JavaScript is available.
+		try {
+			const saved = localStorage.getItem('theme');
+			if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+		} catch { /* The toggle still works for this page. */ }
+		const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+		const isDark = () => {
+			const current = document.documentElement.getAttribute('data-theme');
+			return current === 'dark' || (!current && systemTheme.matches);
+		};
+		const updateState = () => toggle.setAttribute('aria-pressed', String(isDark()));
+		updateState();
+		toggle.hidden = false;
+		systemTheme.addEventListener('change', updateState);
 
 		toggle.addEventListener('click', () => {
-			const current = document.documentElement.getAttribute('data-theme');
-			const isDark = current === 'dark' ||
-				(!current && window.matchMedia('(prefers-color-scheme: dark)').matches);
-			const next = isDark ? 'light' : 'dark';
+			const next = isDark() ? 'light' : 'dark';
 			document.documentElement.setAttribute('data-theme', next);
-			localStorage.setItem('theme', next);
+			updateState();
+			try { localStorage.setItem('theme', next); } catch { /* Preference cannot persist. */ }
 		});
 	}
 </script>
