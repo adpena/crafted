@@ -30,7 +30,7 @@ The preview seed refuses to overwrite an existing state directory and never writ
 
 - `npm run typecheck` regenerates Worker types and checks site/plugin code.
 - `npm test` runs site/plugin unit tests. `npm run test:backup` exercises real SQLite restoration, FTS, and the metadata migration.
-- `npm run test:e2e:portfolio` covers the actual portfolio and three runnable demos in Chromium, WebKit, and mobile Safari. Use the isolated state environment variable above.
+- `npm run test:e2e:portfolio` covers the portfolio, research explorers, and runnable demos in Chromium, Firefox, WebKit, mobile Chrome/Safari, and tablet Safari profiles. It includes narrow layouts, keyboard controls, disabled-JavaScript fallbacks, and demo failure/retry checks. These are browser-engine and device-emulation checks, not physical-device certification. Use the isolated state environment variable above.
 - `npm run build && npm run lighthouse` audits the built Worker on port 4322 against the isolated seed, on desktop and mobile.
 - `npm run test:e2e:all` retains the historical Action Pages suite. It is separate from the portfolio release gate: unfinished product routes/fixtures and authenticated production integrations are not established as passing by portfolio checks.
 

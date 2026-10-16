@@ -30,6 +30,10 @@ export default defineConfig({
       name: "Mobile Safari",
       use: { ...devices["iPhone 13"] },
     },
+    {
+      name: "Tablet Safari",
+      use: { ...devices["iPad Mini"] },
+    },
   ],
   webServer: process.env.BASE_URL ? undefined : {
     command: process.env.PORTFOLIO_BUILT_PREVIEW

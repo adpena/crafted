@@ -33,6 +33,7 @@ export default function NotificationsDemo() {
 		<p className="eyebrow">Interactive example</p>
 		<h2>One message, three channels</h2>
 		<p>This runs the library’s dispatcher with local mock adapters. No messages leave your browser. Change a channel’s outcome to see how the others continue.</p>
+		<noscript><p>Enable JavaScript to run the local simulation.</p></noscript>
 		<div className="demo-fields">
 			<label>Subject<input value={subject} onChange={(event) => setSubject(event.target.value)} maxLength={160} disabled={!ready || running} /></label>
 			<label>Message<textarea value={body} onChange={(event) => setBody(event.target.value)} maxLength={1000} disabled={!ready || running} rows={3} /></label>
@@ -48,8 +49,8 @@ export default function NotificationsDemo() {
 		<button className="demo-button" disabled={!ready || running || !subject.trim() || !body.trim()} onClick={run}>{running ? "Running…" : "Run local dispatch"}</button>
 		<div role="status" aria-live="polite">{result && <p>Finished in {(elapsed / 1000).toFixed(1)} seconds. {result.sent.length} simulated deliveries, {result.failed.length} failures, {result.skipped.length} skipped.</p>}</div>
 		<details><summary>Inspect the message and result</summary>
-			<pre>{JSON.stringify({ message: { subject, body }, result }, null, 2)}</pre>
+			<pre tabIndex={0} aria-label="Message and dispatch result">{JSON.stringify({ message: { subject, body }, result }, null, 2)}</pre>
 		</details>
-		<p className="source-note">Uses @adpena/notifications 0.1.0. Each configured adapter starts in parallel and has its own five-second timeout.</p>
+		<p className="source-note">Uses @adpena/notifications 0.1.1. Each configured adapter starts in parallel and has its own five-second timeout.</p>
 	</section>;
 }
